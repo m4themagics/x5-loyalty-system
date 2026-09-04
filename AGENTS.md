@@ -67,6 +67,23 @@
 - Solve the problem with the infrastructure that already exists before adding a new element. Durable background work goes in the `task_outbox` table drained by `outbox:drain`, not in a queue service; a cache, broker, event log, or search engine needs a measured limit of the current approach, recorded in `CHECKLIST.md`, first. `docs/ARCHITECTURE.md` states the rule, the smaller first answer for each case, and the escape condition.
 - For real-time infrastructure decisions, follow `docs/ARCHITECTURE.md` and `docs/DEPLOYMENT.md`.
 
+### X5 Checkpoint Product Rules
+
+- The product this repository builds is **X5 Чекпоинт**. Its specification lives in `docs/project/`, indexed by `docs/README.md`. Read `docs/project/project-description.md` and `docs/project/product-materials.md` before writing or changing any product screen, copy, state, or decision logic. `docs/project/context-pack.md` is the working context; `docs/project/case-brief.md` is the original case.
+- The current concept is **v5 (QuestRank)**. Anything describing a prize wheel, a reveal or chest as the central value, three personal prizes to choose from, or a mandatory character layer in every cycle is v4 and superseded. Section 2 of the project description lists exactly what left the core.
+- The loop is: valid receipt -> one route -> one next move -> permanent result. Never put more than one next move in front of the user, and never run several mechanics at once on one screen.
+- The catalog is exactly three mechanics - `personal_finish`, `store_coop`, `family_relay` - plus `no_action`. Do not invent a fourth. Brand or category task lists are not part of the catalog.
+- Reinforcement is a separate dimension from the mechanic: supplier-funded trial, points inside the EV budget, digital unlock, local privilege, progress-only, or `no_action`. A material reward is an onboarding or milestone reinforcement, never a guaranteed result of every cycle.
+- The receipt total must not buy status, influence, a better reward, or a larger vote. There is no pay-to-win by basket size.
+- A shown route is a kept promise. `no_action` is applied before anything is displayed, so a losing reveal is never rendered.
+- Reward fading runs `onboarding -> confirmation -> persistence -> maintain / rotate / no_action`, and its rules are shown to the user in advance. Do not silently downgrade a reward.
+- The action JSON in the product materials, mirrored in section 8.3 of the project description, is the contract between the decision engine and every client. Keep the two copies identical, and do not add or rename fields in one place only.
+- Scoring is multi-target: objectives are computed separately and aggregated with a margin constraint, a fading-phase weight, and one population-wide budget price. Section 8.4 of the project description is the single source for that formulation; do not restate a competing formula elsewhere.
+- The LLM may name a chosen action and explain it. It must never choose the mechanic, change cost, window, eligibility or funding, invent an SKU or condition, lift a fraud hold, or claim a causal effect. Invalid output is blocked and falls back to a deterministic template.
+- The product console is a real surface, not a debug view: candidates, filtered-out candidates with reasons, the chosen action, reinforcement and cost, the objective vector, fading phase, fraud score, and experiment group.
+- Demo data is synthetic and must be labeled as such. Never present a simulation result as measured uplift, and never use real customer data, full names, or addresses.
+- When the screens and the product docs disagree, the docs win. Say so and fix the drift instead of quietly matching whatever the UI already does.
+
 ### Product Modules Architecture
 
 - Follow the progressive DDD-lite module boundaries in `docs/ARCHITECTURE.md`; auth is the backend and web client golden path.
