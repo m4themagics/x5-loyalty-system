@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://x5-checkpoint/recsys/action.schema.json",
+  "title": "QuestRank action",
+  "description": "Контракт между движком решения и любым клиентом. Источник: раздел 8.3 описания проекта и Материал 6 продуктовых материалов. Поля не добавлять в одном месте.",
+  "type": "object",
+  "required": ["action_id", "mechanic_id", "target_action", "fading_phase", "objective_scores", "reason_codes"],
+  "additionalProperties": false,
+  "properties": {
+    "action_id": { "type": "string", "pattern": "^action_[0-9]+$" },
+    "mechanic_id": { "enum": ["personal_finish", "store_coop", "family_relay", "no_action"] },
+    "target_action": { "enum": ["purchase_day_in_window", "verified_household_visit", "none"] },
+    "window_days": { "type": ["integer", "null"], "minimum": 1, "maximum": 14 },
+    "reinforcement_type": { "enum": ["supplier_trial", "points", "digital_unlock", "digital_vote_token", "local_privilege", "progress_only", "none"] },
+    "reinforcement_id": { "type": ["string", "null"] },
+    "reinforcement_cost": { "type": "number", "minimum": 0 },
+    "funding_source": { "enum": ["supplier", "promo_fund", "own_margin", "none"] },
+    "fading_phase": { "enum": ["onboarding", "confirmation", "persistence", "maintain", "rotate", "no_action"] },
+    "estimated_incremental_probability": { "type": "number" },
+    "expected_persistence_uplift": { "type": "number" },
+    "expected_completion_probability": { "type": "number", "minimum": 0, "maximum": 1 },
+    "expected_payout": { "type": "number", "minimum": 0 },
+    "expected_contribution_margin": { "type": "number" },
+    "fraud_risk": { "type": "number", "minimum": 0, "maximum": 1 },
+    "optout_risk": { "type": "number", "minimum": 0, "maximum": 1 },
+    "fatigue_penalty": { "type": "number", "minimum": 0 },
+    "budget_price": { "type": "number", "minimum": 0, "description": "λ, теневая цена бюджета; одна на популяцию" },
+    "persistence_weight": { "type": "number", "minimum": 0, "description": "β, задаётся фазой fading" },
+    "objective_scores": {
+      "type": "object",
+      "required": ["freq", "persist", "cost", "margin"],
+      "additionalProperties": false,
+      "properties": {
+        "freq": { "type": "number" },
+        "persist": { "type": "number" },
+        "cost": { "type": "number" },
+        "margin": { "type": "number" }
+      }
+    },
+    "status": { "enum": ["active", "delayed", "blocked"] },
+    "reason_codes": { "type": "array", "items": { "type": "string" } }
+  }
+}

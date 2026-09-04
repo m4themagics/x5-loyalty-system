@@ -1,0 +1,33 @@
+{
+  "profile": {
+    "customer_id": "u_2087", "display_name": "Катя",
+    "cadence_weeks": 1.2, "baseline_visit_probability": 0.58,
+    "store_engagement": "high", "social_engagement": "medium", "fatigue": 0.20
+  },
+  "action": {
+    "action_id": "action_2087", "mechanic_id": "store_coop",
+    "target_action": "purchase_day_in_window", "window_days": 7,
+    "reinforcement_type": "digital_vote_token", "reinforcement_id": null,
+    "reinforcement_cost": 0.0, "funding_source": "none",
+    "fading_phase": "persistence",
+    "estimated_incremental_probability": 0.06, "expected_persistence_uplift": 0.05,
+    "expected_completion_probability": 0.61, "expected_payout": 0.0,
+    "expected_contribution_margin": 7.2,
+    "fraud_risk": 0.02, "optout_risk": 0.04, "fatigue_penalty": 0.02,
+    "budget_price": 0.42, "persistence_weight": 0.8,
+    "objective_scores": { "freq": 0.06, "persist": 0.05, "cost": 0.0, "margin": 7.2 },
+    "status": "active",
+    "reason_codes": ["local_engagement_above_reward_sensitivity", "material_reward_not_required", "capability_flag_ok"]
+  },
+  "explanation": {
+    "action_id": "action_2087",
+    "title": "Чекпоинт своей Пятёрочки",
+    "short_story": "Один следующий визит продвинет выбранную цель магазина.",
+    "explanation": "Маршрут выбран вместо платной награды: вы уже участвуете в локальных целях, а дополнительный товар не проходит порог необходимости."
+  },
+  "route_state": {
+    "route_id": "r_2087", "mechanic_id": "store_coop", "status": "in_progress",
+    "window_days": 7, "qualifying_event": "purchase_day", "completion": 0.68,
+    "fading_phase": "persistence", "unlocks": ["milestone_vote_token"]
+  }
+}

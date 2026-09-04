@@ -1,0 +1,33 @@
+{
+  "profile": {
+    "customer_id": "u_4750", "display_name": "Семейная эстафета — подозрительная связь",
+    "cadence_weeks": 1.9, "baseline_visit_probability": 0.44,
+    "store_engagement": "low", "social_engagement": "high", "fatigue": 0.15
+  },
+  "action": {
+    "action_id": "action_4750", "mechanic_id": "family_relay",
+    "target_action": "verified_household_visit", "window_days": 7,
+    "reinforcement_type": "supplier_trial", "reinforcement_id": "sku_204",
+    "reinforcement_cost": 21.0, "funding_source": "supplier",
+    "fading_phase": "onboarding",
+    "estimated_incremental_probability": 0.09, "expected_persistence_uplift": 0.02,
+    "expected_completion_probability": 0.47, "expected_payout": 9.87,
+    "expected_contribution_margin": 4.1,
+    "fraud_risk": 0.78, "optout_risk": 0.05, "fatigue_penalty": 0.01,
+    "budget_price": 0.42, "persistence_weight": 0.3,
+    "objective_scores": { "freq": 0.09, "persist": 0.02, "cost": 9.87, "margin": 4.1 },
+    "status": "delayed",
+    "reason_codes": ["shared_device_payment", "impossible_velocity", "self_referral_suspected", "hold_until_verified_event"]
+  },
+  "explanation": {
+    "action_id": "action_4750",
+    "title": "Награда придержана",
+    "short_story": "Ждём подтверждённой покупки приглашённого.",
+    "explanation": "Передача засчитана, но награда придержана до проверенного события: устройство и способ оплаты совпадают у обоих участников."
+  },
+  "route_state": {
+    "route_id": "r_4750", "mechanic_id": "family_relay", "status": "delayed",
+    "window_days": 7, "qualifying_event": "verified_household_visit", "completion": 0.5,
+    "fading_phase": "onboarding", "unlocks": []
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "profile": {
+    "customer_id": "u_3311", "display_name": "Сергей",
+    "cadence_weeks": 0.8, "baseline_visit_probability": 0.87,
+    "store_engagement": "medium", "social_engagement": "low", "fatigue": 0.35
+  },
+  "action": {
+    "action_id": "action_3311", "mechanic_id": "no_action",
+    "target_action": "none", "window_days": null,
+    "reinforcement_type": "none", "reinforcement_id": null,
+    "reinforcement_cost": 0.0, "funding_source": "none",
+    "fading_phase": "no_action",
+    "estimated_incremental_probability": 0.01, "expected_persistence_uplift": 0.0,
+    "expected_completion_probability": 0.0, "expected_payout": 0.0,
+    "expected_contribution_margin": -2.4,
+    "fraud_risk": 0.01, "optout_risk": 0.09, "fatigue_penalty": 0.05,
+    "budget_price": 0.42, "persistence_weight": 0.0,
+    "objective_scores": { "freq": 0.01, "persist": 0.0, "cost": 0.0, "margin": -2.4 },
+    "status": "active",
+    "reason_codes": ["baseline_probability_high", "organic_subsidy_risk", "no_candidate_positive_at_lambda"]
+  },
+  "explanation": {
+    "action_id": "action_3311",
+    "title": "Без маршрута",
+    "short_story": "Ничего не предлагаем и не шлём push.",
+    "explanation": "Платное воздействие не показано: визит с высокой вероятностью произойдёт и без него, поэтому награда оплатила бы органическую покупку."
+  },
+  "route_state": null
+}

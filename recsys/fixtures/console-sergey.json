@@ -1,0 +1,18 @@
+{
+  "customer_id": "u_3311",
+  "experiment_group": "D",
+  "budget_price": 0.42,
+  "chosen_action_id": "action_3311",
+  "candidates": [
+    { "action_id": "action_3311", "mechanic_id": "no_action", "window_days": null, "reinforcement_type": "none", "reinforcement_cost": 0.0, "objective_scores": { "freq": 0.01, "persist": 0.0, "cost": 0.0, "margin": -2.4 }, "aggregate": 0.0, "verdict": "chosen" },
+    { "action_id": "action_3312", "mechanic_id": "personal_finish", "window_days": 5, "reinforcement_type": "supplier_trial", "reinforcement_cost": 18.0, "objective_scores": { "freq": 0.02, "persist": 0.01, "cost": 9.9, "margin": -1.8 }, "aggregate": -4.14, "verdict": "rejected_negative_at_lambda" },
+    { "action_id": "action_3313", "mechanic_id": "personal_finish", "window_days": 7, "reinforcement_type": "digital_unlock", "reinforcement_cost": 0.0, "objective_scores": { "freq": 0.015, "persist": 0.005, "cost": 0.0, "margin": 1.2 }, "aggregate": 0.018, "verdict": "ranked_2_below_confidence" }
+  ],
+  "filtered_out": [
+    { "action_id": "action_3314", "mechanic_id": "store_coop", "reason_code": "store_capability_missing", "detail": "У точки нет флага локальных целей" },
+    { "action_id": "action_3315", "mechanic_id": "family_relay", "reason_code": "no_household_link", "detail": "Связь домохозяйства не подтверждена" },
+    { "action_id": "action_3316", "mechanic_id": "personal_finish", "reason_code": "fatigue_cap", "detail": "Три воздействия за 30 дней, лимит исчерпан" }
+  ],
+  "decision_note": "Baseline-вероятность покупки 0.87. Платное воздействие оплатило бы визит, который произойдёт и так: organic subsidy risk выше порога, сэкономлено 9.9 ₽ ожидаемой выплаты.",
+  "notes": "Синтетические данные. Значения не являются экономикой X5 и не являются измеренным эффектом."
+}

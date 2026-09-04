@@ -1,0 +1,19 @@
+{
+  "customer_id": "u_1042",
+  "experiment_group": "D",
+  "budget_price": 0.42,
+  "chosen_action_id": "action_1042",
+  "candidates": [
+    { "action_id": "action_1042", "mechanic_id": "personal_finish", "window_days": 5, "reinforcement_type": "supplier_trial", "reinforcement_cost": 18.0, "objective_scores": { "freq": 0.11, "persist": 0.03, "cost": 9.36, "margin": 13.2 }, "aggregate": 0.1157, "verdict": "chosen" },
+    { "action_id": "action_1043", "mechanic_id": "personal_finish", "window_days": 5, "reinforcement_type": "digital_unlock", "reinforcement_cost": 0.0, "objective_scores": { "freq": 0.07, "persist": 0.04, "cost": 0.0, "margin": 8.4 }, "aggregate": 0.0820, "verdict": "ranked_2" },
+    { "action_id": "action_1044", "mechanic_id": "store_coop", "window_days": 7, "reinforcement_type": "digital_vote_token", "reinforcement_cost": 0.0, "objective_scores": { "freq": 0.02, "persist": 0.01, "cost": 0.0, "margin": 2.4 }, "aggregate": 0.0230, "verdict": "ranked_3" },
+    { "action_id": "action_1045", "mechanic_id": "no_action", "window_days": null, "reinforcement_type": "none", "reinforcement_cost": 0.0, "objective_scores": { "freq": 0.0, "persist": 0.0, "cost": 0.0, "margin": 0.0 }, "aggregate": 0.0, "verdict": "ranked_4" }
+  ],
+  "filtered_out": [
+    { "action_id": "action_1046", "mechanic_id": "family_relay", "reason_code": "no_household_link", "detail": "Связь домохозяйства не подтверждена" },
+    { "action_id": "action_1047", "mechanic_id": "store_coop", "reason_code": "store_capability_missing", "detail": "У точки нет флага локальных целей" },
+    { "action_id": "action_1048", "mechanic_id": "personal_finish", "reason_code": "margin_constraint_violated", "detail": "Стоимость подкрепления 46 ₽ выше потолка при CM 120 ₽" },
+    { "action_id": "action_1049", "mechanic_id": "personal_finish", "reason_code": "frequency_cap", "detail": "Маршрут уже показан на этой неделе" }
+  ],
+  "notes": "Синтетические данные. Значения не являются экономикой X5 и не являются измеренным эффектом."
+}

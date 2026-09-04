@@ -1,0 +1,33 @@
+{
+  "profile": {
+    "customer_id": "u_1042", "display_name": "Маша, второй цикл",
+    "cadence_weeks": 2.1, "baseline_visit_probability": 0.36,
+    "store_engagement": "low", "social_engagement": "low", "fatigue": 0.18
+  },
+  "action": {
+    "action_id": "action_1052", "mechanic_id": "personal_finish",
+    "target_action": "purchase_day_in_window", "window_days": 6,
+    "reinforcement_type": "digital_unlock", "reinforcement_id": "unlock_theme_choice",
+    "reinforcement_cost": 0.0, "funding_source": "none",
+    "fading_phase": "confirmation",
+    "estimated_incremental_probability": 0.08, "expected_persistence_uplift": 0.04,
+    "expected_completion_probability": 0.55, "expected_payout": 0.0,
+    "expected_contribution_margin": 9.6,
+    "fraud_risk": 0.03, "optout_risk": 0.05, "fatigue_penalty": 0.02,
+    "budget_price": 0.42, "persistence_weight": 0.55,
+    "objective_scores": { "freq": 0.08, "persist": 0.04, "cost": 0.0, "margin": 9.6 },
+    "status": "active",
+    "reason_codes": ["previous_route_completed", "fading_step_down", "material_reward_not_required", "persistence_check"]
+  },
+  "explanation": {
+    "action_id": "action_1052",
+    "title": "Личный чекпоинт",
+    "short_story": "Ещё один визит — и выбираете тему следующего маршрута.",
+    "explanation": "Прошлый маршрут вы прошли, поэтому теперь награда цифровая: проверяем, держится ли интерес без товара. Правила сезона показаны заранее."
+  },
+  "route_state": {
+    "route_id": "r_1052", "mechanic_id": "personal_finish", "status": "in_progress",
+    "window_days": 6, "qualifying_event": "purchase_day", "completion": 0.5,
+    "fading_phase": "confirmation", "unlocks": ["theme_choice"]
+  }
+}
