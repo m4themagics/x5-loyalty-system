@@ -585,8 +585,8 @@ contribution margin, персистентность после fading и пот�
 | Участник | Роль | Зона ответственности v5 | Текущий рабочий результат | Степень участия |
 | --- | --- | --- | --- | --- |
 | **Вербицкий Артемий Андреевич** · @yungatla | AI Product | Проблема, каталог механик, гипотезы, MVP, reward fading, экономика, эксперимент и защита | Product concept v5, decision log, pilot design и материалы | Активное |
-| **Гуреева Мария Дмитриевна** · @m4themagics | AI Engineer — Recsys / Data | Synthetic data, candidate generation, QuestRank, `no_action`, exploration и simulation | Требования к данным, action schema, score/eval design | Активное |
-| **Зоринов Григорий Алексеевич** · @grigorii_zor | AI Engineer — LLM / Application | Mechanic state engine, fading controller, grounded LLM, validator, antifraud и demo integration | LLM-contract, validation/state cases и UX integration | Активное |
+| **Гуреева Мария Дмитриевна** · @m4themagics | AI Engineer — Recsys / LLM | Synthetic data, candidate generation, QuestRank, `no_action`, exploration, eval и simulation; контракт LLM, grounded-объяснение и валидатор | Action schema, фикстуры демо, валидатор объяснений, score/eval design | Активное |
+| **Зоринов Григорий Алексеевич** · @grigorii_zor | AI Engineer — Механики / Application | Каталог механик и state engine трёх маршрутов, qualifying events, completion, unlocks, fading controller, экраны и сборка демо | Экраны трёх маршрутов на фикстурах, консоль продакта, state/фазы fading | Активное |
 
 ## 18. Вклад AI Product и использование AI в PDLC
 

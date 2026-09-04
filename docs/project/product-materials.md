@@ -550,8 +550,8 @@ LLM не может:
 | Участник | Роль | Зона ответственности v5 |
 | --- | --- | --- |
 | Вербицкий Артемий Андреевич · @yungatla | AI Product | Mechanic catalog, JTBD, hypotheses, reward fading, economics, experiment и pitch |
-| Гуреева Мария Дмитриевна · @m4themagics | AI Engineer — Recsys / Data | Synthetic data, candidate generation, QuestRank, exploration, `no_action`, eval и simulation |
-| Зоринов Григорий Алексеевич · @grigorii_zor | AI Engineer — LLM / Application | State engine, fading controller, LLM grounding, validator, antifraud и demo integration |
+| Гуреева Мария Дмитриевна · @m4themagics | AI Engineer — Recsys / LLM | Synthetic data, candidate generation, QuestRank, exploration, `no_action`, eval, simulation, LLM grounding и validator |
+| Зоринов Григорий Алексеевич · @grigorii_zor | AI Engineer — Механики / Application | Mechanic catalog, state engine трёх маршрутов, fading controller, экраны и demo integration |
 
 ### Вклад AI Product
 

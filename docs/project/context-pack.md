@@ -180,11 +180,13 @@ PoC даёт directional evidence. Реальный поведенческий �
 
 Состав: **3 человека — 1 AI Product и 2 AI Engineer**, все 1 курс. Фокус v5 — executable QuestRank PoC.
 
+Антифрод не закреплён за одним участником: он делается совместно после защиты, в PoC остаются только размеченные fraud-кейсы и `delayed` как состояние маршрута.
+
 | Кто | Роль | Ответственность v5 | Результат к прототипу |
 | --- | --- | --- | --- |
 | **Вербицкий Артемий Андреевич**<br>@yungatla | AI Product | Проблема, каталог механик, JTBD, гипотезы, границы MVP, reward fading, экономика, эксперимент и защита | Product concept v5 и decision log; 5–7 concept tests трёх маршрутов и fading-copy; pilot design и one-pager. |
-| **Гуреева Мария Дмитриевна**<br>@m4themagics | AI Engineer — Recsys / Data | Synthetic data, candidate generation, QuestRank, `no_action`, exploration, eval и simulation | 1–10 тыс. профилей и gold set 30–50; candidates, filters и score decomposition; сравнение групп A/B/C/D при равном потолке бюджета. |
-| **Зоринов Григорий Алексеевич**<br>@grigorii_zor | AI Engineer — LLM / Application | State engine трёх механик, fading controller, grounded LLM, validator, antifraud и интеграция демо | Structured endpoint; 0 invented mechanics/SKU/terms в тестовом наборе; fraud precision и delayed-кейс; сквозное демо. |
+| **Гуреева Мария Дмитриевна**<br>@m4themagics | AI Engineer — Recsys / LLM | Synthetic data, candidate generation, QuestRank, `no_action`, exploration, eval, simulation, контракт LLM и валидатор | 1–10 тыс. профилей и gold set 30–50; candidates, filters и score decomposition; 0 invented mechanics/SKU/terms; сравнение групп A/B/C/D при равном потолке бюджета. |
+| **Зоринов Григорий Алексеевич**<br>@grigorii_zor | AI Engineer — Механики / Application | Каталог механик и state engine трёх маршрутов, qualifying events, completion, unlocks, fading controller, экраны и интеграция демо | Экраны трёх маршрутов на фикстурах, консоль продакта, смена фазы fading, сквозное демо. |
 
 ### Как используем ИИ в процессе
 
