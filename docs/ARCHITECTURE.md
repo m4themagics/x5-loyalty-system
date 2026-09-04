@@ -2,6 +2,10 @@
 
 This repository defines a golden path for web and backend products: shared contracts, a modular-monolith backend, one CSR browser app (`webapp`), one Astro SSG/SSR site (`website`), and little custom infrastructure. The runnable mobile app lives on the `mobile` branch and extends this architecture only when mobile is active.
 
+![Stack overview: web, mobile, and landing surfaces share Zod contracts; a Bun + Hono backend owns routes, auth, jobs, and storage over PostgreSQL 18; deployment targets DigitalOcean or Yandex Cloud](assets/vibe_tmpl_schema.png)
+
+The dashed block is optional: cross-instance Pub/Sub enters only under the conditions in [Runtime Shape And Real-Time](#runtime-shape-and-real-time).
+
 The approach is **progressive DDD-lite**. Product contexts get explicit ownership and dependency direction without forcing every context to have every layer. Add a `domain` directory only when the feature has real policies, calculations, or state transitions. Do not add empty layers, generic/base repositories, CQRS, event sourcing, or extra services as architecture decoration.
 
 ## Contracts
