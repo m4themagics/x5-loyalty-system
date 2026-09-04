@@ -5,7 +5,7 @@ import { runBackendIntegration } from './test-integration.mjs'
 
 const integrationFile = 'src/example.integration.test.ts'
 const testDatabaseUrl =
-  'postgresql://superuser:superpassword@localhost:54330/web_app_demo_test?schema=public'
+  'postgresql://superuser:superpassword@localhost:54330/pyaterochka_game_demo_test?schema=public'
 
 describe('backend integration Docker lifecycle', () => {
   test('removes only postgres_test and its exact volume after a normal run', async () => {

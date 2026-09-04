@@ -3,7 +3,7 @@ import type {
   PasswordResetConfirmRequest,
   PasswordResetRequest,
   RegisterPayload,
-} from '@web-app-demo/contracts'
+} from '@pyaterochka-game-demo/contracts'
 
 import { AuthFailure } from '../domain/errors'
 import { sessionExpiresAt, type SessionMetadata } from '../domain/session'

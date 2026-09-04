@@ -4,7 +4,7 @@ import type {
   PasswordResetRequest,
   RegisterRequest,
   UserDto,
-} from '@web-app-demo/contracts'
+} from '@pyaterochka-game-demo/contracts'
 import { createContext } from 'react'
 import type { AuthenticatedTransport } from '@/platform/api'
 

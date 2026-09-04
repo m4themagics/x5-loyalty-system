@@ -85,7 +85,7 @@ the same repository-derived host port. If one already owns that port, the other 
 without tearing the owner down. To reuse a database another process manages, set
 `TEST_SKIP_DOCKER=1` with its explicit test-only URL.
 
-The integration and Docker smoke runners refuse database names that do not end with `_test` unless an override is set intentionally. This protects `web_app_demo` development data from test writes.
+The integration and Docker smoke runners refuse database names that do not end with `_test` unless an override is set intentionally. This protects `pyaterochka_game_demo` development data from test writes.
 
 The Docker smoke test builds the backend image, starts it against `postgres_test`, waits for `/health/ready`, and removes only the smoke container it created.
 
@@ -142,7 +142,7 @@ runner keeps positional file selection fixed on `avatar.spec.ts`.
 Useful env:
 
 ```bash
-TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:<test-port>/web_app_demo_test?schema=public"
+TEST_DATABASE_URL="postgresql://superuser:superpassword@localhost:<test-port>/pyaterochka_game_demo_test?schema=public"
 POSTGRES_TEST_PORT=<test-port>
 E2E_BACKEND_PORT=<backend-port>
 E2E_WEB_PORT=<web-port>

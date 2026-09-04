@@ -1,4 +1,4 @@
-import type { UserDto } from '@web-app-demo/contracts'
+import type { UserDto } from '@pyaterochka-game-demo/contracts'
 import { useRef, useState, type ChangeEvent } from 'react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'

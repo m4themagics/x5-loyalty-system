@@ -19,15 +19,15 @@ afterEach(() => {
 test('assertTestDatabaseUrl accepts test databases and rejects development databases', () => {
   expect(() =>
     assertTestDatabaseUrl(
-      'postgresql://superuser:superpassword@localhost:55432/web_app_demo_test?schema=public',
+      'postgresql://superuser:superpassword@localhost:55432/pyaterochka_game_demo_test?schema=public',
     ),
   ).not.toThrow()
 
   expect(() =>
     assertTestDatabaseUrl(
-      'postgresql://superuser:superpassword@localhost:54329/web_app_demo?schema=public',
+      'postgresql://superuser:superpassword@localhost:54329/pyaterochka_game_demo?schema=public',
     ),
-  ).toThrow(/Refusing to run tests against non-test database "web_app_demo"/)
+  ).toThrow(/Refusing to run tests against non-test database "pyaterochka_game_demo"/)
 })
 
 test('assertTestDatabaseUrl accepts non-test databases with an intentional override', () => {
@@ -35,7 +35,7 @@ test('assertTestDatabaseUrl accepts non-test databases with an intentional overr
 
   expect(() =>
     assertTestDatabaseUrl(
-      'postgresql://superuser:superpassword@localhost:54329/web_app_demo?schema=public',
+      'postgresql://superuser:superpassword@localhost:54329/pyaterochka_game_demo?schema=public',
     ),
   ).not.toThrow()
 })

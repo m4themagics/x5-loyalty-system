@@ -26,10 +26,10 @@ describe('normalizePgConnectionString', () => {
 
   test('does not change non-TLS local URLs', () => {
     const result = normalizePgConnectionString(
-      'postgresql://superuser:superpassword@localhost:54329/web_app_demo?schema=public',
+      'postgresql://superuser:superpassword@localhost:54329/pyaterochka_game_demo?schema=public',
     )
 
-    expect(result).toBe('postgresql://superuser:superpassword@localhost:54329/web_app_demo?schema=public')
+    expect(result).toBe('postgresql://superuser:superpassword@localhost:54329/pyaterochka_game_demo?schema=public')
   })
 })
 

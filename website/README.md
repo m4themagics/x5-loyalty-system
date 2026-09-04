@@ -2,6 +2,10 @@
 
 The website workspace is a separate Astro project for public, SEO-facing surfaces: landing pages, marketing/content sites, and the public catalog of product sites such as a marketplace. It is the SSG-first counterpart to the CSR `webapp` (which lives behind auth and needs no SEO). Read the mandatory cross-surface contract in [../docs/WEB_SURFACES.md](../docs/WEB_SURFACES.md) before adding backend-built product data, a cart, checkout, orders, subscriptions, entitlements, or payments.
 
+## Project Surface Status
+
+Deferred. The first version is a mobile-first product demo in `webapp` and does not need a public SEO surface.
+
 ## Stack
 
 - Astro (static SSG by default; SSR-ready per route)
@@ -99,7 +103,7 @@ Keep dynamic pages fresh with HTTP cache headers (`Cache-Control`, `stale-while-
 
 Keep website-specific UI and content in this workspace. Do not duplicate authenticated browser-app flows from `webapp`. Auth inside `website` is acceptable only for small public-site needs, such as a logged-in header state or lightweight listing actions. Full buyer account, seller/admin, checkout/account, and dashboard workflows stay in `webapp` unless they have a concrete SEO requirement. An anonymous local cart or selected offer may start here, but it contains only untrusted identifiers and quantities and hands off to the single authenticated `webapp` checkout. Never add payment creation, card entry, authoritative totals, order state, or provider webhooks to `website`.
 
-If the website starts reading API data or shared DTOs, add `@web-app-demo/contracts` intentionally and validate the producer/consumer path. Add `@astrojs/react` only when a page needs interactive React islands.
+If the website starts reading API data or shared DTOs, add `@pyaterochka-game-demo/contracts` intentionally and validate the producer/consumer path. Add `@astrojs/react` only when a page needs interactive React islands.
 
 Astro remains the default here because it is content-first, static-first, low-JS by default, and easy for agents to reason about as the SEO surface. Choose Next.js only when the project intentionally wants a Vercel-optimized ISR/cache platform. Treat TanStack Start as an optional future React full-stack path for teams that want one React app with selective SSR, not as this template's default website stack.
 

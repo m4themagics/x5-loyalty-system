@@ -4,7 +4,7 @@ import {
   avatarUploadParamsSchema,
   createAvatarUploadRequestSchema,
   createAvatarUploadResponseSchema,
-} from '@web-app-demo/contracts'
+} from '@pyaterochka-game-demo/contracts'
 import { createRoute, OpenAPIHono } from '@hono/zod-openapi'
 import type { MiddlewareHandler } from 'hono'
 

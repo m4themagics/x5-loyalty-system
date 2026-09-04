@@ -1,4 +1,4 @@
-import type { UserRole } from '@web-app-demo/contracts'
+import type { UserRole } from '@pyaterochka-game-demo/contracts'
 import { createMiddleware } from 'hono/factory'
 
 import { AppError } from '../../../http/errors'

@@ -84,7 +84,7 @@ export async function runBackendIntegration({
           '-U',
           'superuser',
           '-d',
-          'web_app_demo_test',
+          'pyaterochka_game_demo_test',
         ],
         {
           cwd: repositoryRoot,

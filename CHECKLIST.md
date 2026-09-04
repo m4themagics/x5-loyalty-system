@@ -10,7 +10,7 @@ Answer cells hold `_unanswered_` until the question is asked, and `n/a` when the
 
 **When working on the template itself** (not installing it for a project), there is nothing to record: leave every answer cell at `_unanswered_` and every checkbox unchecked - those would otherwise ship to each future install. The capability ledger is the exception: it always describes the current branch, so keep it current when template work adds or removes a capability.
 
-**Install status:** `not started`
+**Install status:** `completed 2026-09-04`
 <!-- Set to: not started | in progress | completed YYYY-MM-DD -->
 
 ---
@@ -19,9 +19,9 @@ Answer cells hold `_unanswered_` until the question is asked, and `n/a` when the
 
 | Question                                                        | Answer       |
 | --------------------------------------------------------------- | ------------ |
-| New project from this template, or work on the template itself? | _unanswered_ |
-| Project name / slug                                             | _unanswered_ |
-| Your own GitHub repository URL, if you have one                 | _unanswered_ |
+| New project from this template, or work on the template itself? | Новый проект из шаблона |
+| Project name / slug                                             | `pyaterochka-game-demo` |
+| Your own GitHub repository URL, if you have one                 | `https://github.com/m4themagics/x5-loyalty-system.git` |
 
 If no GitHub destination is chosen, the repository is left without `origin` and publishing stays unconfigured. The template remote is detached during setup unless this checkout is explicitly for improving the template.
 
@@ -29,22 +29,22 @@ If no GitHub destination is chosen, the repository is left without `origin` and 
 
 | Question                                                  | Answer       |
 | --------------------------------------------------------- | ------------ |
-| What product do you want to build first?                  | _unanswered_ |
-| What is the first user journey that must work end to end? | _unanswered_ |
+| What product do you want to build first?                  | Мобильное веб-демо игровой лояльности «Пятёрочки»: колесо призов, дорожка прогресса, AI-задания, голоса и улучшения магазина |
+| What is the first user journey that must work end to end? | Покупка → колесо → приз → прогресс → AI-задание → голоса |
 
 ## 3. Active surfaces
 
 Mark what is active now, and set the install status to `in progress` as soon as this section is answered. From then on, everything unmarked is deferred and must be left alone: no features, no setup, no test flows. While the status is still `not started` nothing has been decided yet, so unmarked boxes mean "not asked", not "forbidden".
 
 - [ ] `backend` - API, database, auth
-- [ ] `webapp` - browser screens behind sign-in (no SEO)
+- [x] `webapp` - browser screens behind sign-in (no SEO)
 - [ ] `website` - public pages that must rank in search or preview when shared
 - [ ] `mobile` - Expo app (lives on the `mobile` branch; switch branches before setup)
 
 | Question                                                                                                             | Answer       |
 | -------------------------------------------------------------------------------------------------------------------- | ------------ |
-| Why the unmarked surfaces are deferred, if it needs explaining                                                       | _unanswered_ |
-| If `mobile` is active: are Expo/EAS builds, Expo Push, and Maestro E2E needed now, or left unconfigured until later? | _unanswered_ |
+| Why the unmarked surfaces are deferred, if it needs explaining                                                       | Нужен только мобильный веб-интерфейс. Backend, публичный website и нативное mobile-приложение отложены. Демо использует локальные тестовые профили. |
+| If `mobile` is active: are Expo/EAS builds, Expo Push, and Maestro E2E needed now, or left unconfigured until later? | n/a |
 
 The split between `webapp` and `website` is the agent's call, not the user's; `README.md` explains how to route a feature between them.
 
@@ -53,16 +53,16 @@ The split between `webapp` and `website` is the agent's call, not the user's; `R
 Ask about product needs, not implementations. Mark what the first version actually needs, then fill the row below even when nothing was ticked, so a later session can tell "asked, and the answer was no" from "not asked yet".
 
 - [ ] Accounts / sign-in
-- [ ] Saved data that survives a restart
+- [x] Saved data that survives a restart
 - [ ] File, image, or media uploads → also answer _Files, images, and media_
 - [ ] Paid subscriptions or one-off payments → also answer _Payments_
 - [ ] Admin tools or roles
-- [ ] External integrations (which: _unanswered_)
+- [ ] External integrations (which: нет в первой версии; данные и сценарии будут предоставлены командой)
 - [ ] Real-time chat, presence, collaboration, or live updates
 
 | Question                                                                                          | Answer       |
 | ------------------------------------------------------------------------------------------------- | ------------ |
-| What the first version explicitly should NOT do (write "nothing ruled out" if that is the answer) | _unanswered_ |
+| What the first version explicitly should NOT do (write "nothing ruled out" if that is the answer) | Не использовать backend, реальные аккаунты, загрузки, платежи, админ-инструменты, внешние интеграции, real-time, публичный website или нативное mobile-приложение. До получения скриншота не добавлять бизнес-логику. |
 
 ## 5. Files, images, and media
 
@@ -70,13 +70,13 @@ This project ships private file storage with user avatars, so answer these for t
 
 | Question                                                                                      | Answer       |
 | --------------------------------------------------------------------------------------------- | ------------ |
-| What do users upload?                                                                         | _unanswered_ |
-| Public, private, shared with selected people, or mixed?                                       | _unanswered_ |
-| Who can upload, view, replace, and delete?                                                    | _unanswered_ |
-| Maximum file size and allowed file types                                                      | _unanswered_ |
-| Do images need thumbnails, resizing, format conversion, compression, cropping, or moderation? | _unanswered_ |
-| How long do files live after the owning record is deleted?                                    | _unanswered_ |
-| Should filenames be visible to users, or opaque?                                              | _unanswered_ |
+| What do users upload?                                                                         | n/a |
+| Public, private, shared with selected people, or mixed?                                       | n/a |
+| Who can upload, view, replace, and delete?                                                    | n/a |
+| Maximum file size and allowed file types                                                      | n/a |
+| Do images need thumbnails, resizing, format conversion, compression, cropping, or moderation? | n/a |
+| How long do files live after the owning record is deleted?                                    | n/a |
+| Should filenames be visible to users, or opaque?                                              | n/a |
 
 ## 6. Website data and freshness
 
@@ -85,9 +85,9 @@ follow the implementation contract in `docs/WEB_SURFACES.md`.
 
 | Question                                                                                    | Answer       |
 | ------------------------------------------------------------------------------------------- | ------------ |
-| Which public product or content data comes from the backend/database at website build time? | _unanswered_ |
-| How soon after that data changes must the public website show the change?                   | _unanswered_ |
-| Which changes require an automatic rebuild/redeploy rather than a manual release?           | _unanswered_ |
+| Which public product or content data comes from the backend/database at website build time? | n/a |
+| How soon after that data changes must the public website show the change?                   | n/a |
+| Which changes require an automatic rebuild/redeploy rather than a manual release?           | n/a |
 
 The default is Astro SSG. Database-backed public data is fetched while building static output. If
 published database changes must appear automatically, implement the documented `website:rebuild`
@@ -100,11 +100,11 @@ Answer these only when payments are active above; otherwise mark the rows `n/a`.
 
 | Question                                                                                                                    | Answer       |
 | --------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| What exactly do users pay for?                                                                                              | _unanswered_ |
-| Recurring subscription, one-off purchase, or both?                                                                          | _unanswered_ |
-| Does the public website need a local cart or offer selection before registration/sign-in?                                   | _unanswered_ |
-| Which active surfaces need payment: browser checkout, App Store / Google Play, native card entry, Apple Pay, or Google Pay? | _unanswered_ |
-| What stops working when someone does not pay?                                                                               | _unanswered_ |
+| What exactly do users pay for?                                                                                              | n/a |
+| Recurring subscription, one-off purchase, or both?                                                                          | n/a |
+| Does the public website need a local cart or offer selection before registration/sign-in?                                   | n/a |
+| Which active surfaces need payment: browser checkout, App Store / Google Play, native card entry, Apple Pay, or Google Pay? | n/a |
+| What stops working when someone does not pay?                                                                               | n/a |
 
 Whatever this project ends up with, the ledger below is what states it. Read `docs/WEB_SURFACES.md`
 before implementing any payment surface. Browser checkout is built in authenticated `webapp` plus
@@ -118,11 +118,11 @@ recording it as `removed`. Payments are never half-present and are never reintro
 
 | Question                                                                                     | Answer       |
 | -------------------------------------------------------------------------------------------- | ------------ |
-| Is deployment needed now, or local-only for the moment?                                      | _unanswered_ |
-| Where are your users, and must the data stay in Russia?                                      | _unanswered_ |
-| Hosting, picked by the agent from the answer above: DigitalOcean / Yandex Cloud / own server | _unanswered_ |
-| Production domains / URLs for API, webapp, and website; is Yandex CDN needed now?            | _unanswered_ |
-| Which surfaces are released first                                                            | _unanswered_ |
+| Is deployment needed now, or local-only for the moment?                                      | Пока только локально; исходный код публикуется в GitHub |
+| Where are your users, and must the data stay in Russia?                                      | Пользователи в России; production-данные должны оставаться в России |
+| Hosting, picked by the agent from the answer above: DigitalOcean / Yandex Cloud / own server | Yandex Cloud при активации deployment; сейчас облачные ресурсы не создаются |
+| Production domains / URLs for API, webapp, and website; is Yandex CDN needed now?            | n/a до запроса на deployment |
+| Which surfaces are released first                                                            | `webapp` |
 
 **Ask the audience question, not the provider question.** A product owner knows where their users
 are and whether data must stay in Russia; they should not be asked to compare clouds. The agent
@@ -188,23 +188,24 @@ A capability with no row is `absent` by default. Add the row instead of assuming
 | Real-time / WebSockets          | absent   | Requires an explicit product need.                                                                                                                                                                                                                                                                                                                                                                                   |
 | Background jobs                 | included | Jobs live in `backend/src/jobs.ts`. The shared scheduler runs `outbox:drain` every minute, upload cleanup hourly at minute 15, and auth cleanup daily at 03:00 UTC. Terraform deploys that scheduler as a DigitalOcean worker and the same executor in Yandex HTTP job containers/timer triggers; own servers run it under a supervisor. `workerLoops` stays empty. See `docs/BACKGROUND_JOBS.md`.                              |
 | Durable task outbox             | included | `task_outbox` in PostgreSQL with handlers in `backend/src/outbox/handlers.ts`, drained by `outbox:drain`. Ships with the password-reset emails as its only producers, and stays empty until something enqueues. Adding a task type is a code change, never a migration.                                                                                                                                              |
+| Local demo profiles and progress | absent   | Product behavior is intentionally deferred until the reference screenshot and test data are supplied.                                                                                                                                                                                                                                                                                                              |
 
 ## 11. Environment checks
 
 Verified by the agent during setup, not asked.
 
 - [ ] `docker compose version` and `docker info` succeed (needed for backend/API, uploads, or DB-backed validation)
-- [ ] `git remote -v` inspected; template remote detached unless contributing to the template
-- [ ] App-local `.env` files created from `.env.example`, with a locally generated `JWT_SECRET` (never committed)
-- [ ] Smallest meaningful validation run for the active surfaces
+- [x] `git remote -v` inspected; template remote detached unless contributing to the template
+- [ ] App-local `.env` files created from `.env.example`, with a locally generated `JWT_SECRET` (never committed) — n/a: backend is deferred and the webapp build needs no local environment file
+- [x] Smallest meaningful validation run for the active surfaces
 
 ## 12. After setup
 
-- [ ] Durable answers above filled in, install status set to `completed YYYY-MM-DD`
-- [ ] Validation scope recorded for this project (which suites run before a change is called done): _unanswered_
-- [ ] Project renamed from the template identifiers (`web_app_demo`, `web-app-demo`, `vibecoding-template`), `bun.lock` regenerated
-- [ ] Deferred-surface notes added to the READMEs of surfaces that are not active
-- [ ] `Bootstrap-Only Instructions` blocks deleted from `AGENTS.md` and `CLAUDE.md`
-- [ ] Local URLs, commands run, and anything the user must authorize manually reported back to the user
+- [x] Durable answers above filled in, install status set to `completed YYYY-MM-DD`
+- [x] Validation scope recorded for this project (which suites run before a change is called done): `template:check`, `architecture:check`, `typecheck:webapp`, `lint`, `test:webapp`, `build:webapp`; browser flows are added after the reference screenshot is implemented
+- [x] Project renamed from the template identifiers (`web_app_demo`, `web-app-demo`, `vibecoding-template`), `bun.lock` regenerated
+- [x] Deferred-surface notes added to the READMEs of surfaces that are not active
+- [x] `Bootstrap-Only Instructions` blocks deleted from `AGENTS.md` and `CLAUDE.md`
+- [x] Local URLs, commands run, and anything the user must authorize manually reported back to the user
 
 `README.md`, `AGENTS.md`, `CLAUDE.md`, and some `docs/` runbooks route agents into this file by section name, so renaming a heading breaks those pointers silently. Add rows and sections a project needs, and cross-reference sections by name rather than by number so renumbering stays harmless.

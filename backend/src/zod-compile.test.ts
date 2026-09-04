@@ -11,7 +11,7 @@ test('the backend composition root lazily compiles schemas without changing thei
     '-e',
     `
       await import('./src/app.ts')
-      const { registerRequestSchema } = await import('@web-app-demo/contracts')
+      const { registerRequestSchema } = await import('@pyaterochka-game-demo/contracts')
       const schema = registerRequestSchema
       const state = {
         postProcessorInstalled:

@@ -5,7 +5,7 @@ import type { DbClient } from '../../../db'
 import { loadEnv } from '../../../env'
 
 const env = loadEnv({
-  DATABASE_URL: 'postgresql://superuser:superpassword@localhost:54329/web_app_demo',
+  DATABASE_URL: 'postgresql://superuser:superpassword@localhost:54329/pyaterochka_game_demo',
   // COOKIE_SECURE=true makes this a production-like runtime, which requires a generated secret.
   JWT_SECRET: '0123456789abcdef'.repeat(4),
   CORS_ORIGINS: 'https://web.example.com',
@@ -88,7 +88,7 @@ describe('auth routes', () => {
 
   test('rejects all secure cookie auth writes from untrusted origins before auth service work', async () => {
     const app = createApp({ env, prisma: {} as DbClient })
-    const refreshCookie = `web_app_demo_refresh=${'r'.repeat(32)}`
+    const refreshCookie = `pyaterochka_game_demo_refresh=${'r'.repeat(32)}`
 
     const untrustedLogin = await app.request('/api/auth/login', {
       method: 'POST',

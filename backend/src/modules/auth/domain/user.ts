@@ -1,4 +1,4 @@
-import type { UserDto, UserRole } from '@web-app-demo/contracts'
+import type { UserDto, UserRole } from '@pyaterochka-game-demo/contracts'
 
 export type AuthUserRecord = {
   id: string

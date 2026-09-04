@@ -4,7 +4,7 @@ import {
   AVATAR_MIN_BYTES,
   type AvatarContentType,
   type UploadTicket,
-} from '@web-app-demo/contracts'
+} from '@pyaterochka-game-demo/contracts'
 
 export type AvatarUploadFailure =
   /** The picked file is not a type or size the backend will issue a ticket for. */

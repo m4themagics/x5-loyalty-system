@@ -1,4 +1,4 @@
-import { ADMIN_USERS_MAX_PAGE } from '@web-app-demo/contracts'
+import { ADMIN_USERS_MAX_PAGE } from '@pyaterochka-game-demo/contracts'
 
 type AdminUsersQueryState = {
   isError: boolean

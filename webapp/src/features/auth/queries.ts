@@ -10,7 +10,7 @@ import type {
   MeResponse,
   PasswordResetConfirmRequest,
   RegisterRequest,
-} from '@web-app-demo/contracts'
+} from '@pyaterochka-game-demo/contracts'
 
 import type { AuthApi } from './api'
 

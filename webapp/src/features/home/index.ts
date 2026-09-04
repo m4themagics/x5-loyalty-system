@@ -1,0 +1,1 @@
+export { PyaterochkaHome } from './PyaterochkaHome'

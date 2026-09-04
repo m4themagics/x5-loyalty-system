@@ -17,7 +17,7 @@ This section may be updated during first-run bootstrap. Once [CHECKLIST.md](../C
 - TanStack Query
 - TanStack Form
 - TanStack Router
-- Zod contracts from `@web-app-demo/contracts`
+- Zod contracts from `@pyaterochka-game-demo/contracts`
 - shadcn CLI
 - Playwright
 - ESLint
@@ -126,7 +126,7 @@ integration boundary. One browser journey may protect several related
 capabilities.
 
 The run starts Docker Compose `postgres_test`, applies migrations to
-`web_app_demo_test`, idempotently seeds the E2E administrator, starts the backend
+`pyaterochka_game_demo_test`, idempotently seeds the E2E administrator, starts the backend
 with `TEST_DATABASE_URL` as its `DATABASE_URL`, starts Vite, and removes the test
 database volume after the run by default.
 

@@ -1,4 +1,4 @@
-import type { CookieRefreshResponse } from '@web-app-demo/contracts'
+import type { CookieRefreshResponse } from '@pyaterochka-game-demo/contracts'
 import { ApiRequestError } from '@/platform/api'
 
 import type { AuthApi } from './api'

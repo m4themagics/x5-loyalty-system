@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, mock, test } from 'bun:test'
-import { AVATAR_MAX_BYTES, type UploadTicket } from '@web-app-demo/contracts'
+import { AVATAR_MAX_BYTES, type UploadTicket } from '@pyaterochka-game-demo/contracts'
 
 import {
   AvatarUploadError,

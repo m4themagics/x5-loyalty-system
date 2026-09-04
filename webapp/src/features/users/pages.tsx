@@ -1,4 +1,4 @@
-import type { UserDto } from '@web-app-demo/contracts'
+import type { UserDto } from '@pyaterochka-game-demo/contracts'
 
 import { PageContainer, PageHeader } from '@/components/PageLayout'
 import { AvatarPanel } from '@/features/avatar'

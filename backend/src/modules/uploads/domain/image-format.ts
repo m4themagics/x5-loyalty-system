@@ -1,4 +1,4 @@
-import type { AvatarContentType } from '@web-app-demo/contracts'
+import type { AvatarContentType } from '@pyaterochka-game-demo/contracts'
 
 /**
  * Identifies an image by its leading bytes.

@@ -1,5 +1,5 @@
 import { Calendar03Icon, UserCircle02Icon } from '@hugeicons/core-free-icons'
-import type { UserDto } from '@web-app-demo/contracts'
+import type { UserDto } from '@pyaterochka-game-demo/contracts'
 
 import { SectionCards } from '@/components/dashboard'
 

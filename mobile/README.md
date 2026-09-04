@@ -1,5 +1,9 @@
 # Mobile Template
 
+## Project Surface Status
+
+Deferred. This project uses the default branch for a mobile-first web demo and does not activate the Expo/mobile branch.
+
 The runnable Expo mobile app is intentionally not part of `master`.
 
 Use the `mobile` branch when a project needs the mobile template:

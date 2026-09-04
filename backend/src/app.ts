@@ -113,7 +113,7 @@ export function createApp({
   }
   app.get('/', (c) => {
     return c.json({
-      name: 'web_app_demo backend',
+      name: 'pyaterochka_game_demo backend',
       status: 'ok',
     })
   })
@@ -153,7 +153,7 @@ export function createApp({
   app.doc('/openapi.json', {
     openapi: '3.0.0',
     info: {
-      title: 'web_app_demo API',
+      title: 'pyaterochka_game_demo API',
       version: '1.0.0',
     },
   })

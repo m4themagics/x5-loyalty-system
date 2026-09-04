@@ -1,10 +1,25 @@
-# Vibe Coding Template
+# X5 Loyalty System
+
+Мобильное веб-демо игровой программы лояльности «Пятёрочки». Проект развивает идею обычной карты лояльности через колесо призов, прогресс, персональные задания, голоса за улучшения конкретного магазина и привилегии постоянного покупателя.
+
+Сейчас реализована адаптивная копия главного экрана приложения для ширины 360–430 px и переход в пустой раздел профиля. Данные демонстрационные, backend и реальные интеграции пока не используются.
+
+## Запуск
+
+```bash
+bun install
+bun run dev:webapp
+```
+
+После запуска приложение доступно по адресу `http://localhost:5173`.
+
+## Техническая документация шаблона
+
+Активная поверхность проекта — `webapp`. Backend, публичный website и нативное mobile-приложение отложены до следующих этапов.
 
 <p align="center">
-  <img src="docs/assets/vibe_tmpl_schema.png" alt="Vibe Coding Template architecture schema" width="100%">
+  <img src="docs/assets/vibe_tmpl_schema.png" alt="Схема архитектуры проекта" width="100%">
 </p>
-
-A full-stack starter for web and backend products: one repository with a Bun/Hono backend, a React CSR browser client (`webapp`), an Astro SSG/SSR site (`website`), and shared API contracts. The runnable Expo mobile template lives on the `mobile` branch so the default branch stays focused on webapp, backend, website, infrastructure, and shared contracts.
 
 ## Agent Intake Checklist Before Installing
 
@@ -54,7 +69,7 @@ and report exact remaining account/domain authorizations without printing secret
 - If the user provides their own GitHub repository URL or asks to publish the new project, add that URL as the new `origin` after the template remote is removed. If the user has not chosen a destination yet, leave the repository with no `origin` and report that publishing is not configured.
 - Do not open pull requests against the template repository during first-run project setup. Ask only if the user explicitly says this checkout is for improving the template itself.
 - Run the intake from [CHECKLIST.md](CHECKLIST.md) in the user's language before making product or deployment choices, and record the answers in that file rather than only in the conversation.
-- Rename the template deliberately rather than with an unreviewed global replacement. Use `rg -n "web_app_demo|web-app-demo|vibecoding-template"` to inventory package scopes, database names, cookie names, Docker/Compose isolation names, deploy image defaults, and architecture-check aliases; update each owning source, regenerate `bun.lock` with the repository's pinned Bun version, then run install, typecheck, architecture checks, backend integration, and web E2E for the active surfaces.
+- Rename the template deliberately rather than with an unreviewed global replacement. Use `rg -n "pyaterochka_game_demo|pyaterochka-game-demo|pyaterochka-game-demo"` to inventory package scopes, database names, cookie names, Docker/Compose isolation names, deploy image defaults, and architecture-check aliases; update each owning source, regenerate `bun.lock` with the repository's pinned Bun version, then run install, typecheck, architecture checks, backend integration, and web E2E for the active surfaces.
 - After the user answers, record durable project choices in [CHECKLIST.md](CHECKLIST.md) before feature work: project name/slug, active and deferred surfaces, first-version capabilities, the capability ledger, and what deployment/release work is in or out of scope. Expand the relevant README sections when a choice needs more explanation than the checklist row holds. Once setup is complete, remove the marked `Bootstrap-Only Instructions` blocks from `AGENTS.md` and `CLAUDE.md`.
 - If only the webapp is active, keep mobile deferred on the default branch: do not run Expo/EAS/Maestro setup and do not add mobile features. When the user later asks for mobile, switch to the `mobile` branch first.
 - If only the mobile app is active, keep webapp and website intact but deferred: do not add browser-only features or Playwright flows unless they support the active mobile/backend work, and add or update a short deferred-surface note in `webapp/README.md` or `website/README.md` as relevant. When the user later asks for webapp, remove or rewrite that note, then set up and validate webapp normally.
@@ -94,7 +109,7 @@ This template ships two browser surfaces. Putting a feature in the wrong one is 
 - Build it in **`website`** (Astro, static by default, SSR/hybrid only when needed) when pages must be **public and found by search engines or shared with rich link previews**: marketing/landing pages, content sites, blogs, docs, and the public storefront of a **marketplace**. For a marketplace, this usually means the landing page, category/search landing pages, public listing/product pages, SEO metadata, and rich previews.
 - Build it in **`webapp`** (React, client-side rendered) when screens live **behind sign-in and do not need SEO**: login-adjacent app flows after redirect, buyer account, seller/admin panels, checkout/account workflows, dashboards, settings, and authenticated tools. No crawler needs these, so CSR is the simpler, cheaper choice.
 
-Rule of thumb for the agent: _if a page must rank in search or preview nicely when shared, it belongs in `website`; if it is only reachable after login, it belongs in `webapp`._ Real marketplaces normally use **both**: the public catalog lives in `website`, the authenticated app lives in `webapp`, and both reuse the same `@web-app-demo/contracts` schemas. Do not rebuild SEO pages inside `webapp` to "keep everything in one app"; that loses the SEO the product needs. Do not move the full authenticated app into Astro just because the product has public SEO pages.
+Rule of thumb for the agent: _if a page must rank in search or preview nicely when shared, it belongs in `website`; if it is only reachable after login, it belongs in `webapp`._ Real marketplaces normally use **both**: the public catalog lives in `website`, the authenticated app lives in `webapp`, and both reuse the same `@pyaterochka-game-demo/contracts` schemas. Do not rebuild SEO pages inside `webapp` to "keep everything in one app"; that loses the SEO the product needs. Do not move the full authenticated app into Astro just because the product has public SEO pages.
 
 For product data, carts, checkout, orders, subscriptions, entitlements, or payments, [docs/WEB_SURFACES.md](docs/WEB_SURFACES.md) is mandatory reading. Browser purchases have one path: `website` may hold an anonymous local selection, but checkout and payment belong to the authenticated `webapp`, with the backend as authority. Mobile owns separate native payment experiences: the `mobile` branch already carries switched-off App Store/Google Play subscription paths and may add policy-compliant card, Apple Pay, or Google Pay flows when the product needs them.
 
@@ -212,7 +227,7 @@ Create `webapp/.env` when the browser client should use a non-default API URL:
 VITE_API_URL=http://localhost:3000
 ```
 
-Test runners use the separate Docker Compose `postgres_test` service and the `TEST_DATABASE_URL` shape from `backend/.env.example`. Webapp Playwright E2E starts `postgres_test`, applies migrations to `web_app_demo_test`, runs the browser flow, and tears down its test database volume by default.
+Test runners use the separate Docker Compose `postgres_test` service and the `TEST_DATABASE_URL` shape from `backend/.env.example`. Webapp Playwright E2E starts `postgres_test`, applies migrations to `pyaterochka_game_demo_test`, runs the browser flow, and tears down its test database volume by default.
 
 Ordinary tasks use focused validation at the boundary that owns the changed behavior. The broad
 local regression, `bun run check`, belongs to explicit release/audit work or a genuinely
