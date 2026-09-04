@@ -2,6 +2,7 @@ import { Typography } from '@/components/typography'
 import { useState } from 'react'
 
 import { navigateHomeScreen, type HomeScreen } from './navigation'
+import { ProfileScreen } from './ProfileScreen'
 
 import './pyaterochka-home.css'
 
@@ -174,7 +175,7 @@ export function PyaterochkaHome() {
           </div>
         </>
       ) : (
-        <main className="empty-profile-screen" aria-label="Пустой профиль" />
+        <ProfileScreen />
       )}
 
       <nav className="bottom-nav" aria-label="Основная навигация">
