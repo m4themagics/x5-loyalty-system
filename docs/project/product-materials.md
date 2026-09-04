@@ -334,10 +334,12 @@ QuestRank отдельно выбирает reinforcement:
 | --- | --- |
 | Synthetic generator | Профили, cadence, route history, store/social signals, reward response proxy и fraud cases |
 | Feature builder | Baseline propensity, recency trend, category affinity, fatigue, mechanic-history и risk features |
+| Target heads | Отдельные предсказания частоты, завершения, маржи корзины, персистентности, fraud и opt-out; в PoC — синтетические proxy |
 | Mechanic catalog | Разрешённые mechanics, targets, state transitions, reinforcement types и capability rules |
 | Candidate generator | Комбинации действий и `no_action` |
 | Hard filters | Eligibility, budget, funding, cooldown, frequency cap, capability и fraud |
-| QuestRank | Rules-based action ranking в PoC; uplift/bandit только после randomized history |
+| QuestRank | Многоцелевой rules-based ranking в PoC: вектор целей, ε-ограничения и свёртка с бюджетным дуалом; uplift/bandit только после randomized history |
+| Budget controller | Общая теневая цена бюджета `λ`, калибровка под потолок и кривая «недели против бюджета» |
 | Exploration allocator | Безопасная рандомизация между допустимыми действиями |
 | Reward fading controller | Onboarding, confirmation, persistence и stop/rotate decisions |
 | State engine | Personal/store/family states и qualifying events |
@@ -359,31 +361,49 @@ QuestRank отдельно выбирает reinforcement:
   "funding_source": "supplier",
   "fading_phase": "onboarding",
   "estimated_incremental_probability": 0.0,
+  "expected_persistence_uplift": 0.0,
+  "expected_completion_probability": 0.0,
+  "expected_payout": 0.0,
   "expected_contribution_margin": 0.0,
   "fraud_risk": 0.0,
+  "optout_risk": 0.0,
   "fatigue_penalty": 0.0,
+  "budget_price": 0.0,
+  "persistence_weight": 0.0,
+  "objective_scores": { "freq": 0.0, "persist": 0.0, "cost": 0.0, "margin": 0.0 },
   "reason_codes": []
 }
 ```
 
 ### Scoring
 
+Ранжирование многоцелевое. Цели считаются отдельно, а свёртка использует ε-ограничение и
+бюджетный дуал:
+
 ```text
-Value(u, a) = ΔP(active purchase week | u, a) × contribution margin
-            + expected Δbasket margin
-            − reinforcement cost
-            − expected fraud loss
-            − fatigue/friction penalty
-            − operational cost
+J_freq    = p_week − p_week_base                 → max
+J_persist = p_persist − p_week_base              → max
+J_cost    = reinforcement_cost × p_complete      → min
+J_margin  = J_freq × CM + m_basket − J_cost − fraud − fatigue − ops   → max
+
+maximize   J_freq + β(phase) × J_persist − λ × J_cost
+subject to J_margin ≥ 0, p_fraud ≤ τ, p_optout ≤ τ, caps и capability
 ```
 
-В PoC `ΔP` — синтетический proxy. Реальное next-best-game-action обучение требует randomized treatment data.
+`λ` — одна теневая цена бюджета на всю популяцию, калиброванная под потолок reward budget; такое
+ранжирование эквивалентно ранжированию по стоимости инкрементальной покупочной недели. `β` задаётся
+фазой fading и не даёт максимизировать сиюминутный отклик дорогим подкреплением. Маржа остаётся
+ограничением, а не слагаемым, — так же как в дизайне пилота. Полная постановка, крайние точки и
+кривая компромисса — в разделе 8.4 [описания проекта](project-description.md).
+
+В PoC все головы — синтетические proxy. Реальное next-best-game-action обучение требует randomized
+treatment data.
 
 ### `no_action`
 
 `no_action` выбирается, если:
 
-- лучший action имеет `Value ≤ 0`;
+- ни один допустимый кандидат не даёт положительной свёртки при текущем `λ`;
 - baseline purchase probability высока и organic subsidy risk превышает порог;
 - fatigue/frequency cap нарушен;
 - нет допустимого funding/capability;
@@ -435,7 +455,9 @@ LLM не может:
 | Семейная эстафета | Household/referral graph + delayed state | Household purchase days и fraud precision |
 | Подкрепление отдельно от механики | Reinforcement catalog и funding ledger | Cost per incremental week |
 | LLM не принимает бизнес-решение | Immutable action JSON + validator | 0 invented mechanics/terms |
-| Продукт понимает policy | Console с candidates, score и reason codes | Время ответа на вопрос «почему это действие» |
+| Продукт понимает policy | Console с candidates, вектором целей и reason codes | Время ответа на вопрос «почему это действие» |
+| Бюджет ограничен на популяцию, а не на пользователя | Общая теневая цена `λ` и калибровка под потолок | Кривая «инкрементальные недели против бюджета»; cost per incremental week |
+| Интерес важнее сиюминутного отклика | Вес `β(phase)` на цель персистентности | Persistence after fading при равном бюджете |
 
 ## Материал 8. Критерии успеха и эксперимент
 
@@ -492,6 +514,7 @@ LLM не может:
 - Если эффект исчезает после fading — не заявлять рост «за счёт интереса».
 - Если contribution margin ниже контроля — не масштабировать независимо от engagement.
 - Если пользователи не понимают отсутствие reward в каждом цикле — перепроектировать onboarding и copy.
+- Если кривая `λ` показывает, что простой порог `J_margin ≥ 0` даёт ту же частоту при том же бюджете — многоцелевая свёртка не нужна, остаётся EV-фильтр.
 
 ## Материал 9. Риски и план проверки
 

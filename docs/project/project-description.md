@@ -73,7 +73,7 @@
 1. анализирует покупочный ритм, регулярность, категории, промозависимость, fatigue, social/store engagement и fraud risk;
 2. формирует кандидаты из ограниченного каталога игровых механик;
 3. комбинирует механику, целевое действие, окно, тип подкрепления и стоимость;
-4. выбирает один next-best-game-action или `no_action`;
+4. оценивает кандидатов по вектору целей — частота, персистентность, стоимость, маржа — и выбирает один next-best-game-action или `no_action`;
 5. показывает пользователю один понятный маршрут без длинной игровой сессии;
 6. обновляет состояние личного маршрута, магазина или семейной передачи;
 7. после успешных циклов применяет reward fading;
@@ -261,10 +261,12 @@ QuestRank выбирает `no_action` для платного reward:
 | --- | --- |
 | Synthetic data generator | Истории чеков, cadence, категории, промозависимость, store/social engagement, возвраты и fraud-сценарии |
 | Feature builder | RFM, baseline visit probability, recency trend, category affinity, reward sensitivity proxy, fatigue, social/store signals и fraud features |
+| Target heads | Отдельные предсказания по каждому таргету: частота, завершение, маржа корзины, персистентность после fading, fraud и opt-out. В PoC — синтетические proxy, после randomized history — multi-task модель |
 | Mechanic catalog | Разрешённые механики, целевые действия, state transitions, capability requirements и типы подкрепления |
 | Candidate generator | Комбинации `mechanic × window × reinforcement × cost` плюс `no_action` |
 | Hard filters | Eligibility, budget, sensitive categories, frequency cap, cooldown, funding limits, store capability и fraud policy |
-| QuestRank policy | Объяснимое ranking-решение по ожидаемой инкрементальной ценности и learning/exploration rules |
+| QuestRank policy | Объяснимое многоцелевое ranking-решение: вектор целей, ε-ограничения и свёртка с бюджетным дуалом; learning/exploration rules |
+| Budget controller | Общая для популяции теневая цена бюджета `λ`, её калибровка под потолок reward budget и построение кривой «инкрементальные недели против бюджета» |
 | Exploration allocator | Контролируемая рандомизация между допустимыми механиками до появления causal history |
 | Reward fading controller | Фазы onboarding, confirmation, persistence и решение о снижении/замене подкрепления |
 | State engine | Состояние личного, магазинного и семейного маршрута, qualifying event, completion и unlocks |
@@ -304,27 +306,79 @@ QuestRank выбирает `no_action` для платного reward:
   "fading_phase": "persistence",
   "funding_source": "none",
   "estimated_incremental_probability": 0.0,
+  "expected_persistence_uplift": 0.0,
+  "expected_completion_probability": 0.0,
+  "expected_payout": 0.0,
   "expected_contribution_margin": 0.0,
   "fraud_risk": 0.0,
+  "optout_risk": 0.0,
   "fatigue_penalty": 0.0,
+  "budget_price": 0.0,
+  "persistence_weight": 0.0,
+  "objective_scores": { "freq": 0.0, "persist": 0.0, "cost": 0.0, "margin": 0.0 },
   "reason_codes": []
 }
 ```
 
 Числовые значения генерируются синтетически и не интерпретируются как прогноз X5.
 
-### 8.4. Предварительная функция ценности
+### 8.4. Многоцелевая постановка
+
+Кандидат оценивается не одним числом, а вектором целей. Сначала по каждому таргету считается
+отдельное предсказание; в PoC это синтетические proxy, а не обученные головы модели.
+
+| Таргет | Что предсказывает |
+| --- | --- |
+| `p_week` | вероятность активной покупочной недели в окне при данном действии |
+| `p_week_base` | та же вероятность при `no_action` — база для расчёта прироста |
+| `p_complete` | вероятность завершения маршрута; определяет ожидаемую выплату |
+| `m_basket` | ожидаемое изменение маржи корзины |
+| `p_persist` | вероятность покупочной недели после снятия материального подкрепления |
+| `p_fraud`, `p_optout` | риск недостоверного события и негативной реакции |
+
+Из них собираются цели:
 
 ```text
-Value(u, a) = ΔP(active purchase week | u, a) × contribution margin
-            + expected Δbasket margin
-            − reinforcement cost
-            − expected fraud loss
-            − fatigue/friction penalty
-            − operational cost
+J_freq(u,a)    = p_week(u,a) − p_week_base(u)                        → max
+J_persist(u,a) = p_persist(u,a) − p_week_base(u)                     → max
+J_cost(u,a)    = reinforcement_cost(a) × p_complete(u,a)             → min
+J_margin(u,a)  = J_freq × CM + m_basket − J_cost
+                 − expected fraud loss − fatigue/friction − ops      → max
 ```
 
-До randomized history `ΔP` является синтетическим proxy, а не обученным uplift-прогнозом. Если лучший допустимый кандидат имеет `Value ≤ 0`, недостаточную уверенность или превышает fatigue/fraud threshold, выбирается `no_action`.
+Свёртка — ε-ограничение плюс бюджетный дуал:
+
+```text
+maximize    J_freq(u,a) + β(phase) × J_persist(u,a) − λ × J_cost(u,a)
+subject to  J_margin(u,a) ≥ 0
+            p_fraud ≤ τ_fraud, p_optout ≤ τ_optout
+            frequency cap, cooldown, funding и store capability выполнены
+            a ∈ каталог механик ∪ {no_action}
+```
+
+- `λ` — теневая цена бюджета, **одна на популяцию**, а не параметр пользователя. Она калибруется
+  бинарным поиском так, чтобы суммарная ожидаемая выплата уложилась в потолок reward budget.
+  Ранжирование по этой свёртке эквивалентно ранжированию по стоимости инкрементальной покупочной
+  недели, поэтому бюджет уходит туда, где он приносит больше недель, а не первому подходящему
+  пользователю.
+- `β(phase)` — вес горизонта персистентности относительно немедленной частоты. Он задаётся фазой
+  reward fading (`onboarding` — низкий, `persistence` — высокий) и не подбирается под пользователя.
+  Именно `β` не даёт политике максимизировать сиюминутный отклик дорогим подкреплением.
+- Маржинальный гейт остаётся **ограничением**, а не слагаемым: пилот судит contribution margin
+  отдельно от primary-метрики, и постановка policy это повторяет.
+- `no_action` побеждает автоматически, когда ни один допустимый кандидат не даёт положительного
+  значения при текущем `λ`. Отказ платить становится следствием цены бюджета, а не отдельного
+  правила.
+
+Крайние точки постановки проверяемы и должны воспроизводиться в симуляции: при `λ → 0` политика
+вырождается в «максимум частоты любой ценой», то есть в группу reward-only; при `λ → ∞` — во всё
+`no_action`. Промежуточные значения дают кривую компромисса «инкрементальные недели против
+потраченного бюджета». Результатом уровня policy является эта кривая и выбранная на ней точка, а не
+одно значение score; в таком виде решение и показывается продуктовой команде.
+
+Ограничения постановки: до randomized history все головы — синтетические proxy, а не обученный
+uplift; `β`, `λ` и пороги `τ` являются параметрами гипотезы; кривая компромисса строится по
+симуляции и не является измеренным causal-эффектом.
 
 ### 8.5. Контракт LLM
 
@@ -370,6 +424,10 @@ E[затраты] = P(completion) × reward_cost
 | 10 п.п. | 0,6 | 20 ₽ |
 | 20 п.п. | 0,7 | 34 ₽ |
 
+Это неравенство — не отдельное правило, а в точности маргинальное ограничение `J_margin ≥ 0` из
+раздела 8.4, записанное относительно стоимости подкрепления. Таблица ниже показывает ту же границу
+в рублях.
+
 Полноразмерный товар может не пройти self-funded порог. Поэтому supplier-funded trial остаётся проверяемой коммерческой гипотезой. При отсутствии финансирования policy должна уметь выбрать цифровой unlock, локальный/семейный маршрут без материальной награды или `no_action`.
 
 Reward fading дополнительно снижает среднюю стоимость воздействия и позволяет измерить, сохраняется ли поведение после материального стимула.
@@ -384,6 +442,7 @@ PoC должен показать:
 - candidate table по нескольким механикам;
 - hard filters, score decomposition и `no_action`;
 - одну смену fading phase;
+- кривую компромисса по `λ`: как меняются инкрементальные недели и потраченный бюджет, включая вырожденные точки reward-only и сплошного `no_action`;
 - grounded LLM-output;
 - state update для личного, магазинного и семейного маршрута;
 - fraud/delayed кейс;
@@ -414,6 +473,11 @@ PoC должен показать:
 - purchase-week persistence после reward fading;
 - reward cost per incremental purchase week;
 - доля `no_action` и сэкономленный reward budget без потери uplift.
+
+Каждая цель отчитывается отдельно и не схлопывается в один индекс: инкрементальные недели,
+contribution margin, персистентность после fading и потраченный бюджет публикуются как вектор, а
+выбранная рабочая точка показывается на кривой `λ`. Сравнение групп при равном потолке бюджета —
+это сравнение точек на этой кривой, а не двух чисел.
 
 **Guardrails:** средний чек, pull-forward/cannibalization, reward cost, organic subsidy, split receipts, возвраты, fraud precision, жалобы, opt-out, частота push и операционные показатели магазина.
 
