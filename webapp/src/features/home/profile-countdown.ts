@@ -1,12 +1,16 @@
 export const COUNTDOWN_DURATION_MS = 24 * 60 * 60 * 1_000
 
+export function restartCountdownDeadline(now: number): number {
+  return now + COUNTDOWN_DURATION_MS
+}
+
 export function resolveCountdownDeadline(
   savedDeadline: string | null,
   now: number,
 ): number {
   const parsedDeadline = savedDeadline === null ? Number.NaN : Number(savedDeadline)
   if (Number.isFinite(parsedDeadline) && parsedDeadline > now) return parsedDeadline
-  return now + COUNTDOWN_DURATION_MS
+  return restartCountdownDeadline(now)
 }
 
 export function formatCountdown(remainingMs: number): string {

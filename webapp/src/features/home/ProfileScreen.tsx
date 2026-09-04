@@ -1,7 +1,23 @@
 import { Typography } from '@/components/typography'
-import { useEffect, useState } from 'react'
+import {
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 
-import { formatCountdown, resolveCountdownDeadline } from './profile-countdown'
+import {
+  SHAKE_DISTANCE_REQUIRED,
+  addShakeMovement,
+  type PointerPoint,
+} from './profile-chest-gesture'
+import {
+  formatCountdown,
+  resolveCountdownDeadline,
+  restartCountdownDeadline,
+} from './profile-countdown'
 
 import './profile-screen.css'
 
@@ -35,8 +51,65 @@ const tasks = [
 ] as const
 
 export function ProfileScreen() {
-  const countdown = useChestCountdown()
+  const { countdown, restartCountdown } = useChestCountdown()
   const [isInfoOpen, setIsInfoOpen] = useState(false)
+  const [openingStage, setOpeningStage] = useState<'closed' | 'shaking' | 'opening' | 'reward'>('closed')
+  const [shakeOffset, setShakeOffset] = useState({ x: 0, y: 0 })
+  const lastPointerRef = useRef<PointerPoint | null>(null)
+  const shakeDistanceRef = useRef(0)
+
+  useEffect(() => {
+    if (openingStage !== 'opening') return
+
+    const revealTimer = window.setTimeout(() => {
+      restartCountdown()
+      setOpeningStage('reward')
+    }, 1_400)
+
+    return () => window.clearTimeout(revealTimer)
+  }, [openingStage, restartCountdown])
+
+  const openChest = () => {
+    setIsInfoOpen(false)
+    shakeDistanceRef.current = 0
+    setShakeOffset({ x: 0, y: 0 })
+    setOpeningStage('shaking')
+  }
+
+  const startShaking = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (openingStage !== 'shaking') return
+    event.currentTarget.setPointerCapture(event.pointerId)
+    lastPointerRef.current = { x: event.clientX, y: event.clientY }
+  }
+
+  const continueShaking = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const previousPoint = lastPointerRef.current
+    if (openingStage !== 'shaking' || previousPoint === null) return
+
+    const nextPoint = { x: event.clientX, y: event.clientY }
+    const nextDistance = addShakeMovement(
+      shakeDistanceRef.current,
+      previousPoint,
+      nextPoint,
+    )
+    shakeDistanceRef.current = nextDistance
+    lastPointerRef.current = nextPoint
+    setShakeOffset({
+      x: Math.max(-22, Math.min(22, (nextPoint.x - previousPoint.x) * .55)),
+      y: Math.max(-14, Math.min(14, (nextPoint.y - previousPoint.y) * .35)),
+    })
+
+    if (nextDistance >= SHAKE_DISTANCE_REQUIRED) {
+      lastPointerRef.current = null
+      setShakeOffset({ x: 0, y: 0 })
+      setOpeningStage('opening')
+    }
+  }
+
+  const stopShaking = () => {
+    lastPointerRef.current = null
+    setShakeOffset({ x: 0, y: 0 })
+  }
 
   return (
     <main className="profile-screen" aria-label="Профиль">
@@ -61,11 +134,21 @@ export function ProfileScreen() {
           </Typography>
         </div>
 
-        <img
-          alt="Коробка Пятёрочки"
-          className="profile-chest-image"
-          src="/assets/pyaterochka-cardboard-chest.png"
-        />
+        <button
+          aria-label="Открыть коробку Пятёрочки"
+          className="profile-chest-trigger"
+          onClick={openChest}
+          type="button"
+        >
+          <img
+            alt=""
+            className="profile-chest-image"
+            src="/assets/pyaterochka-cardboard-chest.png"
+          />
+          <Typography as="span" variant="bodyXs" className="chest-tap-hint">
+            Нажмите, чтобы открыть
+          </Typography>
+        </button>
 
         <div className="chest-info-wrap">
           <button
@@ -91,7 +174,7 @@ export function ProfileScreen() {
                 Коробка награды
               </Typography>
               <Typography as="span" variant="bodySm" className="info-copy">
-                Таймер идёт 24 часа. После его завершения коробку можно открыть и получить персональную скидку.
+                Нажмите на коробку, зажмите её и потрясите движениями по экрану. После открытия вы получите предмет, а таймер запустится заново.
               </Typography>
             </div>
           ) : null}
@@ -173,6 +256,69 @@ export function ProfileScreen() {
           ))}
         </div>
       </section>
+
+      {openingStage !== 'closed' ? (
+        <div className="chest-opening-overlay" role="dialog" aria-modal="true" aria-label="Открытие коробки">
+          <div className={`chest-opening-scene chest-opening-scene-${openingStage}`}>
+            <Typography as="h2" variant="h2" className="opening-title">
+              {openingStage === 'shaking'
+                ? 'Потрясите коробку'
+                : openingStage === 'opening'
+                  ? 'Открываем коробку…'
+                  : 'Вам выпал предмет!'}
+            </Typography>
+
+            {openingStage === 'shaking' ? (
+              <Typography as="span" variant="bodySm" className="shake-instruction">
+                Зажмите коробку и быстро водите ей из стороны в сторону
+              </Typography>
+            ) : null}
+
+            <button
+              aria-label="Трясти коробку"
+              className="opening-chest"
+              disabled={openingStage !== 'shaking'}
+              onPointerCancel={stopShaking}
+              onPointerDown={startShaking}
+              onPointerMove={continueShaking}
+              onPointerUp={stopShaking}
+              style={{
+                '--shake-x': `${shakeOffset.x}px`,
+                '--shake-y': `${shakeOffset.y}px`,
+              } as CSSProperties}
+              type="button"
+            >
+              <img
+                className="opening-chest-part opening-chest-base"
+                src="/assets/pyaterochka-cardboard-chest.png"
+                alt=""
+              />
+              <img
+                className="opening-chest-part opening-chest-lid"
+                src="/assets/pyaterochka-cardboard-chest.png"
+                alt=""
+              />
+            </button>
+
+            {openingStage === 'reward' ? (
+              <div className="revealed-reward">
+                <div className="gray-square-reward">
+                  <Typography as="span" variant="bodySmMedium">
+                    Серый квадрат
+                  </Typography>
+                </div>
+                <button
+                  className="collect-reward-button"
+                  onClick={() => setOpeningStage('closed')}
+                  type="button"
+                >
+                  <Typography as="span" variant="control">Забрать</Typography>
+                </button>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
     </main>
   )
 }
@@ -193,7 +339,7 @@ function EmptySlots({ count, className }: { count: number; className: string }) 
 }
 
 function useChestCountdown() {
-  const [deadline] = useState(() => {
+  const [deadline, setDeadline] = useState(() => {
     const now = Date.now()
     const savedDeadline = typeof window === 'undefined'
       ? null
@@ -212,5 +358,13 @@ function useChestCountdown() {
     return () => window.clearInterval(interval)
   }, [deadline])
 
-  return formatCountdown(remaining)
+  const restartCountdown = useCallback(() => {
+    const now = Date.now()
+    const nextDeadline = restartCountdownDeadline(now)
+    window.localStorage.setItem(COUNTDOWN_STORAGE_KEY, String(nextDeadline))
+    setDeadline(nextDeadline)
+    setRemaining(nextDeadline - now)
+  }, [])
+
+  return { countdown: formatCountdown(remaining), restartCountdown }
 }
