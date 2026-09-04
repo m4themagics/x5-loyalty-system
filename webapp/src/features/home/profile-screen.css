@@ -108,6 +108,15 @@
   transform: scale(.96);
 }
 
+.profile-chest-trigger:disabled {
+  cursor: default;
+  opacity: .7;
+}
+
+.profile-chest-trigger:disabled:active {
+  transform: none;
+}
+
 .profile-chest-trigger:focus-visible {
   border-radius: 18px;
   outline: 3px solid rgb(18 153 62 / 45%);
@@ -119,14 +128,16 @@
   right: 50%;
   bottom: 2px;
   width: max-content;
+  max-width: 132px;
   padding: 3px 7px;
   transform: translateX(50%);
   border-radius: 9px;
   background: rgb(255 255 255 / 88%);
   color: #19763a;
   font-size: 8px;
-  line-height: 1;
+  line-height: 1.15;
   font-weight: 750;
+  text-align: center;
   box-shadow: 0 2px 7px rgb(38 80 46 / 10%);
 }
 

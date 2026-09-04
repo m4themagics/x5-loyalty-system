@@ -14,9 +14,13 @@ import {
   type PointerPoint,
 } from './profile-chest-gesture'
 import {
+  COUNTDOWN_DURATION_MS,
+  advanceChestCycle,
+  beginNextChestCycle,
+  claimChest,
   formatCountdown,
-  resolveCountdownDeadline,
-  restartCountdownDeadline,
+  resolveChestCycle,
+  serializeChestCycle,
 } from './profile-countdown'
 
 import './profile-screen.css'
@@ -51,7 +55,7 @@ const tasks = [
 ] as const
 
 export function ProfileScreen() {
-  const { countdown, restartCountdown } = useChestCountdown()
+  const { claimReward, countdown, isOpenable } = useChestCountdown()
   const [isInfoOpen, setIsInfoOpen] = useState(false)
   const [openingStage, setOpeningStage] = useState<'closed' | 'shaking' | 'opening' | 'reward'>('closed')
   const [shakeOffset, setShakeOffset] = useState({ x: 0, y: 0 })
@@ -62,14 +66,15 @@ export function ProfileScreen() {
     if (openingStage !== 'opening') return
 
     const revealTimer = window.setTimeout(() => {
-      restartCountdown()
+      claimReward()
       setOpeningStage('reward')
     }, 1_400)
 
     return () => window.clearTimeout(revealTimer)
-  }, [openingStage, restartCountdown])
+  }, [claimReward, openingStage])
 
   const openChest = () => {
+    if (!isOpenable) return
     setIsInfoOpen(false)
     shakeDistanceRef.current = 0
     setShakeOffset({ x: 0, y: 0 })
@@ -120,14 +125,14 @@ export function ProfileScreen() {
         <img
           alt="Игровой персонаж профиля"
           className="profile-character"
-          src="/assets/pyaterochka-profile-character.png"
+          src="/assets/pyaterochka-profile-character.webp"
         />
       </section>
 
       <section className="profile-chest-panel" aria-label="Коробка награды">
         <div className="chest-timer">
           <Typography as="span" variant="bodyXs" className="chest-timer-label">
-            До открытия
+            {isOpenable ? 'Можно открыть' : 'До открытия'}
           </Typography>
           <Typography as="time" variant="body" className="chest-timer-value">
             {countdown}
@@ -137,16 +142,17 @@ export function ProfileScreen() {
         <button
           aria-label="Открыть коробку Пятёрочки"
           className="profile-chest-trigger"
+          disabled={!isOpenable}
           onClick={openChest}
           type="button"
         >
           <img
             alt=""
             className="profile-chest-image"
-            src="/assets/pyaterochka-cardboard-chest.png"
+            src="/assets/pyaterochka-cardboard-chest.webp"
           />
           <Typography as="span" variant="bodyXs" className="chest-tap-hint">
-            Нажмите, чтобы открыть
+            {isOpenable ? 'Нажмите, чтобы открыть' : 'Ждите окончания таймера'}
           </Typography>
         </button>
 
@@ -174,7 +180,7 @@ export function ProfileScreen() {
                 Коробка награды
               </Typography>
               <Typography as="span" variant="bodySm" className="info-copy">
-                Нажмите на коробку, зажмите её и потрясите движениями по экрану. После открытия вы получите предмет, а таймер запустится заново.
+                Когда таймер закончится, нажмите на коробку, зажмите её и потрясите движениями по экрану. После открытия вы получите предмет, а таймер запустится заново.
               </Typography>
             </div>
           ) : null}
@@ -249,7 +255,7 @@ export function ProfileScreen() {
                 </Typography>
               </div>
               <div className="task-reward" aria-label="Награда: одна коробка Пятёрочки">
-                <img alt="" src="/assets/pyaterochka-cardboard-chest.png" />
+                <img alt="" src="/assets/pyaterochka-cardboard-chest.webp" />
                 <Typography as="span" variant="bodyXs" className="reward-count">×1</Typography>
               </div>
             </article>
@@ -290,12 +296,12 @@ export function ProfileScreen() {
             >
               <img
                 className="opening-chest-part opening-chest-base"
-                src="/assets/pyaterochka-cardboard-chest.png"
+                src="/assets/pyaterochka-cardboard-chest.webp"
                 alt=""
               />
               <img
                 className="opening-chest-part opening-chest-lid"
-                src="/assets/pyaterochka-cardboard-chest.png"
+                src="/assets/pyaterochka-cardboard-chest.webp"
                 alt=""
               />
             </button>
@@ -339,32 +345,62 @@ function EmptySlots({ count, className }: { count: number; className: string }) 
 }
 
 function useChestCountdown() {
-  const [deadline, setDeadline] = useState(() => {
+  const [cycle, setCycle] = useState(() => {
     const now = Date.now()
-    const savedDeadline = typeof window === 'undefined'
+    const savedCycle = typeof window === 'undefined'
       ? null
       : window.localStorage.getItem(COUNTDOWN_STORAGE_KEY)
-    const resolvedDeadline = resolveCountdownDeadline(savedDeadline, now)
+    const resolvedCycle = resolveChestCycle(savedCycle, now)
     if (typeof window !== 'undefined') {
-      window.localStorage.setItem(COUNTDOWN_STORAGE_KEY, String(resolvedDeadline))
+      window.localStorage.setItem(
+        COUNTDOWN_STORAGE_KEY,
+        serializeChestCycle(resolvedCycle),
+      )
     }
-    return resolvedDeadline
+    return resolvedCycle
   })
-  const [remaining, setRemaining] = useState(() => deadline - Date.now())
+  const [remaining, setRemaining] = useState(() =>
+    cycle.status === 'counting' ? cycle.deadline - Date.now() : 0,
+  )
 
   useEffect(() => {
-    const update = () => setRemaining(Math.max(0, deadline - Date.now()))
+    if (cycle.status !== 'counting') return
+
+    const update = () => {
+      const now = Date.now()
+      const nextCycle = advanceChestCycle(cycle, now)
+      if (nextCycle.status === 'openable') {
+        window.localStorage.setItem(
+          COUNTDOWN_STORAGE_KEY,
+          serializeChestCycle(nextCycle),
+        )
+        setRemaining(0)
+        setCycle(nextCycle)
+        return
+      }
+      setRemaining(Math.max(0, cycle.deadline - now))
+    }
     const interval = window.setInterval(update, 1_000)
     return () => window.clearInterval(interval)
-  }, [deadline])
+  }, [cycle])
 
-  const restartCountdown = useCallback(() => {
+  const claimReward = useCallback(() => {
     const now = Date.now()
-    const nextDeadline = restartCountdownDeadline(now)
-    window.localStorage.setItem(COUNTDOWN_STORAGE_KEY, String(nextDeadline))
-    setDeadline(nextDeadline)
-    setRemaining(nextDeadline - now)
+    setCycle((currentCycle) => {
+      const claimedCycle = claimChest(currentCycle, now)
+      const nextCycle = beginNextChestCycle(claimedCycle)
+      window.localStorage.setItem(
+        COUNTDOWN_STORAGE_KEY,
+        serializeChestCycle(nextCycle),
+      )
+      return nextCycle
+    })
+    setRemaining(COUNTDOWN_DURATION_MS)
   }, [])
 
-  return { countdown: formatCountdown(remaining), restartCountdown }
+  return {
+    claimReward,
+    countdown: formatCountdown(remaining),
+    isOpenable: cycle.status === 'openable',
+  }
 }

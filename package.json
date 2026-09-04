@@ -78,6 +78,7 @@
     "test:website": "bun run --cwd website test",
     "smoke:backend:docker": "bun run --cwd backend smoke:docker",
     "e2e:webapp": "bun run --cwd webapp e2e",
+    "e2e:demo:webapp": "bun run --cwd webapp e2e:demo",
     "e2e:webapp:s3": "bun scripts/storage-local.mjs e2e"
   },
   "devDependencies": {

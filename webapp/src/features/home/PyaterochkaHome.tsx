@@ -24,6 +24,13 @@ const navigation = [
 export function PyaterochkaHome() {
   const [screen, setScreen] = useState<HomeScreen>('home')
 
+  const handleNavigation = (target: (typeof navigation)[number]['id']) => {
+    const nextScreen = navigateHomeScreen(screen, target)
+    if (nextScreen === screen) return
+    window.scrollTo(0, 0)
+    setScreen(nextScreen)
+  }
+
   return (
     <div className="pyaterochka-app">
       {screen === 'home' ? (
@@ -184,7 +191,7 @@ export function PyaterochkaHome() {
             aria-current={item.id === screen ? 'page' : undefined}
             className={`nav-item ${item.id === screen ? 'active' : ''}`}
             key={item.id}
-            onClick={() => setScreen((current) => navigateHomeScreen(current, item.id))}
+            onClick={() => handleNavigation(item.id)}
             type="button"
           >
             <NavIcon name={item.id} />
