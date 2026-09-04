@@ -10,6 +10,7 @@ LLM получает валидированный action payload и может �
 import json, pathlib, re, sys
 
 ALLOWED_KEYS = {"decision_id", "title", "body", "progress", "cta", "sponsored_label"}
+REQUIRED_KEYS = {"decision_id", "title", "body", "cta"}
 LIMITS = {"title": 40, "body": 120, "progress": 40, "cta": 24}
 
 MONEY = re.compile(r"\d+[\s ]*(?:₽|руб)", re.I)
@@ -36,16 +37,16 @@ def check(action, explanation):
     extra = set(explanation) - ALLOWED_KEYS
     if extra:
         problems.append(f"лишние поля: {', '.join(sorted(extra))}")
-    for key in ALLOWED_KEYS:
+    for key in REQUIRED_KEYS:
         if key not in explanation:
             problems.append(f"нет поля {key}")
 
     if explanation.get("decision_id") != action["decision_id"]:
         problems.append("decision_id не совпадает с выбранным решением")
 
-    if action.get("fill_type") == "sponsored" and not explanation.get("sponsored_label"):
+    if action.get("surface_result") == "sponsored" and not explanation.get("sponsored_label"):
         problems.append("нет пометки о спонсорстве")
-    if action.get("fill_type") != "sponsored" and explanation.get("sponsored_label"):
+    if action.get("surface_result") != "sponsored" and explanation.get("sponsored_label"):
         problems.append("пометка о спонсорстве на неспонсируемом маршруте")
 
     for field, limit in LIMITS.items():
@@ -79,7 +80,7 @@ def fallback_for(action):
         "progress": "",
         "cta": "Открыть",
     }
-    if action.get("fill_type") == "sponsored":
+    if action.get("surface_result") == "sponsored":
         card["sponsored_label"] = "При поддержке бренда"
     return card
 
@@ -96,7 +97,7 @@ def main():
         if problems:
             failures += 1
             print(f"{path.name}: ЗАБЛОКИРОВАНО — {'; '.join(problems)}")
-            print(f"  fallback: {fallback_for(action)['short_story']}")
+            print(f"  fallback: {fallback_for(action)['body']}")
         else:
             print(f"{path.name}: ок")
 

@@ -2,16 +2,37 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://x5-checkpoint/recsys/action.schema.json",
   "title": "QuestRank decision",
-  "description": "Контракт между аллокатором и клиентом. Решение — это выбранная кампания, креатив, механика и подкрепление, либо organic-маршрут, no_fill или no_action. Источник: раздел 8 описания проекта и Материал 6 продуктовых материалов; правится во всех трёх местах сразу.",
+  "description": "Контракт между аллокатором и клиентом. Решение раскладывается на три независимых уровня: назначение эксперимента, результат рекламной аллокации и то, что в итоге показано пользователю. Источник: разделы 8.3 и 8.4 описания проекта и Материал 6 продуктовых материалов; правится во всех трёх местах сразу.",
   "type": "object",
-  "required": ["decision_id", "fill_type", "mechanic_family", "fading_phase", "objective_scores", "reason_codes"],
+  "required": ["decision_id", "experiment_arm", "sponsored_result", "surface_result", "propensity", "reason_codes"],
   "additionalProperties": false,
   "properties": {
     "decision_id": { "type": "string", "pattern": "^dec_[0-9]+$" },
 
-    "fill_type": {
-      "enum": ["sponsored", "organic", "no_fill", "no_action"],
-      "description": "sponsored — оплачен кампанией; organic — маршрут без рекламодателя; no_fill — подходящей кампании нет или не прошла порог; no_action — не вмешиваемся вовсе"
+    "experiment_arm": {
+      "enum": ["holdout", "serve"],
+      "description": "Случайное назначение, устойчивое на уровне пользователя. holdout — контроль: воздействия нет, но ghost записывается"
+    },
+    "sponsored_result": {
+      "enum": ["filled", "no_fill", "not_applicable"],
+      "description": "Результат рекламной аллокации. no_fill — ни одна кампания не прошла бюджетный, качественный или инкрементальный порог"
+    },
+    "surface_result": {
+      "enum": ["sponsored", "organic", "none"],
+      "description": "Что показано пользователю. no_fill и organic совместимы: рекламы нет, продукт есть"
+    },
+
+    "propensity": {
+      "type": "object",
+      "required": ["experiment", "action_given_serve", "logging"],
+      "additionalProperties": false,
+      "description": "logging = experiment × action_given_serve × creative_given_campaign",
+      "properties": {
+        "experiment": { "type": "number", "minimum": 0, "maximum": 1 },
+        "action_given_serve": { "type": "number", "minimum": 0, "maximum": 1 },
+        "creative_given_campaign": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "logging": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
     },
 
     "advertiser_id": { "type": ["string", "null"] },
@@ -19,47 +40,62 @@
     "creative_id": { "type": ["string", "null"] },
     "objective": { "enum": ["qualified_product_trial", "category_reactivation", "repeat_purchase", "none"] },
 
-    "mechanic_family": { "enum": ["personal_finish", "store_coop", "family_relay", "organic_progress", "no_action"] },
+    "mechanic_family": { "enum": ["personal_finish", "store_coop", "family_relay", "organic_progress", "none"] },
     "behavioral_lever": { "enum": ["completion", "collective_progress", "reciprocity", "mastery", "none"] },
     "target_action": { "enum": ["purchase_day_in_window", "verified_household_visit", "none"] },
     "window_days": { "type": ["integer", "null"], "minimum": 1, "maximum": 14 },
 
     "reinforcement_type": { "enum": ["supplier_trial", "points", "digital_unlock", "digital_vote_token", "local_privilege", "progress_only", "none"] },
     "reinforcement_id": { "type": ["string", "null"] },
-    "reinforcement_cost": { "type": "number", "minimum": 0, "description": "себестоимость подкрепления" },
+    "reinforcement_cost": { "type": "number", "minimum": 0 },
+    "uncovered_reward_cost": { "type": "number", "minimum": 0, "description": "часть стоимости награды, которую не покрывает рекламодатель; только она вычитается из score" },
     "funding_source": { "enum": ["advertiser", "promo_fund", "own_margin", "none"] },
 
-    "bid_per_qualified_visit": { "type": "number", "minimum": 0, "description": "сколько рекламодатель платит за квалифицированный визит" },
-    "pacing_multiplier": { "type": "number", "minimum": 0, "description": "множитель пейсинга кампании на момент решения" },
+    "bid_per_qualified_visit": { "type": "number", "minimum": 0, "description": "назначается рекламодателем, моделью не предсказывается" },
+    "pacing_multiplier": { "type": "number", "minimum": 0 },
     "effective_bid": { "type": "number", "minimum": 0 },
-    "expected_spend": { "type": "number", "minimum": 0, "description": "effective_bid × p_qualified_visit" },
-    "campaign_budget_remaining": { "type": ["number", "null"], "minimum": 0 },
+    "expected_liability": { "type": "number", "minimum": 0, "description": "p_billable × effective_bid; резервируется до созревания окна атрибуции" },
+    "campaign_budget_snapshot": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "total": { "type": "number", "minimum": 0 },
+        "settled_spend": { "type": "number", "minimum": 0 },
+        "pending_liability": { "type": "number", "minimum": 0 },
+        "available": { "type": "number", "minimum": 0 }
+      }
+    },
 
-    "p_accept": { "type": "number", "minimum": 0, "maximum": 1 },
-    "p_qualified_visit": { "type": "number", "minimum": 0, "maximum": 1 },
-    "p_qualified_visit_base": { "type": "number", "minimum": 0, "maximum": 1, "description": "та же вероятность без воздействия; разность даёт инкремент" },
-    "p_redeem": { "type": "number", "minimum": 0, "maximum": 1 },
-    "p_post_reward_repeat": { "type": "number", "minimum": 0, "maximum": 1 },
+    "p_qvisit_treat": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "p_qvisit_control": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "обучается на рандомизированном холдауте, не на общей истории" },
+    "uplift": { "type": ["number", "null"], "description": "p_qvisit_treat − p_qvisit_control" },
+    "incrementality_floor": { "type": ["number", "null"], "minimum": 0 },
+    "p_billable": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "p_accept": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "диагностика воронки, в score не входит" },
 
-    "fading_phase": { "enum": ["onboarding", "confirmation", "persistence", "maintain", "rotate", "no_action"] },
-    "fatigue_penalty": { "type": "number", "minimum": 0 },
+    "fading_phase": { "enum": ["onboarding", "confirmation", "persistence", "maintain", "rotate", "none"] },
     "frequency_state": { "type": ["object", "null"], "additionalProperties": true },
 
     "objective_scores": {
-      "type": "object",
-      "required": ["media_value", "x5_value", "penalties", "total"],
+      "type": ["object", "null"],
+      "required": ["media_net", "x5_incremental_value", "total"],
       "additionalProperties": false,
+      "description": "всё в рублях, без переводных коэффициентов",
       "properties": {
-        "media_value": { "type": "number", "description": "p_qualified_visit × effective_bid" },
-        "x5_value": { "type": "number", "description": "инкремент × contribution margin" },
-        "penalties": { "type": "number" },
+        "media_net": { "type": "number", "description": "p_billable × effective_bid − uncovered_reward_cost" },
+        "x5_incremental_value": { "type": "number", "description": "uplift × contribution margin" },
         "total": { "type": "number" }
       }
     },
 
-    "propensity": { "type": "number", "minimum": 0, "maximum": 1, "description": "вероятность, с которой логирующая политика выбрала это решение" },
+    "candidate_set": { "type": ["array", "null"], "items": { "type": "string" }, "description": "полный набор кандидатов на момент решения" },
     "policy_version": { "type": "string" },
-    "ghost_decision_id": { "type": ["string", "null"], "description": "что было бы показано пользователю холдаута" },
+    "decision_seed": { "type": ["integer", "null"] },
+    "ghost": {
+      "type": ["object", "null"],
+      "additionalProperties": true,
+      "description": "что policy показала бы холдауту. Не содержит исхода: контрфактический результат из ghost не выводится"
+    },
 
     "status": { "enum": ["active", "delayed", "blocked"] },
     "reason_codes": { "type": "array", "items": { "type": "string" } }

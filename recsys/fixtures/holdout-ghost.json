@@ -1,0 +1,77 @@
+{
+  "profile": {
+    "customer_id": "u_6203",
+    "display_name": "Олег, контрольная группа",
+    "cadence_weeks": 2.4,
+    "categories": [
+      "coffee"
+    ],
+    "store_engagement": "low",
+    "social_engagement": "low",
+    "fatigue": 0.09,
+    "sponsored_exposures_14d": 0
+  },
+  "decision": {
+    "objective": "none",
+    "mechanic_family": "none",
+    "behavioral_lever": "none",
+    "target_action": "none",
+    "window_days": null,
+    "reinforcement_type": "none",
+    "reinforcement_id": null,
+    "reinforcement_cost": 0.0,
+    "uncovered_reward_cost": 0.0,
+    "funding_source": "none",
+    "bid_per_qualified_visit": 0.0,
+    "pacing_multiplier": 0.0,
+    "effective_bid": 0.0,
+    "expected_liability": 0.0,
+    "campaign_budget_snapshot": null,
+    "p_qvisit_treat": null,
+    "p_qvisit_control": null,
+    "uplift": null,
+    "incrementality_floor": 0.04,
+    "p_billable": null,
+    "p_accept": null,
+    "fading_phase": "none",
+    "frequency_state": null,
+    "objective_scores": null,
+    "advertiser_id": null,
+    "campaign_id": null,
+    "creative_id": null,
+    "candidate_set": [
+      "camp_042/cr_042_a",
+      "camp_058/cr_058_a",
+      "organic",
+      "none"
+    ],
+    "policy_version": "questads_0.2",
+    "decision_seed": 620311,
+    "ghost": {
+      "campaign_id": "camp_042",
+      "creative_id": "cr_042_a",
+      "effective_bid": 28.8,
+      "would_have_spent": 9.79,
+      "note": "Что policy показала бы этому пользователю. Исход не выводится: ghost говорит о выборе системы, а не о поведении человека. Бюджет не расходуется, обязательство не резервируется, fatigue не растёт."
+    },
+    "status": "active",
+    "decision_id": "dec_6203",
+    "experiment_arm": "holdout",
+    "sponsored_result": "not_applicable",
+    "surface_result": "none",
+    "propensity": {
+      "experiment": 0.1,
+      "action_given_serve": 1.0,
+      "creative_given_campaign": null,
+      "logging": 0.1
+    },
+    "reason_codes": [
+      "experiment_holdout",
+      "no_impression",
+      "ghost_logged"
+    ]
+  },
+  "creative_copy": null,
+  "route_state": null,
+  "demo_note": "Инкрементальность считается сравнением рандомизированных групп на уровне назначения, а не вычитанием ghost-предсказания."
+}

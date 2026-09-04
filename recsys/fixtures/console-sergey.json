@@ -1,11 +1,61 @@
 {
-  "request_id": "req_3311", "customer_id": "u_3311", "policy_version": "questads_0.1",
-  "incrementality_floor": 0.04, "contribution_margin_rub": 120.0,
+  "request_id": "req_3311",
+  "customer_id": "u_3311",
+  "policy_version": "questads_0.2",
+  "experiment_arm": "serve",
+  "incrementality_floor": 0.04,
+  "contribution_margin_rub": 120.0,
   "candidates": [
-    { "campaign_id": "camp_042", "creative_id": "cr_042_a", "bid": 32.0, "pacing_multiplier": 0.9, "effective_bid": 28.8, "p_qualified_visit": 0.89, "p_qualified_visit_base": 0.87, "increment": 0.02, "media_value": 25.63, "x5_value": 2.4, "penalties": 1.1, "total": 26.93, "verdict": "rejected_incrementality_floor" },
-    { "campaign_id": "camp_071", "creative_id": "cr_071_a", "bid": 36.0, "pacing_multiplier": 0.05, "effective_bid": 1.8, "p_qualified_visit": 0.88, "p_qualified_visit_base": 0.87, "increment": 0.01, "media_value": 1.58, "x5_value": 1.2, "penalties": 1.1, "total": 1.68, "verdict": "rejected_pacing_and_floor" },
-    { "campaign_id": null, "creative_id": null, "bid": 0.0, "pacing_multiplier": 0.0, "effective_bid": 0.0, "p_qualified_visit": 0.87, "p_qualified_visit_base": 0.87, "increment": 0.0, "media_value": 0.0, "x5_value": 0.0, "penalties": 0.0, "total": 0.0, "verdict": "chosen_no_action" }
+    {
+      "campaign_id": "camp_042",
+      "creative_id": "cr_042_a",
+      "bid": 32.0,
+      "pacing_multiplier": 0.9,
+      "effective_bid": 28.8,
+      "p_qvisit_treat": 0.89,
+      "p_qvisit_control": 0.87,
+      "uplift": 0.02,
+      "p_billable": 0.89,
+      "media_net": 25.63,
+      "x5_incremental_value": 2.4,
+      "total": 28.03,
+      "verdict": "rejected_uplift_below_floor"
+    },
+    {
+      "campaign_id": "camp_071",
+      "creative_id": "cr_071_a",
+      "bid": 36.0,
+      "pacing_multiplier": 0.05,
+      "effective_bid": 1.8,
+      "p_qvisit_treat": 0.88,
+      "p_qvisit_control": 0.87,
+      "uplift": 0.01,
+      "p_billable": 0.88,
+      "media_net": 1.58,
+      "x5_incremental_value": 1.2,
+      "total": 2.78,
+      "verdict": "rejected_pacing_and_floor"
+    },
+    {
+      "campaign_id": null,
+      "creative_id": null,
+      "bid": 0.0,
+      "pacing_multiplier": 0.0,
+      "effective_bid": 0.0,
+      "p_qvisit_treat": 0.89,
+      "p_qvisit_control": 0.87,
+      "uplift": 0.02,
+      "p_billable": 0.0,
+      "media_net": 0.0,
+      "x5_incremental_value": 2.4,
+      "total": 2.4,
+      "verdict": "chosen_organic"
+    }
   ],
-  "decision_note": "Кампания brand_07 набирает наибольшую медийную ценность — 25.63 ₽ — именно потому, что визит почти наверняка произойдёт. Порог инкрементальности 0.04 её отклоняет: бренду нельзя продавать визит, который случился бы и так. Это и есть защита пользователя и рекламодателя одновременно.",
+  "outcome": {
+    "sponsored_result": "no_fill",
+    "surface_result": "organic"
+  },
+  "decision_note": "Кампания brand_07 набирает наибольшую медийную ценность — 25.63 ₽ — именно потому, что визит почти наверняка произойдёт. Порог инкрементальности 0.04 её отклоняет: бренду не продаётся визит, который случился бы и так. Пользователь при этом получает organic-маршрут, а не пустой экран.",
   "notes": "Синтетические данные. Не экономика X5 и не измеренный эффект."
 }

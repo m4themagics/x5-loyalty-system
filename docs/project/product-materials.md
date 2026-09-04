@@ -380,20 +380,22 @@ enum'ам; полная форма решения выписана в разде
 ### Scoring
 
 ```text
-media_value = p_qualified_visit × bid × pacing_multiplier
-x5_value    = (p_qualified_visit − p_qualified_visit_base) × CM
-Score       = media_value + x5_value − penalties
+media_net = p_billable × bid × pacing_multiplier − uncovered_reward_cost
+uplift    = p_qvisit_treat − p_qvisit_control
+score     = media_net + uplift × CM
+гейт:      uplift ≥ порог инкрементальности
 ```
 
-Кандидат отклоняется, если прирост ниже порога инкрементальности, даже когда кампания за него
-платит. Калибровка вероятностей обязательна: они умножаются на бид. Полная постановка — раздел 8.4
-описания проекта.
+Бид назначает рекламодатель. Обе части score в рублях, переводного коэффициента нет. Решение
+раскладывается на три уровня — назначение эксперимента, результат аллокации, поверхность, — и
+`no_fill` совместим с `organic`. Полная постановка, включая пейсинг с обязательствами, калибровку
+прироста и правило intention-to-treat, — раздел 8.4 [описания проекта](project-description.md).
 
 ### `no_action`
 
 `no_action` выбирается, если:
 
-- ни один кандидат не проходит порог инкрементальности или порог качества;
+- ни один кандидат не проходит порог инкрементальности или качества — тогда `no_fill`, а пользователю показывается organic-маршрут;
 - baseline purchase probability высока и organic subsidy risk превышает порог;
 - fatigue/frequency cap нарушен;
 - нет допустимого funding/capability;

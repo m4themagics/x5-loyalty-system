@@ -1,21 +1,102 @@
 {
-  "profile": { "customer_id": "u_1042", "display_name": "Маша, второй цикл", "cadence_weeks": 2.1, "baseline_visit_probability": 0.26, "categories": ["coffee", "dairy"], "store_engagement": "low", "social_engagement": "low", "fatigue": 0.18, "sponsored_exposures_14d": 1 },
-  "decision": {
-    "decision_id": "dec_1052", "fill_type": "sponsored",
-    "advertiser_id": "brand_07", "campaign_id": "camp_042", "creative_id": "cr_042_a", "objective": "qualified_product_trial",
-    "mechanic_family": "personal_finish", "behavioral_lever": "completion",
-    "target_action": "purchase_day_in_window", "window_days": 6,
-    "reinforcement_type": "digital_unlock", "reinforcement_id": "unlock_theme_choice", "reinforcement_cost": 0.0, "funding_source": "advertiser",
-    "bid_per_qualified_visit": 32.0, "pacing_multiplier": 0.85, "effective_bid": 27.2,
-    "expected_spend": 8.16, "campaign_budget_remaining": 74100.0,
-    "p_accept": 0.44, "p_qualified_visit": 0.30, "p_qualified_visit_base": 0.26, "p_redeem": 0.0, "p_post_reward_repeat": 0.27,
-    "fading_phase": "confirmation", "fatigue_penalty": 0.3, "frequency_state": { "exposures_14d": 1, "cap": 2 },
-    "objective_scores": { "media_value": 8.16, "x5_value": 4.8, "penalties": 0.3, "total": 12.66 },
-    "propensity": 0.51, "policy_version": "questads_0.1", "ghost_decision_id": null,
-    "status": "active",
-    "reason_codes": ["previous_route_completed", "reward_cost_stepped_down", "persistence_check", "advertiser_funded"]
+  "profile": {
+    "customer_id": "u_1042",
+    "display_name": "Маша, второй цикл",
+    "cadence_weeks": 2.6,
+    "categories": [
+      "coffee",
+      "dairy"
+    ],
+    "store_engagement": "low",
+    "social_engagement": "low",
+    "fatigue": 0.18,
+    "sponsored_exposures_14d": 1
   },
-  "creative_copy": { "decision_id": "dec_1052", "title": "Кофейный чекпоинт", "body": "Ещё один визит — и выбираете тему следующего маршрута.", "progress": "1 из 2 чекпоинтов", "cta": "Продолжить маршрут", "sponsored_label": "При поддержке бренда" },
-  "route_state": { "route_id": "r_1052", "mechanic_family": "personal_finish", "status": "in_progress", "window_days": 6, "completion": 0.5, "fading_phase": "confirmation", "unlocks": ["theme_choice"] },
-  "demo_note": "Тот же пользователь и та же кампания, но подкрепление снизилось с товара за 18 ₽ до цифрового unlock. Пара masha.json → masha-cycle2.json показывает reward fading целиком."
+  "decision": {
+    "objective": "qualified_product_trial",
+    "mechanic_family": "personal_finish",
+    "behavioral_lever": "completion",
+    "target_action": "purchase_day_in_window",
+    "window_days": 6,
+    "reinforcement_type": "digital_unlock",
+    "reinforcement_id": "unlock_theme_choice",
+    "reinforcement_cost": 0.0,
+    "uncovered_reward_cost": 0.0,
+    "funding_source": "advertiser",
+    "bid_per_qualified_visit": 32.0,
+    "pacing_multiplier": 0.85,
+    "effective_bid": 27.2,
+    "expected_liability": 8.16,
+    "campaign_budget_snapshot": {
+      "total": 150000.0,
+      "settled_spend": 69100.0,
+      "pending_liability": 6800.0,
+      "available": 74100.0
+    },
+    "p_qvisit_treat": 0.3,
+    "p_qvisit_control": 0.26,
+    "uplift": 0.04,
+    "incrementality_floor": 0.04,
+    "p_billable": 0.3,
+    "p_accept": 0.44,
+    "fading_phase": "confirmation",
+    "frequency_state": {
+      "exposures_14d": 1,
+      "cap": 2
+    },
+    "objective_scores": {
+      "media_net": 8.16,
+      "x5_incremental_value": 4.8,
+      "total": 12.96
+    },
+    "advertiser_id": "brand_07",
+    "campaign_id": "camp_042",
+    "creative_id": "cr_042_a",
+    "candidate_set": [
+      "camp_042/cr_042_a",
+      "camp_058/cr_058_a",
+      "organic",
+      "none"
+    ],
+    "policy_version": "questads_0.2",
+    "decision_seed": 105233,
+    "ghost": null,
+    "status": "active",
+    "decision_id": "dec_1052",
+    "experiment_arm": "serve",
+    "sponsored_result": "filled",
+    "surface_result": "sponsored",
+    "propensity": {
+      "experiment": 0.9,
+      "action_given_serve": 0.51,
+      "creative_given_campaign": 0.5,
+      "logging": 0.2295
+    },
+    "reason_codes": [
+      "previous_route_completed",
+      "reward_cost_stepped_down",
+      "persistence_check",
+      "uplift_at_floor"
+    ]
+  },
+  "creative_copy": {
+    "decision_id": "dec_1052",
+    "title": "Кофейный чекпоинт",
+    "body": "Ещё один визит — и выбираете тему следующего маршрута.",
+    "progress": "1 из 2 чекпоинтов",
+    "cta": "Продолжить маршрут",
+    "sponsored_label": "При поддержке бренда"
+  },
+  "route_state": {
+    "route_id": "r_1052",
+    "mechanic_family": "personal_finish",
+    "status": "in_progress",
+    "window_days": 6,
+    "completion": 0.5,
+    "fading_phase": "confirmation",
+    "unlocks": [
+      "theme_choice"
+    ]
+  },
+  "demo_note": "Тот же пользователь и та же кампания, подкрепление снизилось с товара за 18 ₽ до цифрового unlock. Пара masha.json → masha-cycle2.json показывает reward fading, а uplift 0.04 стоит ровно на пороге."
 }

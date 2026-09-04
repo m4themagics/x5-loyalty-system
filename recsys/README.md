@@ -19,7 +19,8 @@
 | `masha.json` | `sponsored` personal_finish, supplier trial 18 ₽, фаза `onboarding` |
 | `masha-cycle2.json` | тот же пользователь, подкрепление снизилось до `digital_unlock` — reward fading |
 | `katya.json` | `sponsored` store_coop без материальной награды: дешёвая кампания выиграла по качеству и пейсингу |
-| `sergey.json` | `no_action`: кампания готова платить 32 ₽, но прирост ниже порога инкрементальности |
+| `sergey.json` | `no_fill` по порогу инкрементальности, поверхность — `organic`: реклама отклонена, продукт остался |
+| `holdout-ghost.json` | рандомизированный контроль: показа нет, ghost записан, бюджет не тронут |
 | `pacing-exhausted.json` | у кампании с бидом 36 ₽ исчерпан пейсинг, выигрывает следующая релевантная |
 | `fraud-delayed.json` | `family_relay` в `delayed`; списание с бюджета рекламодателя тоже придержано |
 | `console-sergey.json` | консоль аллокации: кандидаты, биды, вердикты, отклонение по порогу |

@@ -1,20 +1,101 @@
 {
-  "profile": { "customer_id": "u_2087", "display_name": "Катя", "cadence_weeks": 1.2, "baseline_visit_probability": 0.23, "categories": ["dairy", "vegetables"], "store_engagement": "high", "social_engagement": "medium", "fatigue": 0.20, "sponsored_exposures_14d": 1 },
-  "decision": {
-    "decision_id": "dec_2087", "fill_type": "sponsored",
-    "advertiser_id": "brand_12", "campaign_id": "camp_058", "creative_id": "cr_058_a", "objective": "category_reactivation",
-    "mechanic_family": "store_coop", "behavioral_lever": "collective_progress",
-    "target_action": "purchase_day_in_window", "window_days": 7,
-    "reinforcement_type": "progress_only", "reinforcement_id": null, "reinforcement_cost": 0.0, "funding_source": "advertiser",
-    "bid_per_qualified_visit": 18.0, "pacing_multiplier": 1.1, "effective_bid": 19.8,
-    "expected_spend": 5.74, "campaign_budget_remaining": 71200.0,
-    "p_accept": 0.47, "p_qualified_visit": 0.29, "p_qualified_visit_base": 0.23, "p_redeem": 0.0, "p_post_reward_repeat": 0.24,
-    "fading_phase": "persistence", "fatigue_penalty": 0.2, "frequency_state": { "exposures_14d": 1, "cap": 3 },
-    "objective_scores": { "media_value": 5.74, "x5_value": 7.2, "penalties": 0.2, "total": 12.74 },
-    "propensity": 0.55, "policy_version": "questads_0.1", "ghost_decision_id": null,
-    "status": "active",
-    "reason_codes": ["local_engagement_high", "material_reward_not_required", "cheaper_campaign_won_on_quality", "pacing_underdelivering"]
+  "profile": {
+    "customer_id": "u_2087",
+    "display_name": "Катя",
+    "cadence_weeks": 1.2,
+    "categories": [
+      "dairy",
+      "vegetables"
+    ],
+    "store_engagement": "high",
+    "social_engagement": "medium",
+    "fatigue": 0.2,
+    "sponsored_exposures_14d": 1
   },
-  "creative_copy": { "decision_id": "dec_2087", "title": "Чекпоинт своей Пятёрочки", "body": "Один визит за семь дней продвинет выбранную цель магазина.", "progress": "Сезон 68 процентов", "cta": "Внести вклад", "sponsored_label": "При поддержке бренда" },
-  "route_state": { "route_id": "r_2087", "mechanic_family": "store_coop", "status": "in_progress", "window_days": 7, "completion": 0.68, "fading_phase": "persistence", "unlocks": ["milestone_vote_token"] }
+  "decision": {
+    "objective": "category_reactivation",
+    "mechanic_family": "store_coop",
+    "behavioral_lever": "collective_progress",
+    "target_action": "purchase_day_in_window",
+    "window_days": 7,
+    "reinforcement_type": "progress_only",
+    "reinforcement_id": null,
+    "reinforcement_cost": 0.0,
+    "uncovered_reward_cost": 0.0,
+    "funding_source": "advertiser",
+    "bid_per_qualified_visit": 18.0,
+    "pacing_multiplier": 1.1,
+    "effective_bid": 19.8,
+    "expected_liability": 5.74,
+    "campaign_budget_snapshot": {
+      "total": 90000.0,
+      "settled_spend": 16400.0,
+      "pending_liability": 2400.0,
+      "available": 71200.0
+    },
+    "p_qvisit_treat": 0.29,
+    "p_qvisit_control": 0.23,
+    "uplift": 0.06,
+    "incrementality_floor": 0.04,
+    "p_billable": 0.29,
+    "p_accept": 0.47,
+    "fading_phase": "persistence",
+    "frequency_state": {
+      "exposures_14d": 1,
+      "cap": 3
+    },
+    "objective_scores": {
+      "media_net": 5.74,
+      "x5_incremental_value": 7.2,
+      "total": 12.94
+    },
+    "advertiser_id": "brand_12",
+    "campaign_id": "camp_058",
+    "creative_id": "cr_058_a",
+    "candidate_set": [
+      "camp_058/cr_058_a",
+      "camp_042/cr_042_a",
+      "organic",
+      "none"
+    ],
+    "policy_version": "questads_0.2",
+    "decision_seed": 118842,
+    "ghost": null,
+    "status": "active",
+    "decision_id": "dec_2087",
+    "experiment_arm": "serve",
+    "sponsored_result": "filled",
+    "surface_result": "sponsored",
+    "propensity": {
+      "experiment": 0.9,
+      "action_given_serve": 0.55,
+      "creative_given_campaign": 1.0,
+      "logging": 0.495
+    },
+    "reason_codes": [
+      "local_engagement_high",
+      "material_reward_not_required",
+      "cheaper_campaign_won_on_quality",
+      "pacing_underdelivering"
+    ]
+  },
+  "creative_copy": {
+    "decision_id": "dec_2087",
+    "title": "Чекпоинт своей Пятёрочки",
+    "body": "Один визит за семь дней продвинет выбранную цель магазина.",
+    "progress": "Сезон 68 процентов",
+    "cta": "Внести вклад",
+    "sponsored_label": "При поддержке бренда"
+  },
+  "route_state": {
+    "route_id": "r_2087",
+    "mechanic_family": "store_coop",
+    "status": "in_progress",
+    "window_days": 7,
+    "completion": 0.68,
+    "fading_phase": "persistence",
+    "unlocks": [
+      "milestone_vote_token"
+    ]
+  }
 }
