@@ -29,8 +29,8 @@ If no GitHub destination is chosen, the repository is left without `origin` and 
 
 | Question                                                  | Answer       |
 | --------------------------------------------------------- | ------------ |
-| What product do you want to build first?                  | Мобильное веб-демо игровой лояльности «Пятёрочки»: колесо призов, дорожка прогресса, AI-задания, голоса и улучшения магазина |
-| What is the first user journey that must work end to end? | Покупка → колесо → приз → прогресс → AI-задание → голоса |
+| What product do you want to build first?                  | Мобильное веб-демо «X5 Чекпоинт»: AI-policy QuestRank выбирает после чека одну из трёх игровых механик, минимальное подкрепление или `no_action`, плюс консоль продакта |
+| What is the first user journey that must work end to end? | Чек → кандидаты по трём механикам → выбранный маршрут → один следующий покупочный день → постоянный результат и reason codes |
 
 ## 3. Active surfaces
 
