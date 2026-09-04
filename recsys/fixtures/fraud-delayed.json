@@ -1,33 +1,21 @@
 {
-  "profile": {
-    "customer_id": "u_4750", "display_name": "Семейная эстафета — подозрительная связь",
-    "cadence_weeks": 1.9, "baseline_visit_probability": 0.44,
-    "store_engagement": "low", "social_engagement": "high", "fatigue": 0.15
-  },
-  "action": {
-    "action_id": "action_4750", "mechanic_id": "family_relay",
+  "profile": { "customer_id": "u_4750", "display_name": "Семейная эстафета — подозрительная связь", "cadence_weeks": 1.9, "baseline_visit_probability": 0.31, "categories": ["coffee"], "store_engagement": "low", "social_engagement": "high", "fatigue": 0.15, "sponsored_exposures_14d": 1 },
+  "decision": {
+    "decision_id": "dec_4750", "fill_type": "sponsored",
+    "advertiser_id": "brand_07", "campaign_id": "camp_042", "creative_id": "cr_042_b", "objective": "qualified_product_trial",
+    "mechanic_family": "family_relay", "behavioral_lever": "reciprocity",
     "target_action": "verified_household_visit", "window_days": 7,
-    "reinforcement_type": "supplier_trial", "reinforcement_id": "sku_204",
-    "reinforcement_cost": 21.0, "funding_source": "supplier",
-    "fading_phase": "onboarding",
-    "estimated_incremental_probability": 0.09, "expected_persistence_uplift": 0.02,
-    "expected_completion_probability": 0.47, "expected_payout": 9.87,
-    "expected_contribution_margin": 4.1,
-    "fraud_risk": 0.78, "optout_risk": 0.05, "fatigue_penalty": 0.01,
-    "budget_price": 0.42, "persistence_weight": 0.3,
-    "objective_scores": { "freq": 0.09, "persist": 0.02, "cost": 9.87, "margin": 4.1 },
+    "reinforcement_type": "supplier_trial", "reinforcement_id": "sku_318", "reinforcement_cost": 18.0, "funding_source": "advertiser",
+    "bid_per_qualified_visit": 32.0, "pacing_multiplier": 0.9, "effective_bid": 28.8,
+    "expected_spend": 8.06, "campaign_budget_remaining": 82400.0,
+    "p_accept": 0.38, "p_qualified_visit": 0.28, "p_qualified_visit_base": 0.19, "p_redeem": 0.47, "p_post_reward_repeat": 0.14,
+    "fading_phase": "onboarding", "fatigue_penalty": 0.2, "frequency_state": { "exposures_14d": 1, "cap": 2 },
+    "objective_scores": { "media_value": 8.06, "x5_value": 10.8, "penalties": 0.2, "total": 18.66 },
+    "propensity": 0.44, "policy_version": "questads_0.1", "ghost_decision_id": null,
     "status": "delayed",
-    "reason_codes": ["shared_device_payment", "impossible_velocity", "self_referral_suspected", "hold_until_verified_event"]
+    "reason_codes": ["shared_device_payment", "impossible_velocity", "hold_until_verified_event", "billing_withheld"]
   },
-  "explanation": {
-    "action_id": "action_4750",
-    "title": "Награда придержана",
-    "short_story": "Ждём подтверждённой покупки приглашённого.",
-    "explanation": "Передача засчитана, но награда придержана до проверенного события: устройство и способ оплаты совпадают у обоих участников."
-  },
-  "route_state": {
-    "route_id": "r_4750", "mechanic_id": "family_relay", "status": "delayed",
-    "window_days": 7, "qualifying_event": "verified_household_visit", "completion": 0.5,
-    "fading_phase": "onboarding", "unlocks": []
-  }
+  "creative_copy": { "decision_id": "dec_4750", "title": "Семейная эстафета", "body": "Награда придёт после подтверждённой покупки приглашённого.", "progress": "Ожидает подтверждения", "cta": "Понятно", "sponsored_label": "При поддержке бренда" },
+  "route_state": { "route_id": "r_4750", "mechanic_family": "family_relay", "status": "delayed", "window_days": 7, "completion": 0.5, "fading_phase": "onboarding", "unlocks": [] },
+  "demo_note": "Списание с бюджета рекламодателя тоже придержано: пока событие не подтверждено, квалифицированного визита не было, платить не за что."
 }

@@ -57,6 +57,27 @@
 - универсальная линейка герой → голос → FastPass;
 - рейтинг, referral, gifting, голосование и FastPass как одновременно запускаемые механики.
 
+## Материал 0A. Decision log: ads-версия
+
+Продуктовый тезис не меняется: персонализируется поведенческий рычаг. Меняется финансирование и
+механизм распределения.
+
+| v5 | Ads-версия |
+| --- | --- |
+| Supplier funding — боковая коммерческая гипотеза | Рекламодатель, кампания, бид и бюджет — сущности первого класса |
+| `mechanic × target × window × reinforcement` | `campaign × creative × mechanic × reinforcement × bid` |
+| `no_action` | `sponsored` / `organic` / `no_fill` / `no_action` |
+| LLM пишет текст маршрута | LLM строит креативы из brand brief, критик их проверяет |
+| Экономика = contribution margin X5 | Медийная выручка + маржа X5 + доставка бюджета рекламодателю |
+| Reward fading как продуктовое правило | Он же плюс жизненный цикл кампании и креатива |
+
+Аукцион не делаем: один плейсмент, синтетические рекламодатели, нет стратегического поведения.
+Остаётся budget-paced ранжирование по биду с порогом качества и `no_fill`.
+
+Ключевое ограничение версии — **порог инкрементальности**. Кампании нельзя продать визит, который
+произошёл бы и так, даже когда она за него платит и медийная ценность максимальна. Без этого порога
+система вырождается в продажу пользователей, и кейс проигран.
+
 ## Материал 1. Product brief
 
 ### Пользователь и проблема
@@ -334,12 +355,15 @@ QuestRank отдельно выбирает reinforcement:
 | --- | --- |
 | Synthetic generator | Профили, cadence, route history, store/social signals, reward response proxy и fraud cases |
 | Feature builder | Baseline propensity, recency trend, category affinity, fatigue, mechanic-history и risk features |
-| Target heads | Отдельные предсказания частоты, завершения, маржи корзины, персистентности, fraud и opt-out; в PoC — синтетические proxy |
+| Campaign catalog | Рекламодатели, кампании, биды, бюджеты, флайты, частотные лимиты; креативы строит LLM по brand brief, критик проверяет |
+| Target heads | Калиброванные головы: принятие маршрута, квалифицированный визит, тот же визит без воздействия, redemption, повторный визит после снятия награды |
 | Mechanic catalog | Разрешённые mechanics, targets, state transitions, reinforcement types и capability rules |
 | Candidate generator | Комбинации действий и `no_action` |
 | Hard filters | Eligibility, budget, funding, cooldown, frequency cap, capability и fraud |
-| QuestRank | Многоцелевой rules-based ranking в PoC: вектор целей, ε-ограничения и свёртка с бюджетным дуалом; uplift/bandit только после randomized history |
-| Budget controller | Общая теневая цена бюджета `λ`, калибровка под потолок и кривая «недели против бюджета» |
+| QuestRank allocator | Ранжирование кампаний по биду, пейсингу, ценности для X5 и штрафам; выбор между `sponsored`, `organic`, `no_fill` и `no_action` |
+| Pacing controller | Множитель кампании, дуальное обновление под целевую кривую расхода внутри флайта |
+| Creative policy | Thompson sampling по креативам внутри выигравшей кампании, propensity логируется |
+| Decision log | Кандидаты, решение, propensity, версия политики, ghost-запись и отложенный исход |
 | Exploration allocator | Безопасная рандомизация между допустимыми действиями |
 | Reward fading controller | Onboarding, confirmation, persistence и stop/rotate decisions |
 | State engine | Personal/store/family states и qualifying events |
@@ -349,61 +373,27 @@ QuestRank отдельно выбирает reinforcement:
 
 ### Action schema
 
-```json
-{
-  "action_id": "action_1042",
-  "mechanic_id": "personal_finish",
-  "target_action": "purchase_day_in_window",
-  "window_days": 5,
-  "reinforcement_type": "supplier_trial",
-  "reinforcement_id": "sku_318",
-  "reinforcement_cost": 18.0,
-  "funding_source": "supplier",
-  "fading_phase": "onboarding",
-  "estimated_incremental_probability": 0.0,
-  "expected_persistence_uplift": 0.0,
-  "expected_completion_probability": 0.0,
-  "expected_payout": 0.0,
-  "expected_contribution_margin": 0.0,
-  "fraud_risk": 0.0,
-  "optout_risk": 0.0,
-  "fatigue_penalty": 0.0,
-  "budget_price": 0.0,
-  "persistence_weight": 0.0,
-  "objective_scores": { "freq": 0.0, "persist": 0.0, "cost": 0.0, "margin": 0.0 },
-  "reason_codes": []
-}
-```
+Машиночитаемый контракт — `recsys/schema/action.schema.json`, он авторитетен по именам полей и
+enum'ам; полная форма решения выписана в разделе 8.3 [описания проекта](project-description.md).
+Клиентские экраны читают фикстуры `recsys/fixtures/`, а не собирают структуру сами.
 
 ### Scoring
 
-Ранжирование многоцелевое. Цели считаются отдельно, а свёртка использует ε-ограничение и
-бюджетный дуал:
-
 ```text
-J_freq    = p_week − p_week_base                 → max
-J_persist = p_persist − p_week_base              → max
-J_cost    = reinforcement_cost × p_complete      → min
-J_margin  = J_freq × CM + m_basket − J_cost − fraud − fatigue − ops   → max
-
-maximize   J_freq + β(phase) × J_persist − λ × J_cost
-subject to J_margin ≥ 0, p_fraud ≤ τ, p_optout ≤ τ, caps и capability
+media_value = p_qualified_visit × bid × pacing_multiplier
+x5_value    = (p_qualified_visit − p_qualified_visit_base) × CM
+Score       = media_value + x5_value − penalties
 ```
 
-`λ` — одна теневая цена бюджета на всю популяцию, калиброванная под потолок reward budget; такое
-ранжирование эквивалентно ранжированию по стоимости инкрементальной покупочной недели. `β` задаётся
-фазой fading и не даёт максимизировать сиюминутный отклик дорогим подкреплением. Маржа остаётся
-ограничением, а не слагаемым, — так же как в дизайне пилота. Полная постановка, крайние точки и
-кривая компромисса — в разделе 8.4 [описания проекта](project-description.md).
-
-В PoC все головы — синтетические proxy. Реальное next-best-game-action обучение требует randomized
-treatment data.
+Кандидат отклоняется, если прирост ниже порога инкрементальности, даже когда кампания за него
+платит. Калибровка вероятностей обязательна: они умножаются на бид. Полная постановка — раздел 8.4
+описания проекта.
 
 ### `no_action`
 
 `no_action` выбирается, если:
 
-- ни один допустимый кандидат не даёт положительной свёртки при текущем `λ`;
+- ни один кандидат не проходит порог инкрементальности или порог качества;
 - baseline purchase probability высока и organic subsidy risk превышает порог;
 - fatigue/frequency cap нарушен;
 - нет допустимого funding/capability;

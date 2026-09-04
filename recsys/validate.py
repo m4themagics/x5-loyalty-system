@@ -1,4 +1,4 @@
-"""Проверяет фикстуры против schema/action.schema.json: required, enum, additionalProperties, типы."""
+"""Проверяет фикстуры решений против schema/action.schema.json: required, enum, лишние поля, типы."""
 import json, pathlib, sys
 
 root = pathlib.Path(__file__).parent
@@ -8,7 +8,7 @@ errors = []
 
 for path in sorted((root / "fixtures").glob("*.json")):
     doc = json.loads(path.read_text(encoding="utf-8"))
-    action = doc.get("action")
+    action = doc.get("decision")
     if action is None:
         continue
     for key in required - action.keys():
@@ -22,6 +22,10 @@ for path in sorted((root / "fixtures").glob("*.json")):
             errors.append(f"{path.name}: {key}={value!r} вне enum")
         if spec.get("type") == "number" and not isinstance(value, (int, float)):
             errors.append(f"{path.name}: {key} должно быть числом")
+        if key == "objective_scores" and isinstance(value, dict):
+            missing = {"media_value", "x5_value", "penalties", "total"} - value.keys()
+            if missing:
+                errors.append(f"{path.name}: в objective_scores нет {', '.join(sorted(missing))}")
 
 print("\n".join(errors) if errors else f"фикстуры валидны по схеме: {len(list((root/'fixtures').glob('*.json')))} файлов")
 sys.exit(1 if errors else 0)

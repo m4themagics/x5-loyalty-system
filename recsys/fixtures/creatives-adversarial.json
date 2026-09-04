@@ -1,0 +1,26 @@
+{
+  "notes": "Попытки креатива выйти за контракт. Каждый случай блокируется, вместо него отдаётся детерминированный шаблон.",
+  "cases": [
+    { "name": "придумала цену", "decision": { "decision_id": "dec_1042", "mechanic_family": "personal_finish", "window_days": 5, "reinforcement_id": "sku_318", "fill_type": "sponsored", "status": "active" },
+      "creative_copy": { "decision_id": "dec_1042", "title": "Кофейный чекпоинт", "body": "Заберите товар за 149 ₽ бесплатно.", "progress": "1 из 2", "cta": "Продолжить", "sponsored_label": "При поддержке бренда" },
+      "expected_problem": "названа цена" },
+    { "name": "придумала SKU", "decision": { "decision_id": "dec_1042", "mechanic_family": "personal_finish", "window_days": 5, "reinforcement_id": "sku_318", "fill_type": "sponsored", "status": "active" },
+      "creative_copy": { "decision_id": "dec_1042", "title": "Кофейный чекпоинт", "body": "В награду положен sku_999.", "progress": "1 из 2", "cta": "Продолжить", "sponsored_label": "При поддержке бренда" },
+      "expected_problem": "выдуман SKU" },
+    { "name": "изменила срок", "decision": { "decision_id": "dec_2087", "mechanic_family": "store_coop", "window_days": 7, "reinforcement_id": null, "fill_type": "sponsored", "status": "active" },
+      "creative_copy": { "decision_id": "dec_2087", "title": "Своя Пятёрочка", "body": "У вас есть 14 дней на визит.", "progress": "Сезон 68", "cta": "Внести вклад", "sponsored_label": "При поддержке бренда" },
+      "expected_problem": "срок 14 дн. не совпадает" },
+    { "name": "обещала эффект", "decision": { "decision_id": "dec_2087", "mechanic_family": "store_coop", "window_days": 7, "reinforcement_id": null, "fill_type": "sponsored", "status": "active" },
+      "creative_copy": { "decision_id": "dec_2087", "title": "Своя Пятёрочка", "body": "Маршрут гарантированно поднимет вашу экономию.", "progress": "Сезон 68", "cta": "Внести вклад", "sponsored_label": "При поддержке бренда" },
+      "expected_problem": "причинный эффект" },
+    { "name": "сняла hold", "decision": { "decision_id": "dec_4750", "mechanic_family": "family_relay", "window_days": 7, "reinforcement_id": "sku_318", "fill_type": "sponsored", "status": "delayed" },
+      "creative_copy": { "decision_id": "dec_4750", "title": "Семейная эстафета", "body": "Награда ваша, забирайте сейчас.", "progress": "Ожидает", "cta": "Забрать", "sponsored_label": "При поддержке бренда" },
+      "expected_problem": "снят fraud hold" },
+    { "name": "подменила решение", "decision": { "decision_id": "dec_3311", "mechanic_family": "no_action", "window_days": null, "reinforcement_id": null, "fill_type": "no_action", "status": "active" },
+      "creative_copy": { "decision_id": "dec_9999", "title": "Личный чекпоинт", "body": "Один визит до финиша.", "progress": "1 из 2", "cta": "Продолжить" },
+      "expected_problem": "decision_id не совпадает" },
+    { "name": "спрятала пометку о спонсорстве", "decision": { "decision_id": "dec_1042", "mechanic_family": "personal_finish", "window_days": 5, "reinforcement_id": "sku_318", "fill_type": "sponsored", "status": "active" },
+      "creative_copy": { "decision_id": "dec_1042", "title": "Кофейный чекпоинт", "body": "Остался один визит за пять дней.", "progress": "1 из 2", "cta": "Продолжить" },
+      "expected_problem": "нет пометки о спонсорстве" }
+  ]
+}

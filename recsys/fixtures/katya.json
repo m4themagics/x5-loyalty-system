@@ -1,33 +1,20 @@
 {
-  "profile": {
-    "customer_id": "u_2087", "display_name": "Катя",
-    "cadence_weeks": 1.2, "baseline_visit_probability": 0.58,
-    "store_engagement": "high", "social_engagement": "medium", "fatigue": 0.20
-  },
-  "action": {
-    "action_id": "action_2087", "mechanic_id": "store_coop",
+  "profile": { "customer_id": "u_2087", "display_name": "Катя", "cadence_weeks": 1.2, "baseline_visit_probability": 0.23, "categories": ["dairy", "vegetables"], "store_engagement": "high", "social_engagement": "medium", "fatigue": 0.20, "sponsored_exposures_14d": 1 },
+  "decision": {
+    "decision_id": "dec_2087", "fill_type": "sponsored",
+    "advertiser_id": "brand_12", "campaign_id": "camp_058", "creative_id": "cr_058_a", "objective": "category_reactivation",
+    "mechanic_family": "store_coop", "behavioral_lever": "collective_progress",
     "target_action": "purchase_day_in_window", "window_days": 7,
-    "reinforcement_type": "digital_vote_token", "reinforcement_id": null,
-    "reinforcement_cost": 0.0, "funding_source": "none",
-    "fading_phase": "persistence",
-    "estimated_incremental_probability": 0.06, "expected_persistence_uplift": 0.05,
-    "expected_completion_probability": 0.61, "expected_payout": 0.0,
-    "expected_contribution_margin": 7.2,
-    "fraud_risk": 0.02, "optout_risk": 0.04, "fatigue_penalty": 0.02,
-    "budget_price": 0.42, "persistence_weight": 0.8,
-    "objective_scores": { "freq": 0.06, "persist": 0.05, "cost": 0.0, "margin": 7.2 },
+    "reinforcement_type": "progress_only", "reinforcement_id": null, "reinforcement_cost": 0.0, "funding_source": "advertiser",
+    "bid_per_qualified_visit": 18.0, "pacing_multiplier": 1.1, "effective_bid": 19.8,
+    "expected_spend": 5.74, "campaign_budget_remaining": 71200.0,
+    "p_accept": 0.47, "p_qualified_visit": 0.29, "p_qualified_visit_base": 0.23, "p_redeem": 0.0, "p_post_reward_repeat": 0.24,
+    "fading_phase": "persistence", "fatigue_penalty": 0.2, "frequency_state": { "exposures_14d": 1, "cap": 3 },
+    "objective_scores": { "media_value": 5.74, "x5_value": 7.2, "penalties": 0.2, "total": 12.74 },
+    "propensity": 0.55, "policy_version": "questads_0.1", "ghost_decision_id": null,
     "status": "active",
-    "reason_codes": ["local_engagement_above_reward_sensitivity", "material_reward_not_required", "capability_flag_ok"]
+    "reason_codes": ["local_engagement_high", "material_reward_not_required", "cheaper_campaign_won_on_quality", "pacing_underdelivering"]
   },
-  "explanation": {
-    "action_id": "action_2087",
-    "title": "Чекпоинт своей Пятёрочки",
-    "short_story": "Один следующий визит продвинет выбранную цель магазина.",
-    "explanation": "Маршрут выбран вместо платной награды: вы уже участвуете в локальных целях, а дополнительный товар не проходит порог необходимости."
-  },
-  "route_state": {
-    "route_id": "r_2087", "mechanic_id": "store_coop", "status": "in_progress",
-    "window_days": 7, "qualifying_event": "purchase_day", "completion": 0.68,
-    "fading_phase": "persistence", "unlocks": ["milestone_vote_token"]
-  }
+  "creative_copy": { "decision_id": "dec_2087", "title": "Чекпоинт своей Пятёрочки", "body": "Один визит за семь дней продвинет выбранную цель магазина.", "progress": "Сезон 68 процентов", "cta": "Внести вклад", "sponsored_label": "При поддержке бренда" },
+  "route_state": { "route_id": "r_2087", "mechanic_family": "store_coop", "status": "in_progress", "window_days": 7, "completion": 0.68, "fading_phase": "persistence", "unlocks": ["milestone_vote_token"] }
 }

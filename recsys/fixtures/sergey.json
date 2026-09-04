@@ -1,29 +1,26 @@
 {
-  "profile": {
-    "customer_id": "u_3311", "display_name": "Сергей",
-    "cadence_weeks": 0.8, "baseline_visit_probability": 0.87,
-    "store_engagement": "medium", "social_engagement": "low", "fatigue": 0.35
-  },
-  "action": {
-    "action_id": "action_3311", "mechanic_id": "no_action",
+  "profile": { "customer_id": "u_3311", "display_name": "Сергей", "cadence_weeks": 0.8, "baseline_visit_probability": 0.87, "categories": ["coffee", "bakery"], "store_engagement": "medium", "social_engagement": "low", "fatigue": 0.35, "sponsored_exposures_14d": 2 },
+  "decision": {
+    "decision_id": "dec_3311", "fill_type": "no_action",
+    "advertiser_id": null, "campaign_id": null, "creative_id": null, "objective": "none",
+    "mechanic_family": "no_action", "behavioral_lever": "none",
     "target_action": "none", "window_days": null,
-    "reinforcement_type": "none", "reinforcement_id": null,
-    "reinforcement_cost": 0.0, "funding_source": "none",
-    "fading_phase": "no_action",
-    "estimated_incremental_probability": 0.01, "expected_persistence_uplift": 0.0,
-    "expected_completion_probability": 0.0, "expected_payout": 0.0,
-    "expected_contribution_margin": -2.4,
-    "fraud_risk": 0.01, "optout_risk": 0.09, "fatigue_penalty": 0.05,
-    "budget_price": 0.42, "persistence_weight": 0.0,
-    "objective_scores": { "freq": 0.01, "persist": 0.0, "cost": 0.0, "margin": -2.4 },
+    "reinforcement_type": "none", "reinforcement_id": null, "reinforcement_cost": 0.0, "funding_source": "none",
+    "bid_per_qualified_visit": 0.0, "pacing_multiplier": 0.0, "effective_bid": 0.0,
+    "expected_spend": 0.0, "campaign_budget_remaining": null,
+    "p_accept": 0.30, "p_qualified_visit": 0.89, "p_qualified_visit_base": 0.87, "p_redeem": 0.0, "p_post_reward_repeat": 0.0,
+    "fading_phase": "no_action", "fatigue_penalty": 1.1, "frequency_state": { "exposures_14d": 2, "cap": 2 },
+    "objective_scores": { "media_value": 0.0, "x5_value": 2.4, "penalties": 1.1, "total": 0.0 },
+    "propensity": 0.71, "policy_version": "questads_0.1", "ghost_decision_id": "dec_3311_ghost",
     "status": "active",
-    "reason_codes": ["baseline_probability_high", "organic_subsidy_risk", "no_candidate_positive_at_lambda"]
+    "reason_codes": ["incrementality_below_floor", "organic_subsidy_risk", "frequency_cap_reached", "advertiser_would_pay_but_visit_not_incremental"]
   },
-  "explanation": {
-    "action_id": "action_3311",
-    "title": "Без маршрута",
-    "short_story": "Ничего не предлагаем и не шлём push.",
-    "explanation": "Платное воздействие не показано: визит с высокой вероятностью произойдёт и без него, поэтому награда оплатила бы органическую покупку."
-  },
-  "route_state": null
+  "creative_copy": null,
+  "route_state": null,
+  "ghost": {
+    "ghost_decision_id": "dec_3311_ghost",
+    "note": "Что было бы показано, если бы решение принималось без порога инкрементальности. Записывается для измерения лифта, пользователю не показывается.",
+    "campaign_id": "camp_042", "creative_id": "cr_042_a", "effective_bid": 28.8, "expected_spend": 25.63,
+    "why_rejected": "Кампания готова платить 32 ₽ за визит, но прирост 0.02 ниже порога 0.04: бренд оплатил бы визит, который произойдёт и так."
+  }
 }

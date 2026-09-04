@@ -1,18 +1,11 @@
 {
-  "customer_id": "u_3311",
-  "experiment_group": "D",
-  "budget_price": 0.42,
-  "chosen_action_id": "action_3311",
+  "request_id": "req_3311", "customer_id": "u_3311", "policy_version": "questads_0.1",
+  "incrementality_floor": 0.04, "contribution_margin_rub": 120.0,
   "candidates": [
-    { "action_id": "action_3311", "mechanic_id": "no_action", "window_days": null, "reinforcement_type": "none", "reinforcement_cost": 0.0, "objective_scores": { "freq": 0.01, "persist": 0.0, "cost": 0.0, "margin": -2.4 }, "aggregate": 0.0, "verdict": "chosen" },
-    { "action_id": "action_3312", "mechanic_id": "personal_finish", "window_days": 5, "reinforcement_type": "supplier_trial", "reinforcement_cost": 18.0, "objective_scores": { "freq": 0.02, "persist": 0.01, "cost": 9.9, "margin": -1.8 }, "aggregate": -4.14, "verdict": "rejected_negative_at_lambda" },
-    { "action_id": "action_3313", "mechanic_id": "personal_finish", "window_days": 7, "reinforcement_type": "digital_unlock", "reinforcement_cost": 0.0, "objective_scores": { "freq": 0.015, "persist": 0.005, "cost": 0.0, "margin": 1.2 }, "aggregate": 0.018, "verdict": "ranked_2_below_confidence" }
+    { "campaign_id": "camp_042", "creative_id": "cr_042_a", "bid": 32.0, "pacing_multiplier": 0.9, "effective_bid": 28.8, "p_qualified_visit": 0.89, "p_qualified_visit_base": 0.87, "increment": 0.02, "media_value": 25.63, "x5_value": 2.4, "penalties": 1.1, "total": 26.93, "verdict": "rejected_incrementality_floor" },
+    { "campaign_id": "camp_071", "creative_id": "cr_071_a", "bid": 36.0, "pacing_multiplier": 0.05, "effective_bid": 1.8, "p_qualified_visit": 0.88, "p_qualified_visit_base": 0.87, "increment": 0.01, "media_value": 1.58, "x5_value": 1.2, "penalties": 1.1, "total": 1.68, "verdict": "rejected_pacing_and_floor" },
+    { "campaign_id": null, "creative_id": null, "bid": 0.0, "pacing_multiplier": 0.0, "effective_bid": 0.0, "p_qualified_visit": 0.87, "p_qualified_visit_base": 0.87, "increment": 0.0, "media_value": 0.0, "x5_value": 0.0, "penalties": 0.0, "total": 0.0, "verdict": "chosen_no_action" }
   ],
-  "filtered_out": [
-    { "action_id": "action_3314", "mechanic_id": "store_coop", "reason_code": "store_capability_missing", "detail": "У точки нет флага локальных целей" },
-    { "action_id": "action_3315", "mechanic_id": "family_relay", "reason_code": "no_household_link", "detail": "Связь домохозяйства не подтверждена" },
-    { "action_id": "action_3316", "mechanic_id": "personal_finish", "reason_code": "fatigue_cap", "detail": "Три воздействия за 30 дней, лимит исчерпан" }
-  ],
-  "decision_note": "Baseline-вероятность покупки 0.87. Платное воздействие оплатило бы визит, который произойдёт и так: organic subsidy risk выше порога, сэкономлено 9.9 ₽ ожидаемой выплаты.",
-  "notes": "Синтетические данные. Значения не являются экономикой X5 и не являются измеренным эффектом."
+  "decision_note": "Кампания brand_07 набирает наибольшую медийную ценность — 25.63 ₽ — именно потому, что визит почти наверняка произойдёт. Порог инкрементальности 0.04 её отклоняет: бренду нельзя продавать визит, который случился бы и так. Это и есть защита пользователя и рекламодателя одновременно.",
+  "notes": "Синтетические данные. Не экономика X5 и не измеренный эффект."
 }

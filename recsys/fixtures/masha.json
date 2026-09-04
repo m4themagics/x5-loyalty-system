@@ -1,33 +1,20 @@
 {
-  "profile": {
-    "customer_id": "u_1042", "display_name": "Маша",
-    "cadence_weeks": 2.6, "baseline_visit_probability": 0.31,
-    "store_engagement": "low", "social_engagement": "low", "fatigue": 0.12
-  },
-  "action": {
-    "action_id": "action_1042", "mechanic_id": "personal_finish",
+  "profile": { "customer_id": "u_1042", "display_name": "Маша", "cadence_weeks": 2.6, "baseline_visit_probability": 0.23, "categories": ["coffee", "dairy"], "store_engagement": "low", "social_engagement": "low", "fatigue": 0.12, "sponsored_exposures_14d": 0 },
+  "decision": {
+    "decision_id": "dec_1042", "fill_type": "sponsored",
+    "advertiser_id": "brand_07", "campaign_id": "camp_042", "creative_id": "cr_042_a", "objective": "qualified_product_trial",
+    "mechanic_family": "personal_finish", "behavioral_lever": "completion",
     "target_action": "purchase_day_in_window", "window_days": 5,
-    "reinforcement_type": "supplier_trial", "reinforcement_id": "sku_318",
-    "reinforcement_cost": 18.0, "funding_source": "supplier",
-    "fading_phase": "onboarding",
-    "estimated_incremental_probability": 0.11, "expected_persistence_uplift": 0.03,
-    "expected_completion_probability": 0.52, "expected_payout": 9.36,
-    "expected_contribution_margin": 13.2,
-    "fraud_risk": 0.04, "optout_risk": 0.06, "fatigue_penalty": 0.01,
-    "budget_price": 0.42, "persistence_weight": 0.3,
-    "objective_scores": { "freq": 0.11, "persist": 0.03, "cost": 9.36, "margin": 13.2 },
+    "reinforcement_type": "supplier_trial", "reinforcement_id": "sku_318", "reinforcement_cost": 18.0, "funding_source": "advertiser",
+    "bid_per_qualified_visit": 32.0, "pacing_multiplier": 0.9, "effective_bid": 28.8,
+    "expected_spend": 9.79, "campaign_budget_remaining": 82400.0,
+    "p_accept": 0.41, "p_qualified_visit": 0.34, "p_qualified_visit_base": 0.23, "p_redeem": 0.52, "p_post_reward_repeat": 0.19,
+    "fading_phase": "onboarding", "fatigue_penalty": 0.4, "frequency_state": { "exposures_14d": 0, "cap": 2 },
+    "objective_scores": { "media_value": 9.79, "x5_value": 13.2, "penalties": 0.4, "total": 22.59 },
+    "propensity": 0.62, "policy_version": "questads_0.1", "ghost_decision_id": null,
     "status": "active",
-    "reason_codes": ["gap_to_next_visit_high", "repeat_category_match", "fatigue_low", "supplier_funded"]
+    "reason_codes": ["incremental_above_floor", "category_match_coffee", "fatigue_low", "advertiser_funded", "pacing_on_track"]
   },
-  "explanation": {
-    "action_id": "action_1042",
-    "title": "Личный чекпоинт",
-    "short_story": "Этот чек уже открыл маршрут — остался один визит.",
-    "explanation": "Маршрут выбран, потому что до вашей обычной следующей покупки далеко, а категория повторяется. Товар на входе оплачивает поставщик."
-  },
-  "route_state": {
-    "route_id": "r_1042", "mechanic_id": "personal_finish", "status": "in_progress",
-    "window_days": 5, "qualifying_event": "purchase_day", "completion": 0.5,
-    "fading_phase": "onboarding", "unlocks": []
-  }
+  "creative_copy": { "decision_id": "dec_1042", "title": "Кофейный чекпоинт", "body": "Этот чек уже открыл маршрут — остался один визит за пять дней.", "progress": "1 из 2 чекпоинтов", "cta": "Продолжить маршрут", "sponsored_label": "При поддержке бренда" },
+  "route_state": { "route_id": "r_1042", "mechanic_family": "personal_finish", "status": "in_progress", "window_days": 5, "completion": 0.5, "fading_phase": "onboarding", "unlocks": [] }
 }

@@ -1,0 +1,21 @@
+{
+  "profile": { "customer_id": "u_5120", "display_name": "Ирина", "cadence_weeks": 2.1, "baseline_visit_probability": 0.26, "categories": ["baby", "dairy"], "store_engagement": "medium", "social_engagement": "low", "fatigue": 0.10, "sponsored_exposures_14d": 0 },
+  "decision": {
+    "decision_id": "dec_5120", "fill_type": "sponsored",
+    "advertiser_id": "brand_12", "campaign_id": "camp_058", "creative_id": "cr_058_a", "objective": "category_reactivation",
+    "mechanic_family": "store_coop", "behavioral_lever": "collective_progress",
+    "target_action": "purchase_day_in_window", "window_days": 7,
+    "reinforcement_type": "progress_only", "reinforcement_id": null, "reinforcement_cost": 0.0, "funding_source": "advertiser",
+    "bid_per_qualified_visit": 18.0, "pacing_multiplier": 1.1, "effective_bid": 19.8,
+    "expected_spend": 5.94, "campaign_budget_remaining": 71200.0,
+    "p_accept": 0.44, "p_qualified_visit": 0.30, "p_qualified_visit_base": 0.26, "p_redeem": 0.0, "p_post_reward_repeat": 0.21,
+    "fading_phase": "onboarding", "fatigue_penalty": 0.1, "frequency_state": { "exposures_14d": 0, "cap": 3 },
+    "objective_scores": { "media_value": 5.94, "x5_value": 4.8, "penalties": 0.1, "total": 10.64 },
+    "propensity": 0.58, "policy_version": "questads_0.1", "ghost_decision_id": null,
+    "status": "active",
+    "reason_codes": ["higher_bid_campaign_out_of_pacing", "category_match_dairy", "incremental_above_floor"]
+  },
+  "creative_copy": { "decision_id": "dec_5120", "title": "Чекпоинт своей Пятёрочки", "body": "Один визит за семь дней продвинет выбранную цель магазина.", "progress": "Сезон 41 процент", "cta": "Внести вклад", "sponsored_label": "При поддержке бренда" },
+  "route_state": { "route_id": "r_5120", "mechanic_family": "store_coop", "status": "in_progress", "window_days": 7, "completion": 0.41, "fading_phase": "onboarding", "unlocks": [] },
+  "demo_note": "Кампания brand_19 бидует 36 ₽ против 18 ₽ и подходит по категории, но её дневной pacing allowance исчерпан: остаток бюджета 400 ₽ при флайте до 17.09. Побеждает следующая релевантная кампания. Это и отличает аллокатор от рекомендера с полем budget."
+}
