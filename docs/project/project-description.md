@@ -359,7 +359,7 @@ AI Product-роль связала продуктовые решения с ре
 
 ## 15. Источники
 
-1. Описание кейса и Q&A кейсодателя, предоставленные команде 03.09.2026.
+1. [Описание кейса](case-brief.md) и Q&A кейсодателя, предоставленные команде 03.09.2026.
 2. [X5: развитие собственной платформы геймификации](https://www.x5.ru/ru/news/kazhdyj-tretij-gejmer-igraet-v-mobilnyh-prilozheniyah-x5/).
 3. [EagleAI Challenges](https://eagleeye.com/challenges).
 4. [GS25 My Refrigerator](https://view.asiae.co.kr/en/article/2021061408363290618).

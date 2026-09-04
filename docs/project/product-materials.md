@@ -321,7 +321,7 @@ Value(u, c) = ΔP(active purchase week | u, c) × contribution margin
 
 ## Источники
 
-1. Описание кейса и Q&A кейсодателя, предоставленные команде 03.09.2026.
+1. [Описание кейса](case-brief.md) и Q&A кейсодателя, предоставленные команде 03.09.2026.
 2. [X5 о собственной платформе геймификации, 02.06.2026](https://www.x5.ru/ru/news/kazhdyj-tretij-gejmer-igraet-v-mobilnyh-prilozheniyah-x5/).
 3. [EagleAI Challenges](https://eagleeye.com/challenges) — рыночный baseline персонализированных challenge.
 4. [GS25 My Refrigerator](https://view.asiae.co.kr/en/article/2021061408363290618) — хранение и gifting промотоваров; публичные adoption-метрики, но не causal uplift.
