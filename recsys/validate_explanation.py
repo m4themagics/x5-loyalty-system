@@ -18,6 +18,8 @@ SKU = re.compile(r"\bsku[_\-]?\d+\b", re.I)
 DAYS = re.compile(r"\b(\d+)\s*(?:дн|дней|день|дня)", re.I)
 CAUSAL = re.compile(r"гарантир|обязательно вернёт|увеличит ваши покупки|доказан|точно приведёт", re.I)
 HOLD_LIFTED = re.compile(r"награда ваша|забирайте сейчас|получите сразу|hold снят", re.I)
+URGENCY = re.compile(r"только сегодня|последний шанс|успей|осталось \d+ час|торопитесь", re.I)
+NEXT_STEP = re.compile(r"визит|покупк|верн|зайд|чек", re.I)
 
 FALLBACK = {
     "personal_finish": "Один следующий покупочный день завершает маршрут.",
@@ -68,6 +70,13 @@ def check(action, explanation):
         problems.append("обещан причинный эффект")
     if action.get("status") == "delayed" and HOLD_LIFTED.search(text):
         problems.append("снят fraud hold")
+
+    if URGENCY.search(text):
+        problems.append("ложная срочность: срок задан окном действия")
+
+    body = str(explanation.get("body", ""))
+    if action.get("surface_result") in ("sponsored", "organic") and body and not NEXT_STEP.search(body):
+        problems.append("не назван следующий шаг")
 
     return problems
 
