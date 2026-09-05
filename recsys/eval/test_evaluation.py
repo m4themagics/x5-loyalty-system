@@ -6,7 +6,7 @@ import pathlib
 import unittest
 from unittest.mock import patch
 
-from recsys.eval import fraud_eval, run_relevance, simulate
+from recsys.eval import fraud_eval, population, run_relevance, simulate
 
 ROOT = pathlib.Path(__file__).resolve().parent
 
@@ -92,6 +92,39 @@ class EvaluationTest(unittest.TestCase):
             request = call.args[0]
             self.assertNotIn("hidden", request)
             self.assertNotIn("game_uplift_probability", request)
+            self.assertNotIn("audience_segment", request)
+            self.assertNotIn("engagement", request)
+
+    def test_population_matches_pyaterochka_app_segments(self):
+        people = population.build_population(self.scenario(), users=1000)
+        self.assertEqual(
+            population.count_by(people, "audience_segment"),
+            {"youth": 370, "harmful_habits": 50, "parents_u3": 260,
+             "mature": 210, "senior": 110},
+        )
+        self.assertEqual(
+            set(population.count_by(people, "engagement")),
+            {"interested", "neutral", "skeptical"},
+        )
+
+    def test_population_is_reproducible_and_keeps_interest_latent(self):
+        first = population.build_population(self.scenario(), users=100)
+        second = population.build_population(self.scenario(), users=100)
+        fingerprint = lambda rows: [
+            (row["audience_segment"], row["engagement"], row["inventory_count"],
+             row["missing_history"]) for row in rows
+        ]
+        self.assertEqual(fingerprint(first), fingerprint(second))
+        self.assertTrue(all("profile" not in row for row in first))
+
+    def test_simulation_reports_all_population_slices(self):
+        result = simulate.run_scenario(self.scenario())
+        self.assertEqual(sum(row["users"] for row in result["audience_breakdown"]), 8)
+        self.assertEqual(sum(row["users"] for row in result["engagement_breakdown"]), 8)
+        self.assertEqual(
+            {row["engagement"] for row in result["engagement_breakdown"]},
+            {"interested", "neutral", "skeptical"},
+        )
 
     def test_fraud_metrics_separate_reject_hold_and_review(self):
         rows = [{"label": "abuse", "decision": "reject", "household": False},
