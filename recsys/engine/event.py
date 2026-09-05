@@ -42,11 +42,27 @@ def handle_event(request: dict[str, Any]) -> dict[str, Any]:
             reasons.append("reward_already_issued")
         return _response(request, "duplicate", True, risk, None, reasons)
 
+    promise = profile.get("outstanding_promise")
+    if promise is None or promise["fulfilled"]:
+        return _response(request, "not_qualified", False, risk, None, ["promise_not_active"])
+    if (
+        promise["challenge_id"] != challenge["challenge_id"]
+        or promise["challenge_version"] != challenge["challenge_version"]
+        or promise["deadline_ms"] != challenge["target"]["deadline_ms"]
+    ):
+        return _response(request, "not_qualified", False, risk, None, ["promise_mismatch"])
+
     if receipt["returned"]:
         return _response(request, "not_qualified", False, risk, None, ["receipt_returned"])
 
+    if receipt["purchased_at_ms"] < promise["published_at_ms"]:
+        return _response(request, "not_qualified", False, risk, None, ["receipt_before_promise"])
+
     if receipt["purchased_at_ms"] > challenge["target"]["deadline_ms"]:
         return _response(request, "not_qualified", False, risk, None, ["receipt_window_expired"])
+
+    if receipt["purchased_at_ms"] > now_ms:
+        return _response(request, "not_qualified", False, risk, None, ["receipt_from_future"])
 
     qualification_reasons = _qualify(receipt, challenge["target"])
     if qualification_reasons:
@@ -78,7 +94,9 @@ def _qualify(receipt: dict[str, Any], target: dict[str, Any]) -> list[str]:
     if not matching:
         return ["receipt_category_mismatch"]
 
-    paid_quantity = sum(line["quantity"] for line in matching if line["paid"])
+    paid_quantity = sum(
+        line["quantity"] for line in matching if line["paid"] and line["amount_kopecks"] > 0
+    )
     if paid_quantity == 0:
         return ["receipt_line_not_paid"]
     if paid_quantity < target["quantity"]:

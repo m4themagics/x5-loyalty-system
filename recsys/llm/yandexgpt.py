@@ -60,8 +60,9 @@ def complete(system_prompt: str, user_prompt: str) -> LlmResult:
             body = json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as error:
         return LlmResult(None, model, _elapsed_ms(started), f"yandexgpt_http_{error.code}")
-    except (urllib.error.URLError, TimeoutError) as error:
-        return LlmResult(None, model, _elapsed_ms(started), f"yandexgpt_unreachable: {error.reason}")
+    except (urllib.error.URLError, TimeoutError, OSError) as error:
+        reason = getattr(error, "reason", str(error))
+        return LlmResult(None, model, _elapsed_ms(started), f"yandexgpt_unreachable: {reason}")
     except json.JSONDecodeError:
         return LlmResult(None, model, _elapsed_ms(started), "yandexgpt_invalid_json")
 

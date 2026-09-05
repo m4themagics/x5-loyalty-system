@@ -18,6 +18,17 @@ class RiskAssessment(NamedTuple):
         return {"decision": self.decision, "score": self.score, "signals": self.signals}
 
 
+def assess_promise(profile: dict[str, Any]) -> RiskAssessment:
+    """Блокирует явный самореферал до публикации нового обещания.
+
+    Остальные признаки требуют контекста события и оцениваются после чека. Общий девайс или
+    домохозяйство здесь не являются самостоятельным основанием для отказа.
+    """
+    if profile["referral"]["invited_by_profile_id"] == profile["profile_id"]:
+        return RiskAssessment("reject", 1.0, ["self_referral"])
+    return RiskAssessment("allow", 0.0, ["no_risk_signal"])
+
+
 def assess(
     profile: dict[str, Any],
     receipt: dict[str, Any],

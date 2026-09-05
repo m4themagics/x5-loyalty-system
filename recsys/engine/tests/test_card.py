@@ -91,6 +91,22 @@ class CardTest(unittest.TestCase):
         self.assertIn("Купите один оплаченный товар", response["card"]["body"])
         self.assertEqual(response["diagnostics"]["llm"]["model"], "qwen3:1.7b")
 
+    def test_local_ollama_timeout_returns_a_fallback_result(self) -> None:
+        with mock.patch("urllib.request.urlopen", side_effect=TimeoutError("timed out")):
+            result = llm.ollama.complete("system", "user")
+        self.assertIsNone(result.text)
+        self.assertEqual(result.model, "qwen3:1.7b")
+        self.assertIn("ollama_unreachable", result.error)
+
+    def test_yandex_timeout_returns_a_fallback_result(self) -> None:
+        with mock.patch.dict(
+            "os.environ",
+            {"YANDEX_API_KEY": "test", "YANDEX_FOLDER_ID": "test"},
+        ), mock.patch("urllib.request.urlopen", side_effect=TimeoutError("timed out")):
+            result = llm.yandexgpt.complete("system", "user")
+        self.assertIsNone(result.text)
+        self.assertIn("yandexgpt_unreachable", result.error)
+
 
 class CardContractTest(unittest.TestCase):
     def setUp(self) -> None:

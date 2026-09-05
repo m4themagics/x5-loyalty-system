@@ -124,6 +124,13 @@ class DecisionTest(unittest.TestCase):
         self.assertEqual(response["status"], "no_action")
         self.assertEqual(response["reason_codes"], ["no_purchase_history"])
 
+    def test_self_referral_is_rejected_before_a_promise_is_shown(self) -> None:
+        request = copy.deepcopy(self.empty)
+        request["profile"]["referral"]["invited_by_profile_id"] = request["profile"]["profile_id"]
+        response = handle_decision(request)
+        self.assertEqual(response["status"], "no_action")
+        self.assertEqual(response["reason_codes"], ["risk_reject", "self_referral"])
+
     def test_unknown_categories_only_refuse_because_exploration_is_disabled(self) -> None:
         request = copy.deepcopy(self.empty)
         request["profile"]["receipts"] = [

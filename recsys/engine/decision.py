@@ -6,6 +6,7 @@ from .candidates import Candidate, build_candidates
 from .economics import available_budget
 from .history import DAY_MS, PurchaseHistory
 from .policy import PolicyError, load_campaigns, load_policy, load_sku_catalog
+from .risk import assess_promise
 
 MAX_TRACED_CANDIDATES = 8
 
@@ -31,6 +32,15 @@ def handle_decision(request: dict[str, Any]) -> dict[str, Any]:
         "policy_version": policy["policy_version"],
     }
     budget = available_budget(request["budget"])
+
+    promise_risk = assess_promise(profile)
+    if promise_risk.decision != "allow":
+        return _no_action(
+            request,
+            [f"risk_{promise_risk.decision}", *promise_risk.signals],
+            engine_meta,
+            budget=budget,
+        )
 
     promise = profile.get("outstanding_promise")
     if promise is not None and not promise["fulfilled"] and promise["deadline_ms"] >= now_ms:

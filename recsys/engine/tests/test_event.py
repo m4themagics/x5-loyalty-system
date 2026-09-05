@@ -72,6 +72,45 @@ class EventTest(unittest.TestCase):
         self.assertEqual(response["reason_codes"], ["receipt_line_not_paid"])
         self.assertIsNone(response["grant"])
 
+    def test_a_zero_amount_paid_line_does_not_close_the_challenge(self) -> None:
+        request = copy.deepcopy(self.request)
+        for line in request["receipt"]["lines"]:
+            line["amount_kopecks"] = 0
+        response = handle_event(request)
+        self.assertEqual(response["qualification"], "not_qualified")
+        self.assertEqual(response["reason_codes"], ["receipt_line_not_paid"])
+        self.assertIsNone(response["grant"])
+
+    def test_a_receipt_before_the_promise_does_not_qualify(self) -> None:
+        request = copy.deepcopy(self.request)
+        request["receipt"]["purchased_at_ms"] = (
+            request["profile"]["outstanding_promise"]["published_at_ms"] - 1
+        )
+        response = handle_event(request)
+        self.assertEqual(response["reason_codes"], ["receipt_before_promise"])
+        self.assertIsNone(response["grant"])
+
+    def test_a_future_receipt_does_not_qualify(self) -> None:
+        request = copy.deepcopy(self.request)
+        request["receipt"]["purchased_at_ms"] = request["now_ms"] + 1
+        response = handle_event(request)
+        self.assertEqual(response["reason_codes"], ["receipt_from_future"])
+        self.assertIsNone(response["grant"])
+
+    def test_a_challenge_without_an_active_promise_does_not_issue(self) -> None:
+        request = copy.deepcopy(self.request)
+        request["profile"]["outstanding_promise"] = None
+        response = handle_event(request)
+        self.assertEqual(response["reason_codes"], ["promise_not_active"])
+        self.assertIsNone(response["grant"])
+
+    def test_a_different_challenge_than_the_promise_does_not_issue(self) -> None:
+        request = copy.deepcopy(self.request)
+        request["profile"]["outstanding_promise"]["challenge_id"] = "chl_different"
+        response = handle_event(request)
+        self.assertEqual(response["reason_codes"], ["promise_mismatch"])
+        self.assertIsNone(response["grant"])
+
     def test_a_different_category_does_not_qualify(self) -> None:
         request = copy.deepcopy(self.request)
         for line in request["receipt"]["lines"]:
