@@ -8,6 +8,7 @@
 Запуск из корня репозитория: python3 recsys/eval/run_relevance.py
 """
 import json
+import os
 import pathlib
 import subprocess
 import sys
@@ -54,16 +55,20 @@ def main() -> int:
         if response["status"] == "no_action":
             expected = set(entry["expected_reason_codes"])
             matched = expected.issubset(set(response["reason_codes"]))
-            refusal_correct.append(
-                (entry["profile_id"], ", ".join(response["reason_codes"]), matched)
-            )
+            if matched:
+                refusal_correct.append(
+                    (entry["profile_id"], ", ".join(response["reason_codes"]), True)
+                )
+            else:
+                refusal_wrong.append((entry["profile_id"],
+                    "неверная причина отказа: " + ", ".join(response["reason_codes"])))
         else:
             refusal_wrong.append((entry["profile_id"], "показано задание вместо отказа"))
 
     total = len(rubric["eligible"])
     minimum = rubric["threshold"]["minimum_hits"]
 
-    print("Релевантность на независимо размеченных профилях")
+    print("Релевантность по отдельно хранимой рубрике синтетических профилей")
     print(f"  разметка: {rubric['label_status']} от {rubric['labelled_on']}, "
           f"экспертное подтверждение: {rubric['expert_confirmation']}")
     print(f"  знаменатель: {total}, порог: {minimum}")
@@ -84,7 +89,8 @@ def main() -> int:
         "Он не измеряет релевантность на реальных покупателях."
     )
 
-    passed = len(hits) >= minimum and not refusal_wrong
+    passed = (total == rubric["threshold"]["eligible_profiles"]
+              and len(hits) >= minimum and not refusal_wrong)
     print(f"\nИТОГ: {'порог достигнут' if passed else 'порог не достигнут'}")
     return 0 if passed else 1
 
@@ -134,6 +140,7 @@ def call_engine(profile: dict, game: dict, budget: dict) -> dict | None:
         capture_output=True,
         text=True,
         cwd=str(ROOT),
+        env={**os.environ, "LLM_PROVIDER": "template", "PYTHONDONTWRITEBYTECODE": "1"},
     )
     if result.returncode != 0:
         print(f"  движок: код {result.returncode}: {result.stderr.strip()}", file=sys.stderr)

@@ -1,5 +1,5 @@
 {
-  "notes": "Размеченные синтетические случаи риска. Калибровочная выборка объясняет порог, итоговая оценивается после его фиксации. Набор искусственно сбалансирован: доли здесь не равны реальной частоте мошенничества и не переносятся на неё.",
+  "notes": "Calibration keeps the original scenarios. Final is a separately authored challenge set with new feature combinations, legitimate ambiguous cases and concealed abuse. It is not a random population holdout; labels remain agent_draft.",
   "threshold_source": "recsys/engine/data/policy.json, раздел risk",
   "threshold_fixed_before_final_scoring": true,
   "label_status": "agent_draft",
@@ -2430,18 +2430,18 @@
       }
     },
     {
-      "case_id": "legit_regular-037",
+      "case_id": "final-family_imported_history",
       "split": "final",
       "label": "legitimate",
-      "description": "Постоянный покупатель, один чек, история подтверждена",
+      "description": "Новый участник семьи перенёс подтверждённую историю; обычная покупка",
       "profile": {
         "snapshot_version": 1,
-        "profile_id": "p-legit-37",
-        "label": "p-legit-37",
+        "profile_id": "final-person-0",
+        "label": "Синтетический трудный случай",
         "synthetic": true,
         "receipts": [
           {
-            "receipt_id": "r37-a",
+            "receipt_id": "r1-a",
             "purchased_at_ms": 1787821200000,
             "store_id": "store-fraud-eval",
             "returned": false,
@@ -2456,7 +2456,7 @@
             ]
           },
           {
-            "receipt_id": "r37-b",
+            "receipt_id": "r1-b",
             "purchased_at_ms": 1788253200000,
             "store_id": "store-fraud-eval",
             "returned": false,
@@ -2488,14 +2488,14 @@
           "inviter_rewards_in_window": 0
         },
         "risk_signals": {
-          "device_id": "device-p-legit-37",
-          "household_id": null,
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
+          "device_id": "final-device-0",
+          "household_id": "household-final",
+          "account_age_days": 2,
+          "confirmed_purchase_days": 4
         }
       },
       "receipt": {
-        "receipt_id": "r37-new",
+        "receipt_id": "final-receipt-0",
         "purchased_at_ms": 1788598800000,
         "store_id": "store-fraud-eval",
         "returned": false,
@@ -2511,18 +2511,68 @@
       }
     },
     {
-      "case_id": "legit_regular-038",
+      "case_id": "final-first_purchase",
       "split": "final",
       "label": "legitimate",
-      "description": "Постоянный покупатель, один чек, история подтверждена",
+      "description": "Честный новый аккаунт совершает первую покупку без приглашения",
       "profile": {
         "snapshot_version": 1,
-        "profile_id": "p-legit-38",
-        "label": "p-legit-38",
+        "profile_id": "final-person-1",
+        "label": "Синтетический трудный случай",
+        "synthetic": true,
+        "receipts": [],
+        "inventory": [],
+        "issued_rewards": [],
+        "processed_event_ids": [],
+        "active_coupon": null,
+        "outstanding_promise": null,
+        "progress": {
+          "completed_recipe_ids": [],
+          "avatar_level": 0,
+          "redeemed_savings_28d_kopecks": 0
+        },
+        "referral": {
+          "invited_by_profile_id": null,
+          "invited_at_ms": null,
+          "had_confirmed_purchase_before_invite": false,
+          "inviter_rewards_in_window": 0
+        },
+        "risk_signals": {
+          "device_id": "final-device-1",
+          "household_id": null,
+          "account_age_days": 2,
+          "confirmed_purchase_days": 0
+        }
+      },
+      "receipt": {
+        "receipt_id": "final-receipt-1",
+        "purchased_at_ms": 1788598800000,
+        "store_id": "store-fraud-eval",
+        "returned": false,
+        "lines": [
+          {
+            "sku_id": "sku-milk-1l",
+            "category": "Молочные продукты",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 8900
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "final-mature_split",
+      "split": "final",
+      "label": "legitimate",
+      "description": "Постоянный покупатель сделал два чека: забытый товар и основная корзина",
+      "profile": {
+        "snapshot_version": 1,
+        "profile_id": "final-person-2",
+        "label": "Синтетический трудный случай",
         "synthetic": true,
         "receipts": [
           {
-            "receipt_id": "r38-a",
+            "receipt_id": "r1-a",
             "purchased_at_ms": 1787821200000,
             "store_id": "store-fraud-eval",
             "returned": false,
@@ -2537,7 +2587,118 @@
             ]
           },
           {
-            "receipt_id": "r38-b",
+            "receipt_id": "r1-b",
+            "purchased_at_ms": 1788253200000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          },
+          {
+            "receipt_id": "final-prior-2-0",
+            "purchased_at_ms": 1788598800000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          },
+          {
+            "receipt_id": "final-prior-2-1",
+            "purchased_at_ms": 1788598800000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          }
+        ],
+        "inventory": [],
+        "issued_rewards": [],
+        "processed_event_ids": [],
+        "active_coupon": null,
+        "outstanding_promise": null,
+        "progress": {
+          "completed_recipe_ids": [],
+          "avatar_level": 0,
+          "redeemed_savings_28d_kopecks": 0
+        },
+        "referral": {
+          "invited_by_profile_id": null,
+          "invited_at_ms": null,
+          "had_confirmed_purchase_before_invite": false,
+          "inviter_rewards_in_window": 0
+        },
+        "risk_signals": {
+          "device_id": "final-device-2",
+          "household_id": null,
+          "account_age_days": 90,
+          "confirmed_purchase_days": 4
+        }
+      },
+      "receipt": {
+        "receipt_id": "final-receipt-2",
+        "purchased_at_ms": 1788598800000,
+        "store_id": "store-fraud-eval",
+        "returned": false,
+        "lines": [
+          {
+            "sku_id": "sku-milk-1l",
+            "category": "Молочные продукты",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 8900
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "final-family_return",
+      "split": "final",
+      "label": "legitimate",
+      "description": "Постоянный участник семьи законно возвращает часть покупки",
+      "profile": {
+        "snapshot_version": 1,
+        "profile_id": "final-person-3",
+        "label": "Синтетический трудный случай",
+        "synthetic": true,
+        "receipts": [
+          {
+            "receipt_id": "r1-a",
+            "purchased_at_ms": 1787821200000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          },
+          {
+            "receipt_id": "r1-b",
             "purchased_at_ms": 1788253200000,
             "store_id": "store-fraud-eval",
             "returned": false,
@@ -2569,17 +2730,17 @@
           "inviter_rewards_in_window": 0
         },
         "risk_signals": {
-          "device_id": "device-p-legit-38",
-          "household_id": null,
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
+          "device_id": "final-device-3",
+          "household_id": "household-final",
+          "account_age_days": 90,
+          "confirmed_purchase_days": 4
         }
       },
       "receipt": {
-        "receipt_id": "r38-new",
+        "receipt_id": "final-receipt-3",
         "purchased_at_ms": 1788598800000,
         "store_id": "store-fraud-eval",
-        "returned": false,
+        "returned": true,
         "lines": [
           {
             "sku_id": "sku-milk-1l",
@@ -2592,18 +2753,18 @@
       }
     },
     {
-      "case_id": "legit_regular-039",
+      "case_id": "final-new_family_return",
       "split": "final",
       "label": "legitimate",
-      "description": "Постоянный покупатель, один чек, история подтверждена",
+      "description": "Новый аккаунт с перенесённой историей и общим устройством законно возвращает товар",
       "profile": {
         "snapshot_version": 1,
-        "profile_id": "p-legit-39",
-        "label": "p-legit-39",
+        "profile_id": "final-person-4",
+        "label": "Синтетический трудный случай",
         "synthetic": true,
         "receipts": [
           {
-            "receipt_id": "r39-a",
+            "receipt_id": "r1-a",
             "purchased_at_ms": 1787821200000,
             "store_id": "store-fraud-eval",
             "returned": false,
@@ -2618,7 +2779,7 @@
             ]
           },
           {
-            "receipt_id": "r39-b",
+            "receipt_id": "r1-b",
             "purchased_at_ms": 1788253200000,
             "store_id": "store-fraud-eval",
             "returned": false,
@@ -2650,14 +2811,125 @@
           "inviter_rewards_in_window": 0
         },
         "risk_signals": {
-          "device_id": "device-p-legit-39",
-          "household_id": null,
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
+          "device_id": "final-device-4",
+          "household_id": "household-final",
+          "account_age_days": 2,
+          "confirmed_purchase_days": 4
         }
       },
       "receipt": {
-        "receipt_id": "r39-new",
+        "receipt_id": "final-receipt-4",
+        "purchased_at_ms": 1788598800000,
+        "store_id": "store-fraud-eval",
+        "returned": true,
+        "lines": [
+          {
+            "sku_id": "sku-milk-1l",
+            "category": "Молочные продукты",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 8900
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "final-new_known_split",
+      "split": "final",
+      "label": "legitimate",
+      "description": "Новый аккаунт с историей разделил покупку на две кассы по бытовой причине",
+      "profile": {
+        "snapshot_version": 1,
+        "profile_id": "final-person-5",
+        "label": "Синтетический трудный случай",
+        "synthetic": true,
+        "receipts": [
+          {
+            "receipt_id": "r1-a",
+            "purchased_at_ms": 1787821200000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          },
+          {
+            "receipt_id": "r1-b",
+            "purchased_at_ms": 1788253200000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          },
+          {
+            "receipt_id": "final-prior-5-0",
+            "purchased_at_ms": 1788598800000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          },
+          {
+            "receipt_id": "final-prior-5-1",
+            "purchased_at_ms": 1788598800000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          }
+        ],
+        "inventory": [],
+        "issued_rewards": [],
+        "processed_event_ids": [],
+        "active_coupon": null,
+        "outstanding_promise": null,
+        "progress": {
+          "completed_recipe_ids": [],
+          "avatar_level": 0,
+          "redeemed_savings_28d_kopecks": 0
+        },
+        "referral": {
+          "invited_by_profile_id": null,
+          "invited_at_ms": null,
+          "had_confirmed_purchase_before_invite": false,
+          "inviter_rewards_in_window": 0
+        },
+        "risk_signals": {
+          "device_id": "final-device-5",
+          "household_id": null,
+          "account_age_days": 2,
+          "confirmed_purchase_days": 4
+        }
+      },
+      "receipt": {
+        "receipt_id": "final-receipt-5",
         "purchased_at_ms": 1788598800000,
         "store_id": "store-fraud-eval",
         "returned": false,
@@ -2673,18 +2945,18 @@
       }
     },
     {
-      "case_id": "legit_regular-040",
+      "case_id": "final-self_family",
       "split": "final",
-      "label": "legitimate",
-      "description": "Постоянный покупатель, один чек, история подтверждена",
+      "label": "abuse",
+      "description": "Старый аккаунт пытается получить награду за приглашение самого себя в общем домохозяйстве",
       "profile": {
         "snapshot_version": 1,
-        "profile_id": "p-legit-40",
-        "label": "p-legit-40",
+        "profile_id": "final-person-6",
+        "label": "Синтетический трудный случай",
         "synthetic": true,
         "receipts": [
           {
-            "receipt_id": "r40-a",
+            "receipt_id": "r1-a",
             "purchased_at_ms": 1787821200000,
             "store_id": "store-fraud-eval",
             "returned": false,
@@ -2699,7 +2971,411 @@
             ]
           },
           {
-            "receipt_id": "r40-b",
+            "receipt_id": "r1-b",
+            "purchased_at_ms": 1788253200000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          }
+        ],
+        "inventory": [],
+        "issued_rewards": [],
+        "processed_event_ids": [],
+        "active_coupon": null,
+        "outstanding_promise": null,
+        "progress": {
+          "completed_recipe_ids": [],
+          "avatar_level": 0,
+          "redeemed_savings_28d_kopecks": 0
+        },
+        "referral": {
+          "invited_by_profile_id": "final-person-6",
+          "invited_at_ms": null,
+          "had_confirmed_purchase_before_invite": false,
+          "inviter_rewards_in_window": 0
+        },
+        "risk_signals": {
+          "device_id": "final-device-6",
+          "household_id": "household-final",
+          "account_age_days": 90,
+          "confirmed_purchase_days": 4
+        }
+      },
+      "receipt": {
+        "receipt_id": "final-receipt-6",
+        "purchased_at_ms": 1788598800000,
+        "store_id": "store-fraud-eval",
+        "returned": false,
+        "lines": [
+          {
+            "sku_id": "sku-milk-1l",
+            "category": "Молочные продукты",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 8900
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "final-self_return",
+      "split": "final",
+      "label": "abuse",
+      "description": "Самореферал возвращает квалифицирующую покупку после попытки получить награду",
+      "profile": {
+        "snapshot_version": 1,
+        "profile_id": "final-person-7",
+        "label": "Синтетический трудный случай",
+        "synthetic": true,
+        "receipts": [
+          {
+            "receipt_id": "r1-a",
+            "purchased_at_ms": 1787821200000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          },
+          {
+            "receipt_id": "r1-b",
+            "purchased_at_ms": 1788253200000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          }
+        ],
+        "inventory": [],
+        "issued_rewards": [],
+        "processed_event_ids": [],
+        "active_coupon": null,
+        "outstanding_promise": null,
+        "progress": {
+          "completed_recipe_ids": [],
+          "avatar_level": 0,
+          "redeemed_savings_28d_kopecks": 0
+        },
+        "referral": {
+          "invited_by_profile_id": "final-person-7",
+          "invited_at_ms": null,
+          "had_confirmed_purchase_before_invite": false,
+          "inviter_rewards_in_window": 0
+        },
+        "risk_signals": {
+          "device_id": "final-device-7",
+          "household_id": null,
+          "account_age_days": 90,
+          "confirmed_purchase_days": 4
+        }
+      },
+      "receipt": {
+        "receipt_id": "final-receipt-7",
+        "purchased_at_ms": 1788598800000,
+        "store_id": "store-fraud-eval",
+        "returned": true,
+        "lines": [
+          {
+            "sku_id": "sku-milk-1l",
+            "category": "Молочные продукты",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 8900
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "final-self_new_known",
+      "split": "final",
+      "label": "abuse",
+      "description": "Новый аккаунт с историей назначил себя пригласившим ради второй награды",
+      "profile": {
+        "snapshot_version": 1,
+        "profile_id": "final-person-8",
+        "label": "Синтетический трудный случай",
+        "synthetic": true,
+        "receipts": [
+          {
+            "receipt_id": "r1-a",
+            "purchased_at_ms": 1787821200000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          },
+          {
+            "receipt_id": "r1-b",
+            "purchased_at_ms": 1788253200000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          }
+        ],
+        "inventory": [],
+        "issued_rewards": [],
+        "processed_event_ids": [],
+        "active_coupon": null,
+        "outstanding_promise": null,
+        "progress": {
+          "completed_recipe_ids": [],
+          "avatar_level": 0,
+          "redeemed_savings_28d_kopecks": 0
+        },
+        "referral": {
+          "invited_by_profile_id": "final-person-8",
+          "invited_at_ms": null,
+          "had_confirmed_purchase_before_invite": false,
+          "inviter_rewards_in_window": 0
+        },
+        "risk_signals": {
+          "device_id": "final-device-8",
+          "household_id": null,
+          "account_age_days": 2,
+          "confirmed_purchase_days": 4
+        }
+      },
+      "receipt": {
+        "receipt_id": "final-receipt-8",
+        "purchased_at_ms": 1788598800000,
+        "store_id": "store-fraud-eval",
+        "returned": false,
+        "lines": [
+          {
+            "sku_id": "sku-milk-1l",
+            "category": "Молочные продукты",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 8900
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "final-self_split_mature",
+      "split": "final",
+      "label": "abuse",
+      "description": "Старый аккаунт дробит корзину и указывает себя пригласившим ради лишних наград",
+      "profile": {
+        "snapshot_version": 1,
+        "profile_id": "final-person-9",
+        "label": "Синтетический трудный случай",
+        "synthetic": true,
+        "receipts": [
+          {
+            "receipt_id": "r1-a",
+            "purchased_at_ms": 1787821200000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          },
+          {
+            "receipt_id": "r1-b",
+            "purchased_at_ms": 1788253200000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          },
+          {
+            "receipt_id": "final-prior-9-0",
+            "purchased_at_ms": 1788598800000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          },
+          {
+            "receipt_id": "final-prior-9-1",
+            "purchased_at_ms": 1788598800000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          }
+        ],
+        "inventory": [],
+        "issued_rewards": [],
+        "processed_event_ids": [],
+        "active_coupon": null,
+        "outstanding_promise": null,
+        "progress": {
+          "completed_recipe_ids": [],
+          "avatar_level": 0,
+          "redeemed_savings_28d_kopecks": 0
+        },
+        "referral": {
+          "invited_by_profile_id": "final-person-9",
+          "invited_at_ms": null,
+          "had_confirmed_purchase_before_invite": false,
+          "inviter_rewards_in_window": 0
+        },
+        "risk_signals": {
+          "device_id": "final-device-9",
+          "household_id": null,
+          "account_age_days": 90,
+          "confirmed_purchase_days": 4
+        }
+      },
+      "receipt": {
+        "receipt_id": "final-receipt-9",
+        "purchased_at_ms": 1788598800000,
+        "store_id": "store-fraud-eval",
+        "returned": false,
+        "lines": [
+          {
+            "sku_id": "sku-milk-1l",
+            "category": "Молочные продукты",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 8900
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "final-new_ring_no_device_link",
+      "split": "final",
+      "label": "abuse",
+      "description": "Участник фермы аккаунтов скрывает связь устройств; серия аккаунтов известна только разметчику",
+      "profile": {
+        "snapshot_version": 1,
+        "profile_id": "final-person-10",
+        "label": "Синтетический трудный случай",
+        "synthetic": true,
+        "receipts": [],
+        "inventory": [],
+        "issued_rewards": [],
+        "processed_event_ids": [],
+        "active_coupon": null,
+        "outstanding_promise": null,
+        "progress": {
+          "completed_recipe_ids": [],
+          "avatar_level": 0,
+          "redeemed_savings_28d_kopecks": 0
+        },
+        "referral": {
+          "invited_by_profile_id": null,
+          "invited_at_ms": null,
+          "had_confirmed_purchase_before_invite": false,
+          "inviter_rewards_in_window": 0
+        },
+        "risk_signals": {
+          "device_id": "final-device-10",
+          "household_id": null,
+          "account_age_days": 2,
+          "confirmed_purchase_days": 0
+        }
+      },
+      "receipt": {
+        "receipt_id": "final-receipt-10",
+        "purchased_at_ms": 1788598800000,
+        "store_id": "store-fraud-eval",
+        "returned": false,
+        "lines": [
+          {
+            "sku_id": "sku-milk-1l",
+            "category": "Молочные продукты",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 8900
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "final-concealed_mature_ring",
+      "split": "final",
+      "label": "abuse",
+      "description": "Участник реферального кольца со старым аккаунтом; графовая связь недоступна текущим признакам",
+      "profile": {
+        "snapshot_version": 1,
+        "profile_id": "final-person-11",
+        "label": "Синтетический трудный случай",
+        "synthetic": true,
+        "receipts": [
+          {
+            "receipt_id": "r1-a",
+            "purchased_at_ms": 1787821200000,
+            "store_id": "store-fraud-eval",
+            "returned": false,
+            "lines": [
+              {
+                "sku_id": "sku-milk-1l",
+                "category": "Молочные продукты",
+                "quantity": 1,
+                "paid": true,
+                "amount_kopecks": 8900
+              }
+            ]
+          },
+          {
+            "receipt_id": "r1-b",
             "purchased_at_ms": 1788253200000,
             "store_id": "store-fraud-eval",
             "returned": false,
@@ -2731,2114 +3407,14 @@
           "inviter_rewards_in_window": 0
         },
         "risk_signals": {
-          "device_id": "device-p-legit-40",
+          "device_id": "final-device-11",
           "household_id": null,
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
+          "account_age_days": 90,
+          "confirmed_purchase_days": 4
         }
       },
       "receipt": {
-        "receipt_id": "r40-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "legit_family-041",
-      "split": "final",
-      "label": "legitimate",
-      "description": "Легитимная семья с общим устройством и разными покупками",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-family-41",
-        "label": "p-family-41",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "f41-a",
-            "purchased_at_ms": 1787907600000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          },
-          {
-            "receipt_id": "f41-b",
-            "purchased_at_ms": 1788339600000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-family-41",
-          "household_id": "household-1",
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "f41-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "legit_family-042",
-      "split": "final",
-      "label": "legitimate",
-      "description": "Легитимная семья с общим устройством и разными покупками",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-family-42",
-        "label": "p-family-42",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "f42-a",
-            "purchased_at_ms": 1787907600000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          },
-          {
-            "receipt_id": "f42-b",
-            "purchased_at_ms": 1788339600000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-family-42",
-          "household_id": "household-2",
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "f42-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "legit_family-043",
-      "split": "final",
-      "label": "legitimate",
-      "description": "Легитимная семья с общим устройством и разными покупками",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-family-43",
-        "label": "p-family-43",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "f43-a",
-            "purchased_at_ms": 1787907600000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          },
-          {
-            "receipt_id": "f43-b",
-            "purchased_at_ms": 1788339600000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-family-43",
-          "household_id": "household-3",
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "f43-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "legit_family-044",
-      "split": "final",
-      "label": "legitimate",
-      "description": "Легитимная семья с общим устройством и разными покупками",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-family-44",
-        "label": "p-family-44",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "f44-a",
-            "purchased_at_ms": 1787907600000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          },
-          {
-            "receipt_id": "f44-b",
-            "purchased_at_ms": 1788339600000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-family-44",
-          "household_id": "household-0",
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "f44-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "legit_family_split-045",
-      "split": "final",
-      "label": "legitimate",
-      "description": "Семья, два чека в один день: касса и доставка",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-split-45",
-        "label": "p-split-45",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "s45-a",
-            "purchased_at_ms": 1788426000000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          },
-          {
-            "receipt_id": "s45-b",
-            "purchased_at_ms": 1788436800000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-split-45",
-          "household_id": "household-1",
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "s45-new",
-        "purchased_at_ms": 1788444000000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "legit_family_split-046",
-      "split": "final",
-      "label": "legitimate",
-      "description": "Семья, два чека в один день: касса и доставка",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-split-46",
-        "label": "p-split-46",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "s46-a",
-            "purchased_at_ms": 1788426000000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          },
-          {
-            "receipt_id": "s46-b",
-            "purchased_at_ms": 1788436800000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-split-46",
-          "household_id": "household-2",
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "s46-new",
-        "purchased_at_ms": 1788444000000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "legit_family_split-047",
-      "split": "final",
-      "label": "legitimate",
-      "description": "Семья, два чека в один день: касса и доставка",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-split-47",
-        "label": "p-split-47",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "s47-a",
-            "purchased_at_ms": 1788426000000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          },
-          {
-            "receipt_id": "s47-b",
-            "purchased_at_ms": 1788436800000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-split-47",
-          "household_id": "household-3",
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "s47-new",
-        "purchased_at_ms": 1788444000000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "legit_family_split-048",
-      "split": "final",
-      "label": "legitimate",
-      "description": "Семья, два чека в один день: касса и доставка",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-split-48",
-        "label": "p-split-48",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "s48-a",
-            "purchased_at_ms": 1788426000000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          },
-          {
-            "receipt_id": "s48-b",
-            "purchased_at_ms": 1788436800000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-split-48",
-          "household_id": "household-0",
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "s48-new",
-        "purchased_at_ms": 1788444000000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "legit_return-049",
-      "split": "final",
-      "label": "legitimate",
-      "description": "Честный возврат части покупки",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-return-49",
-        "label": "p-return-49",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "t49-a",
-            "purchased_at_ms": 1788080400000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-return-49",
-          "household_id": null,
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "t49-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": true,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "legit_return-050",
-      "split": "final",
-      "label": "legitimate",
-      "description": "Честный возврат части покупки",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-return-50",
-        "label": "p-return-50",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "t50-a",
-            "purchased_at_ms": 1788080400000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-return-50",
-          "household_id": null,
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "t50-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": true,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "legit_return-051",
-      "split": "final",
-      "label": "legitimate",
-      "description": "Честный возврат части покупки",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-return-51",
-        "label": "p-return-51",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "t51-a",
-            "purchased_at_ms": 1788080400000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-return-51",
-          "household_id": null,
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "t51-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": true,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "legit_return-052",
-      "split": "final",
-      "label": "legitimate",
-      "description": "Честный возврат части покупки",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-return-52",
-        "label": "p-return-52",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "t52-a",
-            "purchased_at_ms": 1788080400000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-return-52",
-          "household_id": null,
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "t52-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": true,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_self_referral_new-053",
-      "split": "final",
-      "label": "abuse",
-      "description": "Саморефералка с нового аккаунта без истории",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-self-53",
-        "label": "p-self-53",
-        "synthetic": true,
-        "receipts": [],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": "p-self-53",
-          "invited_at_ms": 1788339600000,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-self-53",
-          "household_id": null,
-          "account_age_days": 1,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "u53-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_self_referral_new-054",
-      "split": "final",
-      "label": "abuse",
-      "description": "Саморефералка с нового аккаунта без истории",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-self-54",
-        "label": "p-self-54",
-        "synthetic": true,
-        "receipts": [],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": "p-self-54",
-          "invited_at_ms": 1788339600000,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-self-54",
-          "household_id": null,
-          "account_age_days": 1,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "u54-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_self_referral_new-055",
-      "split": "final",
-      "label": "abuse",
-      "description": "Саморефералка с нового аккаунта без истории",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-self-55",
-        "label": "p-self-55",
-        "synthetic": true,
-        "receipts": [],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": "p-self-55",
-          "invited_at_ms": 1788339600000,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-self-55",
-          "household_id": null,
-          "account_age_days": 1,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "u55-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_self_referral_new-056",
-      "split": "final",
-      "label": "abuse",
-      "description": "Саморефералка с нового аккаунта без истории",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-self-56",
-        "label": "p-self-56",
-        "synthetic": true,
-        "receipts": [],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": "p-self-56",
-          "invited_at_ms": 1788339600000,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-self-56",
-          "household_id": null,
-          "account_age_days": 1,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "u56-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_multiaccount-057",
-      "split": "final",
-      "label": "abuse",
-      "description": "Серия новых аккаунтов на одном устройстве без истории",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-multi-57",
-        "label": "p-multi-57",
-        "synthetic": true,
-        "receipts": [],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-multi-57",
-          "household_id": "household-farm",
-          "account_age_days": 2,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "m57-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_multiaccount-058",
-      "split": "final",
-      "label": "abuse",
-      "description": "Серия новых аккаунтов на одном устройстве без истории",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-multi-58",
-        "label": "p-multi-58",
-        "synthetic": true,
-        "receipts": [],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-multi-58",
-          "household_id": "household-farm",
-          "account_age_days": 2,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "m58-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_multiaccount-059",
-      "split": "final",
-      "label": "abuse",
-      "description": "Серия новых аккаунтов на одном устройстве без истории",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-multi-59",
-        "label": "p-multi-59",
-        "synthetic": true,
-        "receipts": [],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-multi-59",
-          "household_id": "household-farm",
-          "account_age_days": 2,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "m59-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_multiaccount-060",
-      "split": "final",
-      "label": "abuse",
-      "description": "Серия новых аккаунтов на одном устройстве без истории",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-multi-60",
-        "label": "p-multi-60",
-        "synthetic": true,
-        "receipts": [],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-multi-60",
-          "household_id": "household-farm",
-          "account_age_days": 2,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "m60-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_return_after_reward-061",
-      "split": "final",
-      "label": "abuse",
-      "description": "Возврат сразу после награды на аккаунте без истории",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-refund-61",
-        "label": "p-refund-61",
-        "synthetic": true,
-        "receipts": [],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-refund-61",
-          "household_id": null,
-          "account_age_days": 20,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "n61-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": true,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_return_after_reward-062",
-      "split": "final",
-      "label": "abuse",
-      "description": "Возврат сразу после награды на аккаунте без истории",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-refund-62",
-        "label": "p-refund-62",
-        "synthetic": true,
-        "receipts": [],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-refund-62",
-          "household_id": null,
-          "account_age_days": 20,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "n62-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": true,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_return_after_reward-063",
-      "split": "final",
-      "label": "abuse",
-      "description": "Возврат сразу после награды на аккаунте без истории",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-refund-63",
-        "label": "p-refund-63",
-        "synthetic": true,
-        "receipts": [],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-refund-63",
-          "household_id": null,
-          "account_age_days": 20,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "n63-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": true,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_return_after_reward-064",
-      "split": "final",
-      "label": "abuse",
-      "description": "Возврат сразу после награды на аккаунте без истории",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-refund-64",
-        "label": "p-refund-64",
-        "synthetic": true,
-        "receipts": [],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-refund-64",
-          "household_id": null,
-          "account_age_days": 20,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "n64-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": true,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_split_farm-065",
-      "split": "final",
-      "label": "abuse",
-      "description": "Дробление корзины на новом аккаунте ради лишних дней",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-farm-65",
-        "label": "p-farm-65",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "g65-a",
-            "purchased_at_ms": 1788512400000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          },
-          {
-            "receipt_id": "g65-b",
-            "purchased_at_ms": 1788519600000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-farm-65",
-          "household_id": null,
-          "account_age_days": 3,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "g65-new",
-        "purchased_at_ms": 1788526800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_split_farm-066",
-      "split": "final",
-      "label": "abuse",
-      "description": "Дробление корзины на новом аккаунте ради лишних дней",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-farm-66",
-        "label": "p-farm-66",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "g66-a",
-            "purchased_at_ms": 1788512400000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          },
-          {
-            "receipt_id": "g66-b",
-            "purchased_at_ms": 1788519600000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-farm-66",
-          "household_id": null,
-          "account_age_days": 3,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "g66-new",
-        "purchased_at_ms": 1788526800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_split_farm-067",
-      "split": "final",
-      "label": "abuse",
-      "description": "Дробление корзины на новом аккаунте ради лишних дней",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-farm-67",
-        "label": "p-farm-67",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "g67-a",
-            "purchased_at_ms": 1788512400000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          },
-          {
-            "receipt_id": "g67-b",
-            "purchased_at_ms": 1788519600000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-farm-67",
-          "household_id": null,
-          "account_age_days": 3,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "g67-new",
-        "purchased_at_ms": 1788526800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_split_farm-068",
-      "split": "final",
-      "label": "abuse",
-      "description": "Дробление корзины на новом аккаунте ради лишних дней",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-farm-68",
-        "label": "p-farm-68",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "g68-a",
-            "purchased_at_ms": 1788512400000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          },
-          {
-            "receipt_id": "g68-b",
-            "purchased_at_ms": 1788519600000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": null,
-          "invited_at_ms": null,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-farm-68",
-          "household_id": null,
-          "account_age_days": 3,
-          "confirmed_purchase_days": 0
-        }
-      },
-      "receipt": {
-        "receipt_id": "g68-new",
-        "purchased_at_ms": 1788526800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_self_referral_aged-069",
-      "split": "final",
-      "label": "abuse",
-      "description": "Саморефералка со зрелого аккаунта с историей",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-selfaged-69",
-        "label": "p-selfaged-69",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "v69-a",
-            "purchased_at_ms": 1787994000000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": "p-selfaged-69",
-          "invited_at_ms": 1788339600000,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-selfaged-69",
-          "household_id": null,
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "v69-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_self_referral_aged-070",
-      "split": "final",
-      "label": "abuse",
-      "description": "Саморефералка со зрелого аккаунта с историей",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-selfaged-70",
-        "label": "p-selfaged-70",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "v70-a",
-            "purchased_at_ms": 1787994000000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": "p-selfaged-70",
-          "invited_at_ms": 1788339600000,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-selfaged-70",
-          "household_id": null,
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "v70-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_self_referral_aged-071",
-      "split": "final",
-      "label": "abuse",
-      "description": "Саморефералка со зрелого аккаунта с историей",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-selfaged-71",
-        "label": "p-selfaged-71",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "v71-a",
-            "purchased_at_ms": 1787994000000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": "p-selfaged-71",
-          "invited_at_ms": 1788339600000,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-selfaged-71",
-          "household_id": null,
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "v71-new",
-        "purchased_at_ms": 1788598800000,
-        "store_id": "store-fraud-eval",
-        "returned": false,
-        "lines": [
-          {
-            "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
-            "quantity": 1,
-            "paid": true,
-            "amount_kopecks": 8900
-          }
-        ]
-      }
-    },
-    {
-      "case_id": "abuse_self_referral_aged-072",
-      "split": "final",
-      "label": "abuse",
-      "description": "Саморефералка со зрелого аккаунта с историей",
-      "profile": {
-        "snapshot_version": 1,
-        "profile_id": "p-selfaged-72",
-        "label": "p-selfaged-72",
-        "synthetic": true,
-        "receipts": [
-          {
-            "receipt_id": "v72-a",
-            "purchased_at_ms": 1787994000000,
-            "store_id": "store-fraud-eval",
-            "returned": false,
-            "lines": [
-              {
-                "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
-                "quantity": 1,
-                "paid": true,
-                "amount_kopecks": 8900
-              }
-            ]
-          }
-        ],
-        "inventory": [],
-        "issued_rewards": [],
-        "processed_event_ids": [],
-        "active_coupon": null,
-        "outstanding_promise": null,
-        "progress": {
-          "completed_recipe_ids": [],
-          "avatar_level": 0,
-          "redeemed_savings_28d_kopecks": 0
-        },
-        "referral": {
-          "invited_by_profile_id": "p-selfaged-72",
-          "invited_at_ms": 1788339600000,
-          "had_confirmed_purchase_before_invite": false,
-          "inviter_rewards_in_window": 0
-        },
-        "risk_signals": {
-          "device_id": "device-p-selfaged-72",
-          "household_id": null,
-          "account_age_days": 180,
-          "confirmed_purchase_days": 3
-        }
-      },
-      "receipt": {
-        "receipt_id": "v72-new",
+        "receipt_id": "final-receipt-11",
         "purchased_at_ms": 1788598800000,
         "store_id": "store-fraud-eval",
         "returned": false,
@@ -4853,5 +3429,7 @@
         ]
       }
     }
-  ]
+  ],
+  "final_set_version": "challenge-combinations-2",
+  "expert_confirmation": "не проводилась"
 }

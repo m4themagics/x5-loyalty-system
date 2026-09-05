@@ -1,13 +1,9 @@
 {
   "users": 1000,
   "seed": 20260905,
-  "offer_eligible_share": 0.62,
-  "gift_unit_cost_kopecks": 2500,
-  "instance_reserve_kopecks": 250,
-  "coupon_max_kopecks": 1000,
   "operations_cost_per_offer_kopecks": 120,
   "name": "Нулевой эффект",
-  "notes": "Игра не добавляет ни одной покупки. Расчёт обязан показать убыток, а не выгоду от уже существующих покупок.",
+  "notes": "Игра не добавляет покупок. Любой положительный денежный итог возможен только за счёт финансирования, а не дополнительной покупательной активности.",
   "hidden": {
     "base_purchase_probability": 0.34,
     "game_uplift_probability": 0.0,
@@ -21,5 +17,17 @@
     "advertiser_payment_per_qualified_event_kopecks": 1800,
     "supplier_subsidy_per_gift_kopecks": 1200,
     "fraud_loss_per_case_kopecks": 4000
-  }
+  },
+  "cycles": 4,
+  "start_empty_inventory": false,
+  "missing_history_share": 0.1,
+  "budget": {
+    "coupon_fund_kopecks": 1000000,
+    "coupon_settled_kopecks": 0,
+    "coupon_reserved_kopecks": 0,
+    "physical_fund_kopecks": 2500000,
+    "physical_settled_kopecks": 0,
+    "physical_reserved_kopecks": 0
+  },
+  "initial_state_note": "Смесь пустого и подготовленного инвентаря из 40 синтетических шаблонов; каждая стартовая копия резервируется по 2,50 ₽. Товар оплачивается полностью при выдаче; остальные три копии не предполагаются автоматически."
 }
