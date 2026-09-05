@@ -15,7 +15,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Клубный тостер',
     rarity: 'common',
     category: 'Хлеб и выпечка',
-    description: 'Усиливает скидки на хлеб, булочки и готовую выпечку.',
+    description: 'Любит хрустящие завтраки и аромат свежей булочной.',
     iconSrc: '/assets/items/club-toaster.webp',
   },
   {
@@ -23,7 +23,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Молочный кувшин',
     rarity: 'common',
     category: 'Молочные продукты',
-    description: 'Помогает собрать скидку на молоко, йогурты и творог.',
+    description: 'Знает, что делает утро нежнее, а дверцу холодильника — привычнее.',
     iconSrc: '/assets/items/milk-pitcher.webp',
   },
   {
@@ -31,7 +31,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Фруктовая корзинка',
     rarity: 'common',
     category: 'Фрукты',
-    description: 'Переносит фокус скидки на свежие фрукты и ягоды.',
+    description: 'Подсказывает заглянуть туда, где всегда ярко, сочно и по сезону.',
     iconSrc: '/assets/items/fruit-basket.webp',
   },
   {
@@ -39,7 +39,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Овощной ящик',
     rarity: 'common',
     category: 'Овощи и зелень',
-    description: 'Усиливает предложения на овощи, салаты и зелень.',
+    description: 'Собирает всё хрустящее, зелёное и будто только что с грядки.',
     iconSrc: '/assets/items/vegetable-crate.webp',
   },
   {
@@ -47,7 +47,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Термокружка',
     rarity: 'common',
     category: 'Кофе и чай',
-    description: 'Настраивает скидку на кофе, чай и горячие напитки.',
+    description: 'Тянется к полкам, которые бодрят утром и согревают вечером.',
     iconSrc: '/assets/items/travel-mug.webp',
   },
   {
@@ -55,7 +55,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Миска для снеков',
     rarity: 'common',
     category: 'Снеки и орехи',
-    description: 'Добавляет вес снекам, орехам и быстрым перекусам.',
+    description: 'Знает, чем занять руки во время фильма или встречи с друзьями.',
     iconSrc: '/assets/items/snack-bowl.webp',
   },
   {
@@ -63,7 +63,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Сковорода завтрака',
     rarity: 'common',
     category: 'Яйца и завтраки',
-    description: 'Фокусирует скидку на яйцах и продуктах для завтрака.',
+    description: 'Просыпается раньше всех и собирает быстрый сытный старт дня.',
     iconSrc: '/assets/items/breakfast-pan.webp',
   },
   {
@@ -71,7 +71,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Фартук пекаря',
     rarity: 'common',
     category: 'Всё для выпечки',
-    description: 'Усиливает муку, сахар и другие товары для выпечки.',
+    description: 'Ищет всё, что превращает домашнюю кухню в маленькую пекарню.',
     iconSrc: '/assets/items/baker-apron.webp',
   },
   {
@@ -79,7 +79,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Нож шефа',
     rarity: 'epic',
     category: 'Свежие продукты',
-    description: 'Помогает получить скидку на мясо, рыбу и овощи.',
+    description: 'Выбирает то, что лучше нарезать и приготовить сегодня, не откладывая.',
     iconSrc: '/assets/items/chef-knife.webp',
   },
   {
@@ -87,7 +87,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Морозильная камера',
     rarity: 'epic',
     category: 'Замороженные продукты',
-    description: 'Усиливает скидки на заморозку и полуфабрикаты.',
+    description: 'Предпочитает запасы, которым не страшно долгое ожидание.',
     iconSrc: '/assets/items/freezer-chest.webp',
   },
   {
@@ -95,7 +95,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Блендер здоровья',
     rarity: 'epic',
     category: 'Полезные напитки',
-    description: 'Фокусируется на фруктах, соках и полезных напитках.',
+    description: 'Любит яркие смеси, свежий вкус и заряд бодрости в стакане.',
     iconSrc: '/assets/items/power-blender.webp',
   },
   {
@@ -103,7 +103,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Гриль мастера',
     rarity: 'epic',
     category: 'Мясо и колбасы',
-    description: 'Повышает шанс выгодного предложения на мясо и колбасы.',
+    description: 'Идёт туда, где продукту особенно идут огонь, корочка и дымок.',
     iconSrc: '/assets/items/master-grill.webp',
   },
   {
@@ -111,7 +111,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Набор сушиста',
     rarity: 'epic',
     category: 'Рыба и азиатская кухня',
-    description: 'Настраивает скидку на рыбу, рис и азиатские продукты.',
+    description: 'Собирает ингредиенты для ужина с палочками и соевым соусом.',
     iconSrc: '/assets/items/sushi-kit.webp',
   },
   {
@@ -119,7 +119,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Кофемашина бариста',
     rarity: 'epic',
     category: 'Кофе и десерты',
-    description: 'Сочетает предложения на кофе, сладости и десерты.',
+    description: 'Понимает идеальную пару для ароматной чашки и маленькой сладкой паузы.',
     iconSrc: '/assets/items/barista-machine.webp',
   },
   {
@@ -127,7 +127,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Печь пиццайоло',
     rarity: 'epic',
     category: 'Пицца и готовая еда',
-    description: 'Усиливает скидки на пиццу и блюда, которые нужно разогреть.',
+    description: 'Спасает, когда хочется горячего ужина без долгой готовки.',
     iconSrc: '/assets/items/pizza-oven.webp',
   },
   {
@@ -135,7 +135,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Холодильник для пикника',
     rarity: 'epic',
     category: 'Холодные напитки и мороженое',
-    description: 'Фокусирует скидку на напитках, льде и мороженом.',
+    description: 'Берёт всё, что приятно открыть холодным на прогулке или в жаркий день.',
     iconSrc: '/assets/items/picnic-cooler.webp',
   },
   {
@@ -143,7 +143,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Золотой колпак повара',
     rarity: 'legendary',
     category: 'Готовая еда',
-    description: 'Создаёт сильную скидку на готовые блюда и кулинарию.',
+    description: 'Знает короткий путь к полноценному обеду, когда готовить совсем некогда.',
     iconSrc: '/assets/items/golden-chef-hat.webp',
   },
   {
@@ -151,7 +151,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Волшебный холодильник',
     rarity: 'legendary',
     category: 'Любимые покупки',
-    description: 'Собирает скидку вокруг любимых и повторных покупок.',
+    description: 'Запоминает то, за чем вы возвращаетесь снова и снова.',
     iconSrc: '/assets/items/magic-fridge.webp',
   },
   {
@@ -159,7 +159,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Королевский казан',
     rarity: 'legendary',
     category: 'Крупы, супы и соусы',
-    description: 'Объединяет выгоду на крупы, ингредиенты для супов и соусы.',
+    description: 'Собирает основу для тёплого домашнего блюда в одной большой кастрюле.',
     iconSrc: '/assets/items/royal-cauldron.webp',
   },
   {
@@ -167,7 +167,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Драконий вок',
     rarity: 'legendary',
     category: 'Лапша и азиатская кухня',
-    description: 'Усиливает лапшу, соусы и продукты азиатской кухни.',
+    description: 'Любит острое, пряное и то, что удобнее есть палочками.',
     iconSrc: '/assets/items/dragon-wok.webp',
   },
   {
@@ -175,7 +175,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Кристальная мороженица',
     rarity: 'legendary',
     category: 'Мороженое и десерты',
-    description: 'Создаёт выгодную подборку мороженого и десертов.',
+    description: 'Ищет самый холодный способ сделать обычный день слаще.',
     iconSrc: '/assets/items/crystal-icecream-maker.webp',
   },
   {
@@ -183,7 +183,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Пресс идеального сэндвича',
     rarity: 'legendary',
     category: 'Хлеб, сыр и колбасы',
-    description: 'Связывает в одной скидке ингредиенты для сэндвичей.',
+    description: 'Соединяет хрустящую основу, нежную середину и сытную начинку.',
     iconSrc: '/assets/items/legendary-sandwich-press.webp',
   },
   {
@@ -191,7 +191,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Сундук запасов',
     rarity: 'legendary',
     category: 'Бакалея и консервы',
-    description: 'Фокусирует скидку на долгом хранении и домашних запасах.',
+    description: 'Ценит то, что всегда выручает и долго ждёт своего часа.',
     iconSrc: '/assets/items/treasure-pantry.webp',
   },
   {
@@ -199,7 +199,7 @@ export const profileItems: readonly ProfileItem[] = [
     name: 'Купол свежести',
     rarity: 'legendary',
     category: 'Овощи, фрукты и зелень',
-    description: 'Создаёт сильную скидку на весь свежий растительный набор.',
+    description: 'Тянется к самым ярким цветам и хрусту прямо с грядки.',
     iconSrc: '/assets/items/freshness-dome.webp',
   },
 ]

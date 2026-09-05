@@ -44,6 +44,7 @@ export function ProfileInventoryCrafting({
     Array.from({ length: SLOT_COUNT }, () => null),
   )
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
+  const [inspectedItemId, setInspectedItemId] = useState<string | null>(null)
   const [dragState, setDragState] = useState<DragState | null>(null)
   const dragStateRef = useRef<DragState | null>(null)
   const suppressClickRef = useRef(false)
@@ -153,8 +154,17 @@ export function ProfileInventoryCrafting({
       suppressClickRef.current = false
       return
     }
-    if (availableCount(itemId) <= 0) return
-    setSelectedItemId((currentItemId) => currentItemId === itemId ? null : itemId)
+    setInspectedItemId(itemId)
+  }
+
+  const inspectedItem = inspectedItemId === null
+    ? null
+    : profileItems.find((item) => item.id === inspectedItemId) ?? null
+
+  const chooseInspectedItem = () => {
+    if (inspectedItem === null || availableCount(inspectedItem.id) <= 0) return
+    setSelectedItemId(inspectedItem.id)
+    setInspectedItemId(null)
   }
 
   const createDiscount = () => {
@@ -276,8 +286,7 @@ export function ProfileInventoryCrafting({
               <button
                 aria-label={`${item.name}, ${rarityLabels[item.rarity]}, доступно ${available} из ${entry.quantity}`}
                 aria-pressed={selectedItemId === item.id}
-                className={`inventory-item item-rarity-${item.rarity}${selectedItemId === item.id ? ' inventory-item-selected' : ''}`}
-                disabled={available <= 0}
+                className={`inventory-item item-rarity-${item.rarity}${selectedItemId === item.id ? ' inventory-item-selected' : ''}${available <= 0 ? ' inventory-item-unavailable' : ''}`}
                 draggable={available > 0}
                 key={item.id}
                 onClick={() => handleInventoryClick(item.id)}
@@ -315,6 +324,51 @@ export function ProfileInventoryCrafting({
           style={{ left: dragState.x, top: dragState.y }}
         >
           <img alt="" src={draggedItem.iconSrc} />
+        </div>
+      ) : null}
+
+      {inspectedItem !== null ? (
+        <div
+          aria-label={`Предмет «${inspectedItem.name}»`}
+          aria-modal="true"
+          className="inventory-item-overlay"
+          role="dialog"
+        >
+          <div className={`inventory-item-card item-rarity-${inspectedItem.rarity}`}>
+            <button
+              aria-label="Закрыть описание предмета"
+              className="inventory-item-card-close"
+              onClick={() => setInspectedItemId(null)}
+              type="button"
+            >
+              <Typography as="span" variant="body" aria-hidden="true">×</Typography>
+            </button>
+            <div className="inventory-item-card-icon">
+              <img alt="" src={inspectedItem.iconSrc} />
+            </div>
+            <Typography as="span" variant="bodyXs" className="inventory-item-card-rarity">
+              {rarityLabels[inspectedItem.rarity]}
+            </Typography>
+            <Typography as="h3" variant="h2" className="inventory-item-card-name">
+              {inspectedItem.name}
+            </Typography>
+            <Typography as="p" variant="bodySm" className="inventory-item-card-description">
+              {inspectedItem.description}
+            </Typography>
+            <button
+              className="inventory-item-card-action"
+              disabled={availableCount(inspectedItem.id) <= 0}
+              onClick={chooseInspectedItem}
+              type="button"
+            >
+              <Typography as="span" variant="control">
+                {availableCount(inspectedItem.id) > 0 ? 'Выбрать предмет' : 'Все копии уже в ячейках'}
+              </Typography>
+            </button>
+            <Typography as="span" variant="bodyXs" className="inventory-item-card-hint">
+              После выбора нажмите на свободную ячейку
+            </Typography>
+          </div>
         </div>
       ) : null}
     </>

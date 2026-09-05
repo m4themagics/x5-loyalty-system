@@ -550,10 +550,136 @@
     0 8px 15px rgb(21 155 66 / 24%);
 }
 
-.inventory-item:disabled {
+.inventory-item-unavailable {
   cursor: default;
   opacity: .4;
   filter: grayscale(.5);
+}
+
+.inventory-item-overlay {
+  position: fixed;
+  z-index: 350;
+  inset: 0;
+  display: grid;
+  padding: 20px;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 38%, rgb(78 209 112 / 22%), transparent 44%),
+    rgb(7 20 11 / 82%);
+  backdrop-filter: blur(6px);
+  animation: chest-overlay-in 180ms ease-out both;
+}
+
+.inventory-item-card {
+  position: relative;
+  display: grid;
+  width: min(100%, 310px);
+  min-height: 390px;
+  padding: 28px 24px 22px;
+  justify-items: center;
+  align-content: center;
+  border: 3px solid var(--item-rarity-color);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 50% 18%, var(--item-rarity-soft), transparent 50%),
+    white;
+  color: #202421;
+  text-align: center;
+  box-shadow: 0 24px 55px rgb(0 0 0 / 42%);
+  animation: reward-pop 360ms cubic-bezier(.17, .89, .32, 1.2) both;
+}
+
+.inventory-item-card-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #eff2ee;
+  color: #434844;
+}
+
+.inventory-item-card-close [data-slot='typography'] {
+  font-size: 23px;
+  line-height: 1;
+}
+
+.inventory-item-card-icon {
+  display: grid;
+  width: 146px;
+  height: 146px;
+  padding: 6px;
+  place-items: center;
+  border: 3px solid var(--item-rarity-color);
+  border-radius: 28px;
+  background: linear-gradient(145deg, #fff 35%, var(--item-rarity-soft));
+  box-shadow: 0 12px 24px rgb(32 54 38 / 14%);
+}
+
+.inventory-item-card-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.inventory-item-card-rarity[data-slot='typography'] {
+  margin-top: 16px;
+  color: var(--item-rarity-color);
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.inventory-item-card-name[data-slot='typography'] {
+  margin: 8px 0 0;
+  font-size: 23px;
+  line-height: 1.05;
+  font-weight: 900;
+}
+
+.inventory-item-card-description[data-slot='typography'] {
+  max-width: 250px;
+  min-height: 44px;
+  margin: 10px 0 0;
+  color: #5b625c;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.inventory-item-card-action {
+  width: 100%;
+  height: 46px;
+  margin-top: 20px;
+  border: 0;
+  border-radius: 15px;
+  background: linear-gradient(180deg, #18a748 0%, #0c8d39 100%);
+  color: white;
+  box-shadow: 0 6px 14px rgb(13 132 54 / 22%);
+}
+
+.inventory-item-card-action:disabled {
+  background: #b9bfba;
+  box-shadow: none;
+}
+
+.inventory-item-card-action [data-slot='typography'] {
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 850;
+}
+
+.inventory-item-card-hint[data-slot='typography'] {
+  margin-top: 9px;
+  color: #858b86;
+  font-size: 10px;
+  line-height: 1.25;
 }
 
 .dragged-item-preview {

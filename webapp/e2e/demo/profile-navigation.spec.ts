@@ -108,6 +108,10 @@ test('crafts a themed discount from four inventory items and restores its barcod
     ['Купол свежести', 4],
   ] as const) {
     await page.getByRole('button', { name: new RegExp(itemName) }).click()
+    const itemDialog = page.getByRole('dialog', { name: `Предмет «${itemName}»` })
+    await expect(itemDialog).toBeVisible()
+    await expect(itemDialog.getByText(/скидк/i)).toHaveCount(0)
+    await itemDialog.getByRole('button', { name: 'Выбрать предмет' }).click()
     await page.getByRole('button', { name: `Пустая ячейка скидки ${slotNumber}` }).click()
   }
 
