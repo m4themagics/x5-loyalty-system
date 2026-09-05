@@ -24,12 +24,15 @@
       "coupons_redeemed": 60,
       "physical_gifts": 715,
       "fraud_cases": 65,
+      "sponsored_qualified": 126,
       "purchase_days": 1362,
       "baseline_purchase_days": 1401,
       "incremental_purchases": -39,
       "name": "Отрицательный эффект",
       "users": 1000,
       "served_users": 973,
+      "policy": "personalized_broad",
+      "potential_outcomes_fingerprint": "5a8f871715db5925db0bf61ecfeff7bb850518930c104a9ad4bf3d1bd192b174",
       "initial_item_instances": 670,
       "remaining_item_instances": 1337,
       "outstanding_coupons": 6,
@@ -66,6 +69,7 @@
           "incremental_margin_kopecks": -49000,
           "qualified": 85,
           "physical_cost_kopecks": 152400,
+          "sponsored_qualified": 18,
           "sponsor_income_kopecks": 0,
           "subsidy_income_kopecks": 0,
           "coupon_cost_kopecks": 3000,
@@ -85,6 +89,7 @@
           "incremental_margin_kopecks": -56000,
           "qualified": 290,
           "physical_cost_kopecks": 473700,
+          "sponsored_qualified": 38,
           "sponsor_income_kopecks": 0,
           "subsidy_income_kopecks": 0,
           "coupon_cost_kopecks": 16000,
@@ -104,6 +109,7 @@
           "incremental_margin_kopecks": 0,
           "qualified": 45,
           "physical_cost_kopecks": 84700,
+          "sponsored_qualified": 9,
           "sponsor_income_kopecks": 0,
           "subsidy_income_kopecks": 0,
           "fraud_loss_kopecks": 26000,
@@ -125,6 +131,7 @@
           "physical_cost_kopecks": 353600,
           "fraud_loss_kopecks": 71500,
           "coupon_cost_kopecks": 7000,
+          "sponsored_qualified": 27,
           "sponsor_income_kopecks": 0,
           "subsidy_income_kopecks": 0,
           "served_users": 206,
@@ -144,6 +151,7 @@
           "physical_cost_kopecks": 569800,
           "fraud_loss_kopecks": 169000,
           "coupon_cost_kopecks": 32000,
+          "sponsored_qualified": 34,
           "sponsor_income_kopecks": 0,
           "subsidy_income_kopecks": 0,
           "served_users": 357,
@@ -163,6 +171,7 @@
           "incremental_margin_kopecks": -175000,
           "qualified": 378,
           "physical_cost_kopecks": 676300,
+          "sponsored_qualified": 56,
           "sponsor_income_kopecks": 0,
           "subsidy_income_kopecks": 0,
           "fraud_loss_kopecks": 156000,
@@ -181,6 +190,7 @@
           "incremental_margin_kopecks": -77000,
           "qualified": 387,
           "physical_cost_kopecks": 663200,
+          "sponsored_qualified": 51,
           "sponsor_income_kopecks": 0,
           "subsidy_income_kopecks": 0,
           "fraud_loss_kopecks": 195000,
@@ -201,6 +211,7 @@
           "qualified": 166,
           "physical_cost_kopecks": 294700,
           "coupon_cost_kopecks": 40000,
+          "sponsored_qualified": 19,
           "sponsor_income_kopecks": 0,
           "subsidy_income_kopecks": 0,
           "fraud_loss_kopecks": 71500,
@@ -208,7 +219,11 @@
           "net_kopecks": -494400
         }
       ],
-      "net_kopecks": -2773220
+      "net_kopecks": -2773220,
+      "opening_coupon_liability_kopecks": 167500,
+      "ending_coupon_liability_kopecks": 340250,
+      "outstanding_liability_delta_kopecks": 172750,
+      "conservative_net_after_outstanding_max_liability_kopecks": -2945970
     },
     {
       "offers": 3139,
@@ -221,12 +236,15 @@
       "coupons_redeemed": 43,
       "physical_gifts": 758,
       "fraud_cases": 22,
+      "sponsored_qualified": 135,
       "purchase_days": 1515,
       "baseline_purchase_days": 1401,
       "incremental_purchases": 114,
       "name": "Положительный эффект",
       "users": 1000,
       "served_users": 973,
+      "policy": "personalized_broad",
+      "potential_outcomes_fingerprint": "5a8f871715db5925db0bf61ecfeff7bb850518930c104a9ad4bf3d1bd192b174",
       "initial_item_instances": 670,
       "remaining_item_instances": 1421,
       "outstanding_coupons": 23,
@@ -248,8 +266,8 @@
       "spend_kopecks": 2237380,
       "peak_reserved_kopecks": 2412700,
       "incremental_margin_kopecks": 1083000,
-      "sponsor_income_kopecks": 243000,
-      "subsidy_income_kopecks": 145200,
+      "sponsor_income_kopecks": 350800,
+      "subsidy_income_kopecks": 120000,
       "audience_breakdown": [
         {
           "audience_segment": "senior",
@@ -263,12 +281,13 @@
           "incremental_margin_kopecks": 85500,
           "qualified": 97,
           "physical_cost_kopecks": 165900,
-          "sponsor_income_kopecks": 34200,
-          "subsidy_income_kopecks": 20400,
+          "sponsored_qualified": 19,
+          "sponsor_income_kopecks": 55200,
+          "subsidy_income_kopecks": 23900,
           "fraud_loss_kopecks": 4000,
           "coupon_cost_kopecks": 2000,
           "served_users": 106,
-          "net_kopecks": -74760
+          "net_kopecks": -50260
         },
         {
           "audience_segment": "parents_u3",
@@ -282,12 +301,13 @@
           "incremental_margin_kopecks": 266000,
           "qualified": 308,
           "physical_cost_kopecks": 487100,
-          "sponsor_income_kopecks": 73800,
-          "subsidy_income_kopecks": 40800,
+          "sponsored_qualified": 41,
+          "sponsor_income_kopecks": 106000,
+          "subsidy_income_kopecks": 33650,
           "coupon_cost_kopecks": 14000,
           "fraud_loss_kopecks": 24000,
           "served_users": 256,
-          "net_kopecks": -240140
+          "net_kopecks": -215090
         },
         {
           "audience_segment": "harmful_habits",
@@ -301,11 +321,12 @@
           "incremental_margin_kopecks": 9500,
           "qualified": 45,
           "physical_cost_kopecks": 87000,
-          "sponsor_income_kopecks": 16200,
-          "subsidy_income_kopecks": 9600,
+          "sponsored_qualified": 9,
+          "sponsor_income_kopecks": 23200,
+          "subsidy_income_kopecks": 7450,
           "fraud_loss_kopecks": 12000,
           "served_users": 48,
-          "net_kopecks": -82660
+          "net_kopecks": -77810
         },
         {
           "audience_segment": "mature",
@@ -320,10 +341,11 @@
           "qualified": 206,
           "physical_cost_kopecks": 365200,
           "coupon_cost_kopecks": 5000,
-          "sponsor_income_kopecks": 48600,
-          "subsidy_income_kopecks": 30000,
+          "sponsored_qualified": 27,
+          "sponsor_income_kopecks": 69600,
+          "subsidy_income_kopecks": 23900,
           "served_users": 206,
-          "net_kopecks": -220240
+          "net_kopecks": -205340
         },
         {
           "audience_segment": "youth",
@@ -338,11 +360,12 @@
           "qualified": 359,
           "physical_cost_kopecks": 624500,
           "fraud_loss_kopecks": 48000,
-          "sponsor_income_kopecks": 70200,
-          "subsidy_income_kopecks": 44400,
+          "sponsored_qualified": 39,
+          "sponsor_income_kopecks": 96800,
+          "subsidy_income_kopecks": 31100,
           "coupon_cost_kopecks": 22000,
           "served_users": 357,
-          "net_kopecks": -148380
+          "net_kopecks": -135080
         }
       ],
       "engagement_breakdown": [
@@ -358,11 +381,12 @@
           "incremental_margin_kopecks": 57000,
           "qualified": 387,
           "physical_cost_kopecks": 695100,
-          "sponsor_income_kopecks": 106200,
-          "subsidy_income_kopecks": 66000,
+          "sponsored_qualified": 59,
+          "sponsor_income_kopecks": 153800,
+          "subsidy_income_kopecks": 55000,
           "fraud_loss_kopecks": 28000,
           "served_users": 421,
-          "net_kopecks": -660940
+          "net_kopecks": -624340
         },
         {
           "engagement": "neutral",
@@ -376,12 +400,13 @@
           "incremental_margin_kopecks": 560500,
           "qualified": 426,
           "physical_cost_kopecks": 707100,
-          "sponsor_income_kopecks": 95400,
-          "subsidy_income_kopecks": 55200,
+          "sponsored_qualified": 53,
+          "sponsor_income_kopecks": 138800,
+          "subsidy_income_kopecks": 48050,
           "coupon_cost_kopecks": 13000,
           "fraud_loss_kopecks": 40000,
           "served_users": 381,
-          "net_kopecks": -194800
+          "net_kopecks": -158550
         },
         {
           "engagement": "interested",
@@ -397,13 +422,18 @@
           "physical_cost_kopecks": 327500,
           "coupon_cost_kopecks": 30000,
           "fraud_loss_kopecks": 20000,
-          "sponsor_income_kopecks": 41400,
-          "subsidy_income_kopecks": 24000,
+          "sponsored_qualified": 23,
+          "sponsor_income_kopecks": 58200,
+          "subsidy_income_kopecks": 16950,
           "served_users": 171,
-          "net_kopecks": 89560
+          "net_kopecks": 99310
         }
       ],
-      "net_kopecks": -766180
+      "net_kopecks": -683580,
+      "opening_coupon_liability_kopecks": 167500,
+      "ending_coupon_liability_kopecks": 378250,
+      "outstanding_liability_delta_kopecks": 210750,
+      "conservative_net_after_outstanding_max_liability_kopecks": -894330
     },
     {
       "offers": 3194,
@@ -416,12 +446,15 @@
       "coupons_redeemed": 36,
       "physical_gifts": 718,
       "fraud_cases": 19,
+      "sponsored_qualified": 129,
       "purchase_days": 1401,
       "baseline_purchase_days": 1401,
       "incremental_purchases": 0,
       "name": "Нулевой эффект",
       "users": 1000,
       "served_users": 973,
+      "policy": "personalized_broad",
+      "potential_outcomes_fingerprint": "5a8f871715db5925db0bf61ecfeff7bb850518930c104a9ad4bf3d1bd192b174",
       "initial_item_instances": 670,
       "remaining_item_instances": 1379,
       "outstanding_coupons": 19,
@@ -443,8 +476,8 @@
       "spend_kopecks": 2136780,
       "peak_reserved_kopecks": 2412700,
       "incremental_margin_kopecks": 0,
-      "sponsor_income_kopecks": 232200,
-      "subsidy_income_kopecks": 141600,
+      "sponsor_income_kopecks": 333000,
+      "subsidy_income_kopecks": 115650,
       "audience_breakdown": [
         {
           "audience_segment": "senior",
@@ -458,12 +491,13 @@
           "incremental_margin_kopecks": 0,
           "qualified": 90,
           "physical_cost_kopecks": 157200,
-          "sponsor_income_kopecks": 34200,
-          "subsidy_income_kopecks": 20400,
+          "sponsored_qualified": 19,
+          "sponsor_income_kopecks": 55200,
+          "subsidy_income_kopecks": 23900,
           "fraud_loss_kopecks": 4000,
           "coupon_cost_kopecks": 2000,
           "served_users": 106,
-          "net_kopecks": -152280
+          "net_kopecks": -127780
         },
         {
           "audience_segment": "parents_u3",
@@ -477,12 +511,13 @@
           "incremental_margin_kopecks": 0,
           "qualified": 285,
           "physical_cost_kopecks": 469500,
-          "sponsor_income_kopecks": 70200,
-          "subsidy_income_kopecks": 40800,
+          "sponsored_qualified": 39,
+          "sponsor_income_kopecks": 99600,
+          "subsidy_income_kopecks": 33150,
           "coupon_cost_kopecks": 11000,
           "fraud_loss_kopecks": 24000,
           "served_users": 256,
-          "net_kopecks": -490700
+          "net_kopecks": -468950
         },
         {
           "audience_segment": "harmful_habits",
@@ -496,11 +531,12 @@
           "incremental_margin_kopecks": 0,
           "qualified": 44,
           "physical_cost_kopecks": 84700,
-          "sponsor_income_kopecks": 14400,
-          "subsidy_income_kopecks": 8400,
+          "sponsored_qualified": 8,
+          "sponsor_income_kopecks": 20000,
+          "subsidy_income_kopecks": 5650,
           "fraud_loss_kopecks": 12000,
           "served_users": 48,
-          "net_kopecks": -92860
+          "net_kopecks": -90010
         },
         {
           "audience_segment": "mature",
@@ -515,10 +551,11 @@
           "qualified": 197,
           "physical_cost_kopecks": 353900,
           "coupon_cost_kopecks": 5000,
-          "sponsor_income_kopecks": 48600,
-          "subsidy_income_kopecks": 30000,
+          "sponsored_qualified": 27,
+          "sponsor_income_kopecks": 69600,
+          "subsidy_income_kopecks": 23900,
           "served_users": 206,
-          "net_kopecks": -361900
+          "net_kopecks": -347000
         },
         {
           "audience_segment": "youth",
@@ -532,12 +569,13 @@
           "incremental_margin_kopecks": 0,
           "qualified": 313,
           "physical_cost_kopecks": 576200,
-          "sponsor_income_kopecks": 64800,
-          "subsidy_income_kopecks": 42000,
+          "sponsored_qualified": 36,
+          "sponsor_income_kopecks": 88600,
+          "subsidy_income_kopecks": 29050,
           "fraud_loss_kopecks": 36000,
           "coupon_cost_kopecks": 18000,
           "served_users": 357,
-          "net_kopecks": -665240
+          "net_kopecks": -654390
         }
       ],
       "engagement_breakdown": [
@@ -553,11 +591,12 @@
           "incremental_margin_kopecks": 0,
           "qualified": 383,
           "physical_cost_kopecks": 690300,
-          "sponsor_income_kopecks": 104400,
-          "subsidy_income_kopecks": 66000,
+          "sponsored_qualified": 58,
+          "sponsor_income_kopecks": 150600,
+          "subsidy_income_kopecks": 54750,
           "fraud_loss_kopecks": 24000,
           "served_users": 421,
-          "net_kopecks": -711540
+          "net_kopecks": -676590
         },
         {
           "engagement": "neutral",
@@ -571,12 +610,13 @@
           "incremental_margin_kopecks": 0,
           "qualified": 383,
           "physical_cost_kopecks": 660900,
-          "sponsor_income_kopecks": 93600,
-          "subsidy_income_kopecks": 54000,
+          "sponsored_qualified": 52,
+          "sponsor_income_kopecks": 135600,
+          "subsidy_income_kopecks": 46250,
           "coupon_cost_kopecks": 10000,
           "fraud_loss_kopecks": 40000,
           "served_users": 381,
-          "net_kopecks": -711860
+          "net_kopecks": -677610
         },
         {
           "engagement": "interested",
@@ -591,14 +631,19 @@
           "qualified": 163,
           "physical_cost_kopecks": 290300,
           "coupon_cost_kopecks": 26000,
-          "sponsor_income_kopecks": 34200,
-          "subsidy_income_kopecks": 21600,
+          "sponsored_qualified": 19,
+          "sponsor_income_kopecks": 46800,
+          "subsidy_income_kopecks": 14650,
           "fraud_loss_kopecks": 12000,
           "served_users": 171,
-          "net_kopecks": -339580
+          "net_kopecks": -333930
         }
       ],
-      "net_kopecks": -1762980
+      "net_kopecks": -1688130,
+      "opening_coupon_liability_kopecks": 167500,
+      "ending_coupon_liability_kopecks": 363750,
+      "outstanding_liability_delta_kopecks": 196250,
+      "conservative_net_after_outstanding_max_liability_kopecks": -1884380
     }
   ]
 }

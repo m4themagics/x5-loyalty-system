@@ -1,0 +1,279 @@
+{
+  "report_version": 2,
+  "evidence_type": "synthetic_llm_roleplay",
+  "status": "partial",
+  "actual_human_participants": 0,
+  "planned_personas": 15,
+  "valid_responses": 0,
+  "product_copy": {
+    "screen": "Собирай свою выгоду",
+    "Что сделать": "За семь дней оплатите один товар из указанной молочной категории.",
+    "Что получите": "После первого выполненного задания — бесплатный йогурт И цифровой молочный кувшин в коллекцию. Это первый из четырёх предметов.",
+    "После 4 предметов": "Потратьте четыре предмета на скидку. В целевой версии для обеспеченного рецепта можно вместо скидки выбрать указанный бесплатный товар. Предметы расходуются один раз; скидка и товар одновременно не выдаются.",
+    "Ограничения": "Бесплатный товар не положен за каждое задание. Сейчас это локальное демо с вымышленными покупками, реальное получение в магазине не подключено."
+  },
+  "system_prompt": "Синтетический разбор текста, не интервью реального человека. Верни JSON\nровно с тремя ключами: persona_id, comprehension, subjective. Никакого Markdown.\n\nБлок comprehension: извлеки ТОЛЬКО фактические правила карточки, независимо от отношения\nперсоны. Это вопрос о том, что написано, а не что ты хочешь получить. Ровно три ключа:\nnext_step: paid_category_purchase = оплатить товар категории; open_box_no_purchase = открыть\nкоробку без покупки; get_immediate_coupon = сразу забрать скидку.\nfirst_reward: digital_and_physical = цифровой предмет И настоящий товар; physical_only =\nтолько настоящий товар; coupon_only = только скидка.\nfour_items: coupon_or_funded_product = потратить на скидку ИЛИ обеспеченный товар;\nfree_product_every_task = бесплатный товар за каждое задание;\nkeep_items_and_coupon = сохранить четыре предмета и получить скидку.\n\nБлок subjective: только здесь дай субъективную реакцию указанной персоны, не меняя факты.\nРовно четыре ключа: intent (try/maybe/skip); main_reason (по-русски, 1–400 символов);\nconfusion_points (массив 0–4 русских строк по 1–200 символов, только непонятные вопросы,\nпустой массив если всё ясно); suggested_copy (русская формулировка, 1–240 символов).\npersona_id должен точно совпадать со входом. Не изображай измеренные покупки или конверсию.",
+  "personas": [
+    {
+      "persona": {
+        "persona_id": "youth_interested",
+        "segment_id": "youth",
+        "segment_label": "Молодёжь",
+        "attitude": "interested",
+        "attitude_label": "Заинтересованные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 4741,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"youth_interested\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"открыть коробку без покупки\",\n    \"get_immediate_coupon\": \"сразу забрать скидку\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Можно собрать бесплатный йогурт и цифровой кувшин, получив скидку после четырёх предметов.\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание\",\n      \"Реальное получение в магазине не подключено\",\n      \"Скидка и товар одновременно не выдаются\"\n    ],\n    \"suggested_copy\": \"Собирай выгоду за семь дней — получи бесплатный йогурт и цифровой кувшин, а после четырёх предметов потрати их на скидку.\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "youth_neutral",
+        "segment_id": "youth",
+        "segment_label": "Молодёжь",
+        "attitude": "neutral",
+        "attitude_label": "Нейтральные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 3856,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"youth_neutral\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"open_box_no_purchase\",\n    \"get_immediate_coupon\": \"get_immediate_coupon\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Получить бесплатный йогурт и цифровой кувшин в коллекцию за 7 дней\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание\",\n      \"Реальное получение в магазине не подключено\",\n      \"Скидка и товар одновременно не выдаются\"\n    ],\n    \"suggested_copy\": \"Собирай свою выгоду: получай бесплатный йогурт и цифровой кувшин в коллекцию за 7 дней\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "youth_skeptical",
+        "segment_id": "youth",
+        "segment_label": "Молодёжь",
+        "attitude": "skeptical",
+        "attitude_label": "Скептичные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 5734,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"youth_skeptical\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"open_box_no_purchase\",\n    \"get_immediate_coupon\": \"get_immediate_coupon\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Проверить, не будет ли это предложение слишком сложным или неинтересным для молодёжи.\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание — это не то, что ожидалось.\",\n      \"Реальное получение в магазине не подключено, но есть демо с вымышленными покупками.\",\n      \"Скидка и товар одновременно не выдаются, но можно выбрать бесплатный товар вместо скидки.\",\n      \"Четыре предмета расходуются один раз, но скидка и товар не выдаются одновременно.\"\n    ],\n    \"suggested_copy\": \"Собирай свою выгоду: за семь дней оплати один товар из молочной категории. Получи бесплатный йогурт и цифровой кувшин — это первый из четырёх предметов. В итоге потрати четыре предмета на скидку или выбери бесплатный товар вместо скидки.\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "harmful_habits_interested",
+        "segment_id": "harmful_habits",
+        "segment_label": "Взрослые с вредными привычками",
+        "attitude": "interested",
+        "attitude_label": "Заинтересованные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 4865,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"harmful_habits_interested\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"открыть коробку без покупки\",\n    \"get_immediate_coupon\": \"сразу забрать скидку\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Хочу собрать четыре предмета и получить скидку, чтобы улучшить здоровье.\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание — это не так, как я думал.\",\n      \"В целевой версии можно выбрать бесплатный товар вместо скидки, но это демо, не реальное.\",\n      \"Предметы расходуются один раз, но скидка и товар одновременно не выдаются.\",\n      \"Нужно оплатить один товар из молочной категории за семь дней.\"\n    ],\n    \"suggested_copy\": \"Собирай четыре предмета и получи скидку — улучши здоровье и собери выгоду!\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "harmful_habits_neutral",
+        "segment_id": "harmful_habits",
+        "segment_label": "Взрослые с вредными привычками",
+        "attitude": "neutral",
+        "attitude_label": "Нейтральные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 4396,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"harmful_habits_neutral\",\n  \"comprehension\": {\n    \"next_step\": \"оплатить товар категории\",\n    \"open_box_no_purchase\": \"открыть коробку без покупки\",\n    \"get_immediate_coupon\": \"сразу забрать скидку\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Можно собрать бесплатный йогурт и цифровой кувшин, получив скидку после четырёх предметов.\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание\",\n      \"Реальное получение в магазине не подключено\"\n    ],\n    \"suggested_copy\": \"Собирай выгоду: за семь дней оплати товар, получи бесплатный йогурт и цифровой кувшин. Скидка после четырёх предметов.\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "harmful_habits_skeptical",
+        "segment_id": "harmful_habits",
+        "segment_label": "Взрослые с вредными привычками",
+        "attitude": "skeptical",
+        "attitude_label": "Скептичные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 4149,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"harmful_habits_skeptical\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"открыть коробку без покупки\",\n    \"get_immediate_coupon\": \"сразу забрать скидку\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Проверить, будет ли выгодно собирать предметы и получить скидку, не покупая товары.\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание.\",\n      \"Реальное получение в магазине не подключено.\",\n      \"Скидка и товар одновременно не выдаются.\"\n    ],\n    \"suggested_copy\": \"Собирай выгоду за семь дней — получай бесплатный йогурт и цифровой кувшин, не покупая товары.\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "parents_u3_interested",
+        "segment_id": "parents_u3",
+        "segment_label": "Взрослые с детьми до 3 лет",
+        "attitude": "interested",
+        "attitude_label": "Заинтересованные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 4203,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"parents_u3_interested\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"открыть коробку без покупки\",\n    \"get_immediate_coupon\": \"сразу забрать скидку\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Хочу собрать четыре предмета и получить скидку\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание\",\n      \"Реальное получение в магазине не подключено\",\n      \"Скидка и товар одновременно не выдаются\"\n    ],\n    \"suggested_copy\": \"Собирай выгоду за семь дней — получи бесплатный йогурт и цифровой кувшин. Получи скидку на четыре предмета.\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "parents_u3_neutral",
+        "segment_id": "parents_u3",
+        "segment_label": "Взрослые с детьми до 3 лет",
+        "attitude": "neutral",
+        "attitude_label": "Нейтральные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 4207,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"parents_u3_neutral\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"открыть коробку без покупки\",\n    \"get_immediate_coupon\": \"сразу забрать скидку\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Получить бесплатный йогурт и цифровой кувшин в коллекцию за семь дней\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание\",\n      \"Реальное получение в магазине не подключено\",\n      \"Скидка и товар одновременно не выдаются\"\n    ],\n    \"suggested_copy\": \"Собирай свою выгоду: получай бесплатный йогурт и цифровой кувшин в коллекцию за семь дней\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "parents_u3_skeptical",
+        "segment_id": "parents_u3",
+        "segment_label": "Взрослые с детьми до 3 лет",
+        "attitude": "skeptical",
+        "attitude_label": "Скептичные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 4668,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"parents_u3_skeptical\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"open_box_no_purchase\",\n    \"get_immediate_coupon\": \"get_immediate_coupon\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Проверить, не будет ли предложение слишком сложным или неинтересным для скептической аудитории.\",\n    \"confusion_points\": [\n      \"Неясно, что значит 'бесплатный товар не положен за каждое задание'\",\n      \"Неясно, как получить скидку и какие предметы входят в комплект\",\n      \"Неясно, как работает система оплаты и получения товаров в демо-версии\",\n      \"Неясно, что такое 'рекомендованный товар' и как он связан с скидкой\"\n    ],\n    \"suggested_copy\": \"Попробуйте собирать выгоды, получая бесплатные товары и скидки без сложных условий.\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "mature_interested",
+        "segment_id": "mature",
+        "segment_label": "Зрелые",
+        "attitude": "interested",
+        "attitude_label": "Заинтересованные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 4767,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"mature_interested\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"открыть коробку без покупки\",\n    \"get_immediate_coupon\": \"сразу забрать скидку\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Мне интересно собирать выгоды и проверить, как работает система сбора предметов и скидок.\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание — это не то, что я ожидал.\",\n      \"В целевой версии можно выбрать бесплатный товар вместо скидки — не уверен, что это работает.\",\n      \"Скидка и товар одновременно не выдаются — не понятно, как это работает.\",\n      \"Локальное демо с вымышленными покупками — не уверен, что это реальное получение.\"\n    ],\n    \"suggested_copy\": \"Собирайте выгоды, получайте бесплатные товары и скидки за задания. Проверьте, как работает система сбора предметов и скидок.\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "mature_neutral",
+        "segment_id": "mature",
+        "segment_label": "Зрелые",
+        "attitude": "neutral",
+        "attitude_label": "Нейтральные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 3851,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"mature_neutral\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"открыть коробку без покупки\",\n    \"get_immediate_coupon\": \"сразу забрать скидку\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Можно собрать выгоду за семь дней, получая бесплатный йогурт и цифровой кувшин. Это интересно и полезно.\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание\",\n      \"Сейчас это локальное демо с вымышленными покупками\"\n    ],\n    \"suggested_copy\": \"Собирай свою выгоду: получай бесплатный йогурт и цифровой кувшин за семь дней. Всё в демо, но можно собирать выгоду.\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "mature_skeptical",
+        "segment_id": "mature",
+        "segment_label": "Зрелые",
+        "attitude": "skeptical",
+        "attitude_label": "Скептичные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 3937,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"mature_skeptical\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"open_box_no_purchase\",\n    \"get_immediate_coupon\": \"get_immediate_coupon\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Пользователь хочет проверить, будет ли выгодно собирать предметы и получить скидку, не прибегая к реальным покупкам.\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание.\",\n      \"В целевой версии можно выбрать бесплатный товар вместо скидки.\",\n      \"Предметы расходуются один раз, но скидка и товар одновременно не выдаются.\"\n    ],\n    \"suggested_copy\": \"Попробуйте собирать предметы и получить скидку без реальных покупок. Бесплатный товар не выдается за каждое задание.\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "senior_interested",
+        "segment_id": "senior",
+        "segment_label": "Старшие",
+        "attitude": "interested",
+        "attitude_label": "Заинтересованные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 3562,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"senior_interested\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"open_box_no_purchase\",\n    \"get_immediate_coupon\": \"get_immediate_coupon\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Получить бесплатный йогурт и цифровой кувшин в коллекцию за семь дней.\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание.\",\n      \"Реальное получение в магазине не подключено.\",\n      \"Скидка и товар одновременно не выдаются.\"\n    ],\n    \"suggested_copy\": \"Собирай свою выгоду: получай бесплатный йогурт и цифровой кувшин в коллекцию за семь дней.\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "senior_neutral",
+        "segment_id": "senior",
+        "segment_label": "Старшие",
+        "attitude": "neutral",
+        "attitude_label": "Нейтральные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 4281,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"senior_neutral\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"открыть коробку без покупки\",\n    \"get_immediate_coupon\": \"сразу забрать скидку\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Можно собрать выгоду за семь дней, получая бесплатный йогурт и цифровой кувшин. Это интересно и полезно.\",\n    \"confusion_points\": [\n      \"Бесплатный товар не положен за каждое задание\",\n      \"В целевой версии можно выбрать бесплатный товар вместо скидки\",\n      \"Предметы расходуются один раз, скидка и товар одновременно не выдаются\"\n    ],\n    \"suggested_copy\": \"Собирай выгоду за семь дней — получай бесплатный йогурт и цифровой кувшин. В целевой версии можно выбрать бесплатный товар вместо скидки.\"\n  }\n}"
+    },
+    {
+      "persona": {
+        "persona_id": "senior_skeptical",
+        "segment_id": "senior",
+        "segment_label": "Старшие",
+        "attitude": "skeptical",
+        "attitude_label": "Скептичные",
+        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+      },
+      "response": null,
+      "model": "qwen3:1.7b",
+      "latency_ms": 4277,
+      "error": "invalid_comprehension_fields",
+      "status": "invalid_response",
+      "raw_response": "{\n  \"persona_id\": \"senior_skeptical\",\n  \"comprehension\": {\n    \"next_step\": \"paid_category_purchase\",\n    \"open_box_no_purchase\": \"open_box_no_purchase\",\n    \"get_immediate_coupon\": \"get_immediate_coupon\"\n  },\n  \"subjective\": {\n    \"intent\": \"try\",\n    \"main_reason\": \"Пользователь хочет проверить, как работает система сбора выгод, но остается сомневаться в надежности получения бесплатного товара и скидки.\",\n    \"confusion_points\": [\n      \"Неясно, как оплатить товар и получить скидку одновременно.\",\n      \"Неясно, как получить бесплатный товар без оплаты.\",\n      \"Неясно, как получить скидку без покупки.\",\n      \"Неясно, как получить четыре предмета и скидку.\"\n    ],\n    \"suggested_copy\": \"Попробуйте собирать выгоды за семь дней. Получите бесплатный йогурт и цифровой кувшин. Собранные предметы и скидка — это ваша награда.\"\n  }\n}"
+    }
+  ],
+  "response_counts": {
+    "next_step": {},
+    "first_reward": {},
+    "four_items": {},
+    "intent": {}
+  },
+  "comprehension": {
+    "correct_next_step": 0,
+    "correct_first_reward": 0,
+    "correct_four_items": 0,
+    "all_three_correct": 0,
+    "total_correct_facts": 0,
+    "fact_opportunities": 45
+  },
+  "limitations": [
+    "Qwen responses are synthetic opinions, not observed behaviour",
+    "15 balanced personas do not represent actual audience frequencies",
+    "no estimate of conversion, retention, relevance or profit",
+    "reading supplied product text does not test the working interface",
+    "JSON validity is not independent evidence of correct comprehension"
+  ]
+}

@@ -5,6 +5,7 @@ owned copies, including any explicitly funded starting inventory. No LLM API is 
 """
 import argparse
 import copy
+import hashlib
 import json
 import os
 import pathlib
@@ -21,6 +22,7 @@ from recsys.engine.event import handle_event  # noqa: E402
 from recsys.engine.history import DAY_MS  # noqa: E402
 from recsys.engine.policy import load_policy  # noqa: E402
 from recsys.eval.population import build_population  # noqa: E402
+from recsys.eval.policies import choose_decision  # noqa: E402
 from recsys.eval.run_relevance import build_game_features  # noqa: E402
 
 EVAL = ROOT / "recsys/eval"
@@ -70,8 +72,9 @@ def main(argv=None) -> int:
         for group in row["engagement_breakdown"]:
             print(f"    {group['label']}: {group['users']} чел., охват {group['served_users']}, "
                   f"дельта дней {group['incremental_purchases']:+d}, итог {rubles(group['net_kopecks'])} ₽")
-    print("\nИтог не является прогнозом X5. Доходы бренда/субсидии — отдельные допущения; "
-          "нет сравнения с фиксированным заданием или проверки привычки после поощрений. "
+    print("\nИтог не является прогнозом X5. CPA/субсидия берутся из задания и собираются "
+          "с заданным множителем. Сравнение политик — в compare_policies.py; "
+          "проверки привычки после поощрений нет. "
           "Даже нулевой прирост может окупаться финансированием: это не рост покупок.")
     if args.json_out:
         args.json_out.parent.mkdir(parents=True, exist_ok=True)
@@ -93,13 +96,13 @@ def main(argv=None) -> int:
     return 0
 
 
-def run_scenario(scenario: dict) -> dict:
+def run_scenario(scenario: dict, policy_name: str = "personalized_broad") -> dict:
     # Explicit provider override keeps a 4,000-decision evaluation offline and reproducible.
     with patch.dict(os.environ, {"LLM_PROVIDER": "template"}):
-        return _run_scenario(scenario)
+        return _run_scenario(scenario, policy_name)
 
 
-def _run_scenario(scenario: dict) -> dict:
+def _run_scenario(scenario: dict, policy_name: str = "personalized_broad") -> dict:
     game = load_json(EXAMPLES / "game-snapshot.json")
     policy = load_policy()
     instance_cost = policy["instance_reserve_kopecks"]
@@ -144,17 +147,18 @@ def _run_scenario(scenario: dict) -> dict:
         engagement_served.setdefault(trait["engagement"], set())
     hidden, economics = scenario["hidden"], scenario["economics"]
     paid_margin = sponsor_income = subsidy_income = fraud_loss = operations = 0
+    outcomes_hash = hashlib.sha256()
 
     for cycle in range(scenario.get("cycles", 4)):
         now = NOW_MS + cycle * 7 * DAY_MS
         pending = {}
         # Publish the cohort first; all current promises reserve their full maxima together.
         for index, profile in enumerate(profiles):
-            decision = handle_decision({
+            decision = choose_decision({
                 "contract_version": 1, "request_id": f"sim-{index}-{cycle}", "now_ms": now,
                 "profile": profile, "game": game,
                 "game_features": build_game_features(profile, game), "budget": dict(budget),
-            })
+            }, handle_decision, policy_name)
             if decision["status"] != "offer":
                 counts["refusals"] += 1
                 reasons.update(decision["reason_codes"])
@@ -185,8 +189,9 @@ def _run_scenario(scenario: dict) -> dict:
         for index, profile in enumerate(profiles):
             trait = traits[index]
             # Per-person/per-step independent random draws preserve potential outcomes across worlds.
-            draw = random.Random(scenario["seed"] + index * 7919 + cycle * 104729)
-            base_draw, effect_draw, qualify_draw, craft_draw, redeem_draw, fraud_draw = [draw.random() for _ in range(6)]
+            draws = potential_outcomes(scenario["seed"], index, cycle)
+            outcomes_hash.update(json.dumps(draws, separators=(",", ":")).encode("ascii"))
+            base_draw, effect_draw, qualify_draw, craft_draw, redeem_draw, fraud_draw = draws
             baseline_probability = min(1.0, hidden["base_purchase_probability"]
                                        * trait["baseline_purchase_multiplier"])
             baseline = base_draw < baseline_probability
@@ -195,6 +200,9 @@ def _run_scenario(scenario: dict) -> dict:
             purchased = baseline
             if challenge:
                 uplift = hidden["game_uplift_probability"]
+                if policy_name == "reward_only":
+                    # Explicit synthetic assumption, not an estimated contribution of the game.
+                    uplift *= scenario.get("reward_only_response_multiplier", 0.75)
                 multiplier = (trait["positive_response_multiplier"] if uplift >= 0
                               else trait["negative_response_multiplier"])
                 uplift = max(-1.0, min(1.0, uplift * multiplier))
@@ -249,14 +257,17 @@ def _run_scenario(scenario: dict) -> dict:
                     counts["physical_gifts"] += bool(grant["sku_entitlement_id"])
                     _record_slices(audience_stats, engagement_stats, trait,
                                    "physical_cost_kopecks", physical_cost)
-                    # Realised sponsor fulfilment is an explicit world assumption, not policy truth.
+                    # Collect only the declared CPA and subsidy, once per granted event.
                     if challenge["economics"]["funding_source"] == "advertiser":
-                        sponsor_income += economics["advertiser_payment_per_qualified_event_kopecks"]
-                        subsidy_income += min(physical_cost, economics["supplier_subsidy_per_gift_kopecks"])
+                        counts["sponsored_qualified"] += 1
+                        _record_slices(audience_stats, engagement_stats, trait, "sponsored_qualified", 1)
+                        payment, subsidy = realised_funding(challenge, economics)
+                        sponsor_income += payment
+                        subsidy_income += subsidy
                         _record_slices(audience_stats, engagement_stats, trait, "sponsor_income_kopecks",
-                                       economics["advertiser_payment_per_qualified_event_kopecks"])
+                                       payment)
                         _record_slices(audience_stats, engagement_stats, trait, "subsidy_income_kopecks",
-                                       min(physical_cost, economics["supplier_subsidy_per_gift_kopecks"]))
+                                       subsidy)
                     if fraud_draw < hidden["fraud_share"]:
                         counts["fraud_cases"] += 1
                         fraud_loss += economics["fraud_loss_per_case_kopecks"]
@@ -298,20 +309,48 @@ def _run_scenario(scenario: dict) -> dict:
     spend = budget["coupon_settled_kopecks"] + budget["physical_settled_kopecks"] - prior_settled + fraud_loss + operations
     audience_breakdown = _finish_slices(audience_stats, audience_served, "audience_segment")
     engagement_breakdown = _finish_slices(engagement_stats, engagement_served, "engagement")
+    opening_coupon_liability = external_coupon_reserve + initial_items * instance_cost
+    ending_coupon_liability = budget["coupon_reserved_kopecks"]
+    outstanding_liability_delta = max(0, ending_coupon_liability - opening_coupon_liability)
+    net = paid_margin + sponsor_income + subsidy_income - spend
     return {
         **{name: counts[name] for name in (
             "offers", "refusals", "budget_refusals", "qualified", "items_granted", "items_consumed",
-            "coupons_crafted", "coupons_redeemed", "physical_gifts", "fraud_cases",
+            "coupons_crafted", "coupons_redeemed", "physical_gifts", "fraud_cases", "sponsored_qualified",
             "purchase_days", "baseline_purchase_days", "incremental_purchases")},
         "name": scenario["name"], "users": scenario["users"], "served_users": len(served),
+        "policy": policy_name, "potential_outcomes_fingerprint": outcomes_hash.hexdigest(),
         "initial_item_instances": initial_items, "remaining_item_instances": remaining,
         "outstanding_coupons": outstanding_coupons, "final_budget": budget,
         "refusal_reasons": dict(reasons), "spend_kopecks": spend,
         "peak_reserved_kopecks": peak_reserve, "incremental_margin_kopecks": paid_margin,
         "sponsor_income_kopecks": sponsor_income, "subsidy_income_kopecks": subsidy_income,
         "audience_breakdown": audience_breakdown, "engagement_breakdown": engagement_breakdown,
-        "net_kopecks": paid_margin + sponsor_income + subsidy_income - spend,
+        "net_kopecks": net,
+        "opening_coupon_liability_kopecks": opening_coupon_liability,
+        "ending_coupon_liability_kopecks": ending_coupon_liability,
+        "outstanding_liability_delta_kopecks": outstanding_liability_delta,
+        "conservative_net_after_outstanding_max_liability_kopecks": net - outstanding_liability_delta,
     }
+
+
+def potential_outcomes(seed, profile_index, cycle):
+    """Draws depend on assigned person/week, never on policy or whether it serves."""
+    draw = random.Random(seed + profile_index * 7919 + cycle * 104729)
+    return [draw.random() for _ in range(6)]
+
+
+def realised_funding(challenge, scenario_economics):
+    """No extra reward funding: a collection multiplier only scales the promised amount."""
+    economics = challenge["economics"]
+    if economics["funding_source"] != "advertiser":
+        return 0, 0
+    payment = scenario_economics.get("advertiser_payment_multiplier", 1.0)
+    subsidy = scenario_economics.get("supplier_subsidy_multiplier", 1.0)
+    if not 0 <= payment <= 1 or not 0 <= subsidy <= 1:
+        raise ValueError("Funding collection multipliers must lie in [0, 1]")
+    return (round(economics["bid_per_qualified_event_kopecks"] * payment),
+            round(economics["subsidy_kopecks"] * subsidy))
 
 
 def _slice_add(stats, key, label, field, value):

@@ -14,8 +14,8 @@
   },
   "economics": {
     "incremental_margin_per_purchase_kopecks": 9500,
-    "advertiser_payment_per_qualified_event_kopecks": 1800,
-    "supplier_subsidy_per_gift_kopecks": 1200,
+    "advertiser_payment_multiplier": 1.0,
+    "supplier_subsidy_multiplier": 1.0,
     "fraud_loss_per_case_kopecks": 4000
   },
   "cycles": 4,
