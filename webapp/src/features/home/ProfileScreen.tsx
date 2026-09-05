@@ -32,6 +32,7 @@ import {
   ActiveDiscountBadge,
   ProfileDiscountOverlay,
 } from './ProfileDiscount'
+import { DemoChallengePanel } from './DemoChallengePanel'
 import { ProfileInventoryCrafting } from './ProfileInventoryCrafting'
 
 import './profile-screen.css'
@@ -240,6 +241,8 @@ export function ProfileScreen() {
         inventory={inventory}
         onCraft={createProfileDiscount}
       />
+
+      <DemoChallengePanel />
 
       <section className="profile-tasks" aria-labelledby="tasks-title">
         <div className="tasks-heading-row">
