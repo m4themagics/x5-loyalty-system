@@ -1,0 +1,75 @@
+{
+  "snapshot_version": 1,
+  "profile_id": "eval-08",
+  "label": "Оценочный синтетический профиль 08",
+  "synthetic": true,
+  "receipts": [
+    {
+      "receipt_id": "rcp-eval-08-0",
+      "purchased_at_ms": 1788080400000,
+      "store_id": "store-eval-2",
+      "returned": false,
+      "lines": [
+        {
+          "sku_id": "sku-eval-0",
+          "category": "Холодные напитки и мороженое",
+          "quantity": 1,
+          "paid": true,
+          "amount_kopecks": 8700
+        }
+      ]
+    },
+    {
+      "receipt_id": "rcp-eval-08-1",
+      "purchased_at_ms": 1787734800000,
+      "store_id": "store-eval-2",
+      "returned": false,
+      "lines": [
+        {
+          "sku_id": "sku-eval-1",
+          "category": "Молочные продукты",
+          "quantity": 1,
+          "paid": true,
+          "amount_kopecks": 8700
+        }
+      ]
+    },
+    {
+      "receipt_id": "rcp-eval-08-2",
+      "purchased_at_ms": 1787389200000,
+      "store_id": "store-eval-2",
+      "returned": false,
+      "lines": [
+        {
+          "sku_id": "sku-eval-2",
+          "category": "Всё для выпечки",
+          "quantity": 1,
+          "paid": true,
+          "amount_kopecks": 8700
+        }
+      ]
+    }
+  ],
+  "inventory": [],
+  "issued_rewards": [],
+  "processed_event_ids": [],
+  "active_coupon": null,
+  "outstanding_promise": null,
+  "progress": {
+    "completed_recipe_ids": [],
+    "avatar_level": 0,
+    "redeemed_savings_28d_kopecks": 0
+  },
+  "referral": {
+    "invited_by_profile_id": null,
+    "invited_at_ms": null,
+    "had_confirmed_purchase_before_invite": false,
+    "inviter_rewards_in_window": 0
+  },
+  "risk_signals": {
+    "device_id": "device-eval-8",
+    "household_id": "household-eval-8",
+    "account_age_days": 54,
+    "confirmed_purchase_days": 3
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "snapshot_version": 1,
+  "profile_id": "eval-23",
+  "label": "Оценочный синтетический профиль 23",
+  "synthetic": true,
+  "receipts": [
+    {
+      "receipt_id": "rcp-eval-23-0",
+      "purchased_at_ms": 1788080400000,
+      "store_id": "store-eval-5",
+      "returned": false,
+      "lines": [
+        {
+          "sku_id": "sku-eval-0",
+          "category": "Хлеб, сыр и колбасы",
+          "quantity": 1,
+          "paid": true,
+          "amount_kopecks": 10200
+        }
+      ]
+    },
+    {
+      "receipt_id": "rcp-eval-23-1",
+      "purchased_at_ms": 1787734800000,
+      "store_id": "store-eval-5",
+      "returned": false,
+      "lines": [
+        {
+          "sku_id": "sku-eval-1",
+          "category": "Замороженные продукты",
+          "quantity": 1,
+          "paid": true,
+          "amount_kopecks": 10200
+        }
+      ]
+    },
+    {
+      "receipt_id": "rcp-eval-23-2",
+      "purchased_at_ms": 1787389200000,
+      "store_id": "store-eval-5",
+      "returned": false,
+      "lines": [
+        {
+          "sku_id": "sku-eval-2",
+          "category": "Мороженое и десерты",
+          "quantity": 1,
+          "paid": true,
+          "amount_kopecks": 10200
+        }
+      ]
+    }
+  ],
+  "inventory": [],
+  "issued_rewards": [],
+  "processed_event_ids": [],
+  "active_coupon": null,
+  "outstanding_promise": null,
+  "progress": {
+    "completed_recipe_ids": [],
+    "avatar_level": 0,
+    "redeemed_savings_28d_kopecks": 0
+  },
+  "referral": {
+    "invited_by_profile_id": null,
+    "invited_at_ms": null,
+    "had_confirmed_purchase_before_invite": false,
+    "inviter_rewards_in_window": 0
+  },
+  "risk_signals": {
+    "device_id": "device-eval-23",
+    "household_id": null,
+    "account_age_days": 99,
+    "confirmed_purchase_days": 3
+  }
+}

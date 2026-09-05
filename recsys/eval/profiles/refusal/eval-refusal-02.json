@@ -1,0 +1,45 @@
+{
+  "snapshot_version": 1,
+  "profile_id": "eval-refusal-02",
+  "label": "Отказ: только бесплатные строки в истории",
+  "synthetic": true,
+  "receipts": [
+    {
+      "receipt_id": "rcp-ref-02",
+      "purchased_at_ms": 1788166800000,
+      "store_id": "store-eval-refusal",
+      "returned": false,
+      "lines": [
+        {
+          "sku_id": "sku-eval-refusal",
+          "category": "Бакалея и консервы",
+          "quantity": 1,
+          "paid": false,
+          "amount_kopecks": 6900
+        }
+      ]
+    }
+  ],
+  "inventory": [],
+  "issued_rewards": [],
+  "processed_event_ids": [],
+  "active_coupon": null,
+  "outstanding_promise": null,
+  "progress": {
+    "completed_recipe_ids": [],
+    "avatar_level": 0,
+    "redeemed_savings_28d_kopecks": 0
+  },
+  "referral": {
+    "invited_by_profile_id": null,
+    "invited_at_ms": null,
+    "had_confirmed_purchase_before_invite": false,
+    "inviter_rewards_in_window": 0
+  },
+  "risk_signals": {
+    "device_id": "device-eval-refusal-02",
+    "household_id": null,
+    "account_age_days": 60,
+    "confirmed_purchase_days": 0
+  }
+}

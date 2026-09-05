@@ -1,0 +1,29 @@
+{
+  "snapshot_version": 1,
+  "profile_id": "eval-refusal-01",
+  "label": "Отказ: покупок нет вовсе",
+  "synthetic": true,
+  "receipts": [],
+  "inventory": [],
+  "issued_rewards": [],
+  "processed_event_ids": [],
+  "active_coupon": null,
+  "outstanding_promise": null,
+  "progress": {
+    "completed_recipe_ids": [],
+    "avatar_level": 0,
+    "redeemed_savings_28d_kopecks": 0
+  },
+  "referral": {
+    "invited_by_profile_id": null,
+    "invited_at_ms": null,
+    "had_confirmed_purchase_before_invite": false,
+    "inviter_rewards_in_window": 0
+  },
+  "risk_signals": {
+    "device_id": "device-eval-refusal-01",
+    "household_id": null,
+    "account_age_days": 60,
+    "confirmed_purchase_days": 0
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "users": 1000,
+  "seed": 20260905,
+  "offer_eligible_share": 0.62,
+  "gift_unit_cost_kopecks": 2500,
+  "instance_reserve_kopecks": 250,
+  "coupon_max_kopecks": 1000,
+  "operations_cost_per_offer_kopecks": 120,
+  "name": "Положительный эффект",
+  "notes": "Игра добавляет покупки, бренд частично оплачивает награду, погашение умеренное.",
+  "hidden": {
+    "base_purchase_probability": 0.34,
+    "game_uplift_probability": 0.09,
+    "qualification_probability_given_purchase": 0.86,
+    "coupon_craft_probability": 0.42,
+    "coupon_redemption_probability": 0.55,
+    "fraud_share": 0.02
+  },
+  "economics": {
+    "incremental_margin_per_purchase_kopecks": 9500,
+    "advertiser_payment_per_qualified_event_kopecks": 1800,
+    "supplier_subsidy_per_gift_kopecks": 1200,
+    "fraud_loss_per_case_kopecks": 4000
+  }
+}

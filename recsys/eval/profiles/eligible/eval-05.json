@@ -1,0 +1,80 @@
+{
+  "snapshot_version": 1,
+  "profile_id": "eval-05",
+  "label": "Оценочный синтетический профиль 05",
+  "synthetic": true,
+  "receipts": [
+    {
+      "receipt_id": "rcp-eval-05-0",
+      "purchased_at_ms": 1788339600000,
+      "store_id": "store-eval-5",
+      "returned": false,
+      "lines": [
+        {
+          "sku_id": "sku-eval-0",
+          "category": "Молочные продукты",
+          "quantity": 1,
+          "paid": true,
+          "amount_kopecks": 8400
+        }
+      ]
+    },
+    {
+      "receipt_id": "rcp-eval-05-1",
+      "purchased_at_ms": 1787994000000,
+      "store_id": "store-eval-5",
+      "returned": false,
+      "lines": [
+        {
+          "sku_id": "sku-eval-1",
+          "category": "Всё для выпечки",
+          "quantity": 1,
+          "paid": true,
+          "amount_kopecks": 8400
+        }
+      ]
+    },
+    {
+      "receipt_id": "rcp-eval-05-2",
+      "purchased_at_ms": 1787648400000,
+      "store_id": "store-eval-5",
+      "returned": false,
+      "lines": [
+        {
+          "sku_id": "sku-eval-2",
+          "category": "Мясо и колбасы",
+          "quantity": 1,
+          "paid": true,
+          "amount_kopecks": 8400
+        }
+      ]
+    }
+  ],
+  "inventory": [
+    {
+      "item_id": "milk-pitcher",
+      "quantity": 3
+    }
+  ],
+  "issued_rewards": [],
+  "processed_event_ids": [],
+  "active_coupon": null,
+  "outstanding_promise": null,
+  "progress": {
+    "completed_recipe_ids": [],
+    "avatar_level": 0,
+    "redeemed_savings_28d_kopecks": 0
+  },
+  "referral": {
+    "invited_by_profile_id": null,
+    "invited_at_ms": null,
+    "had_confirmed_purchase_before_invite": false,
+    "inviter_rewards_in_window": 0
+  },
+  "risk_signals": {
+    "device_id": "device-eval-5",
+    "household_id": null,
+    "account_age_days": 45,
+    "confirmed_purchase_days": 3
+  }
+}

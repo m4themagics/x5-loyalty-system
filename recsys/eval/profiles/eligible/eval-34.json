@@ -1,0 +1,60 @@
+{
+  "snapshot_version": 1,
+  "profile_id": "eval-34",
+  "label": "Оценочный синтетический профиль 34",
+  "synthetic": true,
+  "receipts": [
+    {
+      "receipt_id": "rcp-eval-34-0",
+      "purchased_at_ms": 1787994000000,
+      "store_id": "store-eval-4",
+      "returned": false,
+      "lines": [
+        {
+          "sku_id": "sku-eval-0",
+          "category": "Хлеб и выпечка",
+          "quantity": 1,
+          "paid": true,
+          "amount_kopecks": 11300
+        }
+      ]
+    },
+    {
+      "receipt_id": "rcp-eval-34-1",
+      "purchased_at_ms": 1787648400000,
+      "store_id": "store-eval-4",
+      "returned": false,
+      "lines": [
+        {
+          "sku_id": "sku-eval-1",
+          "category": "Яйца и завтраки",
+          "quantity": 1,
+          "paid": true,
+          "amount_kopecks": 11300
+        }
+      ]
+    }
+  ],
+  "inventory": [],
+  "issued_rewards": [],
+  "processed_event_ids": [],
+  "active_coupon": null,
+  "outstanding_promise": null,
+  "progress": {
+    "completed_recipe_ids": [],
+    "avatar_level": 0,
+    "redeemed_savings_28d_kopecks": 0
+  },
+  "referral": {
+    "invited_by_profile_id": null,
+    "invited_at_ms": null,
+    "had_confirmed_purchase_before_invite": false,
+    "inviter_rewards_in_window": 0
+  },
+  "risk_signals": {
+    "device_id": "device-eval-34",
+    "household_id": null,
+    "account_age_days": 132,
+    "confirmed_purchase_days": 2
+  }
+}
