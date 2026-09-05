@@ -5,10 +5,8 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// Импорт без расширения намеренно: он оставляет Vite на встроенном загрузчике конфига,
-// который собирает плагин вместе с workspace-пакетом контрактов. Нативный загрузчик
-// не резолвит его импорты без расширений и ломает сборку.
-import { demoApiPlugin } from './demo-api/plugin'
+// Обработчик с runtime-контрактами загружается самим Vite только при запуске dev-сервера.
+import { demoApiPlugin } from './demo-api/plugin.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 

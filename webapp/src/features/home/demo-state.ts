@@ -9,7 +9,7 @@ import type {
 } from '@pyaterochka-game-demo/contracts'
 
 import type { CraftedDiscount } from './profile-discount-crafting'
-import { DEMO_AVATAR_MAX_LEVEL, DEMO_COUPON_MAX_KOPECKS } from '@pyaterochka-game-demo/contracts'
+import { DEMO_AVATAR_MAX_LEVEL, DEMO_COUPON_MAX_KOPECKS, DEMO_INSTANCE_RESERVE_KOPECKS, DEMO_RANKING_WINDOW_DAYS } from '@pyaterochka-game-demo/contracts'
 
 /**
  * Демонстрационное состояние персонального сценария: один версионированный снимок в одной
@@ -30,6 +30,8 @@ export type DemoState = {
   card: DemoCard | null
   decision: DemoDecisionSummary | null
   last_grant: DemoGrantSummary | null
+  last_receipt: { challenge_id: string; receipt: DemoReceipt } | null
+  redemptions: { coupon_id: string; redeemed_at_ms: number; saved_kopecks: number }[]
 }
 
 export type DemoDecisionSummary = {
@@ -53,15 +55,28 @@ export function createDemoState(
   profile: DemoProfileSnapshot,
   budget: DemoBudgetSnapshot,
 ): DemoState {
+  const inventoryLiability = profile.inventory.reduce(
+    (total, entry) => total + entry.quantity * DEMO_INSTANCE_RESERVE_KOPECKS,
+    0,
+  )
+  const couponLiability = profile.active_coupon?.max_kopecks ?? 0
   return {
     state_version: DEMO_STATE_VERSION,
     revision: 1,
     profile,
-    budget,
+    budget: {
+      ...budget,
+      coupon_reserved_kopecks: Math.max(
+        budget.coupon_reserved_kopecks,
+        inventoryLiability + couponLiability,
+      ),
+    },
     challenge: null,
     card: null,
     decision: null,
     last_grant: null,
+    last_receipt: null,
+    redemptions: [],
   }
 }
 
@@ -136,12 +151,16 @@ export function applyEvent(
   if (state.challenge === null) return state
 
   const processed = rememberEvent(state.profile.processed_event_ids, response.event_id, receipt)
-  const receiptsWithProof = [...state.profile.receipts, receipt]
+  const receiptsWithProof = state.profile.receipts.some((existing) => existing.receipt_id === receipt.receipt_id)
+    ? state.profile.receipts
+    : [...state.profile.receipts, receipt]
+  const lastReceipt = { challenge_id: state.challenge.challenge_id, receipt }
 
   if (response.grant === null) {
     return {
       ...state,
       revision: state.revision + 1,
+      last_receipt: lastReceipt,
       profile: {
         ...state.profile,
         receipts: receiptsWithProof,
@@ -157,6 +176,7 @@ export function applyEvent(
     return {
       ...state,
       revision: state.revision + 1,
+      last_receipt: lastReceipt,
       profile: { ...state.profile, processed_event_ids: processed },
     }
   }
@@ -164,6 +184,7 @@ export function applyEvent(
   return {
     ...state,
     revision: state.revision + 1,
+    last_receipt: lastReceipt,
     profile: {
       ...state.profile,
       receipts: receiptsWithProof,
@@ -187,7 +208,7 @@ export function applyEvent(
           ? null
           : { ...state.profile.outstanding_promise, fulfilled: true },
     },
-    budget: settleReserves(state.budget, state.challenge, response.grant.sku_id !== null),
+    budget: settleIssuedReward(state.budget, state.challenge, response.grant.sku_id !== null),
     last_grant: {
       reward_id: response.grant.reward_id,
       item_id: response.grant.item_id,
@@ -245,27 +266,46 @@ export function applyCraft(
 export function applyRedemption(
   state: DemoState,
   basketKopecks: number,
+  nowMs: number = Date.now(),
 ): DemoState {
   const coupon = state.profile.active_coupon
   if (coupon === null || coupon.redeemed_kopecks !== null) return state
+  if (!Number.isSafeInteger(basketKopecks) || basketKopecks < 0) return state
 
   const savedKopecks = Math.min(
     Math.floor((basketKopecks * coupon.percent) / 100),
     DEMO_COUPON_MAX_KOPECKS,
   )
 
-  return {
+  return refreshDemoSavings({
     ...state,
     revision: state.revision + 1,
+    redemptions: [...state.redemptions, { coupon_id: coupon.coupon_id, redeemed_at_ms: nowMs, saved_kopecks: savedKopecks }],
     profile: {
       ...state.profile,
       active_coupon: null,
-      progress: {
-        ...state.profile.progress,
-        redeemed_savings_28d_kopecks:
-          state.profile.progress.redeemed_savings_28d_kopecks + savedKopecks,
-      },
     },
+    budget: {
+      ...state.budget,
+      coupon_reserved_kopecks: Math.max(
+        0,
+        state.budget.coupon_reserved_kopecks - coupon.max_kopecks,
+      ),
+      coupon_settled_kopecks: state.budget.coupon_settled_kopecks + savedKopecks,
+    },
+  }, nowMs)
+}
+
+/** Окно (now - 28 суток, now]; старые погашения остаются в журнале, но выходят из рейтинга. */
+export function refreshDemoSavings(state: DemoState, nowMs: number): DemoState {
+  const start = nowMs - DEMO_RANKING_WINDOW_DAYS * 86_400_000
+  const saved = state.redemptions.reduce((total, event) => event.redeemed_at_ms > start && event.redeemed_at_ms <= nowMs
+    ? total + event.saved_kopecks : total, 0)
+  if (saved === state.profile.progress.redeemed_savings_28d_kopecks) return state
+  return {
+    ...state,
+    revision: state.revision + 1,
+    profile: { ...state.profile, progress: { ...state.profile.progress, redeemed_savings_28d_kopecks: saved } },
   }
 }
 
@@ -285,7 +325,7 @@ export function resolveDemoState(raw: string | null): DemoState | null {
     ) {
       return null
     }
-    return saved as DemoState
+    return { ...saved, last_receipt: saved.last_receipt ?? null, redemptions: saved.redemptions ?? [] } as DemoState
   } catch {
     return null
   }
@@ -315,19 +355,17 @@ function releaseReserves(budget: DemoBudgetSnapshot, challenge: DemoChallenge): 
   }
 }
 
-function settleReserves(
+function settleIssuedReward(
   budget: DemoBudgetSnapshot,
   challenge: DemoChallenge,
   physicalIssued: boolean,
 ): DemoBudgetSnapshot {
   const physicalReserve = challenge.reservation.physical_reserve_kopecks
-  const released = releaseReserves(budget, challenge)
   return {
-    ...released,
-    coupon_settled_kopecks:
-      released.coupon_settled_kopecks + challenge.reservation.coupon_reserve_kopecks,
+    ...budget,
+    physical_reserved_kopecks: Math.max(0, budget.physical_reserved_kopecks - physicalReserve),
     physical_settled_kopecks:
-      released.physical_settled_kopecks + (physicalIssued ? physicalReserve : 0),
+      budget.physical_settled_kopecks + (physicalIssued ? physicalReserve : 0),
   }
 }
 

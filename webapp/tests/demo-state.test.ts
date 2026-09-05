@@ -18,6 +18,7 @@ import {
   applyEvent,
   applyRedemption,
   createDemoState,
+  refreshDemoSavings,
   releaseExpiredPromise,
   resolveDemoState,
   revealGrant,
@@ -83,9 +84,9 @@ describe('демонстрационное состояние персональ
     expect(state.profile.issued_rewards).toHaveLength(1)
     expect(state.profile.issued_rewards[0].sku_id).toBe('sku-milk-1l')
     expect(state.profile.outstanding_promise?.fulfilled).toBe(true)
-    expect(state.budget.coupon_settled_kopecks).toBe(250)
+    expect(state.budget.coupon_settled_kopecks).toBe(0)
     expect(state.budget.physical_settled_kopecks).toBe(2500)
-    expect(state.budget.coupon_reserved_kopecks).toBe(0)
+    expect(state.budget.coupon_reserved_kopecks).toBe(250)
   })
 
   test('повтор того же начисления не выдаёт вторую награду', () => {
@@ -139,6 +140,8 @@ describe('демонстрационное состояние персональ
     expect(state.profile.active_coupon?.max_kopecks).toBe(1000)
     expect(state.profile.progress.completed_recipe_ids).toEqual(['breakfast'])
     expect(state.profile.progress.avatar_level).toBe(1)
+    expect(state.budget.coupon_reserved_kopecks).toBe(1000)
+    expect(state.budget.coupon_settled_kopecks).toBe(0)
   })
 
   test('активный купон блокирует создание второго', () => {
@@ -194,5 +197,34 @@ describe('демонстрационное состояние персональ
     expect(resolveDemoState(null)).toBeNull()
     expect(resolveDemoState('не json')).toBeNull()
     expect(resolveDemoState(JSON.stringify({ state_version: 99 }))).toBeNull()
+  })
+
+  test('сохраняет точный последний чек для воспроизводимого повтора', () => {
+    const state = grantedState()
+    expect(state.last_receipt?.receipt.receipt_id).toBe('rcp-test-1')
+    expect(state.last_receipt?.challenge_id).toBe(state.challenge?.challenge_id)
+    const replay = applyEvent(state, duplicateEvent, state.last_receipt!.receipt, state.revision, NOW_MS + 1)
+    expect(replay.profile.receipts.filter((receipt) => receipt.receipt_id === 'rcp-test-1')).toHaveLength(1)
+  })
+
+  test('экономия учитывает окно 28 дней по времени погашения, без повторов', () => {
+    const ids = ['club-toaster', 'milk-pitcher', 'travel-mug', 'breakfast-pan']
+    let state = createDemoState({ ...profile, inventory: ids.map((item_id) => ({ item_id, quantity: 1 })) }, budget)
+    state = applyCraft(state, craftDiscount(ids, NOW_MS, 0.5), NOW_MS)
+    state = applyRedemption(state, 1000, NOW_MS)
+    expect(state.profile.progress.redeemed_savings_28d_kopecks).toBe(80)
+    expect(state.budget.coupon_reserved_kopecks).toBe(0)
+    expect(state.budget.coupon_settled_kopecks).toBe(80)
+    expect(applyRedemption(state, 1000, NOW_MS + 1).redemptions).toHaveLength(1)
+    expect(refreshDemoSavings(state, NOW_MS + 28 * 86_400_000).profile.progress.redeemed_savings_28d_kopecks).toBe(0)
+  })
+
+  test('новый снимок резервирует максимум будущего купона для уже выданных предметов', () => {
+    const itemIds = ['club-toaster', 'milk-pitcher', 'travel-mug']
+    const state = createDemoState(
+      { ...profile, inventory: itemIds.map((item_id) => ({ item_id, quantity: 1 })) },
+      budget,
+    )
+    expect(state.budget.coupon_reserved_kopecks).toBe(750)
   })
 })

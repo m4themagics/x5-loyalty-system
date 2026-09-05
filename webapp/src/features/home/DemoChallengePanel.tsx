@@ -1,5 +1,5 @@
 import { Typography } from '@/components/typography'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
   fetchSeedProfiles,
@@ -24,12 +24,13 @@ import {
   applyEvent,
   applyRedemption,
   createDemoState,
+  refreshDemoSavings,
   releaseExpiredPromise,
-  resolveDemoState,
   revealGrant,
-  serializeDemoState,
   type DemoState,
 } from './demo-state'
+import { applyReferralReward, createDemoStore, resolveDemoStore, saveDemoProfile, selectDemoProfile, serializeDemoStore, type DemoStore } from './demo-store'
+import { addDemoSelection, removeDemoSelection } from './demo-selection'
 import { craftDiscount, previewCraftedDiscount } from './profile-discount-crafting'
 import { profileItems } from './profile-items'
 
@@ -172,7 +173,7 @@ export function DemoChallengePanel() {
           ))}
           <button
             className="demo-button"
-            disabled={demo.isBusy}
+            disabled={demo.isBusy || state.last_receipt?.challenge_id !== challenge.challenge_id}
             onClick={() => demo.sendReceipt('qualifying', true)}
             type="button"
           >
@@ -188,13 +189,14 @@ export function DemoChallengePanel() {
       ) : null}
 
       <DemoInventory
+        key={state.profile.profile_id}
         state={state}
         isBusy={demo.isBusy}
         onCraft={demo.craft}
         onRedeem={demo.redeem}
       />
 
-      <DemoProgressBlock state={state} />
+      <DemoProgressBlock state={state} referralIssued={demo.referralIssued} />
 
       {state.decision !== null ? (
         <details className="demo-diagnostics">
@@ -246,15 +248,6 @@ function DemoInventory({
   const coupon = state.profile.active_coupon
   const preview = previewCraftedDiscount(selected)
 
-  const toggle = (itemId: string) => {
-    setSelected((current) => {
-      const index = current.indexOf(itemId)
-      if (index >= 0) return current.filter((_, position) => position !== index)
-      if (current.length >= 4) return current
-      return [...current, itemId]
-    })
-  }
-
   return (
     <div className="demo-inventory">
       <Typography as="h3" variant="h2" className="section-title">Персональный инвентарь</Typography>
@@ -271,10 +264,11 @@ function DemoInventory({
             return (
               <li key={entry.item_id}>
                 <button
+                  aria-label={item.name}
                   aria-pressed={selectedCount > 0}
                   className={`demo-item item-rarity-${item.rarity}`}
-                  disabled={coupon !== null || selectedCount >= entry.quantity}
-                  onClick={() => toggle(entry.item_id)}
+                  disabled={isBusy || coupon !== null || selectedCount >= entry.quantity || selected.length >= 4}
+                  onClick={() => setSelected((current) => addDemoSelection(current, state.profile.inventory, entry.item_id))}
                   type="button"
                 >
                   <img alt={item.name} src={item.iconSrc} />
@@ -283,6 +277,17 @@ function DemoInventory({
                     ×{entry.quantity}{selectedCount > 0 ? ` · выбрано ${selectedCount}` : ''}
                   </Typography>
                 </button>
+                {selectedCount > 0 ? (
+                  <button
+                    className="demo-button"
+                    disabled={isBusy || coupon !== null}
+                    aria-label={`Убрать одну копию: ${item.name}`}
+                    onClick={() => setSelected((current) => removeDemoSelection(current, entry.item_id))}
+                    type="button"
+                  >
+                    <Typography as="span" variant="bodyXs">Убрать одну</Typography>
+                  </button>
+                ) : null}
               </li>
             )
           })}
@@ -320,7 +325,7 @@ function DemoInventory({
   )
 }
 
-function DemoProgressBlock({ state }: { state: DemoState }) {
+function DemoProgressBlock({ state, referralIssued }: { state: DemoState; referralIssued: boolean }) {
   const level = avatarLevel(state.profile.progress.completed_recipe_ids)
   const ranking = rankParticipants([
     ...RANKING_PEERS,
@@ -352,7 +357,7 @@ function DemoProgressBlock({ state }: { state: DemoState }) {
           label="Погашенная экономия за 28 дней"
           value={formatRubles(state.profile.progress.redeemed_savings_28d_kopecks)}
         />
-        <DemoTerm label="Реферальная награда" value={referral.reason} />
+        <DemoTerm label="Реферальная награда" value={referralIssued ? 'Пригласившему начислен один обычный предмет' : referral.reason} />
       </dl>
       <ol className="demo-ranking">
         {ranking.map((entry) => (
@@ -369,10 +374,24 @@ function DemoProgressBlock({ state }: { state: DemoState }) {
 
 function useDemoChallenge() {
   const [seed, setSeed] = useState<Awaited<ReturnType<typeof fetchSeedProfiles>> | null>(null)
-  const [state, setState] = useState<DemoState | null>(null)
+  const [store, setStore] = useState<DemoStore | null>(null)
+  const storeRef = useRef<DemoStore | null>(null)
+  const busyRef = useRef(false)
+  const state = store === null ? null : store.profiles[store.active_profile_id]
   const [failure, setFailure] = useState<DemoApiFailure | null>(null)
   const [isBusy, setIsBusy] = useState(false)
   const [lastEventNote, setLastEventNote] = useState<string | null>(null)
+
+  const persistStore = useCallback((next: DemoStore) => {
+    window.localStorage.setItem(DEMO_STATE_STORAGE_KEY, serializeDemoStore(next))
+    storeRef.current = next
+    setStore(next)
+  }, [])
+
+  const persist = useCallback((next: DemoState) => {
+    const current = storeRef.current
+    if (current !== null) persistStore(saveDemoProfile(current, next))
+  }, [persistStore])
 
   useEffect(() => {
     let cancelled = false
@@ -383,76 +402,103 @@ function useDemoChallenge() {
         setFailure(result.error)
         return
       }
-      const stored = resolveDemoState(window.localStorage.getItem(DEMO_STATE_STORAGE_KEY))
-      setState(stored ?? createDemoState(result.data.profiles[0], result.data.budget))
+      let loaded = resolveDemoStore(window.localStorage.getItem(DEMO_STATE_STORAGE_KEY))
+        ?? createDemoStore(createDemoState(result.data.profiles[0], result.data.budget))
+      for (const profile of result.data.profiles) {
+        if (loaded.profiles[profile.profile_id] === undefined) {
+          loaded = { ...loaded, profiles: { ...loaded.profiles, [profile.profile_id]: createDemoState(profile, result.data.budget) } }
+        }
+      }
+      const active = refreshDemoSavings(loaded.profiles[loaded.active_profile_id], Date.now())
+      persistStore(saveDemoProfile(loaded, active))
     })
     return () => { cancelled = true }
-  }, [])
+  }, [persistStore])
 
-  const persist = useCallback((next: DemoState) => {
-    window.localStorage.setItem(DEMO_STATE_STORAGE_KEY, serializeDemoState(next))
-    setState(next)
-  }, [])
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      const current = storeRef.current
+      if (current === null || busyRef.current) return
+      const active = current.profiles[current.active_profile_id]
+      const next = refreshDemoSavings(active, Date.now())
+      if (next !== active) persist(next)
+    }, 60_000)
+    return () => window.clearInterval(timer)
+  }, [persist])
 
   const profiles = seed?.ok === true ? seed.data.profiles : []
 
   const selectProfile = useCallback((profileId: string) => {
-    if (seed?.ok !== true) return
+    if (seed?.ok !== true || storeRef.current === null || busyRef.current) return
     const profile = seed.data.profiles.find((candidate) => candidate.profile_id === profileId)
     if (profile === undefined) return
     setLastEventNote(null)
     setFailure(null)
-    persist(createDemoState(profile, seed.data.budget))
-  }, [persist, seed])
+    const selected = selectDemoProfile(storeRef.current, profile, seed.data.budget)
+    persistStore(saveDemoProfile(selected, refreshDemoSavings(selected.profiles[profileId], Date.now())))
+  }, [persistStore, seed])
 
   const resetProfile = useCallback(() => {
-    if (state === null) return
-    selectProfile(state.profile.profile_id)
-  }, [selectProfile, state])
+    if (state === null || seed?.ok !== true || busyRef.current) return
+    const profile = seed.data.profiles.find((candidate) => candidate.profile_id === state.profile.profile_id)
+    if (profile === undefined) return
+    setFailure(null)
+    setLastEventNote(null)
+    persist(createDemoState(profile, seed.data.budget))
+  }, [persist, seed, state])
 
   const askForChallenge = useCallback(async () => {
-    if (state === null) return
+    if (state === null || busyRef.current) return
     const nowMs = Date.now()
-    const current = releaseExpiredPromise(state, nowMs)
+    const current = releaseExpiredPromise(refreshDemoSavings(state, nowMs), nowMs)
     if (current !== state) persist(current)
 
     setIsBusy(true)
+    busyRef.current = true
     setFailure(null)
     setLastEventNote(null)
     const requestRevision = current.revision
     const result = await requestDecision(current.profile, current.budget, nowMs)
     setIsBusy(false)
+    busyRef.current = false
 
     if (!result.ok) {
       setFailure(result.error)
       return
     }
-    persist(applyDecision(current, result.data, requestRevision, nowMs))
+    const latest = storeRef.current?.profiles[current.profile.profile_id]
+    if (latest === undefined || storeRef.current?.active_profile_id !== current.profile.profile_id) return
+    persist(applyDecision(latest, result.data, requestRevision, nowMs))
   }, [persist, state])
 
   const sendReceipt = useCallback(async (kind: DemoReceiptKind, replay: boolean) => {
-    if (state === null || state.challenge === null) return
+    if (state === null || state.challenge === null || busyRef.current) return
     const nowMs = Date.now()
-    const receiptId = replay
-      ? `rcp-${state.challenge.challenge_id}-${kind}`
-      : `rcp-${state.challenge.challenge_id}-${kind}-${nowMs}`
-    const receipt = buildDemoReceipt(kind, state.challenge, nowMs, receiptId)
+    const receipt = replay
+      ? state.last_receipt?.challenge_id === state.challenge.challenge_id ? state.last_receipt.receipt : null
+      : buildDemoReceipt(kind, state.challenge, nowMs, `rcp-${crypto.randomUUID()}`)
+    if (receipt === null) return
 
     setIsBusy(true)
+    busyRef.current = true
     setFailure(null)
     const requestRevision = state.revision
     const result = await submitDemoEvent(state.profile, state.challenge, receipt, nowMs)
     setIsBusy(false)
+    busyRef.current = false
 
     if (!result.ok) {
       setFailure(result.error)
       return
     }
-    setLastEventNote(
-      `${result.data.qualification} · риск: ${result.data.risk.decision} · ${result.data.reason_codes.join(', ')}`,
-    )
-    persist(applyEvent(state, result.data, receipt, requestRevision, nowMs))
-  }, [persist, state])
+    const current = storeRef.current
+    const latest = current?.profiles[state.profile.profile_id]
+    if (current === null || latest === undefined || current.active_profile_id !== state.profile.profile_id || latest.revision !== requestRevision) return
+    const next = applyEvent(latest, result.data, receipt, requestRevision, nowMs)
+    const referral = applyReferralReward(saveDemoProfile(current, next), state.profile.profile_id, result.data, receipt, nowMs)
+    setLastEventNote(`${result.data.qualification} · риск: ${result.data.risk.decision} · ${result.data.reason_codes.join(', ')}${state.profile.referral.invited_by_profile_id === null ? '' : ` · ${referral.reason}`}`)
+    persistStore(referral.store)
+  }, [persistStore, state])
 
   const reveal = useCallback(() => {
     if (state === null) return
@@ -466,7 +512,7 @@ function useDemoChallenge() {
 
   const redeem = useCallback(() => {
     if (state === null) return
-    persist(applyRedemption(state, DEMO_BASKET_KOPECKS))
+    persist(applyRedemption(state, DEMO_BASKET_KOPECKS, Date.now()))
   }, [persist, state])
 
   return {
@@ -476,6 +522,7 @@ function useDemoChallenge() {
     isBusy,
     lastEventNote,
     profiles,
+    referralIssued: store?.referral_awards.some((award) => award.invitee_profile_id === state?.profile.profile_id) ?? false,
     redeem,
     resetProfile,
     reveal,
