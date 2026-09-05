@@ -13,19 +13,26 @@ import {
   addShakeMovement,
   type PointerPoint,
 } from './profile-chest-gesture'
+import { drawProfileItem } from './profile-item-drop'
 import {
-  COUNTDOWN_DURATION_MS,
-  advanceChestCycle,
-  beginNextChestCycle,
-  claimChest,
-  formatCountdown,
-  resolveChestCycle,
-  serializeChestCycle,
-} from './profile-countdown'
+  addInventoryItem,
+  type InventoryEntry,
+  resolveInventory,
+  serializeInventory,
+} from './profile-inventory'
+import { profileItems, type ItemRarity, type ProfileItem } from './profile-items'
+import { serializeChestCycle } from './profile-countdown'
 
 import './profile-screen.css'
 
 const COUNTDOWN_STORAGE_KEY = 'pyaterochka_profile_chest_deadline'
+const INVENTORY_STORAGE_KEY = 'pyaterochka_profile_inventory'
+
+const rarityLabels: Record<ItemRarity, string> = {
+  common: 'Обычный',
+  epic: 'Эпический',
+  legendary: 'Легендарный',
+}
 
 const tasks = [
   {
@@ -56,8 +63,10 @@ const tasks = [
 
 export function ProfileScreen() {
   const { claimReward, countdown, isOpenable } = useChestCountdown()
+  const { addReceivedItem, inventory } = useProfileInventory()
   const [isInfoOpen, setIsInfoOpen] = useState(false)
   const [openingStage, setOpeningStage] = useState<'closed' | 'shaking' | 'opening' | 'reward'>('closed')
+  const [rewardItem, setRewardItem] = useState<ProfileItem | null>(null)
   const [shakeOffset, setShakeOffset] = useState({ x: 0, y: 0 })
   const lastPointerRef = useRef<PointerPoint | null>(null)
   const shakeDistanceRef = useRef(0)
@@ -66,18 +75,22 @@ export function ProfileScreen() {
     if (openingStage !== 'opening') return
 
     const revealTimer = window.setTimeout(() => {
+      const nextReward = drawProfileItem()
+      addReceivedItem(nextReward.id)
       claimReward()
+      setRewardItem(nextReward)
       setOpeningStage('reward')
     }, 1_400)
 
     return () => window.clearTimeout(revealTimer)
-  }, [claimReward, openingStage])
+  }, [addReceivedItem, claimReward, openingStage])
 
   const openChest = () => {
     if (!isOpenable) return
     setIsInfoOpen(false)
     shakeDistanceRef.current = 0
     setShakeOffset({ x: 0, y: 0 })
+    setRewardItem(null)
     setOpeningStage('shaking')
   }
 
@@ -132,7 +145,7 @@ export function ProfileScreen() {
       <section className="profile-chest-panel" aria-label="Коробка награды">
         <div className="chest-timer">
           <Typography as="span" variant="bodyXs" className="chest-timer-label">
-            {isOpenable ? 'Можно открыть' : 'До открытия'}
+            Демо-режим
           </Typography>
           <Typography as="time" variant="body" className="chest-timer-value">
             {countdown}
@@ -152,7 +165,7 @@ export function ProfileScreen() {
             src="/assets/pyaterochka-cardboard-chest.webp"
           />
           <Typography as="span" variant="bodyXs" className="chest-tap-hint">
-            {isOpenable ? 'Нажмите, чтобы открыть' : 'Ждите окончания таймера'}
+            Нажмите, чтобы открыть
           </Typography>
         </button>
 
@@ -180,7 +193,7 @@ export function ProfileScreen() {
                 Коробка награды
               </Typography>
               <Typography as="span" variant="bodySm" className="info-copy">
-                Когда таймер закончится, нажмите на коробку, зажмите её и потрясите движениями по экрану. После открытия вы получите предмет, а таймер запустится заново.
+                Сейчас коробку можно открывать без ограничений. Нажмите на неё, зажмите и потрясите движениями по экрану — после получения предмета коробка сразу станет доступна снова.
               </Typography>
             </div>
           ) : null}
@@ -217,9 +230,11 @@ export function ProfileScreen() {
               Здесь появятся полученные предметы и награды
             </Typography>
           </div>
-          <Typography as="span" variant="bodyXs" className="slots-counter">0/8</Typography>
+          <Typography as="span" variant="bodyXs" className="slots-counter">
+            {inventory.length}/{profileItems.length}
+          </Typography>
         </div>
-        <EmptySlots count={8} className="inventory-slots" />
+        <InventorySlots inventory={inventory} />
       </section>
 
       <section className="profile-tasks" aria-labelledby="tasks-title">
@@ -306,11 +321,21 @@ export function ProfileScreen() {
               />
             </button>
 
-            {openingStage === 'reward' ? (
+            {openingStage === 'reward' && rewardItem !== null ? (
               <div className="revealed-reward">
-                <div className="gray-square-reward">
-                  <Typography as="span" variant="bodySmMedium">
-                    Серый квадрат
+                <div
+                  aria-label={`Получен предмет: ${rewardItem.name}`}
+                  className={`revealed-reward-item item-rarity-${rewardItem.rarity}`}
+                >
+                  <img alt={rewardItem.name} src={rewardItem.iconSrc} />
+                  <Typography as="span" variant="bodyXs" className="reward-rarity">
+                    {rarityLabels[rewardItem.rarity]}
+                  </Typography>
+                  <Typography as="strong" variant="bodySmMedium" className="reward-item-name">
+                    {rewardItem.name}
+                  </Typography>
+                  <Typography as="span" variant="bodyXs" className="reward-item-category">
+                    {rewardItem.category}
                   </Typography>
                 </div>
                 <button
@@ -326,6 +351,43 @@ export function ProfileScreen() {
         </div>
       ) : null}
     </main>
+  )
+}
+
+function InventorySlots({ inventory }: { inventory: readonly InventoryEntry[] }) {
+  const visibleItems = inventory.flatMap((entry) => {
+    const item = profileItems.find((candidate) => candidate.id === entry.itemId)
+    return item === undefined ? [] : [{ ...entry, item }]
+  })
+  const emptySlotCount = Math.max(0, 8 - visibleItems.length)
+
+  return (
+    <Typography
+      as="div"
+      variant="body"
+      aria-label={`Инвентарь: ${visibleItems.length} из ${profileItems.length} предметов`}
+      className="empty-slots inventory-slots"
+    >
+      {visibleItems.map(({ item, quantity }) => (
+        <div
+          aria-label={`${item.name}, ${rarityLabels[item.rarity]}, количество ${quantity}`}
+          className={`inventory-item item-rarity-${item.rarity}`}
+          key={item.id}
+          role="img"
+          title={`${item.name} — ${item.category}`}
+        >
+          <img alt="" src={item.iconSrc} />
+          {quantity > 1 ? (
+            <Typography as="span" variant="bodyXs" className="inventory-item-count">
+              ×{quantity}
+            </Typography>
+          ) : null}
+        </div>
+      ))}
+      {Array.from({ length: emptySlotCount }, (_, index) => (
+        <span className="empty-slot" aria-label={`Пустая ячейка ${index + 1}`} key={index} />
+      ))}
+    </Typography>
   )
 }
 
@@ -345,62 +407,43 @@ function EmptySlots({ count, className }: { count: number; className: string }) 
 }
 
 function useChestCountdown() {
-  const [cycle, setCycle] = useState(() => {
-    const now = Date.now()
-    const savedCycle = typeof window === 'undefined'
-      ? null
-      : window.localStorage.getItem(COUNTDOWN_STORAGE_KEY)
-    const resolvedCycle = resolveChestCycle(savedCycle, now)
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(
-        COUNTDOWN_STORAGE_KEY,
-        serializeChestCycle(resolvedCycle),
-      )
-    }
-    return resolvedCycle
-  })
-  const [remaining, setRemaining] = useState(() =>
-    cycle.status === 'counting' ? cycle.deadline - Date.now() : 0,
-  )
-
   useEffect(() => {
-    if (cycle.status !== 'counting') return
-
-    const update = () => {
-      const now = Date.now()
-      const nextCycle = advanceChestCycle(cycle, now)
-      if (nextCycle.status === 'openable') {
-        window.localStorage.setItem(
-          COUNTDOWN_STORAGE_KEY,
-          serializeChestCycle(nextCycle),
-        )
-        setRemaining(0)
-        setCycle(nextCycle)
-        return
-      }
-      setRemaining(Math.max(0, cycle.deadline - now))
-    }
-    const interval = window.setInterval(update, 1_000)
-    return () => window.clearInterval(interval)
-  }, [cycle])
+    window.localStorage.setItem(
+      COUNTDOWN_STORAGE_KEY,
+      serializeChestCycle({ status: 'openable' }),
+    )
+  }, [])
 
   const claimReward = useCallback(() => {
-    const now = Date.now()
-    setCycle((currentCycle) => {
-      const claimedCycle = claimChest(currentCycle, now)
-      const nextCycle = beginNextChestCycle(claimedCycle)
-      window.localStorage.setItem(
-        COUNTDOWN_STORAGE_KEY,
-        serializeChestCycle(nextCycle),
-      )
-      return nextCycle
-    })
-    setRemaining(COUNTDOWN_DURATION_MS)
+    window.localStorage.setItem(
+      COUNTDOWN_STORAGE_KEY,
+      serializeChestCycle({ status: 'openable' }),
+    )
   }, [])
 
   return {
     claimReward,
-    countdown: formatCountdown(remaining),
-    isOpenable: cycle.status === 'openable',
+    countdown: 'Без лимита',
+    isOpenable: true,
   }
+}
+
+function useProfileInventory() {
+  const [inventory, setInventory] = useState(() => {
+    if (typeof window === 'undefined') return []
+    return resolveInventory(window.localStorage.getItem(INVENTORY_STORAGE_KEY))
+  })
+
+  const addReceivedItem = useCallback((itemId: string) => {
+    setInventory((currentInventory) => {
+      const nextInventory = addInventoryItem(currentInventory, itemId)
+      window.localStorage.setItem(
+        INVENTORY_STORAGE_KEY,
+        serializeInventory(nextInventory),
+      )
+      return nextInventory
+    })
+  }, [])
+
+  return { addReceivedItem, inventory }
 }

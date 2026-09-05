@@ -346,6 +346,59 @@
   grid-template-rows: repeat(2, 1fr);
 }
 
+.item-rarity-common {
+  --item-rarity-color: #aeb6bc;
+  --item-rarity-soft: #f1f3f4;
+}
+
+.item-rarity-epic {
+  --item-rarity-color: #8255d9;
+  --item-rarity-soft: #f1eaff;
+}
+
+.item-rarity-legendary {
+  --item-rarity-color: #e3a41a;
+  --item-rarity-soft: #fff3cf;
+}
+
+.inventory-item {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 2px solid var(--item-rarity-color);
+  border-radius: 14px;
+  background: linear-gradient(145deg, #fff 35%, var(--item-rarity-soft));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 80%),
+    0 4px 10px rgb(35 50 39 / 8%);
+}
+
+.inventory-item img {
+  width: 92%;
+  height: 92%;
+  object-fit: contain;
+}
+
+.inventory-item-count[data-slot='typography'] {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  display: grid;
+  min-width: 24px;
+  height: 20px;
+  padding: 0 5px;
+  place-items: center;
+  border: 2px solid white;
+  border-radius: 10px;
+  background: var(--item-rarity-color);
+  color: white;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 850;
+}
+
 .profile-tasks {
   background: white;
 }
@@ -568,27 +621,50 @@
   animation: reward-pop 520ms cubic-bezier(.17, .89, .32, 1.35) both;
 }
 
-.gray-square-reward {
+.revealed-reward-item {
   display: grid;
-  width: 156px;
-  height: 156px;
-  padding: 18px;
-  place-items: center;
-  border: 4px solid #f1f1f1;
+  width: 190px;
+  min-height: 228px;
+  padding: 12px 14px 16px;
+  justify-items: center;
+  border: 4px solid var(--item-rarity-color);
   border-radius: 24px;
-  background: linear-gradient(145deg, #b9b9b9 0%, #777 100%);
-  color: white;
+  background: linear-gradient(145deg, #fff 38%, var(--item-rarity-soft));
+  color: #202421;
   text-align: center;
   box-shadow:
     0 20px 45px rgb(0 0 0 / 38%),
     inset 0 1px 0 rgb(255 255 255 / 35%);
 }
 
-.gray-square-reward [data-slot='typography'] {
+.revealed-reward-item img {
+  width: 148px;
+  height: 148px;
+  object-fit: contain;
+}
+
+.reward-rarity[data-slot='typography'] {
+  margin-top: -3px;
+  color: var(--item-rarity-color);
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.reward-item-name[data-slot='typography'] {
+  margin-top: 7px;
   font-size: 16px;
-  line-height: 1.2;
+  line-height: 1.15;
   font-weight: 850;
-  text-shadow: 0 2px 6px rgb(0 0 0 / 28%);
+}
+
+.reward-item-category[data-slot='typography'] {
+  margin-top: 5px;
+  color: #666d68;
+  font-size: 11px;
+  line-height: 1.2;
 }
 
 .collect-reward-button {

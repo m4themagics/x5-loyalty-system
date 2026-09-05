@@ -1,4 +1,5 @@
 export const COUNTDOWN_DURATION_MS = 24 * 60 * 60 * 1_000
+const CHEST_CYCLE_STORAGE_VERSION = 2
 
 export type ChestCycleState =
   | { status: 'counting'; deadline: number }
@@ -13,12 +14,16 @@ export function resolveChestCycle(
 
   const legacyDeadline = Number(savedCycle)
   if (Number.isFinite(legacyDeadline)) {
-    return advanceChestCycle({ status: 'counting', deadline: legacyDeadline }, now)
+    return { status: 'openable' }
   }
 
   try {
     const parsed = JSON.parse(savedCycle) as unknown
-    if (!isRecord(parsed) || typeof parsed.status !== 'string') {
+    if (
+      !isRecord(parsed)
+      || parsed.version !== CHEST_CYCLE_STORAGE_VERSION
+      || typeof parsed.status !== 'string'
+    ) {
       return { status: 'openable' }
     }
 
@@ -66,7 +71,7 @@ export function beginNextChestCycle(cycle: ChestCycleState): ChestCycleState {
 }
 
 export function serializeChestCycle(cycle: ChestCycleState): string {
-  return JSON.stringify(cycle)
+  return JSON.stringify({ ...cycle, version: CHEST_CYCLE_STORAGE_VERSION })
 }
 
 export function formatCountdown(remainingMs: number): string {

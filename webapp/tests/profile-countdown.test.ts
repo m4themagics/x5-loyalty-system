@@ -14,18 +14,27 @@ test('a new demo profile starts with a chest that can be opened immediately', ()
   expect(resolveChestCycle(null, 1_000_000)).toEqual({ status: 'openable' })
 })
 
-test('a future deadline remains in the counting state', () => {
+test('a legacy deadline is unlocked once so old browser data cannot block the demo', () => {
   const now = 1_000_000
   const cycle = resolveChestCycle(String(now + 30_000), now)
 
-  expect(cycle).toEqual({ status: 'counting', deadline: now + 30_000 })
+  expect(cycle).toEqual({ status: 'openable' })
+})
+
+test('a current version future deadline remains in the counting state', () => {
+  const now = 1_000_000
+  const counting = { status: 'counting', deadline: now + 30_000 } as const
+  const cycle = resolveChestCycle(serializeChestCycle(counting), now)
+
+  expect(cycle).toEqual(counting)
   expect(formatCountdown(cycle.status === 'counting' ? cycle.deadline - now : 0))
     .toBe('00:00:30')
 })
 
 test('an expired deadline becomes openable and stays openable after reload', () => {
   const now = 1_000_000
-  const openable = resolveChestCycle(String(now - 1), now)
+  const expired = { status: 'counting', deadline: now - 1 } as const
+  const openable = resolveChestCycle(serializeChestCycle(expired), now)
 
   expect(openable).toEqual({ status: 'openable' })
   expect(resolveChestCycle(serializeChestCycle(openable), now + 60_000))
@@ -56,6 +65,12 @@ test('claiming an openable chest records the claim before starting a new 24 hour
 
 test('invalid saved data fails open instead of silently postponing the reward', () => {
   expect(resolveChestCycle('not-valid-state', 1_000_000)).toEqual({ status: 'openable' })
+})
+
+test('an unversioned cycle from the broken release is unlocked during migration', () => {
+  const oldCycle = JSON.stringify({ status: 'counting', deadline: 2_000_000 })
+
+  expect(resolveChestCycle(oldCycle, 1_000_000)).toEqual({ status: 'openable' })
 })
 
 test('profile chest countdown never renders a negative value', () => {
