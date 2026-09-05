@@ -29,8 +29,21 @@ If no GitHub destination is chosen, the repository is left without `origin` and 
 
 | Question                                                  | Answer       |
 | --------------------------------------------------------- | ------------ |
-| What product do you want to build first?                  | Мобильное веб-демо «X5 Чекпоинт»: AI-policy QuestRank выбирает после чека одну из трёх игровых механик, минимальное подкрепление или `no_action`, плюс консоль продакта |
-| What is the first user journey that must work end to end? | Чек → кандидаты по трём механикам → выбранный маршрут → один следующий покупочный день → постоянный результат и reason codes |
+| What product do you want to build first?                  | Мобильное веб-демо «X5 Чекпоинт — Собирай свою выгоду»: коробка, цифровые предметы, инвентарь и создание собственной скидки из четырёх предметов. Согласованное развитие: один персональный челлендж, гарантированный бесплатный физический товар и полезный цифровой предмет после первого выполненного допустимого задания, обмен дубликатами и финансирование через Ads |
+| What is the first user journey that must work end to end? | Сейчас: коробка → предмет → инвентарь → четыре предмета → скидка → демонстрационный штрихкод. Следующий сценарий: история покупок и инвентарь → одно выполнимое задание → подтверждённое выполнение → обещанный товар и полезный предмет → существующее создание скидки; интеграция ещё не реализована |
+
+### Agreed next product scope — documentation only
+
+Решение от 05.09.2026 закреплено в [описании проекта](docs/project/project-description.md). Оно сохраняет существующую игру коллег и заменяет старые продуктовые требования выбирать одну из трёх альтернативных механик или обязательно уменьшать награду по фазам.
+
+- Первый бесплатный физический товар и полезный цифровой предмет гарантируются после уже показанного и выполненного допустимого челленджа. До показа проверяются наличие, риск, бюджет и положительная ожидаемая экономика; обязательство резервируется полностью. После показа случайный предмет не заменяет обещанный.
+- Финансирование: бренд оплачивает товар либо X5 покрывает его из ожидаемой дополнительной маржи. Учитывается маржа каждого SKU, субсидия, стоимость будущей скидки, фрод и операции. Реальная прибыльность пока не измерена.
+- В следующих циклах физический товар — редкий milestone или полностью профинансированная кампания; повторяемый результат — коллекция, обмен и создание скидок.
+- Обмен цифровыми дубликатами: один к одному одинаковой редкости, срок 24 часа, обе стороны подтверждают, предметы резервируются и передаются атомарно. Участие — от двух подтверждённых покупочных дней; максимум три завершённых обмена в неделю на пользователя. Товары, купоны, активные скидки и невыданные награды не передаются.
+- RecSys выбирает следующее полезное действие; закрытый first-price CPA-аукцион выбирает бренд для одного подходящего челленджа. Эти контуры ещё не исполняются.
+- Антифрод обязателен для будущей выдачи, обмена и погашения; общий телефон или устройство сам по себе не является основанием блокировки. Алкоголь, табак и никотин исключены из PoC.
+
+Статус `absent` в реестре ниже обозначает отсутствие реализации и её активации в текущей версии. Описанные будущие возможности согласованы как спецификация; этот документ не разрешает писать их runtime-код в текущей работе.
 
 ## 3. Active surfaces
 
@@ -43,7 +56,7 @@ Mark what is active now, and set the install status to `in progress` as soon as 
 
 | Question                                                                                                             | Answer       |
 | -------------------------------------------------------------------------------------------------------------------- | ------------ |
-| Why the unmarked surfaces are deferred, if it needs explaining                                                       | Нужен только мобильный веб-интерфейс. Backend, публичный website и нативное mobile-приложение отложены. Демо использует локальные тестовые профили. |
+| Why the unmarked surfaces are deferred, if it needs explaining                                                       | Нужен только мобильный веб-интерфейс. Backend, публичный website и нативное mobile-приложение отложены. Игровой профиль, случайная выдача и инвентарь работают локально в браузере; задания статические. |
 | If `mobile` is active: are Expo/EAS builds, Expo Push, and Maestro E2E needed now, or left unconfigured until later? | n/a |
 
 The split between `webapp` and `website` is the agent's call, not the user's; `README.md` explains how to route a feature between them.
@@ -62,7 +75,7 @@ Ask about product needs, not implementations. Mark what the first version actual
 
 | Question                                                                                          | Answer       |
 | ------------------------------------------------------------------------------------------------- | ------------ |
-| What the first version explicitly should NOT do (write "nothing ruled out" if that is the answer) | Не использовать backend, реальные аккаунты, загрузки, платежи, админ-инструменты, внешние интеграции, real-time, публичный website или нативное mobile-приложение. До получения скриншота не добавлять бизнес-логику. |
+| What the first version explicitly should NOT do (write "nothing ruled out" if that is the answer) | Не использовать backend, реальные аккаунты, загрузки, платежи, админ-инструменты, внешние интеграции, real-time, публичный website или нативное mobile-приложение. Текущая финализация концепции ограничена документацией: без runtime-кода, схем, фикстур, зависимостей, коммитов и файлов презентации. |
 
 ## 5. Files, images, and media
 
@@ -188,7 +201,14 @@ A capability with no row is `absent` by default. Add the row instead of assuming
 | Real-time / WebSockets          | absent   | Requires an explicit product need.                                                                                                                                                                                                                                                                                                                                                                                   |
 | Background jobs                 | included | Jobs live in `backend/src/jobs.ts`. The shared scheduler runs `outbox:drain` every minute, upload cleanup hourly at minute 15, and auth cleanup daily at 03:00 UTC. Terraform deploys that scheduler as a DigitalOcean worker and the same executor in Yandex HTTP job containers/timer triggers; own servers run it under a supervisor. `workerLoops` stays empty. See `docs/BACKGROUND_JOBS.md`.                              |
 | Durable task outbox             | included | `task_outbox` in PostgreSQL with handlers in `backend/src/outbox/handlers.ts`, drained by `outbox:drain`. Ships with the password-reset emails as its only producers, and stays empty until something enqueues. Adding a task type is a code change, never a migration.                                                                                                                                              |
-| Local demo profiles and progress | included | The mobile web demo includes an interactive profile, an expandable inventory with eight initial slots, static weekly tasks, and an unlimited reward chest. Every shake-opened chest randomly selects one of 24 items using documented 70%/25%/5% rarity weights, adds it to the persisted inventory, stacks duplicates, and is immediately available again. Tapping an inventory item opens its rarity and a playful usage clue without revealing the exact discount category. Four inventory items can be equipped by drag-and-drop or tap, consumed to craft a 5–18% discount, and matched against seven themed recipes for a +2/+3 percentage-point synergy bonus. One active discount is persisted, shown beside the character, and opens a structurally valid EAN-13 barcode. Inventory, randomization, crafting, and discount state are browser-local only: there is no backend profile sync, real purchase feed, task issuance, cooldown enforcement, anti-tamper randomization, discount expiry/redemption, POS registration, or production reward fulfillment. |
+| Local demo profiles and progress | included | The mobile web demo includes an interactive profile, an expandable inventory with eight initial slots, static weekly tasks, and an unlimited reward chest. Every shake-opened chest randomly selects one of 24 items using documented 70%/25%/5% rarity weights, adds it to the persisted inventory, stacks duplicates, and is immediately available again. Tapping an inventory item opens its rarity and a playful usage clue without revealing the exact discount category. Four inventory items can be equipped by drag-and-drop or tap, consumed to craft a discount from a 5–15% base with a recipe bonus and an 18% formula cap, and matched against seven themed recipes for a +2/+3 percentage-point synergy bonus. One active discount is persisted, shown beside the character, and opens a structurally valid EAN-13 barcode. Inventory, randomization, crafting, and discount state are browser-local only: there is no backend profile sync, real purchase feed, task issuance, cooldown enforcement, anti-tamper randomization, discount expiry/redemption, POS registration, or production reward fulfillment. |
+| Allocator scenario contract and validators | available | Existing JSON schema, campaign catalog, nine fixture files and local validation scripts live in `recsys/`. They describe allocator scenarios and copy checks; current game screens do not consume them. A runtime recommender, trained models and complete game/reward contracts are not present. |
+| Personal purchase challenge / RecSys | absent | Approved future specification: full-catalog next-best-action scoring; rules baseline, then treatment/control LogisticRegression models with IsotonicRegression calibration and a separate billable-event model. No model training, event feed or game integration yet. |
+| Guaranteed first physical reward | absent | Approved future specification: one full free SKU plus a useful promised digital item after the first displayed, eligible, completed challenge. Brand-funded and X5-funded hypotheses both require SKU economics, stock and full reservation. No real product issuance or redemption. |
+| Digital item exchange | absent | Approved future specification: 1:1 same-rarity duplicate exchange, 24h expiry, both confirmations, atomic reserved transfer, 3 completed exchanges/week/user and at least 2 verified purchase days. No exchange runtime or UI. |
+| Retail-media auction and billing | absent | Approved future specification: one placement, closed quality-adjusted first-price CPA auction; winner pays its submitted bid after a verified qualifying event. No live bidding, budget ledger or billing. |
+| Product antifraud and reward ledger | absent | Approved future specification: receipt/reward/exchange/redemption uniqueness, returns and multiaccount signals, allow/review/hold/reject decisions and cost-based thresholds. No protected server-side game ledger or active fraud scorer. |
+| Habit, relevance and economics evaluation | absent | Evaluation protocol is documented. The 30–50-profile relevance assessment, 1–10k-user simulation, fraud precision evaluation and real 28-day purchase/margin measurements have not been produced by the current scripts. |
 
 ## 11. Environment checks
 
