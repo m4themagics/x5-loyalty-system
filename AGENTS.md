@@ -106,7 +106,7 @@
 - The item catalog and the discount formula stay in `webapp/src/features/home`. The middleware sends the catalog snapshot and the computed game features; Python must not keep a second catalog or a copy of the percent formula.
 - Money is integer kopecks. One shared coupon fund caps a coupon at 1000 and reserves 250 for every unspent or promised-but-unissued instance; physical SKU and advertiser budgets stay separate. Reserve the full maximum liability before a promise is shown.
 - Toolchain is not on the default PATH: bun 1.4.0 lives in `~/.bun/bin` and Node 25.2.1 under `~/.nvm/versions/node/v25.2.1/bin`. Prefix commands with `PATH="$HOME/.bun/bin:$HOME/.nvm/versions/node/v25.2.1/bin:$PATH"`. Dependencies are installed from `bun.lock`; do not update, add or remove any.
-- Exchange, repeat physical goals, the full auction, model training and any public deployment stay outside this package. A live YandexGPT call is verified separately once credentials exist; with no key the card falls back to a valid template and reports `source: "fallback"`.
+- Exchange, repeat physical goals, the full auction, model training and any public deployment stay outside this package. The local demo uses Qwen3 1.7B through Ollama; YandexGPT remains optional. An unavailable or invalid model response falls back to a valid template and reports `source: "fallback"`.
 - Alcohol, tobacco and nicotine stay out of every PoC profile, SKU and reward.
 - Commits and pushes remain a separate explicit request.
 

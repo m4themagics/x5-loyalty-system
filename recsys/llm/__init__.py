@@ -6,17 +6,16 @@
 """
 import datetime as dt
 import json
+import os
 from typing import Any
 
-from . import yandexgpt
+from . import ollama, yandexgpt
 from .validate import check
 
 SYSTEM_PROMPT = (
-    "Ты пишешь короткую карточку задания для программы лояльности «X5 Чекпоинт». "
-    "Все условия уже утверждены и менять их нельзя. Запрещено называть цену или сумму, "
-    "выдумывать SKU, менять срок, обещать гарантированный результат, снимать проверку "
-    "и скрывать пометку о спонсорстве. Ответь строго одним JSON-объектом с полями "
-    "headline, body, reward_line, deadline_line, sponsor_line, без markdown и пояснений."
+    "Ты пишешь короткий живой заголовок карточки задания для программы лояльности "
+    "«X5 Чекпоинт». Фактический текст условий и награды добавит система. "
+    "Ответь строго одним JSON-объектом с единственным полем headline, без markdown и пояснений."
 )
 
 
@@ -28,13 +27,21 @@ def build_card(
     facts = _facts(challenge, candidate)
     template = _template_card(challenge, facts)
 
-    if not yandexgpt.is_configured():
+    provider = os.environ.get("LLM_PROVIDER", "template").lower()
+    if provider == "ollama":
+        result = ollama.complete(SYSTEM_PROMPT, _user_prompt(facts, template))
+    elif provider == "yandexgpt" and yandexgpt.is_configured():
+        result = yandexgpt.complete(SYSTEM_PROMPT, _user_prompt(facts, template))
+    elif provider == "yandexgpt":
         return (
             {**template, "source": "fallback", "violations": []},
             _diagnostics("fallback", None, None, "yandexgpt_credentials_missing"),
         )
-
-    result = yandexgpt.complete(SYSTEM_PROMPT, _user_prompt(facts))
+    else:
+        return (
+            {**template, "source": "fallback", "violations": []},
+            _diagnostics("fallback", None, None, "llm_provider_disabled"),
+        )
     if result.text is None:
         return (
             {**template, "source": "fallback", "violations": []},
@@ -49,7 +56,10 @@ def build_card(
             _diagnostics("fallback", result.model, result.latency_ms, "llm_invalid_json"),
         )
 
-    violations = check(draft, challenge, facts["item_name"])
+    if not isinstance(draft, dict) or set(draft) != {"headline"}:
+        violations = ["unexpected_card_field"]
+    else:
+        violations = check({**template, "headline": draft.get("headline")}, challenge, facts["item_name"])
     if violations:
         return (
             {**template, "source": "fallback", "violations": violations},
@@ -58,11 +68,8 @@ def build_card(
 
     return (
         {
+            **template,
             "headline": draft["headline"],
-            "body": draft["body"],
-            "reward_line": draft["reward_line"],
-            "deadline_line": draft["deadline_line"],
-            "sponsor_line": draft.get("sponsor_line") or None,
             "source": "llm",
             "violations": [],
         },
@@ -112,23 +119,13 @@ def _template_card(challenge: dict[str, Any], facts: dict[str, Any]) -> dict[str
     }
 
 
-def _user_prompt(facts: dict[str, Any]) -> str:
-    lines = [
-        f"Предмет-награда: {facts['item_name']}",
-        f"Рецепт: {facts['recipe_title']}, уже собрано совпадений: {facts['matched_count']}",
-        f"Категория покупки: {facts['category']}",
-        f"Нужно оплаченных единиц: {facts['quantity']}",
-        f"Срок: до {facts['deadline_date']}",
-    ]
-    if facts["physical_name"]:
-        lines.append(f"Дополнительно обещан бесплатный товар: {facts['physical_name']}")
-    lines.append(
-        "Пометка о спонсорстве обязательна." if facts["sponsored"] else "Спонсора нет, поле sponsor_line оставь пустым."
+def _user_prompt(facts: dict[str, Any], template: dict[str, Any]) -> str:
+    return (
+        f"Придумай один заголовок до 60 символов. Обязательно дословно включи название "
+        f"«{facts['item_name']}». Можно обыграть рецепт «{facts['recipe_title']}». "
+        "Не упоминай цену, срочность или гарантии. Пример формата ответа: "
+        f"{json.dumps({'headline': facts['item_name']}, ensure_ascii=False)}"
     )
-    lines.append(
-        "В body обязательно назови следующий шаг покупателя и упомяни название предмета-награды."
-    )
-    return "\n".join(lines)
 
 
 def _diagnostics(

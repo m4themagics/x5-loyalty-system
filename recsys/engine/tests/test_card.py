@@ -8,6 +8,7 @@ from unittest import mock
 import recsys.llm as llm
 from recsys.engine.decision import handle_decision
 from recsys.llm.validate import check
+from recsys.llm.ollama import LlmResult as OllamaResult
 from recsys.llm.yandexgpt import LlmResult
 
 EXAMPLES = pathlib.Path(__file__).resolve().parents[3] / "recsys" / "contract" / "examples"
@@ -15,7 +16,8 @@ EXAMPLES = pathlib.Path(__file__).resolve().parents[3] / "recsys" / "contract" /
 
 def offer_challenge() -> dict:
     request = json.loads((EXAMPLES / "decision-request-empty.json").read_text(encoding="utf-8"))
-    return handle_decision(request)["challenge"]
+    with mock.patch.dict("os.environ", {"LLM_PROVIDER": "template"}):
+        return handle_decision(request)["challenge"]
 
 
 class CardTest(unittest.TestCase):
@@ -26,7 +28,7 @@ class CardTest(unittest.TestCase):
         self.challenge = offer_challenge()
 
     def test_missing_credentials_produce_a_valid_template(self) -> None:
-        with mock.patch.dict("os.environ", {"YANDEX_API_KEY": "", "YANDEX_FOLDER_ID": ""}):
+        with mock.patch.dict("os.environ", {"LLM_PROVIDER": "yandexgpt", "YANDEX_API_KEY": "", "YANDEX_FOLDER_ID": ""}):
             response = handle_decision(copy.deepcopy(self.request))
         card = response["card"]
         self.assertEqual(card["source"], "fallback")
@@ -37,14 +39,14 @@ class CardTest(unittest.TestCase):
         self.assertTrue(card["headline"] and card["body"])
 
     def test_template_passes_its_own_contract_checks(self) -> None:
-        with mock.patch.dict("os.environ", {"YANDEX_API_KEY": "", "YANDEX_FOLDER_ID": ""}):
+        with mock.patch.dict("os.environ", {"LLM_PROVIDER": "yandexgpt", "YANDEX_API_KEY": "", "YANDEX_FOLDER_ID": ""}):
             card = handle_decision(copy.deepcopy(self.request))["card"]
         draft = {field: card[field] for field in
                  ("headline", "body", "reward_line", "deadline_line", "sponsor_line")}
         self.assertEqual(check(draft, self.challenge, "Термокружка"), [])
 
     def test_invalid_model_json_falls_back_and_says_so(self) -> None:
-        with mock.patch.object(llm.yandexgpt, "is_configured", return_value=True), mock.patch.object(
+        with mock.patch.dict("os.environ", {"LLM_PROVIDER": "yandexgpt"}), mock.patch.object(llm.yandexgpt, "is_configured", return_value=True), mock.patch.object(
             llm.yandexgpt, "complete", return_value=LlmResult("не json", "yandexgpt-lite", 120, None)
         ):
             response = handle_decision(copy.deepcopy(self.request))
@@ -53,7 +55,7 @@ class CardTest(unittest.TestCase):
         self.assertEqual(response["diagnostics"]["llm"]["error"], "llm_invalid_json")
 
     def test_transport_failure_falls_back_without_raising(self) -> None:
-        with mock.patch.object(llm.yandexgpt, "is_configured", return_value=True), mock.patch.object(
+        with mock.patch.dict("os.environ", {"LLM_PROVIDER": "yandexgpt"}), mock.patch.object(llm.yandexgpt, "is_configured", return_value=True), mock.patch.object(
             llm.yandexgpt,
             "complete",
             return_value=LlmResult(None, "yandexgpt-lite", 8000, "yandexgpt_unreachable: timeout"),
@@ -65,22 +67,29 @@ class CardTest(unittest.TestCase):
         )
 
     def test_a_valid_model_card_is_shown_and_marked_as_llm(self) -> None:
-        draft = {
-            "headline": "Кофейный чекпоинт",
-            "body": "Купите один товар из кофе и чая до 12.09.2026 — «Термокружка» приблизит рецепт.",
-            "reward_line": "Предмет «Термокружка» и бесплатный чай",
-            "deadline_line": "До 12.09.2026",
-            "sponsor_line": "При поддержке бренда",
-        }
-        with mock.patch.object(llm.yandexgpt, "is_configured", return_value=True), mock.patch.object(
+        draft = {"headline": "Термокружка: кофейный чекпоинт"}
+        with mock.patch.dict("os.environ", {"LLM_PROVIDER": "yandexgpt"}), mock.patch.object(llm.yandexgpt, "is_configured", return_value=True), mock.patch.object(
             llm.yandexgpt,
             "complete",
             return_value=LlmResult(json.dumps(draft, ensure_ascii=False), "yandexgpt-lite", 300, None),
         ):
             response = handle_decision(copy.deepcopy(self.request))
         self.assertEqual(response["card"]["source"], "llm")
-        self.assertEqual(response["card"]["headline"], "Кофейный чекпоинт")
+        self.assertEqual(response["card"]["headline"], "Термокружка: кофейный чекпоинт")
         self.assertEqual(response["diagnostics"]["llm"]["latency_ms"], 300)
+
+    def test_local_ollama_card_is_used_without_cloud_credentials(self) -> None:
+        draft = {"headline": "Термокружка для доброго утра"}
+        with mock.patch.dict("os.environ", {"LLM_PROVIDER": "ollama"}), mock.patch.object(
+            llm.ollama,
+            "complete",
+            return_value=OllamaResult(json.dumps(draft, ensure_ascii=False), "qwen3:1.7b", 420, None),
+        ):
+            response = handle_decision(copy.deepcopy(self.request))
+        self.assertEqual(response["card"]["source"], "llm")
+        self.assertEqual(response["card"]["headline"], "Термокружка для доброго утра")
+        self.assertIn("Купите один оплаченный товар", response["card"]["body"])
+        self.assertEqual(response["diagnostics"]["llm"]["model"], "qwen3:1.7b")
 
 
 class CardContractTest(unittest.TestCase):

@@ -24,6 +24,7 @@ export default defineConfig({
   webServer: {
     command: `bun run dev --host 127.0.0.1 --port ${webPort}`,
     cwd: webappRoot,
+    env: { ...process.env, LLM_PROVIDER: 'template' },
     url: webUrl,
     reuseExistingServer: false,
     timeout: 60_000,

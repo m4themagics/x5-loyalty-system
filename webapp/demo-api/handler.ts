@@ -28,7 +28,7 @@ import { z } from 'zod'
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const EXAMPLES_DIRECTORY = path.join(REPO_ROOT, 'recsys/contract/examples')
 const ENGINE_ENTRY = 'recsys/engine/cli.py'
-const ENGINE_TIMEOUT_MS = 15_000
+const ENGINE_TIMEOUT_MS = 30_000
 const MAX_BODY_BYTES = 1_000_000
 
 const PROFILE_FILES = ['profile-empty.json', 'profile-breakfast-seeded.json'] as const
@@ -134,7 +134,10 @@ type EngineRun = {
 
 function runEngine(command: 'decision' | 'event', input: string): Promise<EngineRun> {
   return new Promise((resolve) => {
-    const child = spawn('python3', [ENGINE_ENTRY, command], { cwd: REPO_ROOT })
+    const child = spawn('python3', [ENGINE_ENTRY, command], {
+      cwd: REPO_ROOT,
+      env: { ...process.env, LLM_PROVIDER: process.env.LLM_PROVIDER ?? 'ollama' },
+    })
     let stdout = ''
     let stderr = ''
     let settled = false
