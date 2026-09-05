@@ -1,0 +1,27 @@
+{
+  "contract_version": 1,
+  "request_id": "req-demo-event-qualified",
+  "server_time_ms": 1788685200000,
+  "event_id": "evt_demo_0001",
+  "qualification": "qualified",
+  "idempotent_replay": false,
+  "risk": {
+    "decision": "allow",
+    "score": 0.04,
+    "signals": [
+      "single_device",
+      "confirmed_purchase_days_ok"
+    ]
+  },
+  "grant": {
+    "reward_id": "rwd_demo_0001",
+    "item_instance_id": "inst_demo_0001",
+    "item_id": "milk-pitcher",
+    "sku_entitlement_id": "ent_demo_0001",
+    "sku_id": "sku-milk-1l"
+  },
+  "reason_codes": [
+    "receipt_qualified",
+    "reward_issued_once"
+  ]
+}

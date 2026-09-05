@@ -1,0 +1,149 @@
+{
+  "contract_version": 1,
+  "request_id": "req-demo-event-qualified",
+  "now_ms": 1788685200000,
+  "idempotency_key": "idem-demo-event-0001",
+  "profile": {
+    "snapshot_version": 1,
+    "profile_id": "demo-empty",
+    "label": "Новый участник, пустой инвентарь (синтетический профиль)",
+    "synthetic": true,
+    "receipts": [
+      {
+        "receipt_id": "rcp-empty-001",
+        "purchased_at_ms": 1786784400000,
+        "store_id": "store-demo-1",
+        "returned": false,
+        "lines": [
+          {
+            "sku_id": "sku-milk-1l",
+            "category": "Молочные продукты",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 8900
+          }
+        ]
+      },
+      {
+        "receipt_id": "rcp-empty-002",
+        "purchased_at_ms": 1787562000000,
+        "store_id": "store-demo-1",
+        "returned": false,
+        "lines": [
+          {
+            "sku_id": "sku-bread-500",
+            "category": "Хлеб и выпечка",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 5400
+          }
+        ]
+      },
+      {
+        "receipt_id": "rcp-empty-003",
+        "purchased_at_ms": 1788339600000,
+        "store_id": "store-demo-1",
+        "returned": false,
+        "lines": [
+          {
+            "sku_id": "sku-coffee-250",
+            "category": "Кофе и чай",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 32900
+          }
+        ]
+      }
+    ],
+    "inventory": [],
+    "issued_rewards": [],
+    "processed_event_ids": [],
+    "active_coupon": null,
+    "outstanding_promise": {
+      "challenge_id": "chl_demo_0001",
+      "challenge_version": 1,
+      "decision_id": "dec_demo_0001",
+      "published_at_ms": 1788598800000,
+      "deadline_ms": 1789203600000,
+      "fulfilled": false
+    },
+    "progress": {
+      "completed_recipe_ids": [],
+      "avatar_level": 0,
+      "redeemed_savings_28d_kopecks": 0
+    },
+    "referral": {
+      "invited_by_profile_id": null,
+      "invited_at_ms": null,
+      "had_confirmed_purchase_before_invite": false,
+      "inviter_rewards_in_window": 0
+    },
+    "risk_signals": {
+      "device_id": "device-demo-1",
+      "household_id": null,
+      "account_age_days": 45,
+      "confirmed_purchase_days": 3
+    }
+  },
+  "challenge": {
+    "challenge_id": "chl_demo_0001",
+    "challenge_version": 1,
+    "title": "Молочный старт недели",
+    "recipe_goal_id": "breakfast",
+    "target": {
+      "category": "Молочные продукты",
+      "sku_ids": [
+        "sku-milk-1l"
+      ],
+      "quantity": 1,
+      "paid_only": true,
+      "window_days": 7,
+      "deadline_ms": 1789203600000
+    },
+    "reward": {
+      "digital_item_id": "milk-pitcher",
+      "physical_sku": {
+        "sku_id": "sku-milk-1l",
+        "name": "Молоко питьевое 1 л (синтетический SKU)",
+        "unit_cost_kopecks": 2500,
+        "stock_reserved": true
+      }
+    },
+    "reservation": {
+      "coupon_reserve_kopecks": 250,
+      "physical_reserve_kopecks": 2500
+    },
+    "economics": {
+      "synthetic": true,
+      "funding_source": "advertiser",
+      "advertiser_id": "brand_12",
+      "campaign_id": "camp_058",
+      "bid_per_qualified_event_kopecks": 1800,
+      "subsidy_kopecks": 0,
+      "uncovered_reward_cost_kopecks": 2750,
+      "expected_incremental_margin_kopecks": 4500
+    }
+  },
+  "receipt": {
+    "receipt_id": "rcp-demo-qualify-001",
+    "purchased_at_ms": 1788685200000,
+    "store_id": "store-demo-1",
+    "returned": false,
+    "lines": [
+      {
+        "sku_id": "sku-milk-1l",
+        "category": "Молочные продукты",
+        "quantity": 1,
+        "paid": true,
+        "amount_kopecks": 8900
+      },
+      {
+        "sku_id": "sku-sample-tasting",
+        "category": "Молочные продукты",
+        "quantity": 1,
+        "paid": false,
+        "amount_kopecks": 0
+      }
+    ]
+  }
+}

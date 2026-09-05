@@ -1,0 +1,320 @@
+{
+  "notes": "Синтетический каталог демонстрационных SKU локального PoC. Ни один товар не является реальным предложением X5. Алкоголь, табак и никотин исключены полностью. `skus` — оплачиваемые товары, по которым засчитывается покупка; `gift_skus` — маленькие форматы, которые обещаются бесплатно. Себестоимость подарка держится около 25 ₽ по зафиксированной арифметике резервов: четыре копии по 2,50 ₽ плюс товар 25 ₽ = 35 ₽. Себестоимость и остатки — параметры перед запуском.",
+  "excluded_categories": [
+    "Алкоголь",
+    "Табак",
+    "Никотиносодержащая продукция"
+  ],
+  "skus": [
+    {
+      "sku_id": "sku-bread-500",
+      "name": "Хлеб пшеничный 500 г",
+      "category": "Хлеб и выпечка",
+      "unit_cost_kopecks": 2200,
+      "stock": 120
+    },
+    {
+      "sku_id": "sku-milk-1l",
+      "name": "Молоко питьевое 1 л",
+      "category": "Молочные продукты",
+      "unit_cost_kopecks": 2500,
+      "stock": 200
+    },
+    {
+      "sku_id": "sku-apple-1kg",
+      "name": "Яблоки 1 кг",
+      "category": "Фрукты",
+      "unit_cost_kopecks": 4900,
+      "stock": 80
+    },
+    {
+      "sku_id": "sku-greens-pack",
+      "name": "Зелень свежая, пучок",
+      "category": "Овощи и зелень",
+      "unit_cost_kopecks": 3200,
+      "stock": 90
+    },
+    {
+      "sku_id": "sku-coffee-250",
+      "name": "Кофе молотый 250 г",
+      "category": "Кофе и чай",
+      "unit_cost_kopecks": 9800,
+      "stock": 60
+    },
+    {
+      "sku_id": "sku-nuts-150",
+      "name": "Орехи ассорти 150 г",
+      "category": "Снеки и орехи",
+      "unit_cost_kopecks": 6400,
+      "stock": 70
+    },
+    {
+      "sku_id": "sku-eggs-10",
+      "name": "Яйцо куриное С1, 10 шт",
+      "category": "Яйца и завтраки",
+      "unit_cost_kopecks": 5600,
+      "stock": 150
+    },
+    {
+      "sku_id": "sku-flour-1kg",
+      "name": "Мука пшеничная 1 кг",
+      "category": "Всё для выпечки",
+      "unit_cost_kopecks": 3400,
+      "stock": 100
+    },
+    {
+      "sku_id": "sku-chicken-fillet",
+      "name": "Филе куриное охлаждённое 700 г",
+      "category": "Свежие продукты",
+      "unit_cost_kopecks": 12500,
+      "stock": 45
+    },
+    {
+      "sku_id": "sku-frozen-berries",
+      "name": "Ягодная смесь замороженная 300 г",
+      "category": "Замороженные продукты",
+      "unit_cost_kopecks": 7200,
+      "stock": 65
+    },
+    {
+      "sku_id": "sku-smoothie-250",
+      "name": "Смузи овощной 250 мл",
+      "category": "Полезные напитки",
+      "unit_cost_kopecks": 5900,
+      "stock": 55
+    },
+    {
+      "sku_id": "sku-sausages-400",
+      "name": "Колбаски для гриля 400 г",
+      "category": "Мясо и колбасы",
+      "unit_cost_kopecks": 14800,
+      "stock": 40
+    },
+    {
+      "sku_id": "sku-rice-nori",
+      "name": "Рис для суши 500 г и нори",
+      "category": "Рыба и азиатская кухня",
+      "unit_cost_kopecks": 11200,
+      "stock": 30
+    },
+    {
+      "sku_id": "sku-cake-slice",
+      "name": "Пирожное порционное",
+      "category": "Кофе и десерты",
+      "unit_cost_kopecks": 4800,
+      "stock": 75
+    },
+    {
+      "sku_id": "sku-pizza-350",
+      "name": "Пицца замороженная 350 г",
+      "category": "Пицца и готовая еда",
+      "unit_cost_kopecks": 13900,
+      "stock": 50
+    },
+    {
+      "sku_id": "sku-icecream-cone",
+      "name": "Мороженое в рожке",
+      "category": "Холодные напитки и мороженое",
+      "unit_cost_kopecks": 3900,
+      "stock": 110
+    },
+    {
+      "sku_id": "sku-lunch-box",
+      "name": "Обед готовый, ланч-бокс",
+      "category": "Готовая еда",
+      "unit_cost_kopecks": 15900,
+      "stock": 35
+    },
+    {
+      "sku_id": "sku-favourites",
+      "name": "Товар из любимых покупок",
+      "category": "Любимые покупки",
+      "unit_cost_kopecks": 0,
+      "stock": 0
+    },
+    {
+      "sku_id": "sku-buckwheat-800",
+      "name": "Крупа гречневая 800 г",
+      "category": "Крупы, супы и соусы",
+      "unit_cost_kopecks": 6100,
+      "stock": 85
+    },
+    {
+      "sku_id": "sku-noodles-wok",
+      "name": "Лапша вок 300 г",
+      "category": "Лапша и азиатская кухня",
+      "unit_cost_kopecks": 5200,
+      "stock": 60
+    },
+    {
+      "sku_id": "sku-icecream-tub",
+      "name": "Мороженое пломбир 450 г",
+      "category": "Мороженое и десерты",
+      "unit_cost_kopecks": 8700,
+      "stock": 48
+    },
+    {
+      "sku_id": "sku-cheese-200",
+      "name": "Сыр полутвёрдый 200 г",
+      "category": "Хлеб, сыр и колбасы",
+      "unit_cost_kopecks": 11900,
+      "stock": 52
+    },
+    {
+      "sku_id": "sku-canned-beans",
+      "name": "Фасоль консервированная 400 г",
+      "category": "Бакалея и консервы",
+      "unit_cost_kopecks": 4100,
+      "stock": 95
+    },
+    {
+      "sku_id": "sku-salad-mix",
+      "name": "Салатная смесь 180 г",
+      "category": "Овощи, фрукты и зелень",
+      "unit_cost_kopecks": 5400,
+      "stock": 68
+    }
+  ],
+  "gift_skus": [
+    {
+      "sku_id": "gift-bun-60",
+      "name": "Булочка 60 г",
+      "category": "Хлеб и выпечка",
+      "unit_cost_kopecks": 1900,
+      "stock": 300
+    },
+    {
+      "sku_id": "gift-milk-500",
+      "name": "Молоко 0,5 л",
+      "category": "Молочные продукты",
+      "unit_cost_kopecks": 2500,
+      "stock": 400
+    },
+    {
+      "sku_id": "gift-banana-1",
+      "name": "Банан, 1 шт",
+      "category": "Фрукты",
+      "unit_cost_kopecks": 2100,
+      "stock": 250
+    },
+    {
+      "sku_id": "gift-dill-bunch",
+      "name": "Укроп, пучок",
+      "category": "Овощи и зелень",
+      "unit_cost_kopecks": 2200,
+      "stock": 220
+    },
+    {
+      "sku_id": "gift-tea-25",
+      "name": "Чай пакетированный, 25 шт",
+      "category": "Кофе и чай",
+      "unit_cost_kopecks": 2600,
+      "stock": 180
+    },
+    {
+      "sku_id": "gift-bar-40",
+      "name": "Ореховый батончик 40 г",
+      "category": "Снеки и орехи",
+      "unit_cost_kopecks": 2400,
+      "stock": 260
+    },
+    {
+      "sku_id": "gift-eggs-4",
+      "name": "Яйцо куриное С1, 4 шт",
+      "category": "Яйца и завтраки",
+      "unit_cost_kopecks": 2300,
+      "stock": 240
+    },
+    {
+      "sku_id": "gift-baking-mix",
+      "name": "Разрыхлитель и ванилин, набор",
+      "category": "Всё для выпечки",
+      "unit_cost_kopecks": 2000,
+      "stock": 200
+    },
+    {
+      "sku_id": "gift-frozen-veg-200",
+      "name": "Овощная смесь замороженная 200 г",
+      "category": "Замороженные продукты",
+      "unit_cost_kopecks": 2700,
+      "stock": 160
+    },
+    {
+      "sku_id": "gift-water-500",
+      "name": "Вода питьевая 0,5 л",
+      "category": "Полезные напитки",
+      "unit_cost_kopecks": 2000,
+      "stock": 350
+    },
+    {
+      "sku_id": "gift-sausage-1",
+      "name": "Сосиска для гриля, 1 шт",
+      "category": "Мясо и колбасы",
+      "unit_cost_kopecks": 2800,
+      "stock": 140
+    },
+    {
+      "sku_id": "gift-soy-100",
+      "name": "Соевый соус 100 мл",
+      "category": "Рыба и азиатская кухня",
+      "unit_cost_kopecks": 2900,
+      "stock": 120
+    },
+    {
+      "sku_id": "gift-cookie-50",
+      "name": "Печенье 50 г",
+      "category": "Кофе и десерты",
+      "unit_cost_kopecks": 2300,
+      "stock": 210
+    },
+    {
+      "sku_id": "gift-icecream-1",
+      "name": "Мороженое эскимо, 1 шт",
+      "category": "Холодные напитки и мороженое",
+      "unit_cost_kopecks": 2500,
+      "stock": 190
+    },
+    {
+      "sku_id": "gift-soup-pack",
+      "name": "Суп быстрого приготовления",
+      "category": "Крупы, супы и соусы",
+      "unit_cost_kopecks": 2100,
+      "stock": 230
+    },
+    {
+      "sku_id": "gift-noodles-1",
+      "name": "Лапша быстрого приготовления",
+      "category": "Лапша и азиатская кухня",
+      "unit_cost_kopecks": 1900,
+      "stock": 240
+    },
+    {
+      "sku_id": "gift-icecream-cup",
+      "name": "Мороженое в стаканчике",
+      "category": "Мороженое и десерты",
+      "unit_cost_kopecks": 2500,
+      "stock": 170
+    },
+    {
+      "sku_id": "gift-cheese-slice",
+      "name": "Сыр порционный 50 г",
+      "category": "Хлеб, сыр и колбасы",
+      "unit_cost_kopecks": 2900,
+      "stock": 150
+    },
+    {
+      "sku_id": "gift-canned-corn",
+      "name": "Кукуруза консервированная 200 г",
+      "category": "Бакалея и консервы",
+      "unit_cost_kopecks": 2600,
+      "stock": 200
+    },
+    {
+      "sku_id": "gift-salad-mini",
+      "name": "Салат мини 60 г",
+      "category": "Овощи, фрукты и зелень",
+      "unit_cost_kopecks": 2400,
+      "stock": 180
+    }
+  ]
+}

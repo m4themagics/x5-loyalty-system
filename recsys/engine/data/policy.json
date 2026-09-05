@@ -1,0 +1,57 @@
+{
+  "policy_version": "poc-rules-1",
+  "engine_version": "0.1.0",
+  "notes": "Пороговые значения — параметры перед запуском. Отсутствие обязательного параметра запрещает новое обещание: движок отвечает объяснимым отказом, а не подставляет число.",
+  "required_parameters": [
+    "challenge_window_days",
+    "challenge_quantity",
+    "instance_reserve_kopecks",
+    "coupon_max_kopecks",
+    "min_expected_increment_kopecks",
+    "expected_incremental_margin_default_kopecks",
+    "history_window_days",
+    "exploration_enabled",
+    "insufficient_history_policy",
+    "risk"
+  ],
+  "challenge_window_days": 7,
+  "challenge_quantity": 1,
+  "instance_reserve_kopecks": 250,
+  "coupon_max_kopecks": 1000,
+  "min_expected_increment_kopecks": 100,
+  "expected_incremental_margin_default_kopecks": 3500,
+  "expected_incremental_margin_by_category": {
+    "Молочные продукты": 4500,
+    "Хлеб и выпечка": 3000,
+    "Кофе и чай": 6200,
+    "Яйца и завтраки": 4100,
+    "Мясо и колбасы": 7400,
+    "Готовая еда": 6800,
+    "Свежие продукты": 5200,
+    "Фрукты": 3600,
+    "Овощи и зелень": 3400
+  },
+  "history_window_days": 90,
+  "exploration_enabled": false,
+  "insufficient_history_policy": "refuse",
+  "first_cycle_physical_reward": true,
+  "campaign_category_map": {
+    "Молочные продукты": "dairy",
+    "Кофе и чай": "coffee",
+    "Кофе и десерты": "coffee"
+  },
+  "risk": {
+    "review_score": 0.35,
+    "hold_score": 0.6,
+    "reject_score": 0.85,
+    "min_account_age_days_for_promise": 7,
+    "weights": {
+      "no_confirmed_purchase_days": 0.3,
+      "new_account": 0.2,
+      "shared_household_device": 0.1,
+      "same_day_basket_split": 0.25,
+      "returned_receipt": 0.45,
+      "self_referral": 0.5
+    }
+  }
+}

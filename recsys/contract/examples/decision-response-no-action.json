@@ -1,0 +1,25 @@
+{
+  "contract_version": 1,
+  "request_id": "req-demo-decision-outstanding",
+  "server_time_ms": 1788598800000,
+  "decision_id": "dec_demo_0002",
+  "status": "no_action",
+  "reason_codes": [
+    "promise_already_outstanding"
+  ],
+  "challenge": null,
+  "card": null,
+  "diagnostics": {
+    "engine_version": "0.1.0",
+    "policy_version": "poc-rules-1",
+    "candidates": [],
+    "coupon_available_kopecks": 999750,
+    "physical_available_kopecks": 2497500,
+    "llm": {
+      "source": "fallback",
+      "model": null,
+      "latency_ms": null,
+      "error": null
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "contract_version": 1,
+  "request_id": "req-demo-event-replay",
+  "server_time_ms": 1788685260000,
+  "event_id": "evt_demo_0001",
+  "qualification": "duplicate",
+  "idempotent_replay": true,
+  "risk": {
+    "decision": "allow",
+    "score": 0.04,
+    "signals": [
+      "single_device"
+    ]
+  },
+  "grant": null,
+  "reason_codes": [
+    "idempotent_replay",
+    "reward_already_issued"
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "snapshot_version": 1,
+  "profile_id": "demo-empty",
+  "label": "Новый участник, пустой инвентарь (синтетический профиль)",
+  "synthetic": true,
+  "receipts": [
+    {
+      "receipt_id": "rcp-empty-001",
+      "purchased_at_ms": 1786784400000,
+      "store_id": "store-demo-1",
+      "returned": false,
+      "lines": [
+        { "sku_id": "sku-milk-1l", "category": "Молочные продукты", "quantity": 1, "paid": true, "amount_kopecks": 8900 }
+      ]
+    },
+    {
+      "receipt_id": "rcp-empty-002",
+      "purchased_at_ms": 1787562000000,
+      "store_id": "store-demo-1",
+      "returned": false,
+      "lines": [
+        { "sku_id": "sku-bread-500", "category": "Хлеб и выпечка", "quantity": 1, "paid": true, "amount_kopecks": 5400 }
+      ]
+    },
+    {
+      "receipt_id": "rcp-empty-003",
+      "purchased_at_ms": 1788339600000,
+      "store_id": "store-demo-1",
+      "returned": false,
+      "lines": [
+        { "sku_id": "sku-coffee-250", "category": "Кофе и чай", "quantity": 1, "paid": true, "amount_kopecks": 32900 }
+      ]
+    }
+  ],
+  "inventory": [],
+  "issued_rewards": [],
+  "processed_event_ids": [],
+  "active_coupon": null,
+  "outstanding_promise": null,
+  "progress": {
+    "completed_recipe_ids": [],
+    "avatar_level": 0,
+    "redeemed_savings_28d_kopecks": 0
+  },
+  "referral": {
+    "invited_by_profile_id": null,
+    "invited_at_ms": null,
+    "had_confirmed_purchase_before_invite": false,
+    "inviter_rewards_in_window": 0
+  },
+  "risk_signals": {
+    "device_id": "device-demo-1",
+    "household_id": null,
+    "account_age_days": 45,
+    "confirmed_purchase_days": 3
+  }
+}

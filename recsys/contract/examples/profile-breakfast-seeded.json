@@ -1,0 +1,79 @@
+{
+  "snapshot_version": 1,
+  "profile_id": "demo-breakfast-seeded",
+  "label": "Подготовленный профиль: три предмета «Доброго утра» выданы заранее (синтетический профиль)",
+  "synthetic": true,
+  "receipts": [
+    {
+      "receipt_id": "rcp-seeded-001",
+      "purchased_at_ms": 1787216400000,
+      "store_id": "store-demo-2",
+      "returned": false,
+      "lines": [
+        { "sku_id": "sku-eggs-10", "category": "Яйца и завтраки", "quantity": 1, "paid": true, "amount_kopecks": 11900 }
+      ]
+    },
+    {
+      "receipt_id": "rcp-seeded-002",
+      "purchased_at_ms": 1787562000000,
+      "store_id": "store-demo-2",
+      "returned": false,
+      "lines": [
+        { "sku_id": "sku-milk-1l", "category": "Молочные продукты", "quantity": 2, "paid": true, "amount_kopecks": 17800 }
+      ]
+    },
+    {
+      "receipt_id": "rcp-seeded-003",
+      "purchased_at_ms": 1787821200000,
+      "store_id": "store-demo-2",
+      "returned": false,
+      "lines": [
+        { "sku_id": "sku-bread-500", "category": "Хлеб и выпечка", "quantity": 1, "paid": true, "amount_kopecks": 5400 }
+      ]
+    },
+    {
+      "receipt_id": "rcp-seeded-004",
+      "purchased_at_ms": 1788166800000,
+      "store_id": "store-demo-2",
+      "returned": false,
+      "lines": [
+        { "sku_id": "sku-coffee-250", "category": "Кофе и чай", "quantity": 1, "paid": true, "amount_kopecks": 32900 }
+      ]
+    },
+    {
+      "receipt_id": "rcp-seeded-005",
+      "purchased_at_ms": 1788426000000,
+      "store_id": "store-demo-2",
+      "returned": false,
+      "lines": [
+        { "sku_id": "sku-eggs-10", "category": "Яйца и завтраки", "quantity": 1, "paid": true, "amount_kopecks": 11900 }
+      ]
+    }
+  ],
+  "inventory": [
+    { "item_id": "club-toaster", "quantity": 1 },
+    { "item_id": "milk-pitcher", "quantity": 1 },
+    { "item_id": "travel-mug", "quantity": 1 }
+  ],
+  "issued_rewards": [],
+  "processed_event_ids": [],
+  "active_coupon": null,
+  "outstanding_promise": null,
+  "progress": {
+    "completed_recipe_ids": [],
+    "avatar_level": 0,
+    "redeemed_savings_28d_kopecks": 0
+  },
+  "referral": {
+    "invited_by_profile_id": null,
+    "invited_at_ms": null,
+    "had_confirmed_purchase_before_invite": false,
+    "inviter_rewards_in_window": 0
+  },
+  "risk_signals": {
+    "device_id": "device-demo-2",
+    "household_id": "household-demo-2",
+    "account_age_days": 210,
+    "confirmed_purchase_days": 5
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "contract_version": 1,
+  "request_id": "req-demo-decision-empty",
+  "server_time_ms": 1788598800000,
+  "decision_id": "dec_demo_0001",
+  "status": "offer",
+  "reason_codes": [
+    "offer_published",
+    "category_in_history",
+    "recipe_goal_first_copy"
+  ],
+  "challenge": {
+    "challenge_id": "chl_demo_0001",
+    "challenge_version": 1,
+    "title": "Молочный старт недели",
+    "recipe_goal_id": "breakfast",
+    "target": {
+      "category": "Молочные продукты",
+      "sku_ids": [
+        "sku-milk-1l"
+      ],
+      "quantity": 1,
+      "paid_only": true,
+      "window_days": 7,
+      "deadline_ms": 1789203600000
+    },
+    "reward": {
+      "digital_item_id": "milk-pitcher",
+      "physical_sku": {
+        "sku_id": "sku-milk-1l",
+        "name": "Молоко питьевое 1 л (синтетический SKU)",
+        "unit_cost_kopecks": 2500,
+        "stock_reserved": true
+      }
+    },
+    "reservation": {
+      "coupon_reserve_kopecks": 250,
+      "physical_reserve_kopecks": 2500
+    },
+    "economics": {
+      "synthetic": true,
+      "funding_source": "advertiser",
+      "advertiser_id": "brand_12",
+      "campaign_id": "camp_058",
+      "bid_per_qualified_event_kopecks": 1800,
+      "subsidy_kopecks": 0,
+      "uncovered_reward_cost_kopecks": 2750,
+      "expected_incremental_margin_kopecks": 4500
+    }
+  },
+  "card": {
+    "headline": "Молочный старт недели",
+    "body": "Купите один молочный товар до 12 сентября — и «Молочный кувшин» откроет путь к рецепту «Доброе утро».",
+    "reward_line": "Молочный кувшин + бесплатное молоко 1 л",
+    "deadline_line": "До 12 сентября, одна оплаченная покупка",
+    "sponsor_line": "Спонсировано: Молочный бренд",
+    "source": "fallback",
+    "violations": []
+  },
+  "diagnostics": {
+    "engine_version": "0.1.0",
+    "policy_version": "poc-rules-1",
+    "candidates": [
+      {
+        "candidate_id": "cnd_milk_breakfast",
+        "item_id": "milk-pitcher",
+        "recipe_id": "breakfast",
+        "category": "Молочные продукты",
+        "rank": 0,
+        "score": 0.82,
+        "accepted": true,
+        "reason_codes": [
+          "category_in_history",
+          "recipe_goal_first_copy"
+        ]
+      },
+      {
+        "candidate_id": "cnd_sushi_asian",
+        "item_id": "sushi-kit",
+        "recipe_id": "asian",
+        "category": "Рыба и азиатская кухня",
+        "rank": 1,
+        "score": 0.11,
+        "accepted": false,
+        "reason_codes": [
+          "category_not_in_history",
+          "exploration_disabled"
+        ]
+      }
+    ],
+    "coupon_available_kopecks": 999750,
+    "physical_available_kopecks": 2497500,
+    "llm": {
+      "source": "fallback",
+      "model": null,
+      "latency_ms": null,
+      "error": "yandexgpt_credentials_missing"
+    }
+  }
+}

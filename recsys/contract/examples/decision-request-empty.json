@@ -1,0 +1,428 @@
+{
+  "contract_version": 1,
+  "request_id": "req-demo-decision-empty",
+  "now_ms": 1788598800000,
+  "profile": {
+    "snapshot_version": 1,
+    "profile_id": "demo-empty",
+    "label": "Новый участник, пустой инвентарь (синтетический профиль)",
+    "synthetic": true,
+    "receipts": [
+      {
+        "receipt_id": "rcp-empty-001",
+        "purchased_at_ms": 1786784400000,
+        "store_id": "store-demo-1",
+        "returned": false,
+        "lines": [
+          {
+            "sku_id": "sku-milk-1l",
+            "category": "Молочные продукты",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 8900
+          }
+        ]
+      },
+      {
+        "receipt_id": "rcp-empty-002",
+        "purchased_at_ms": 1787562000000,
+        "store_id": "store-demo-1",
+        "returned": false,
+        "lines": [
+          {
+            "sku_id": "sku-bread-500",
+            "category": "Хлеб и выпечка",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 5400
+          }
+        ]
+      },
+      {
+        "receipt_id": "rcp-empty-003",
+        "purchased_at_ms": 1788339600000,
+        "store_id": "store-demo-1",
+        "returned": false,
+        "lines": [
+          {
+            "sku_id": "sku-coffee-250",
+            "category": "Кофе и чай",
+            "quantity": 1,
+            "paid": true,
+            "amount_kopecks": 32900
+          }
+        ]
+      }
+    ],
+    "inventory": [],
+    "issued_rewards": [],
+    "processed_event_ids": [],
+    "active_coupon": null,
+    "outstanding_promise": null,
+    "progress": {
+      "completed_recipe_ids": [],
+      "avatar_level": 0,
+      "redeemed_savings_28d_kopecks": 0
+    },
+    "referral": {
+      "invited_by_profile_id": null,
+      "invited_at_ms": null,
+      "had_confirmed_purchase_before_invite": false,
+      "inviter_rewards_in_window": 0
+    },
+    "risk_signals": {
+      "device_id": "device-demo-1",
+      "household_id": null,
+      "account_age_days": 45,
+      "confirmed_purchase_days": 3
+    }
+  },
+  "game": {
+    "craft_size": 4,
+    "items": [
+      {
+        "id": "club-toaster",
+        "name": "Клубный тостер",
+        "rarity": "common",
+        "category": "Хлеб и выпечка"
+      },
+      {
+        "id": "milk-pitcher",
+        "name": "Молочный кувшин",
+        "rarity": "common",
+        "category": "Молочные продукты"
+      },
+      {
+        "id": "fruit-basket",
+        "name": "Фруктовая корзинка",
+        "rarity": "common",
+        "category": "Фрукты"
+      },
+      {
+        "id": "vegetable-crate",
+        "name": "Овощной ящик",
+        "rarity": "common",
+        "category": "Овощи и зелень"
+      },
+      {
+        "id": "travel-mug",
+        "name": "Термокружка",
+        "rarity": "common",
+        "category": "Кофе и чай"
+      },
+      {
+        "id": "snack-bowl",
+        "name": "Миска для снеков",
+        "rarity": "common",
+        "category": "Снеки и орехи"
+      },
+      {
+        "id": "breakfast-pan",
+        "name": "Сковорода завтрака",
+        "rarity": "common",
+        "category": "Яйца и завтраки"
+      },
+      {
+        "id": "baker-apron",
+        "name": "Фартук пекаря",
+        "rarity": "common",
+        "category": "Всё для выпечки"
+      },
+      {
+        "id": "chef-knife",
+        "name": "Нож шефа",
+        "rarity": "epic",
+        "category": "Свежие продукты"
+      },
+      {
+        "id": "freezer-chest",
+        "name": "Морозильная камера",
+        "rarity": "epic",
+        "category": "Замороженные продукты"
+      },
+      {
+        "id": "power-blender",
+        "name": "Блендер здоровья",
+        "rarity": "epic",
+        "category": "Полезные напитки"
+      },
+      {
+        "id": "master-grill",
+        "name": "Гриль мастера",
+        "rarity": "epic",
+        "category": "Мясо и колбасы"
+      },
+      {
+        "id": "sushi-kit",
+        "name": "Набор сушиста",
+        "rarity": "epic",
+        "category": "Рыба и азиатская кухня"
+      },
+      {
+        "id": "barista-machine",
+        "name": "Кофемашина бариста",
+        "rarity": "epic",
+        "category": "Кофе и десерты"
+      },
+      {
+        "id": "pizza-oven",
+        "name": "Печь пиццайоло",
+        "rarity": "epic",
+        "category": "Пицца и готовая еда"
+      },
+      {
+        "id": "picnic-cooler",
+        "name": "Холодильник для пикника",
+        "rarity": "epic",
+        "category": "Холодные напитки и мороженое"
+      },
+      {
+        "id": "golden-chef-hat",
+        "name": "Золотой колпак повара",
+        "rarity": "legendary",
+        "category": "Готовая еда"
+      },
+      {
+        "id": "magic-fridge",
+        "name": "Волшебный холодильник",
+        "rarity": "legendary",
+        "category": "Любимые покупки"
+      },
+      {
+        "id": "royal-cauldron",
+        "name": "Королевский казан",
+        "rarity": "legendary",
+        "category": "Крупы, супы и соусы"
+      },
+      {
+        "id": "dragon-wok",
+        "name": "Драконий вок",
+        "rarity": "legendary",
+        "category": "Лапша и азиатская кухня"
+      },
+      {
+        "id": "crystal-icecream-maker",
+        "name": "Кристальная мороженица",
+        "rarity": "legendary",
+        "category": "Мороженое и десерты"
+      },
+      {
+        "id": "legendary-sandwich-press",
+        "name": "Пресс идеального сэндвича",
+        "rarity": "legendary",
+        "category": "Хлеб, сыр и колбасы"
+      },
+      {
+        "id": "treasure-pantry",
+        "name": "Сундук запасов",
+        "rarity": "legendary",
+        "category": "Бакалея и консервы"
+      },
+      {
+        "id": "freshness-dome",
+        "name": "Купол свежести",
+        "rarity": "legendary",
+        "category": "Овощи, фрукты и зелень"
+      }
+    ],
+    "recipes": [
+      {
+        "id": "breakfast",
+        "title": "Доброе утро",
+        "category": "Завтраки, выпечка и горячие напитки",
+        "item_ids": [
+          "club-toaster",
+          "milk-pitcher",
+          "travel-mug",
+          "breakfast-pan",
+          "barista-machine",
+          "baker-apron",
+          "fruit-basket"
+        ]
+      },
+      {
+        "id": "fresh",
+        "title": "Свежий выбор",
+        "category": "Овощи, фрукты и полезные продукты",
+        "item_ids": [
+          "fruit-basket",
+          "vegetable-crate",
+          "power-blender",
+          "freshness-dome",
+          "milk-pitcher",
+          "breakfast-pan"
+        ]
+      },
+      {
+        "id": "movie",
+        "title": "Вечер без готовки",
+        "category": "Снеки, напитки и готовая еда",
+        "item_ids": [
+          "snack-bowl",
+          "pizza-oven",
+          "picnic-cooler",
+          "legendary-sandwich-press",
+          "freezer-chest"
+        ]
+      },
+      {
+        "id": "asian",
+        "title": "Азиатский ужин",
+        "category": "Рыба, рис, лапша и азиатские соусы",
+        "item_ids": [
+          "sushi-kit",
+          "dragon-wok",
+          "royal-cauldron",
+          "chef-knife",
+          "vegetable-crate",
+          "treasure-pantry"
+        ]
+      },
+      {
+        "id": "chef",
+        "title": "Ужин шефа",
+        "category": "Мясо, свежие продукты и кулинария",
+        "item_ids": [
+          "chef-knife",
+          "master-grill",
+          "golden-chef-hat",
+          "vegetable-crate",
+          "magic-fridge",
+          "royal-cauldron"
+        ]
+      },
+      {
+        "id": "dessert",
+        "title": "Сладкая пауза",
+        "category": "Десерты, кофе и всё для выпечки",
+        "item_ids": [
+          "baker-apron",
+          "barista-machine",
+          "crystal-icecream-maker",
+          "milk-pitcher",
+          "fruit-basket",
+          "travel-mug"
+        ]
+      },
+      {
+        "id": "pantry",
+        "title": "Домашний запас",
+        "category": "Бакалея, заморозка и продукты долгого хранения",
+        "item_ids": [
+          "treasure-pantry",
+          "freezer-chest",
+          "magic-fridge",
+          "picnic-cooler",
+          "club-toaster",
+          "legendary-sandwich-press"
+        ]
+      }
+    ]
+  },
+  "game_features": {
+    "inventory_total": 0,
+    "inventory_distinct": 0,
+    "duplicate_item_ids": [],
+    "recipe_progress": [
+      {
+        "recipe_id": "breakfast",
+        "matched_count": 0,
+        "owned_item_ids": [],
+        "missing_item_ids": [
+          "club-toaster",
+          "milk-pitcher",
+          "travel-mug",
+          "breakfast-pan",
+          "barista-machine",
+          "baker-apron",
+          "fruit-basket"
+        ]
+      },
+      {
+        "recipe_id": "fresh",
+        "matched_count": 0,
+        "owned_item_ids": [],
+        "missing_item_ids": [
+          "fruit-basket",
+          "vegetable-crate",
+          "power-blender",
+          "freshness-dome",
+          "milk-pitcher",
+          "breakfast-pan"
+        ]
+      },
+      {
+        "recipe_id": "movie",
+        "matched_count": 0,
+        "owned_item_ids": [],
+        "missing_item_ids": [
+          "snack-bowl",
+          "pizza-oven",
+          "picnic-cooler",
+          "legendary-sandwich-press",
+          "freezer-chest"
+        ]
+      },
+      {
+        "recipe_id": "asian",
+        "matched_count": 0,
+        "owned_item_ids": [],
+        "missing_item_ids": [
+          "sushi-kit",
+          "dragon-wok",
+          "royal-cauldron",
+          "chef-knife",
+          "vegetable-crate",
+          "treasure-pantry"
+        ]
+      },
+      {
+        "recipe_id": "chef",
+        "matched_count": 0,
+        "owned_item_ids": [],
+        "missing_item_ids": [
+          "chef-knife",
+          "master-grill",
+          "golden-chef-hat",
+          "vegetable-crate",
+          "magic-fridge",
+          "royal-cauldron"
+        ]
+      },
+      {
+        "recipe_id": "dessert",
+        "matched_count": 0,
+        "owned_item_ids": [],
+        "missing_item_ids": [
+          "baker-apron",
+          "barista-machine",
+          "crystal-icecream-maker",
+          "milk-pitcher",
+          "fruit-basket",
+          "travel-mug"
+        ]
+      },
+      {
+        "recipe_id": "pantry",
+        "matched_count": 0,
+        "owned_item_ids": [],
+        "missing_item_ids": [
+          "treasure-pantry",
+          "freezer-chest",
+          "magic-fridge",
+          "picnic-cooler",
+          "club-toaster",
+          "legendary-sandwich-press"
+        ]
+      }
+    ]
+  },
+  "budget": {
+    "coupon_fund_kopecks": 1000000,
+    "coupon_settled_kopecks": 0,
+    "coupon_reserved_kopecks": 0,
+    "physical_fund_kopecks": 2500000,
+    "physical_settled_kopecks": 0,
+    "physical_reserved_kopecks": 0
+  }
+}
