@@ -1,5 +1,6 @@
 import { Typography } from '@/components/typography'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import type { DemoTradeCreate, DemoTradeRespond } from '@pyaterochka-game-demo/contracts'
 
 import {
   fetchSeedProfiles,
@@ -23,6 +24,7 @@ import {
   applyDecision,
   applyEvent,
   applyRedemption,
+  availableDemoInventory,
   createDemoState,
   refreshDemoSavings,
   releaseExpiredPromise,
@@ -31,6 +33,9 @@ import {
 } from './demo-state'
 import { applyReferralReward, createDemoStore, resolveDemoStore, saveDemoProfile, selectDemoProfile, serializeDemoStore, type DemoStore } from './demo-store'
 import { addDemoSelection, removeDemoSelection } from './demo-selection'
+import { cancelProfileTrades, createDemoTrade, createTradeSeedProfiles, expireDemoTrades, respondDemoTrade } from './demo-trades'
+import { DemoTradePanel } from './DemoTradePanel'
+import { DemoEvaluationPanel } from './DemoEvaluationPanel'
 import { craftDiscount, previewCraftedDiscount } from './profile-discount-crafting'
 import { profileItems } from './profile-items'
 
@@ -54,6 +59,7 @@ const RANKING_PEERS = [
 
 export function DemoChallengePanel() {
   const demo = useDemoChallenge()
+  const [showX5, setShowX5] = useState(false)
 
   if (demo.state === null) {
     return (
@@ -89,6 +95,11 @@ export function DemoChallengePanel() {
           Уровень {avatarLevel(state.profile.progress.completed_recipe_ids)}/7
         </Typography>
       </div>
+
+      <button className="demo-button" type="button" aria-expanded={showX5} onClick={() => setShowX5((visible) => !visible)}>
+        <Typography as="span" variant="control">Для X5</Typography>
+      </button>
+      {showX5 ? <DemoEvaluationPanel state={state} /> : null}
 
       <div className="demo-profile-switch" role="group" aria-label="Синтетический профиль">
         {demo.profiles.map((profile) => (
@@ -189,7 +200,7 @@ export function DemoChallengePanel() {
       ) : null}
 
       <DemoInventory
-        key={state.profile.profile_id}
+        key={`inventory-${state.profile.profile_id}-${state.revision}`}
         state={state}
         isBusy={demo.isBusy}
         onCraft={demo.craft}
@@ -197,6 +208,7 @@ export function DemoChallengePanel() {
       />
 
       <DemoProgressBlock state={state} referralIssued={demo.referralIssued} />
+      {demo.store === null ? null : <DemoTradePanel key={`trade-${state.profile.profile_id}`} store={demo.store} isBusy={demo.isBusy} note={demo.tradeNote} onCreate={demo.createTrade} onRespond={demo.respondTrade} />}
 
       {state.decision !== null ? (
         <details className="demo-diagnostics">
@@ -246,6 +258,7 @@ function DemoInventory({
 }) {
   const [selected, setSelected] = useState<string[]>([])
   const coupon = state.profile.active_coupon
+  const spendable = availableDemoInventory(state)
   const preview = previewCraftedDiscount(selected)
 
   return (
@@ -261,20 +274,22 @@ function DemoInventory({
             const item = findItem(entry.item_id)
             if (item === null) return null
             const selectedCount = selected.filter((itemId) => itemId === entry.item_id).length
+            const available = spendable.find((item) => item.item_id === entry.item_id)?.quantity ?? 0
             return (
               <li key={entry.item_id}>
                 <button
                   aria-label={item.name}
                   aria-pressed={selectedCount > 0}
                   className={`demo-item item-rarity-${item.rarity}`}
-                  disabled={isBusy || coupon !== null || selectedCount >= entry.quantity || selected.length >= 4}
-                  onClick={() => setSelected((current) => addDemoSelection(current, state.profile.inventory, entry.item_id))}
+                  disabled={isBusy || coupon !== null || selectedCount >= available || selected.length >= 4}
+                  onClick={() => setSelected((current) => addDemoSelection(current, spendable, entry.item_id))}
                   type="button"
                 >
                   <img alt={item.name} src={item.iconSrc} />
                   <Typography as="span" variant="bodyXs">{item.name}</Typography>
                   <Typography as="span" variant="bodyXs" className="demo-item-count">
                     ×{entry.quantity}{selectedCount > 0 ? ` · выбрано ${selectedCount}` : ''}
+                    {entry.quantity > available ? ` · в обмене ${entry.quantity - available}` : ''}
                   </Typography>
                 </button>
                 {selectedCount > 0 ? (
@@ -381,6 +396,7 @@ function useDemoChallenge() {
   const [failure, setFailure] = useState<DemoApiFailure | null>(null)
   const [isBusy, setIsBusy] = useState(false)
   const [lastEventNote, setLastEventNote] = useState<string | null>(null)
+  const [tradeNote, setTradeNote] = useState<string | null>(null)
 
   const persistStore = useCallback((next: DemoStore) => {
     window.localStorage.setItem(DEMO_STATE_STORAGE_KEY, serializeDemoStore(next))
@@ -397,18 +413,21 @@ function useDemoChallenge() {
     let cancelled = false
     void fetchSeedProfiles().then((result) => {
       if (cancelled) return
-      setSeed(result)
       if (!result.ok) {
+        setSeed(result)
         setFailure(result.error)
         return
       }
+      const expanded = { ...result, data: { ...result.data, profiles: [...result.data.profiles, ...createTradeSeedProfiles(result.data.profiles[0], Date.now())] } }
+      setSeed(expanded)
       let loaded = resolveDemoStore(window.localStorage.getItem(DEMO_STATE_STORAGE_KEY))
         ?? createDemoStore(createDemoState(result.data.profiles[0], result.data.budget))
-      for (const profile of result.data.profiles) {
+      for (const profile of expanded.data.profiles) {
         if (loaded.profiles[profile.profile_id] === undefined) {
           loaded = { ...loaded, profiles: { ...loaded.profiles, [profile.profile_id]: createDemoState(profile, result.data.budget) } }
         }
       }
+      loaded = expireDemoTrades(loaded, Date.now())
       const active = refreshDemoSavings(loaded.profiles[loaded.active_profile_id], Date.now())
       persistStore(saveDemoProfile(loaded, active))
     })
@@ -417,14 +436,15 @@ function useDemoChallenge() {
 
   useEffect(() => {
     const timer = window.setInterval(() => {
-      const current = storeRef.current
-      if (current === null || busyRef.current) return
+      const stored = storeRef.current
+      if (stored === null || busyRef.current) return
+      const current = expireDemoTrades(stored, Date.now())
       const active = current.profiles[current.active_profile_id]
       const next = refreshDemoSavings(active, Date.now())
-      if (next !== active) persist(next)
+      if (next !== active || current !== stored) persistStore(saveDemoProfile(current, next))
     }, 60_000)
     return () => window.clearInterval(timer)
-  }, [persist])
+  }, [persistStore])
 
   const profiles = seed?.ok === true ? seed.data.profiles : []
 
@@ -433,8 +453,9 @@ function useDemoChallenge() {
     const profile = seed.data.profiles.find((candidate) => candidate.profile_id === profileId)
     if (profile === undefined) return
     setLastEventNote(null)
+    setTradeNote(null)
     setFailure(null)
-    const selected = selectDemoProfile(storeRef.current, profile, seed.data.budget)
+    const selected = selectDemoProfile(expireDemoTrades(storeRef.current, Date.now()), profile, seed.data.budget)
     persistStore(saveDemoProfile(selected, refreshDemoSavings(selected.profiles[profileId], Date.now())))
   }, [persistStore, seed])
 
@@ -444,8 +465,25 @@ function useDemoChallenge() {
     if (profile === undefined) return
     setFailure(null)
     setLastEventNote(null)
-    persist(createDemoState(profile, seed.data.budget))
-  }, [persist, seed, state])
+    const current = storeRef.current
+    if (current !== null) persistStore(saveDemoProfile(cancelProfileTrades(current, profile.profile_id, Date.now()), createDemoState(profile, seed.data.budget)))
+  }, [persistStore, seed, state])
+
+  const createTrade = useCallback((command: DemoTradeCreate) => {
+    const current = storeRef.current
+    if (current === null || busyRef.current) return
+    const result = createDemoTrade(current, command, Date.now())
+    setTradeNote(tradeReason(result.reason))
+    if (result.store !== current) persistStore(result.store)
+  }, [persistStore])
+
+  const respondTrade = useCallback((command: DemoTradeRespond) => {
+    const current = storeRef.current
+    if (current === null || busyRef.current) return
+    const result = respondDemoTrade(current, command, Date.now())
+    setTradeNote(tradeReason(result.reason))
+    if (result.store !== current) persistStore(result.store)
+  }, [persistStore])
 
   const askForChallenge = useCallback(async () => {
     if (state === null || busyRef.current) return
@@ -529,7 +567,28 @@ function useDemoChallenge() {
     selectProfile,
     sendReceipt,
     state,
+    store,
+    tradeNote,
+    createTrade,
+    respondTrade,
   }
+}
+
+function tradeReason(reason: string): string {
+  const messages: Record<string, string> = {
+    trade_created: 'Предложение отправлено. Обе копии зарезервированы на 24 часа.',
+    trade_accepted: 'Предметы переданы обоим участникам.',
+    trade_rejected: 'Предложение отклонено. Копии снова доступны.',
+    trade_expired: 'Срок предложения истёк. Копии снова доступны.',
+    trade_idempotent: 'Это действие уже учтено; повторной передачи нет.',
+    trade_weekly_limit: 'У одного из участников уже три завершённых обмена за последние семь дней.',
+    trade_purchase_days_insufficient: 'Каждому участнику нужны минимум два оплаченных покупочных дня.',
+    trade_duplicate_unavailable: 'Свободного дубликата уже нет. Обновите выбор.',
+    trade_stale_revision: 'Состояние изменилось. Проверьте предложение и повторите действие.',
+    trade_rarity_mismatch: 'Можно обмениваться только предметами одной редкости.',
+    trade_receiver_required: 'Подтвердить или отклонить предложение может только получатель.',
+  }
+  return messages[reason] ?? `Обмен не выполнен: ${reason}`
 }
 
 function DemoTerm({ label, value }: { label: string; value: string }) {

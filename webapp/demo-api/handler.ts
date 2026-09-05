@@ -14,6 +14,7 @@ import {
 } from '@pyaterochka-game-demo/contracts'
 import type { Connect } from 'vite'
 import { z } from 'zod'
+import { summarizeDemoEvaluation } from './evaluation'
 
 /**
  * Обработчик локального демонстрационного API.
@@ -48,6 +49,16 @@ export async function handleDemoRequest(
   next: Connect.NextFunction,
 ): Promise<void> {
   const route = (request.url ?? '/').split('?')[0]
+
+  if (route === '/evaluation' && request.method === 'GET') {
+    try {
+      const report = JSON.parse(readFileSync(path.join(REPO_ROOT, 'recsys/eval/results/policy-comparison.json'), 'utf8'))
+      sendJson(response, 200, summarizeDemoEvaluation(report))
+    } catch {
+      sendError(response, 'evaluation', 'engine_failed', 'Отчёт оценки отсутствует или не соответствует контракту. Повторите локальную оценку.')
+    }
+    return
+  }
 
   if (route === '/profiles' && request.method === 'GET') {
     sendJson(response, 200, readSeedProfiles())

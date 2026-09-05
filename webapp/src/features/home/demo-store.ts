@@ -4,6 +4,8 @@ import {
   type DemoEventResponse,
   type DemoProfileSnapshot,
   type DemoReceipt,
+  demoTradeSchema,
+  type DemoTrade,
 } from '@pyaterochka-game-demo/contracts'
 
 import { createDemoState, resolveDemoState, type DemoState } from './demo-state'
@@ -21,18 +23,20 @@ type ReferralAward = {
 
 /** Один localStorage write сохраняет оба профиля при реферальном начислении. */
 export type DemoStore = {
-  store_version: 1
+  store_version: 2
+  store_revision: number
   active_profile_id: string
   profiles: Record<string, DemoState>
   referral_awards: ReferralAward[]
+  trades: DemoTrade[]
 }
 
 export function createDemoStore(state: DemoState): DemoStore {
-  return { store_version: 1, active_profile_id: state.profile.profile_id, profiles: { [state.profile.profile_id]: state }, referral_awards: [] }
+  return { store_version: 2, store_revision: 1, active_profile_id: state.profile.profile_id, profiles: { [state.profile.profile_id]: state }, referral_awards: [], trades: [] }
 }
 
 export function saveDemoProfile(store: DemoStore, state: DemoState): DemoStore {
-  return { ...store, active_profile_id: state.profile.profile_id, profiles: { ...store.profiles, [state.profile.profile_id]: state } }
+  return { ...store, store_revision: store.store_revision + 1, active_profile_id: state.profile.profile_id, profiles: { ...store.profiles, [state.profile.profile_id]: state } }
 }
 
 export function selectDemoProfile(store: DemoStore, seed: DemoProfileSnapshot, budget: DemoBudgetSnapshot): DemoStore {
@@ -46,8 +50,8 @@ export function serializeDemoStore(store: DemoStore): string {
 export function resolveDemoStore(raw: string | null): DemoStore | null {
   if (raw === null) return null
   try {
-    const value = JSON.parse(raw) as Partial<DemoStore>
-    if (value.store_version !== 1) {
+    const value = JSON.parse(raw) as Omit<Partial<DemoStore>, 'store_version'> & { store_version?: number }
+    if (value.store_version !== 1 && value.store_version !== 2) {
       const legacy = resolveDemoState(raw)
       return legacy === null ? null : createDemoStore(legacy)
     }
@@ -59,7 +63,11 @@ export function resolveDemoStore(raw: string | null): DemoStore | null {
       profiles[id] = state
     }
     if (profiles[value.active_profile_id] === undefined) return null
-    return { store_version: 1, active_profile_id: value.active_profile_id, profiles, referral_awards: value.referral_awards }
+    const trades = value.store_version === 1 ? [] : value.trades?.map((trade) => demoTradeSchema.parse(trade))
+    if (trades === undefined) return null
+    const storeRevision = value.store_version === 1 ? 1 : value.store_revision
+    if (!Number.isSafeInteger(storeRevision) || storeRevision! < 1) return null
+    return { store_version: 2, store_revision: storeRevision!, active_profile_id: value.active_profile_id, profiles, referral_awards: value.referral_awards, trades }
   } catch {
     return null
   }
@@ -109,6 +117,7 @@ export function applyReferralReward(
     reason: 'referral_reward_issued',
     store: {
       ...store,
+      store_revision: store.store_revision + 1,
       profiles: {
         ...store.profiles,
         [inviteeId]: { ...invitee, revision: invitee.revision + 1, profile: { ...invitee.profile, referral: { ...referral, inviter_rewards_in_window: paidAwards + 1 } } },

@@ -6,6 +6,7 @@ import type {
   DemoEventResponse,
   DemoProfileSnapshot,
   DemoReceipt,
+  DemoRiskAssessment,
 } from '@pyaterochka-game-demo/contracts'
 
 import type { CraftedDiscount } from './profile-discount-crafting'
@@ -32,6 +33,8 @@ export type DemoState = {
   last_grant: DemoGrantSummary | null
   last_receipt: { challenge_id: string; receipt: DemoReceipt } | null
   redemptions: { coupon_id: string; redeemed_at_ms: number; saved_kopecks: number }[]
+  trade_reserved_items: { item_id: string; quantity: number }[]
+  last_risk: DemoRiskAssessment | null
 }
 
 export type DemoDecisionSummary = {
@@ -77,6 +80,8 @@ export function createDemoState(
     last_grant: null,
     last_receipt: null,
     redemptions: [],
+    trade_reserved_items: [],
+    last_risk: null,
   }
 }
 
@@ -161,6 +166,7 @@ export function applyEvent(
       ...state,
       revision: state.revision + 1,
       last_receipt: lastReceipt,
+      last_risk: response.risk,
       profile: {
         ...state.profile,
         receipts: receiptsWithProof,
@@ -177,6 +183,7 @@ export function applyEvent(
       ...state,
       revision: state.revision + 1,
       last_receipt: lastReceipt,
+      last_risk: response.risk,
       profile: { ...state.profile, processed_event_ids: processed },
     }
   }
@@ -185,6 +192,7 @@ export function applyEvent(
     ...state,
     revision: state.revision + 1,
     last_receipt: lastReceipt,
+    last_risk: response.risk,
     profile: {
       ...state.profile,
       receipts: receiptsWithProof,
@@ -230,6 +238,7 @@ export function applyCraft(
   nowMs: number,
 ): DemoState {
   if (state.profile.active_coupon !== null) return state
+  if (consumeInventoryQuantities(availableDemoInventory(state), discount.itemIds) === null) return state
 
   const inventory = consumeInventoryQuantities(state.profile.inventory, discount.itemIds)
   if (inventory === null) return state
@@ -325,10 +334,19 @@ export function resolveDemoState(raw: string | null): DemoState | null {
     ) {
       return null
     }
-    return { ...saved, last_receipt: saved.last_receipt ?? null, redemptions: saved.redemptions ?? [] } as DemoState
+    return { ...saved, last_receipt: saved.last_receipt ?? null, redemptions: saved.redemptions ?? [], trade_reserved_items: saved.trade_reserved_items ?? [], last_risk: saved.last_risk ?? null } as DemoState
   } catch {
     return null
   }
+}
+
+/** Предложенные для обмена копии остаются во владении, но недоступны для расходования. */
+export function availableDemoInventory(state: DemoState): DemoProfileSnapshot['inventory'] {
+  return state.profile.inventory.flatMap((entry) => {
+    const reserved = state.trade_reserved_items.find((item) => item.item_id === entry.item_id)?.quantity ?? 0
+    const quantity = Math.max(0, entry.quantity - reserved)
+    return quantity > 0 ? [{ ...entry, quantity }] : []
+  })
 }
 
 function holdReserves(budget: DemoBudgetSnapshot, challenge: DemoChallenge): DemoBudgetSnapshot {

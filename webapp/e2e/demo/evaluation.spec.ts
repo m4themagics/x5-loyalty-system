@@ -1,0 +1,27 @@
+import { expect, test } from '@playwright/test'
+
+test('X5 role reads compact economic evidence and can inspect the current decision', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await page.getByRole('button', { name: 'Показать задание', exact: true }).click()
+  await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
+  const responsePromise = page.waitForResponse((response) => response.url().endsWith('/api/demo/evaluation'))
+  await page.getByRole('button', { name: 'Для X5', exact: true }).click()
+  const response = await responsePromise
+  expect(response.status()).toBe(200)
+  const body = await response.json()
+  expect(body.synthetic).toBe(true)
+  expect(body.primary.policy).toBe('sponsored_onboarding')
+  expect(JSON.stringify(body).length).toBeLessThan(4000)
+  expect(body.primary.runs).toBeUndefined()
+  const panel = page.getByRole('region', { name: 'Для X5', exact: true })
+  await expect(panel.getByText('Финансируемый первый подарок', { exact: true })).toBeVisible()
+  await expect(panel.getByText('Итог после полного обеспечения обязательств', { exact: true })).toBeVisible()
+  await expect(panel.getByText('CPA безубыточности с обеспечением', { exact: true })).toBeVisible()
+  await expect(panel.getByText(`${body.primary.conservative_positive_net_seeds} из ${body.primary.seed_count} seed`, { exact: true })).toBeVisible()
+  await expect(panel.getByText('Источник финансирования', { exact: true })).toBeVisible()
+  await expect(panel.getByText('Резервы купонов / товаров', { exact: true })).toBeVisible()
+  await panel.getByText('Проверка устойчивости', { exact: true }).click()
+  await expect(panel.getByText('Нулевой эффект', { exact: false })).toBeVisible()
+  await expect(panel.getByText('Отрицательный эффект', { exact: false })).toBeVisible()
+})

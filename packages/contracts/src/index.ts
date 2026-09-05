@@ -1,5 +1,7 @@
 export * from './auth'
 export * from './demo-poc'
+export * from './demo-trade'
+export * from './demo-evaluation'
 export * from './errors'
 export * from './uploads'
 export * from './users'

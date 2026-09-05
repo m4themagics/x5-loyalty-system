@@ -11,6 +11,8 @@ import {
   demoErrorResponseSchema,
   demoEventResponseSchema,
   demoSeedProfilesResponseSchema,
+  demoEvaluationResponseSchema,
+  type DemoEvaluationResponse,
 } from '@pyaterochka-game-demo/contracts'
 
 import { buildDemoGameFeatures, buildDemoGameSnapshot, fromDemoInventory } from './demo-game-snapshot'
@@ -22,6 +24,10 @@ export type DemoApiResult<T> = { ok: true; data: T } | { ok: false; error: DemoA
 
 export async function fetchSeedProfiles(): Promise<DemoApiResult<DemoSeedProfilesResponse>> {
   return request('/api/demo/profiles', { method: 'GET' }, demoSeedProfilesResponseSchema)
+}
+
+export async function fetchDemoEvaluation(): Promise<DemoApiResult<DemoEvaluationResponse>> {
+  return request('/api/demo/evaluation', { method: 'GET' }, demoEvaluationResponseSchema)
 }
 
 export async function requestDecision(

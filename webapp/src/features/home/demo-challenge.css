@@ -6,6 +6,29 @@
   background: #f7f8f5;
 }
 
+.demo-trades,
+.demo-trade-form,
+.demo-evaluation {
+  display: grid;
+  gap: 12px;
+}
+
+.demo-trade-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.demo-trade-form select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #d4d6d1;
+  border-radius: 12px;
+  padding: 8px;
+  background: #fff;
+  color: #202124;
+}
+
 .demo-profile-switch,
 .demo-receipts,
 .demo-actions {
