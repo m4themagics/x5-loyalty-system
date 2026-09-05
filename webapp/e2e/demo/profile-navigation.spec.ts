@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 
 const chestStorageKey = 'pyaterochka_profile_chest_deadline'
 const inventoryStorageKey = 'pyaterochka_profile_inventory'
+const activeDiscountStorageKey = 'pyaterochka_profile_active_discount'
 
 test('returns to the top when switching from the scrolled profile to Home', async ({ page }) => {
   await page.goto('/')
@@ -71,4 +72,63 @@ test('opens an available chest after the user shakes it across the screen', asyn
   await expect(chestButton).toBeEnabled()
   await chestButton.click()
   await expect(page.getByRole('heading', { name: 'Потрясите коробку' })).toBeVisible()
+})
+
+test('crafts a themed discount from four inventory items and restores its barcode', async ({ page }) => {
+  await page.addInitScript(
+    ({ discountKey, inventoryKey }) => {
+      if (window.sessionStorage.getItem('crafting-fixture-seeded') === 'true') return
+      window.localStorage.removeItem(discountKey)
+      window.localStorage.setItem(inventoryKey, JSON.stringify({
+        version: 1,
+        entries: [
+          { itemId: 'fruit-basket', quantity: 1 },
+          { itemId: 'vegetable-crate', quantity: 1 },
+          { itemId: 'power-blender', quantity: 1 },
+          { itemId: 'freshness-dome', quantity: 1 },
+        ],
+      }))
+      window.sessionStorage.setItem('crafting-fixture-seeded', 'true')
+    },
+    { discountKey: activeDiscountStorageKey, inventoryKey: inventoryStorageKey },
+  )
+
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Профиль' }).click()
+
+  const firstItem = page.getByRole('button', { name: /Фруктовая корзинка/ })
+  const firstSlot = page.getByRole('button', { name: 'Пустая ячейка скидки 1' })
+  await firstItem.dragTo(firstSlot)
+  await expect(page.getByRole('button', { name: /Фруктовая корзинка в ячейке 1/ }))
+    .toBeVisible()
+
+  for (const [itemName, slotNumber] of [
+    ['Овощной ящик', 2],
+    ['Блендер здоровья', 3],
+    ['Купол свежести', 4],
+  ] as const) {
+    await page.getByRole('button', { name: new RegExp(itemName) }).click()
+    await page.getByRole('button', { name: `Пустая ячейка скидки ${slotNumber}` }).click()
+  }
+
+  const createButton = page.getByRole('button', { name: 'Создать скидку 10%' })
+  await expect(createButton).toBeEnabled()
+  await createButton.click()
+
+  const discountDialog = page.getByRole('dialog', { name: 'Созданная скидка' })
+  await expect(discountDialog).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Свежий выбор' })).toBeVisible()
+  await expect(discountDialog.getByText('−10%', { exact: true })).toBeVisible()
+  await page.getByRole('button', { name: 'Показать штрихкод' }).click()
+  await expect(page.getByRole('dialog', { name: 'Штрихкод скидки' })).toBeVisible()
+  await expect(page.getByRole('img', { name: /^Штрихкод \d{13}$/ })).toBeVisible()
+  await page.getByRole('button', { name: 'Закрыть скидку' }).click()
+
+  const discountBadge = page.getByRole('button', { name: /Открыть скидку 10% «Свежий выбор»/ })
+  await expect(discountBadge).toBeVisible()
+  await page.reload()
+  await page.getByRole('button', { name: 'Профиль' }).click()
+  await expect(discountBadge).toBeVisible()
+  await discountBadge.click()
+  await expect(page.getByRole('img', { name: /^Штрихкод \d{13}$/ })).toBeVisible()
 })

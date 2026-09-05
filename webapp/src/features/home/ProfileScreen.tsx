@@ -16,17 +16,29 @@ import {
 import { drawProfileItem } from './profile-item-drop'
 import {
   addInventoryItem,
-  type InventoryEntry,
+  consumeInventoryItems,
   resolveInventory,
   serializeInventory,
 } from './profile-inventory'
-import { profileItems, type ItemRarity, type ProfileItem } from './profile-items'
+import { type ItemRarity, type ProfileItem } from './profile-items'
 import { serializeChestCycle } from './profile-countdown'
+import {
+  craftDiscount,
+  type CraftedDiscount,
+  resolveCraftedDiscount,
+  serializeCraftedDiscount,
+} from './profile-discount-crafting'
+import {
+  ActiveDiscountBadge,
+  ProfileDiscountOverlay,
+} from './ProfileDiscount'
+import { ProfileInventoryCrafting } from './ProfileInventoryCrafting'
 
 import './profile-screen.css'
 
 const COUNTDOWN_STORAGE_KEY = 'pyaterochka_profile_chest_deadline'
 const INVENTORY_STORAGE_KEY = 'pyaterochka_profile_inventory'
+const ACTIVE_DISCOUNT_STORAGE_KEY = 'pyaterochka_profile_active_discount'
 
 const rarityLabels: Record<ItemRarity, string> = {
   common: 'Обычный',
@@ -63,10 +75,17 @@ const tasks = [
 
 export function ProfileScreen() {
   const { claimReward, countdown, isOpenable } = useChestCountdown()
-  const { addReceivedItem, inventory } = useProfileInventory()
+  const { addReceivedItem, consumeReceivedItems, inventory } = useProfileInventory()
   const [isInfoOpen, setIsInfoOpen] = useState(false)
   const [openingStage, setOpeningStage] = useState<'closed' | 'shaking' | 'opening' | 'reward'>('closed')
   const [rewardItem, setRewardItem] = useState<ProfileItem | null>(null)
+  const [activeDiscount, setActiveDiscount] = useState<CraftedDiscount | null>(() => {
+    if (typeof window === 'undefined') return null
+    return resolveCraftedDiscount(
+      window.localStorage.getItem(ACTIVE_DISCOUNT_STORAGE_KEY),
+    )
+  })
+  const [discountOverlayMode, setDiscountOverlayMode] = useState<'reveal' | 'barcode' | null>(null)
   const [shakeOffset, setShakeOffset] = useState({ x: 0, y: 0 })
   const lastPointerRef = useRef<PointerPoint | null>(null)
   const shakeDistanceRef = useRef(0)
@@ -129,6 +148,17 @@ export function ProfileScreen() {
     setShakeOffset({ x: 0, y: 0 })
   }
 
+  const createProfileDiscount = useCallback((itemIds: readonly string[]) => {
+    const discount = craftDiscount(itemIds)
+    consumeReceivedItems(itemIds)
+    window.localStorage.setItem(
+      ACTIVE_DISCOUNT_STORAGE_KEY,
+      serializeCraftedDiscount(discount),
+    )
+    setActiveDiscount(discount)
+    setDiscountOverlayMode('reveal')
+  }, [consumeReceivedItems])
+
   return (
     <main className="profile-screen" aria-label="Профиль">
       <section className="profile-hero">
@@ -140,6 +170,12 @@ export function ProfileScreen() {
           className="profile-character"
           src="/assets/pyaterochka-profile-character.webp"
         />
+        {activeDiscount !== null ? (
+          <ActiveDiscountBadge
+            discount={activeDiscount}
+            onClick={() => setDiscountOverlayMode('barcode')}
+          />
+        ) : null}
       </section>
 
       <section className="profile-chest-panel" aria-label="Коробка награды">
@@ -200,42 +236,10 @@ export function ProfileScreen() {
         </div>
       </section>
 
-      <section className="profile-section equipment-section" aria-labelledby="equipment-title">
-        <div className="profile-section-heading">
-          <div>
-            <Typography as="h2" variant="h2" className="section-title" id="equipment-title">
-              Ячейки скидок
-            </Typography>
-            <Typography as="span" variant="bodyXs" className="section-hint">
-              Создавайте скидки и размещайте их в свободных ячейках
-            </Typography>
-          </div>
-          <Typography as="span" variant="bodyXs" className="slots-counter">0/4</Typography>
-        </div>
-        <EmptySlots count={4} className="equipment-slots" />
-        <button className="create-discount-button" type="button">
-          <Typography as="span" variant="control" className="create-discount-label">
-            Создать скидку
-          </Typography>
-        </button>
-      </section>
-
-      <section className="profile-section inventory-section" aria-labelledby="inventory-title">
-        <div className="profile-section-heading">
-          <div>
-            <Typography as="h2" variant="h2" className="section-title" id="inventory-title">
-              Инвентарь
-            </Typography>
-            <Typography as="span" variant="bodyXs" className="section-hint">
-              Здесь появятся полученные предметы и награды
-            </Typography>
-          </div>
-          <Typography as="span" variant="bodyXs" className="slots-counter">
-            {inventory.length}/{profileItems.length}
-          </Typography>
-        </div>
-        <InventorySlots inventory={inventory} />
-      </section>
+      <ProfileInventoryCrafting
+        inventory={inventory}
+        onCraft={createProfileDiscount}
+      />
 
       <section className="profile-tasks" aria-labelledby="tasks-title">
         <div className="tasks-heading-row">
@@ -277,6 +281,15 @@ export function ProfileScreen() {
           ))}
         </div>
       </section>
+
+      {activeDiscount !== null && discountOverlayMode !== null ? (
+        <ProfileDiscountOverlay
+          discount={activeDiscount}
+          mode={discountOverlayMode}
+          onClose={() => setDiscountOverlayMode(null)}
+          onShowBarcode={() => setDiscountOverlayMode('barcode')}
+        />
+      ) : null}
 
       {openingStage !== 'closed' ? (
         <div className="chest-opening-overlay" role="dialog" aria-modal="true" aria-label="Открытие коробки">
@@ -354,58 +367,6 @@ export function ProfileScreen() {
   )
 }
 
-function InventorySlots({ inventory }: { inventory: readonly InventoryEntry[] }) {
-  const visibleItems = inventory.flatMap((entry) => {
-    const item = profileItems.find((candidate) => candidate.id === entry.itemId)
-    return item === undefined ? [] : [{ ...entry, item }]
-  })
-  const emptySlotCount = Math.max(0, 8 - visibleItems.length)
-
-  return (
-    <Typography
-      as="div"
-      variant="body"
-      aria-label={`Инвентарь: ${visibleItems.length} из ${profileItems.length} предметов`}
-      className="empty-slots inventory-slots"
-    >
-      {visibleItems.map(({ item, quantity }) => (
-        <div
-          aria-label={`${item.name}, ${rarityLabels[item.rarity]}, количество ${quantity}`}
-          className={`inventory-item item-rarity-${item.rarity}`}
-          key={item.id}
-          role="img"
-          title={`${item.name} — ${item.category}`}
-        >
-          <img alt="" src={item.iconSrc} />
-          {quantity > 1 ? (
-            <Typography as="span" variant="bodyXs" className="inventory-item-count">
-              ×{quantity}
-            </Typography>
-          ) : null}
-        </div>
-      ))}
-      {Array.from({ length: emptySlotCount }, (_, index) => (
-        <span className="empty-slot" aria-label={`Пустая ячейка ${index + 1}`} key={index} />
-      ))}
-    </Typography>
-  )
-}
-
-function EmptySlots({ count, className }: { count: number; className: string }) {
-  return (
-    <Typography
-      as="div"
-      variant="body"
-      className={`empty-slots ${className}`}
-      aria-label={`${count} пустых ячеек`}
-    >
-      {Array.from({ length: count }, (_, index) => (
-        <span className="empty-slot" aria-label={`Пустая ячейка ${index + 1}`} key={index} />
-      ))}
-    </Typography>
-  )
-}
-
 function useChestCountdown() {
   useEffect(() => {
     window.localStorage.setItem(
@@ -445,5 +406,16 @@ function useProfileInventory() {
     })
   }, [])
 
-  return { addReceivedItem, inventory }
+  const consumeReceivedItems = useCallback((itemIds: readonly string[]) => {
+    setInventory((currentInventory) => {
+      const nextInventory = consumeInventoryItems(currentInventory, itemIds)
+      window.localStorage.setItem(
+        INVENTORY_STORAGE_KEY,
+        serializeInventory(nextInventory),
+      )
+      return nextInventory
+    })
+  }, [])
+
+  return { addReceivedItem, consumeReceivedItems, inventory }
 }

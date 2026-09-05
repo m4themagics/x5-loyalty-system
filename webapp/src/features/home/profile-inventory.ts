@@ -29,6 +29,30 @@ export function addInventoryItem(
     : entry)
 }
 
+export function consumeInventoryItems(
+  inventory: readonly InventoryEntry[],
+  itemIds: readonly string[],
+): InventoryEntry[] {
+  const requiredCounts = itemIds.reduce<Map<string, number>>((counts, itemId) => {
+    counts.set(itemId, (counts.get(itemId) ?? 0) + 1)
+    return counts
+  }, new Map())
+
+  for (const [itemId, requiredQuantity] of requiredCounts) {
+    const availableQuantity = inventory.find((entry) => entry.itemId === itemId)?.quantity ?? 0
+    if (availableQuantity < requiredQuantity) {
+      throw new Error(`Not enough inventory items: ${itemId}`)
+    }
+  }
+
+  return inventory.flatMap((entry) => {
+    const remainingQuantity = entry.quantity - (requiredCounts.get(entry.itemId) ?? 0)
+    return remainingQuantity > 0
+      ? [{ ...entry, quantity: remainingQuantity }]
+      : []
+  })
+}
+
 export function resolveInventory(rawInventory: string | null): InventoryEntry[] {
   if (rawInventory === null) return []
 
