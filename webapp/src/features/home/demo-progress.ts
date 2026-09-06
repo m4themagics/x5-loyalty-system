@@ -106,6 +106,21 @@ export function referralOutcome(
   return { eligible: true, reason: 'referral_reward_due' }
 }
 
+/**
+ * Награда тому, кто позвал. Реферальная запись хранится у приглашённого, а экран показывает
+ * результат пригласившему, поэтому ищем его приглашённого и оцениваем именно того.
+ */
+export function inviterReferralOutcome(
+  profiles: readonly DemoProfileSnapshot[],
+  inviterProfileId: string,
+): ReferralOutcome {
+  const invitee = profiles.find(
+    (profile) => profile.referral.invited_by_profile_id === inviterProfileId,
+  )
+  if (invitee === undefined) return { eligible: false, reason: 'referral_not_invited' }
+  return referralOutcome(invitee.referral, invitee.profile_id, firstQualifyingPurchaseMs(invitee))
+}
+
 /** Первая покупка, закрывшая обещание: только выданные награды, а не любой чек. */
 export function firstQualifyingPurchaseMs(profile: DemoProfileSnapshot): number | null {
   const issued = profile.issued_rewards.map((reward) => reward.issued_at_ms)

@@ -150,17 +150,25 @@ function transition(store: DemoStore, trades: DemoTrade[], inventories: Record<s
 /** Профили-«друзья»: только им можно предложить обмен на экране покупателя. */
 export const DEMO_TRADE_FRIEND_PREFIX = 'demo-trade-'
 
+/** Аня пригласила Бориса до его первой покупки: только так виден расчёт реферальной награды. */
+const TRADE_SEED_INVITE_MS = 5 * 24 * 60 * 60 * 1000
+
 export function createTradeSeedProfiles(template: DemoProfileSnapshot, nowMs: number): DemoProfileSnapshot[] {
   return [
-    { id: 'demo-trade-anya', label: 'Аня', inventory: [{ item_id: 'milk-pitcher', quantity: 2 }, { item_id: 'club-toaster', quantity: 1 }, { item_id: 'travel-mug', quantity: 1 }] },
-    { id: 'demo-trade-boris', label: 'Борис', inventory: [{ item_id: 'breakfast-pan', quantity: 2 }, { item_id: 'fruit-basket', quantity: 1 }, { item_id: 'vegetable-crate', quantity: 1 }] },
+    { id: 'demo-trade-anya', label: 'Аня', invitedBy: null, inventory: [{ item_id: 'milk-pitcher', quantity: 2 }, { item_id: 'club-toaster', quantity: 1 }, { item_id: 'travel-mug', quantity: 1 }] },
+    { id: 'demo-trade-boris', label: 'Борис', invitedBy: 'demo-trade-anya', inventory: [{ item_id: 'breakfast-pan', quantity: 2 }, { item_id: 'fruit-basket', quantity: 1 }, { item_id: 'vegetable-crate', quantity: 1 }] },
   ].map((seed) => ({
     ...template, profile_id: seed.id, label: seed.label, inventory: seed.inventory,
     receipts: [3, 1].map((days) => ({ receipt_id: `${seed.id}-paid-day-${days}`, purchased_at_ms: nowMs - days * DEMO_TRADE_TTL_MS,
       store_id: 'store-trade-synthetic', returned: false, lines: [{ sku_id: 'sku-trade-milk', category: 'Молочные продукты', quantity: 1, paid: true, amount_kopecks: 9900 }] })),
     issued_rewards: [], processed_event_ids: [], active_coupon: null, outstanding_promise: null,
     progress: { completed_recipe_ids: [], avatar_level: 0, redeemed_savings_28d_kopecks: 0 },
-    referral: { invited_by_profile_id: null, invited_at_ms: null, had_confirmed_purchase_before_invite: false, inviter_rewards_in_window: 0 },
+    referral: {
+      invited_by_profile_id: seed.invitedBy,
+      invited_at_ms: seed.invitedBy === null ? null : nowMs - TRADE_SEED_INVITE_MS,
+      had_confirmed_purchase_before_invite: false,
+      inviter_rewards_in_window: 0,
+    },
     risk_signals: { device_id: `${seed.id}-device`, household_id: null, account_age_days: 30, confirmed_purchase_days: 2 },
   }))
 }

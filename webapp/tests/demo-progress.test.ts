@@ -18,6 +18,7 @@ import {
   avatarLevel,
   firstQualifyingPurchaseMs,
   closestRecipe,
+  inviterReferralOutcome,
   rankFriendsByProgress,
   referralOutcome,
 } from '../src/features/home/demo-progress'
@@ -195,5 +196,46 @@ describe('ближайший набор', () => {
 
   test('пустая коллекция не имеет ближайшего набора', () => {
     expect(closestRecipe([], recipes, 4)).toBeNull()
+  })
+})
+
+describe('награда пригласившему', () => {
+  // Экран показывает результат тому, кто позвал: оцениваем приглашённого, а не сам профиль.
+  const invitee = (
+    over: Partial<DemoProfileSnapshot['referral']>,
+    issuedAtMs: number | null,
+  ): DemoProfileSnapshot => ({
+    ...seeded,
+    profile_id: 'invitee',
+    issued_rewards: issuedAtMs === null
+      ? []
+      : [{ reward_id: 'referral-demo', item_id: 'club-toaster', kind: 'digital_item', issued_at_ms: issuedAtMs }],
+    referral: { ...referralBase, invited_by_profile_id: 'inviter', ...over },
+  })
+
+  const noInvites: DemoProfileSnapshot = {
+    ...seeded,
+    referral: { ...referralBase, invited_by_profile_id: null, invited_at_ms: null },
+  }
+
+  test('без приглашённых профилей награда не положена', () => {
+    expect(inviterReferralOutcome([noInvites], 'inviter').reason).toBe('referral_not_invited')
+  })
+
+  test('приглашённый без покупки оставляет награду в ожидании', () => {
+    const outcome = inviterReferralOutcome([invitee({}, null)], 'inviter')
+    expect(outcome.eligible).toBe(false)
+    expect(outcome.reason).toBe('referral_no_qualifying_purchase')
+  })
+
+  test('квалифицирующая покупка приглашённого начисляет награду позвавшему', () => {
+    const outcome = inviterReferralOutcome([invitee({}, NOW_MS - DAY_MS)], 'inviter')
+    expect(outcome.eligible).toBe(true)
+    expect(outcome.reason).toBe('referral_reward_due')
+  })
+
+  test('чужого приглашённого не засчитываем', () => {
+    expect(inviterReferralOutcome([invitee({ invited_by_profile_id: 'someone-else' }, NOW_MS - DAY_MS)], 'inviter').reason)
+      .toBe('referral_not_invited')
   })
 })

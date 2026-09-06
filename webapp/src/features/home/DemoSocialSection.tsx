@@ -5,9 +5,8 @@ import { requestCollectionTitle } from './demo-api'
 import { findItem } from './demo-format'
 import {
   closestRecipe,
-  firstQualifyingPurchaseMs,
+  inviterReferralOutcome,
   rankFriendsByProgress,
-  referralOutcome,
   type ClosestRecipe,
 } from './demo-progress'
 import type { DemoState } from './demo-state'
@@ -25,6 +24,7 @@ type Participant = {
   items_collected: number
   itemIds: string[]
   closest: ClosestRecipe | null
+  profile: DemoState['profile']
 }
 
 /**
@@ -40,10 +40,15 @@ export function DemoSocialSection({
   store: DemoStore
   referralIssued: boolean
 }) {
-  const title = useCollectionTitle(state)
+  const titles = useCollectionTitles([state.profile, ...Object.values(store.profiles)
+    .filter((entry) => entry.profile.profile_id.startsWith(DEMO_TRADE_FRIEND_PREFIX)
+      && entry.profile.profile_id !== state.profile.profile_id)
+    .map((entry) => entry.profile)])
+  const title = titles.get(state.profile.profile_id) ?? null
   const participants: Participant[] = [
     ...Object.values(store.profiles)
-      .filter((entry) => entry.profile.profile_id.startsWith(DEMO_TRADE_FRIEND_PREFIX))
+      .filter((entry) => entry.profile.profile_id.startsWith(DEMO_TRADE_FRIEND_PREFIX)
+        && entry.profile.profile_id !== state.profile.profile_id)
       .map((entry) => toParticipant(entry.profile.profile_id, entry.profile.label, entry.profile)),
     toParticipant(state.profile.profile_id, 'Вы', state.profile),
   ]
@@ -59,10 +64,10 @@ export function DemoSocialSection({
     // Медаль достаётся только тому, кто стоит на месте один.
     medal: sharedRanks.has(entry.rank) ? null : MEDALS[entry.rank - 1] ?? null,
   }))
-  const referral = referralOutcome(
-    state.profile.referral,
+  // Текст блока написан от лица позвавшего, поэтому оцениваем приглашённого этим профилем.
+  const referral = inviterReferralOutcome(
+    [state.profile, ...Object.values(store.profiles).map((entry) => entry.profile)],
     state.profile.profile_id,
-    firstQualifyingPurchaseMs(state.profile),
   )
 
   return (
@@ -110,7 +115,7 @@ export function DemoSocialSection({
                     {entry.alias}
                   </Typography>
                   <Typography as="span" variant="bodyXs" className="demo-friend-score">
-                    {formatSets(entry.recipes_completed)} · {formatItems(entry.items_collected)}
+                    {titles.get(entry.profile_id)?.title ?? formatSets(entry.recipes_completed)}
                   </Typography>
                 </div>
               </div>
@@ -135,7 +140,7 @@ export function DemoSocialSection({
                 </div>
               )}
 
-              {entry.closest === null ? null : (
+              {entry.closest === null || entry.alias !== 'Вы' ? null : (
                 <div className="demo-friend-progress">
                   <Typography as="span" variant="bodyXs" className="demo-friend-goal">
                     {entry.closest.owned === entry.closest.required
@@ -192,6 +197,7 @@ function toParticipant(profileId: string, alias: string, profile: DemoState['pro
     items_collected: profile.inventory.reduce((total, item) => total + item.quantity, 0),
     itemIds: profile.inventory.filter((entry) => entry.quantity > 0).map((entry) => entry.item_id),
     closest: closestRecipe(profile.inventory, DISCOUNT_RECIPES, CRAFT_SIZE),
+    profile,
   }
 }
 
@@ -207,47 +213,40 @@ function formatSets(count: number): string {
   return `${count} ${tail}`
 }
 
-function formatItems(count: number): string {
-  const tail = count % 100 >= 11 && count % 100 <= 14
-    ? 'предметов'
-    : count % 10 === 1
-      ? 'предмет'
-      : count % 10 >= 2 && count % 10 <= 4
-        ? 'предмета'
-        : 'предметов'
-  return `${count} ${tail}`
-}
-
 /**
- * Титул описывает собранную коллекцию. Его пишет модель, а при недоступности или
- * нарушении контракта движок возвращает детерминированный шаблон.
+ * Титулы коллекций: по одному запросу на участника. Их пишет модель, а при недоступности
+ * или нарушении контракта движок возвращает детерминированный шаблон.
  */
-function useCollectionTitle(state: DemoState) {
-  const [title, setTitle] = useState<{ title: string; subtitle: string } | null>(null)
-  const profileId = state.profile.profile_id
-  const revision = state.revision
+function useCollectionTitles(profiles: readonly DemoState['profile'][]) {
+  const [titles, setTitles] = useState(new Map<string, { title: string; subtitle: string }>())
+  const key = profiles.map((profile) => `${profile.profile_id}:${profile.inventory.length}:${profile.progress.completed_recipe_ids.length}`).join('|')
 
   useEffect(() => {
     let cancelled = false
-    void requestCollectionTitle(state.profile, Date.now()).then((result) => {
+    void Promise.all(profiles.map(async (profile) => {
+      const result = await requestCollectionTitle(profile, Date.now())
+      return result.ok
+        ? [profile.profile_id, { title: result.data.title, subtitle: result.data.subtitle }] as const
+        : null
+    })).then((entries) => {
       if (cancelled) return
-      setTitle(result.ok ? { title: result.data.title, subtitle: result.data.subtitle } : null)
+      setTitles(new Map(entries.filter((entry) => entry !== null)))
     })
     return () => { cancelled = true }
-    // Профиль и его ревизия полностью определяют состав коллекции.
+    // Состав коллекций полностью определяет титулы.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId, revision])
+  }, [key])
 
-  return title
+  return titles
 }
 
 function referralReasonText(reason: string): string {
   const messages: Record<string, string> = {
     referral_reward_due: 'Условия приглашения выполнены — награда начислена.',
-    referral_not_invited: 'Пока никто вас не приглашал и вы никого не позвали.',
+    referral_not_invited: 'Вы пока никого не позвали.',
     referral_self_invite: 'Приглашение самого себя не засчитывается.',
     referral_existing_customer: 'У приглашённого уже были покупки, награда не начисляется.',
-    referral_no_qualifying_purchase: 'Ждём первую покупку приглашённого друга.',
+    referral_no_qualifying_purchase: 'Друг принял приглашение — ждём его первую покупку.',
     referral_window_expired: 'Друг купил позже семи дней после приглашения.',
     referral_cap_reached: 'За эту неделю награда за приглашение уже получена.',
   }

@@ -5,6 +5,7 @@ import { createDemoState, applyCraft } from '../src/features/home/demo-state'
 import { createDemoStore, selectDemoProfile, resolveDemoStore, serializeDemoStore } from '../src/features/home/demo-store'
 import { createDemoTrade, respondDemoTrade, expireDemoTrades, createTradeSeedProfiles } from '../src/features/home/demo-trades'
 import { craftDiscount } from '../src/features/home/profile-discount-crafting'
+import { DEMO_REFERRAL_WINDOW_DAYS } from '../src/features/home/demo-progress'
 
 const read = (name: string) => JSON.parse(readFileSync(new URL(`../../recsys/contract/examples/${name}`, import.meta.url), 'utf8'))
 const base = demoProfileSnapshotSchema.parse(read('profile-empty.json'))
@@ -119,5 +120,23 @@ describe('обмен цифровыми предметами', () => {
     expect(migrated.profiles[a.profile_id].profile.inventory).toEqual(a.inventory)
     const pending = offer().store
     expect(resolveDemoStore(serializeDemoStore(pending))).toEqual(pending)
+  })
+})
+
+describe('реферальная связь подготовленных профилей', () => {
+  test('Борис приглашён Аней, и его приглашение предшествует его же оплаченным чекам', () => {
+    // Кейс требует показать расчёт реферальной награды, а не только покрыть его модульным тестом:
+    // без приглашённого seed-профиля панель всегда отвечала referral_not_invited.
+    expect(a.referral.invited_by_profile_id).toBeNull()
+    expect(b.referral.invited_by_profile_id).toBe(a.profile_id)
+    expect(b.referral.had_confirmed_purchase_before_invite).toBe(false)
+    expect(b.referral.inviter_rewards_in_window).toBe(0)
+
+    const invitedAt = b.referral.invited_at_ms!
+    const earliestPaid = Math.min(...b.receipts.map((receipt) => receipt.purchased_at_ms))
+    // Иначе применилось бы правило «уже наш покупатель», и награда не начислилась бы никогда.
+    expect(invitedAt).toBeLessThan(earliestPaid)
+    // Первая покупка должна попасть в семидневное окно приглашения.
+    expect(earliestPaid - invitedAt).toBeLessThan(DEMO_REFERRAL_WINDOW_DAYS * 86_400_000)
   })
 })
