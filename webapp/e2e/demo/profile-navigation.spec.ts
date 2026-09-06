@@ -36,6 +36,11 @@ test('unlimited demo mode ignores a saved cooldown and keeps the chest openable'
   await page.getByRole('button', { name: 'Профиль' }).click()
   await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeEnabled()
   await expect(page.locator('.chest-timer-value')).toHaveText('Готова')
+
+  for (const tab of ['Коллекция', 'Друзья', 'Задания']) {
+    await openTab(page, tab)
+    await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeVisible()
+  }
 })
 
 test('opens an available chest after the user shakes it across the screen', async ({ page }) => {
@@ -99,11 +104,10 @@ test('crafts a themed discount from four inventory items and restores its barcod
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
   await openTab(page, 'Коллекция')
-  // Блок заданий на этой же вкладке приезжает асинхронно: дождёмся его,
-  // чтобы дальнейшие перетаскивания не боролись с догружающейся вёрсткой.
-  await expect(page.getByRole('heading', { name: 'Предметы за задания' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Предметы за задания' })).toHaveCount(0)
 
   const firstItem = page.getByRole('button', { name: /Фруктовая корзинка/ })
+  await expect(firstItem).toBeVisible()
   const firstSlot = page.getByRole('button', { name: 'Пустая ячейка скидки 1' })
   await firstItem.dragTo(firstSlot)
   await expect(page.getByRole('button', { name: /Фруктовая корзинка в ячейке 1/ }))

@@ -34,7 +34,7 @@ async function prepareOffer(page: import('@playwright/test').Page) {
   return trade
 }
 
-test('reserves both items, restores the offer and atomically exchanges before crafting', async ({ page }) => {
+test('reserves both items, restores the offer and exchanges atomically', async ({ page }) => {
   await start(page)
   const social = await prepareOffer(page)
   const receiver = social.getByRole('combobox', { name: 'Кому предложить обмен' })
@@ -43,7 +43,10 @@ test('reserves both items, restores the offer and atomically exchanges before cr
   await social.getByRole('button', { name: 'Подтвердить обмен' }).click()
   await expect(social.getByText('Предложение отправлено.', { exact: false })).toBeVisible()
   await social.getByRole('button', { name: 'Закрыть обмен' }).click()
-  await expect(page.getByRole('button', { name: 'Молочный кувшин', exact: true })).toContainText('в обмене 1')
+  const reserved = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), storageKey)
+  expect(reserved.profiles['demo-trade-anya'].trade_reserved_items).toEqual([
+    { item_id: 'milk-pitcher', quantity: 1 },
+  ])
 
   await page.reload()
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
@@ -60,14 +63,6 @@ test('reserves both items, restores the offer and atomically exchanges before cr
   expect(swapped.trades[0].status).toBe('accepted')
   expect(swapped.profiles['demo-trade-anya'].trade_reserved_items).toEqual([])
   expect(swapped.profiles['demo-trade-boris'].profile.inventory.find((item: {item_id: string}) => item.item_id === 'milk-pitcher').quantity).toBe(1)
-
-  await receiverTrade.getByRole('button', { name: 'Закрыть обмен' }).click()
-  await switchProfile(page, DEMO_PROFILES.anya)
-  for (const item of ['Клубный тостер', 'Молочный кувшин', 'Термокружка', 'Сковорода завтрака']) {
-    await page.getByRole('button', { name: item, exact: true }).click()
-  }
-  await page.getByRole('button', { name: 'Создать скидку', exact: true }).click()
-  await expect(page.getByText('Активная скидка 8%', { exact: false })).toBeVisible()
 })
 
 test('receiver can reject without transferring either reserved item', async ({ page }) => {

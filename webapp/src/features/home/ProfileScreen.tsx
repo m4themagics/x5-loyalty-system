@@ -34,7 +34,6 @@ import { ProfileInventoryCrafting } from './ProfileInventoryCrafting'
 import { avatarLevel } from './demo-progress'
 import { findItem } from './demo-format'
 import { DemoQuestSection } from './DemoQuestSection'
-import { DemoItemsSection } from './DemoItemsSection'
 import { DemoSocialSection } from './DemoSocialSection'
 import { DemoTradePanel } from './DemoTradePanel'
 import { DemoStandPanel } from './DemoStandPanel'
@@ -214,6 +213,64 @@ export function ProfileScreen() {
         onOpenTrade={() => setIsTradeOpen(true)}
       />
 
+      <section className="profile-chest-panel" aria-label="Коробка награды">
+        <div className="chest-timer">
+          <Typography as="span" variant="bodyXs" className="chest-timer-label">
+            Коробка
+          </Typography>
+          <Typography as="time" variant="body" className="chest-timer-value">
+            {countdown}
+          </Typography>
+        </div>
+
+        <button
+          aria-label="Открыть коробку Пятёрочки"
+          className="profile-chest-trigger"
+          disabled={!isOpenable}
+          onClick={openChest}
+          type="button"
+        >
+          <img
+            alt=""
+            className="profile-chest-image"
+            src="/assets/pyaterochka-cardboard-chest.webp"
+          />
+          <Typography as="span" variant="bodyXs" className="chest-tap-hint">
+            Нажмите, чтобы открыть
+          </Typography>
+        </button>
+
+        <div className="chest-info-wrap">
+          <button
+            aria-expanded={isInfoOpen}
+            aria-label="Информация о коробке"
+            className="chest-info-button"
+            onClick={() => setIsInfoOpen((isOpen) => !isOpen)}
+            type="button"
+          >
+            <Typography as="span" variant="body" aria-hidden="true">i</Typography>
+          </button>
+          {isInfoOpen ? (
+            <div className="chest-info-popover" role="dialog" aria-label="Как открыть коробку">
+              <button
+                aria-label="Закрыть информацию"
+                className="info-close"
+                onClick={() => setIsInfoOpen(false)}
+                type="button"
+              >
+                <Typography as="span" variant="body" aria-hidden="true">×</Typography>
+              </button>
+              <Typography as="strong" variant="emphasis" className="info-title">
+                Коробка награды
+              </Typography>
+              <Typography as="span" variant="bodySm" className="info-copy">
+                Сейчас коробку можно открывать без ограничений. Нажмите на неё, зажмите и потрясите движениями по экрану — после получения предмета коробка сразу станет доступна снова.
+              </Typography>
+            </div>
+          ) : null}
+        </div>
+      </section>
+
       <nav className="profile-tabs" aria-label="Разделы профиля">
         {profileTabs.map((item) => (
           <button
@@ -237,64 +294,6 @@ export function ProfileScreen() {
           ) : (
             <DemoQuestSection demo={demo} state={demoState} />
           )}
-
-          <section className="profile-chest-panel" aria-label="Коробка награды">
-            <div className="chest-timer">
-              <Typography as="span" variant="bodyXs" className="chest-timer-label">
-                Коробка
-              </Typography>
-              <Typography as="time" variant="body" className="chest-timer-value">
-                {countdown}
-              </Typography>
-            </div>
-
-            <button
-              aria-label="Открыть коробку Пятёрочки"
-              className="profile-chest-trigger"
-              disabled={!isOpenable}
-              onClick={openChest}
-              type="button"
-            >
-              <img
-                alt=""
-                className="profile-chest-image"
-                src="/assets/pyaterochka-cardboard-chest.webp"
-              />
-              <Typography as="span" variant="bodyXs" className="chest-tap-hint">
-                Нажмите, чтобы открыть
-              </Typography>
-            </button>
-
-            <div className="chest-info-wrap">
-              <button
-                aria-expanded={isInfoOpen}
-                aria-label="Информация о коробке"
-                className="chest-info-button"
-                onClick={() => setIsInfoOpen((isOpen) => !isOpen)}
-                type="button"
-              >
-                <Typography as="span" variant="body" aria-hidden="true">i</Typography>
-              </button>
-              {isInfoOpen ? (
-                <div className="chest-info-popover" role="dialog" aria-label="Как открыть коробку">
-                  <button
-                    aria-label="Закрыть информацию"
-                    className="info-close"
-                    onClick={() => setIsInfoOpen(false)}
-                    type="button"
-                  >
-                    <Typography as="span" variant="body" aria-hidden="true">×</Typography>
-                  </button>
-                  <Typography as="strong" variant="emphasis" className="info-title">
-                    Коробка награды
-                  </Typography>
-                  <Typography as="span" variant="bodySm" className="info-copy">
-                    Сейчас коробку можно открывать без ограничений. Нажмите на неё, зажмите и потрясите движениями по экрану — после получения предмета коробка сразу станет доступна снова.
-                  </Typography>
-                </div>
-              ) : null}
-            </div>
-          </section>
 
           <section className="profile-tasks" aria-labelledby="tasks-title">
             <div className="tasks-heading-row">
@@ -338,24 +337,10 @@ export function ProfileScreen() {
       ) : null}
 
       {tab === 'collection' ? (
-        <>
-          <ProfileInventoryCrafting
-            inventory={inventory}
-            onCraft={createProfileDiscount}
-          />
-
-          {demoState === null ? null : (
-            <section className="demo-panel">
-              <DemoItemsSection
-                key={`inventory-${demoState.profile.profile_id}-${demoState.revision}`}
-                state={demoState}
-                isBusy={demo.isBusy}
-                onCraft={demo.craft}
-                onRedeem={demo.redeem}
-              />
-            </section>
-          )}
-        </>
+        <ProfileInventoryCrafting
+          inventory={inventory}
+          onCraft={createProfileDiscount}
+        />
       ) : null}
 
       {tab === 'friends' && demoState !== null ? (
