@@ -244,8 +244,8 @@
 ## Safety And Workspace Hygiene
 
 - Never stop or kill processes just to free ports. Use isolated ports, alternate URLs, or test config overrides.
-- Do not create or use GitHub CI/CD, GitHub Actions, or hosted validation workflows.
-- Run tests, typechecks, linters, validation builds, and all other task checks only locally; add local automation only when it removes real repeated pain. A production release or SSG rebuild explicitly activated in `CHECKLIST.md` and implemented through the selected hosting provider's deployment docs is not a task check.
+- GitHub Actions runs one workflow, `.github/workflows/ci.yml`: webapp and contract checks plus the Python decision engine. It exists so the repository's claims are verifiable by a reader who has not cloned it. Keep it to checks that already pass locally; do not add deployment, release, or provider credentials to it.
+- Run every check locally first; CI repeats them, it does not replace them. Add local automation only when it removes real repeated pain. A production release or SSG rebuild explicitly activated in `CHECKLIST.md` and implemented through the selected hosting provider's deployment docs is not a task check.
 - Do not print secrets, tokens, private keys, credentials, cookies, customer data, or raw `.env` values in final responses.
 - Do not add real secrets to fixtures, tests, docs, screenshots, logs, or committed files.
 - Keep ad-hoc investigation artifacts out of the repository root. Put temporary screenshots, logs, and one-off exports under `./.scratch/` or the tool-owned artifact directory; do not create new root-level `.tmp-*` or `.codex-tmp-*` files.

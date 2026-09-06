@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: webapp и контракты
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
+
+      - name: Установить зависимости
+        run: bun install --frozen-lockfile
+
+      - name: Типы
+        run: |
+          bun run --cwd packages/contracts typecheck
+          bun run --cwd webapp typecheck
+
+      - name: Линтер
+        run: bun run --cwd webapp lint
+
+      - name: Тесты контрактов
+        run: bun run --cwd packages/contracts test
+
+      - name: Тесты webapp
+        run: bun run --cwd webapp test
+
+      - name: Сборка
+        run: bun run --cwd webapp build
+
+  engine:
+    name: движок решений
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Тесты движка
+        run: python -m unittest discover -s recsys/engine/tests -t .
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+
+      - name: Тесты независимой оценки
+        run: python -m unittest discover -s recsys/eval -p 'test_*.py'
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+
+      - name: Контракт сценариев
+        run: python recsys/validate.py
+
+      - name: Контракт текста карточки
+        run: python recsys/validate_explanation.py
+
+      - name: Мутационные проверки текста
+        run: python recsys/eval_creatives.py

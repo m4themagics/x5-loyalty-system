@@ -19,7 +19,7 @@
 <img src="https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white" alt="Python" />
 <img src="https://img.shields.io/badge/Bun-1.4.0-000000?logo=bun&logoColor=white" alt="Bun" />
 <img src="https://img.shields.io/badge/Qwen3%201.7B-Ollama-000000?logo=ollama&logoColor=white" alt="Qwen3 через Ollama" />
-<img src="https://img.shields.io/badge/проверок-276-brightgreen" alt="276 проверок" />
+<a href="https://github.com/m4themagics/x5-loyalty-system/actions/workflows/ci.yml"><img src="https://github.com/m4themagics/x5-loyalty-system/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI" /></a>
 <img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="Apache 2.0" />
 
 </div>
