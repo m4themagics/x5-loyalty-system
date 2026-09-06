@@ -66,3 +66,7 @@ backend/.storage/
 .vscode/
 *.swp
 *.swo
+
+# Local PowerPoint copies and repaired exports; keep only the canonical final deck.
+docs/presentation/*.pptx
+!docs/presentation/*_финальная.pptx
