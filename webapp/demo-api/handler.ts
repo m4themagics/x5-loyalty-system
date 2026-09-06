@@ -10,6 +10,8 @@ import {
   demoErrorResponseSchema,
   demoEventRequestSchema,
   demoEventResponseSchema,
+  demoTitleRequestSchema,
+  demoTitleResponseSchema,
   demoSeedProfilesResponseSchema,
 } from '@pyaterochka-game-demo/contracts'
 import type { Connect } from 'vite'
@@ -66,7 +68,11 @@ export async function handleDemoRequest(
     return
   }
 
-  const engineCommand = route === '/decision' ? 'decision' : route === '/event' ? 'event' : null
+  const engineCommand = route === '/decision'
+    ? 'decision'
+    : route === '/event'
+      ? 'event'
+      : route === '/title' ? 'title' : null
   if (engineCommand === null) {
     next()
     return
@@ -86,7 +92,9 @@ export async function handleDemoRequest(
   }
 
   const requestId = readRequestId(payload)
-  const requestSchema = engineCommand === 'decision' ? demoDecisionRequestSchema : demoEventRequestSchema
+  const requestSchema = engineCommand === 'decision'
+    ? demoDecisionRequestSchema
+    : engineCommand === 'title' ? demoTitleRequestSchema : demoEventRequestSchema
   const parsedRequest = requestSchema.safeParse(payload)
   if (!parsedRequest.success) {
     sendError(response, requestId, 'bad_request', formatIssues(parsedRequest.error))
@@ -126,7 +134,9 @@ export async function handleDemoRequest(
     return
   }
 
-  const responseSchema = engineCommand === 'decision' ? demoDecisionResponseSchema : demoEventResponseSchema
+  const responseSchema = engineCommand === 'decision'
+    ? demoDecisionResponseSchema
+    : engineCommand === 'title' ? demoTitleResponseSchema : demoEventResponseSchema
   const parsedResponse = responseSchema.safeParse(engineOutput)
   if (!parsedResponse.success) {
     sendError(response, requestId, 'engine_invalid_output', formatIssues(parsedResponse.error))
@@ -150,7 +160,7 @@ type EngineRun = {
   spawnError: string | null
 }
 
-function runEngine(command: 'decision' | 'event', input: string): Promise<EngineRun> {
+function runEngine(command: 'decision' | 'event' | 'title', input: string): Promise<EngineRun> {
   return new Promise((resolve) => {
     const child = spawn('python3', [ENGINE_ENTRY, command], {
       cwd: REPO_ROOT,

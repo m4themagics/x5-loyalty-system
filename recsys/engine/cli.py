@@ -2,6 +2,7 @@
 
     python3 recsys/engine/cli.py decision < запрос.json > ответ.json
     python3 recsys/engine/cli.py event    < запрос.json > ответ.json
+    python3 recsys/engine/cli.py title    < запрос.json > ответ.json
 
 В stdout всегда попадает ровно один JSON-объект. Диагностика идёт в stderr.
 Код возврата: 0 — ответ по контракту, 2 — некорректный вход, 1 — сбой движка.
@@ -14,8 +15,9 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2]))
 
 from recsys.engine.decision import handle_decision  # noqa: E402
 from recsys.engine.event import handle_event  # noqa: E402
+from recsys.engine.title import handle_title  # noqa: E402
 
-HANDLERS = {"decision": handle_decision, "event": handle_event}
+HANDLERS = {"decision": handle_decision, "event": handle_event, "title": handle_title}
 CONTRACT_VERSION = 2
 
 

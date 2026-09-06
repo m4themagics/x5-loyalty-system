@@ -10,6 +10,8 @@ import {
   demoDecisionResponseSchema,
   demoEventRequestSchema,
   demoEventResponseSchema,
+  demoTitleRequestSchema,
+  demoTitleResponseSchema,
   demoGameSnapshotSchema,
   demoProfileSnapshotSchema,
 } from './index'
@@ -83,5 +85,31 @@ describe('local PoC demo contract', () => {
     expect(challenge?.reservation.coupon_reserve_kopecks).toBe(DEMO_INSTANCE_RESERVE_KOPECKS)
     expect(challenge?.reservation.physical_reserve_kopecks)
       .toBe(challenge?.reward.physical_sku?.unit_cost_kopecks)
+  })
+})
+
+describe('титул коллекции', () => {
+  const titleRequest = readExample('title-request-seeded.json')
+  const titleResponse = readExample('title-response-seeded.json')
+
+  test('эталонные запрос и ответ проходят контракт', () => {
+    expect(() => demoTitleRequestSchema.parse(titleRequest)).not.toThrow()
+    const parsed = demoTitleResponseSchema.parse(titleResponse)
+    expect(parsed.source).toBe('fallback')
+    expect(parsed.violations).toEqual([])
+  })
+
+  test('титул ограничен по длине: он подпись, а не текст карточки', () => {
+    expect(() => demoTitleResponseSchema.parse({
+      ...(titleResponse as object),
+      title: 'Очень длинный титул, который не помещается в подпись коллекции',
+    })).toThrow()
+  })
+
+  test('источник ограничен моделью и шаблоном', () => {
+    expect(() => demoTitleResponseSchema.parse({
+      ...(titleResponse as object),
+      source: 'manual',
+    })).toThrow()
   })
 })

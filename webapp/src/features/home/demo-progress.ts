@@ -18,13 +18,14 @@ export const DEMO_REFERRAL_REWARDS_PER_WINDOW = 1
 
 const DAY_MS = 86_400_000
 
-export type RankingParticipant = {
+export type FriendProgress = {
   profile_id: string
   alias: string
-  redeemed_savings_28d_kopecks: number
+  recipes_completed: number
+  items_collected: number
 }
 
-export type RankingEntry = RankingParticipant & { rank: number }
+export type FriendRank = FriendProgress & { rank: number }
 
 export type ReferralOutcome = {
   eligible: boolean
@@ -49,23 +50,25 @@ export function redeemedSavingsRubles(profile: DemoProfileSnapshot): number {
 export const rankingWindowDays = DEMO_RANKING_WINDOW_DAYS
 
 /**
- * Псевдонимный рейтинг: одинаковая экономия — одинаковое место, технический ID задаёт только
- * порядок вывода и не даёт преимущества.
+ * Дружеский рейтинг: сравниваются собранные наборы, а не потраченные или сэкономленные деньги.
+ * Одинаковый прогресс делит одно место, технический ID задаёт только порядок вывода.
  */
-export function rankParticipants(participants: readonly RankingParticipant[]): RankingEntry[] {
-  const ordered = [...participants].sort((left, right) =>
-    right.redeemed_savings_28d_kopecks - left.redeemed_savings_28d_kopecks
+export function rankFriendsByProgress(friends: readonly FriendProgress[]): FriendRank[] {
+  const ordered = [...friends].sort((left, right) =>
+    right.recipes_completed - left.recipes_completed
+    || right.items_collected - left.items_collected
     || left.profile_id.localeCompare(right.profile_id))
 
-  let lastSavings: number | null = null
+  let lastKey: string | null = null
   let lastRank = 0
 
-  return ordered.map((participant, index) => {
-    if (participant.redeemed_savings_28d_kopecks !== lastSavings) {
+  return ordered.map((friend, index) => {
+    const key = `${friend.recipes_completed}:${friend.items_collected}`
+    if (key !== lastKey) {
       lastRank = index + 1
-      lastSavings = participant.redeemed_savings_28d_kopecks
+      lastKey = key
     }
-    return { ...participant, rank: lastRank }
+    return { ...friend, rank: lastRank }
   })
 }
 

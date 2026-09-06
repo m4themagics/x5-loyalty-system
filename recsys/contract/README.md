@@ -20,12 +20,17 @@
 - Инвентарь остаётся количественным (`item_id` + `quantity`), как в существующем игровом модуле.
   Однократность выдачи обеспечивает журнал `issued_rewards` с `reward_id` и `item_instance_id`.
 
-## Две операции
+## Три операции
 
 | Операция | Вход | Выход |
 | --- | --- | --- |
 | `POST /api/demo/decision` | `demoDecisionRequestSchema` | `demoDecisionResponseSchema` |
 | `POST /api/demo/event` | `demoEventRequestSchema` | `demoEventResponseSchema` |
+| `POST /api/demo/title` | `demoTitleRequestSchema` | `demoTitleResponseSchema` |
+
+Титул коллекции описывает только собранные предметы: валидатор отклоняет цифры, деньги,
+скидки и обещания, а также титулы длиннее 28 символов или трёх слов. Любое нарушение,
+недоступность модели или невалидный JSON дают детерминированный шаблон с `source: "fallback"`.
 
 Ошибка транспорта или движка — `demoErrorResponseSchema` с кодом `bad_request`,
 `engine_failed`, `engine_timeout` или `engine_invalid_output`.

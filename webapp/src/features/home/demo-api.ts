@@ -14,6 +14,8 @@ import {
   demoSeedProfilesResponseSchema,
   demoEvaluationResponseSchema,
   type DemoEvaluationResponse,
+  demoTitleResponseSchema,
+  type DemoTitleResponse,
 } from '@pyaterochka-game-demo/contracts'
 
 import { buildDemoGameFeatures, buildDemoGameSnapshot, fromDemoInventory } from './demo-game-snapshot'
@@ -112,6 +114,31 @@ export function createOfflineSeedProfiles(nowMs: number): DemoSeedProfilesRespon
 
 export async function fetchDemoEvaluation(): Promise<DemoApiResult<DemoEvaluationResponse>> {
   return request('/api/demo/evaluation', { method: 'GET' }, demoEvaluationResponseSchema)
+}
+
+/**
+ * Титул коллекции. Модель описывает только собранные предметы; при любой ошибке
+ * движок возвращает детерминированный шаблон с `source: "fallback"`.
+ */
+export async function requestCollectionTitle(
+  profile: DemoProfileSnapshot,
+  nowMs: number,
+): Promise<DemoApiResult<DemoTitleResponse>> {
+  return request(
+    '/api/demo/title',
+    {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        contract_version: DEMO_CONTRACT_VERSION,
+        request_id: `req-title-${nowMs}`,
+        now_ms: nowMs,
+        profile,
+        game: buildDemoGameSnapshot(),
+      }),
+    },
+    demoTitleResponseSchema,
+  )
 }
 
 export async function requestDecision(

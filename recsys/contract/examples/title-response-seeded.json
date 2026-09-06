@@ -1,0 +1,9 @@
+{
+  "contract_version": 2,
+  "request_id": "req-demo-title-seeded",
+  "server_time_ms": 1788598800000,
+  "title": "Собиратель: кофе",
+  "subtitle": "Предметов в коллекции: 3",
+  "source": "fallback",
+  "violations": []
+}

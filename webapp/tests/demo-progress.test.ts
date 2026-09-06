@@ -17,7 +17,7 @@ import {
 import {
   avatarLevel,
   firstQualifyingPurchaseMs,
-  rankParticipants,
+  rankFriendsByProgress,
   referralOutcome,
 } from '../src/features/home/demo-progress'
 import { buildDemoReceipt } from '../src/features/home/demo-receipt'
@@ -65,17 +65,25 @@ describe('аватар и рейтинг', () => {
     expect(avatarLevel(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])).toBe(7)
   })
 
-  test('равная экономия делит одно место, технический ID задаёт только порядок', () => {
-    const ranked = rankParticipants([
-      { profile_id: 'b', alias: 'Б', redeemed_savings_28d_kopecks: 1500 },
-      { profile_id: 'a', alias: 'А', redeemed_savings_28d_kopecks: 1500 },
-      { profile_id: 'c', alias: 'В', redeemed_savings_28d_kopecks: 3200 },
+  test('равный прогресс делит одно место, технический ID задаёт только порядок', () => {
+    const ranked = rankFriendsByProgress([
+      { profile_id: 'b', alias: 'Б', recipes_completed: 1, items_collected: 4 },
+      { profile_id: 'a', alias: 'А', recipes_completed: 1, items_collected: 4 },
+      { profile_id: 'c', alias: 'В', recipes_completed: 2, items_collected: 1 },
     ])
     expect(ranked.map((entry) => [entry.profile_id, entry.rank])).toEqual([
       ['c', 1],
       ['a', 2],
       ['b', 2],
     ])
+  })
+
+  test('деньги в рейтинг не попадают: больше предметов при равных наборах — выше место', () => {
+    const ranked = rankFriendsByProgress([
+      { profile_id: 'a', alias: 'А', recipes_completed: 1, items_collected: 2 },
+      { profile_id: 'b', alias: 'Б', recipes_completed: 1, items_collected: 6 },
+    ])
+    expect(ranked.map((entry) => entry.profile_id)).toEqual(['b', 'a'])
   })
 })
 

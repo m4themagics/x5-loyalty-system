@@ -451,6 +451,26 @@ export const demoDecisionResponseSchema = demoResponseEnvelopeSchema
     { message: 'offer requires a card', path: ['card'] },
   )
 
+/**
+ * Титул коллекции. Модель описывает только то, что уже собрано: никаких сумм, скидок и обещаний.
+ * Нарушение контракта заменяется детерминированным шаблоном с `source: "fallback"`.
+ */
+export const demoTitleRequestSchema = demoRequestEnvelopeSchema
+  .extend({
+    profile: demoProfileSnapshotSchema,
+    game: demoGameSnapshotSchema,
+  })
+  .strict()
+
+export const demoTitleResponseSchema = demoResponseEnvelopeSchema
+  .extend({
+    title: z.string().min(1).max(28),
+    subtitle: z.string().min(1).max(90),
+    source: z.enum(['llm', 'fallback']),
+    violations: z.array(reasonCodeSchema),
+  })
+  .strict()
+
 export const demoEventRequestSchema = demoRequestEnvelopeSchema
   .extend({
     idempotency_key: identifierSchema,
@@ -547,6 +567,8 @@ export type DemoChallengeTarget = z.infer<typeof demoChallengeTargetSchema>
 export type DemoRewardPackage = z.infer<typeof demoRewardPackageSchema>
 export type DemoReservation = z.infer<typeof demoReservationSchema>
 export type DemoEconomics = z.infer<typeof demoEconomicsSchema>
+export type DemoTitleRequest = z.infer<typeof demoTitleRequestSchema>
+export type DemoTitleResponse = z.infer<typeof demoTitleResponseSchema>
 export type DemoCard = z.infer<typeof demoCardSchema>
 export type DemoCandidateTrace = z.infer<typeof demoCandidateTraceSchema>
 export type DemoDiagnostics = z.infer<typeof demoDiagnosticsSchema>

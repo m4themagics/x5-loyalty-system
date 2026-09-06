@@ -401,9 +401,13 @@ export function ProfileScreen() {
         </>
       ) : null}
 
-      {tab === 'friends' && demoState !== null ? (
+      {tab === 'friends' && demoState !== null && demo.store !== null ? (
         <section className="demo-panel">
-          <DemoSocialSection state={demoState} referralIssued={demo.referralIssued} />
+          <DemoSocialSection
+            state={demoState}
+            store={demo.store}
+            referralIssued={demo.referralIssued}
+          />
         </section>
       ) : null}
 

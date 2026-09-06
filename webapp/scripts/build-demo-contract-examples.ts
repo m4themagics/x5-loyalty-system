@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url'
 import {
   DEMO_CONTRACT_VERSION,
   demoDecisionRequestSchema,
+  demoTitleRequestSchema,
   type DemoProfileSnapshot,
 } from '@pyaterochka-game-demo/contracts'
 
@@ -35,6 +36,13 @@ const budget = readJson('budget.json')
 const ads = readJson('ads.json')
 const generated = new Map<string, string>([
   ['game-snapshot.json', serialize(buildDemoGameSnapshot())],
+  ['title-request-seeded.json', serialize(demoTitleRequestSchema.parse({
+    contract_version: DEMO_CONTRACT_VERSION,
+    request_id: 'req-demo-title-seeded',
+    now_ms: NOW_MS,
+    profile: readJson('profile-breakfast-seeded.json'),
+    game: buildDemoGameSnapshot(),
+  }))],
 ])
 
 for (const request of requests) {

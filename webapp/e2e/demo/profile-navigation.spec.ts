@@ -70,8 +70,12 @@ test('unlimited demo mode ignores a saved cooldown and keeps the chest openable'
     if (tab === 'Друзья') {
       await expect(page.getByText('Когда приглашенный друг сделает первую покупку, вы получите предмет для своей коллекции.')).toBeVisible()
       await expect(page.getByText('Награда одна за неделю и только за подтверждённую покупку.')).toHaveCount(0)
-      await expect(page.getByRole('heading', { name: 'Рейтинг экономии' })).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Друзья и наборы' })).toBeVisible()
+      // Деньги из сравнения убраны: рейтинг говорит только о собранном.
       await expect(page.getByText('Считается только реально погашенная выгода за 28 дней.', { exact: false })).toHaveCount(0)
+      await expect(page.locator('.demo-rank-value').first()).not.toContainText('₽')
+      await expect(page.getByRole('heading', { name: 'Титул коллекции' })).toHaveCount(0)
+      await expect(page.locator('.demo-title-value')).toBeVisible()
     }
   }
 })

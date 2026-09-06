@@ -1247,3 +1247,39 @@
   flex: 1 1 auto;
   min-height: 40px;
 }
+
+/* --- Титул коллекции ------------------------------------------------------ */
+
+.demo-title-card {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid #d3e9d7;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #1aa049 0%, #0b7c32 100%);
+  color: white;
+  box-shadow: 0 8px 20px rgb(13 132 54 / 18%);
+}
+
+.demo-title-eyebrow[data-slot='typography'] {
+  color: rgb(255 255 255 / 82%);
+  font-size: 9.5px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.demo-title-value[data-slot='typography'] {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.15;
+  font-weight: 900;
+  letter-spacing: -.02em;
+}
+
+.demo-title-subtitle[data-slot='typography'] {
+  color: rgb(255 255 255 / 88%);
+  font-size: 11px;
+  line-height: 1.35;
+}
