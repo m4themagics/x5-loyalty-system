@@ -111,3 +111,30 @@ export function firstQualifyingPurchaseMs(profile: DemoProfileSnapshot): number 
   const issued = profile.issued_rewards.map((reward) => reward.issued_at_ms)
   return issued.length === 0 ? null : Math.min(...issued)
 }
+
+/** Ближайший к завершению набор: сколько разных предметов рецепта уже собрано. */
+export type ClosestRecipe = {
+  recipe_id: string
+  title: string
+  owned: number
+  required: number
+}
+
+export function closestRecipe(
+  inventory: readonly { item_id: string; quantity: number }[],
+  recipes: readonly { id: string; title: string; itemIds: readonly string[] }[],
+  craftSize: number,
+): ClosestRecipe | null {
+  const owned = new Set(inventory.filter((entry) => entry.quantity > 0).map((entry) => entry.item_id))
+  if (owned.size === 0) return null
+
+  let best: ClosestRecipe | null = null
+  for (const recipe of recipes) {
+    const matched = Math.min(craftSize, recipe.itemIds.filter((itemId) => owned.has(itemId)).length)
+    if (matched === 0) continue
+    if (best === null || matched > best.owned || (matched === best.owned && recipe.title < best.title)) {
+      best = { recipe_id: recipe.id, title: recipe.title, owned: matched, required: craftSize }
+    }
+  }
+  return best
+}

@@ -1283,3 +1283,133 @@
   font-size: 11px;
   line-height: 1.35;
 }
+
+/* --- Карточки друзей ------------------------------------------------------ */
+
+.demo-friend-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-friend {
+  display: grid;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid #eceee9;
+  border-radius: 16px;
+  background: #fafbf9;
+}
+
+.demo-friend-you {
+  border-color: #b6e0c1;
+  background: #eef8ef;
+}
+
+.demo-friend-head {
+  display: grid;
+  align-items: center;
+  gap: 10px;
+  grid-template-columns: 30px 1fr;
+}
+
+.demo-friend-medal[data-slot='typography'] {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 50%;
+  background: #eef0ec;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.demo-friend-you .demo-friend-medal[data-slot='typography'] {
+  background: #d9f0dd;
+}
+
+.demo-friend-name {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.demo-friend-alias[data-slot='typography'] {
+  color: #232824;
+  font-size: 13px;
+  line-height: 1.15;
+  font-weight: 850;
+}
+
+.demo-friend-score[data-slot='typography'] {
+  color: #6f756f;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.demo-friend-items {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.demo-friend-items img {
+  width: 34px;
+  height: 34px;
+  margin-right: -6px;
+  padding: 3px;
+  border: 2px solid var(--item-rarity-color, #aeb6bc);
+  border-radius: 11px;
+  background: linear-gradient(145deg, #fff 35%, var(--item-rarity-soft, #f1f3f4));
+  object-fit: contain;
+}
+
+.demo-friend-more[data-slot='typography'] {
+  margin-left: 12px;
+  color: #6f756f;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.demo-friend-empty[data-slot='typography'] {
+  color: #8b918c;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.demo-friend-progress {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-friend-goal[data-slot='typography'] {
+  color: #14913e;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 750;
+}
+
+.demo-friend-track {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.demo-friend-step {
+  height: 5px;
+  border-radius: 3px;
+  background: #e1e4df;
+}
+
+.demo-friend-step-done {
+  background: linear-gradient(90deg, #22ac52, #0f8a3a);
+}
+
+.demo-friend-medal.demo-friend-place[data-slot='typography'] {
+  color: #5c635d;
+  font-size: 12px;
+  font-weight: 850;
+}

@@ -17,6 +17,7 @@ import {
 import {
   avatarLevel,
   firstQualifyingPurchaseMs,
+  closestRecipe,
   rankFriendsByProgress,
   referralOutcome,
 } from '../src/features/home/demo-progress'
@@ -169,5 +170,30 @@ describe('тестовые чеки', () => {
 
   test('чек с возвратом помечен возвратом', () => {
     expect(buildDemoReceipt('returned', target, NOW_MS, 'rcp-4').returned).toBe(true)
+  })
+})
+
+describe('ближайший набор', () => {
+  const recipes = [
+    { id: 'breakfast', title: 'Доброе утро', itemIds: ['club-toaster', 'milk-pitcher', 'travel-mug', 'breakfast-pan'] },
+    { id: 'fresh', title: 'Свежий выбор', itemIds: ['fruit-basket', 'vegetable-crate', 'power-blender', 'freshness-dome'] },
+  ]
+
+  test('выбирает набор с наибольшим числом собранных предметов', () => {
+    const closest = closestRecipe(
+      [{ item_id: 'club-toaster', quantity: 2 }, { item_id: 'milk-pitcher', quantity: 1 }, { item_id: 'fruit-basket', quantity: 1 }],
+      recipes,
+      4,
+    )
+    expect(closest).toEqual({ recipe_id: 'breakfast', title: 'Доброе утро', owned: 2, required: 4 })
+  })
+
+  test('дубликаты не считаются вторым предметом набора', () => {
+    const closest = closestRecipe([{ item_id: 'club-toaster', quantity: 5 }], recipes, 4)
+    expect(closest?.owned).toBe(1)
+  })
+
+  test('пустая коллекция не имеет ближайшего набора', () => {
+    expect(closestRecipe([], recipes, 4)).toBeNull()
   })
 })
