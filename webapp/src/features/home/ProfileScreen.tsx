@@ -64,26 +64,30 @@ type ProfileTab = (typeof profileTabs)[number]['id']
 
 const tasks = [
   {
-    brand: 'D',
+    brand: 'Добрый',
     brandClass: 'dobry',
+    brandLogo: '/assets/task-brands/dobry.webp',
     description: 'Купите 5 напитков «Добрый»',
     progress: '2 из 5',
   },
   {
-    brand: 'Р',
+    brand: 'Рестория',
     brandClass: 'restoria',
+    brandLogo: '/assets/task-brands/restoria.webp',
     description: 'Купите 3 готовых блюда «Рестория»',
     progress: '1 из 3',
   },
   {
-    brand: 'GV',
+    brand: 'Овощи и фрукты',
     brandClass: 'global-village',
+    brandLogo: '/assets/task-brands/apples.webp',
     description: 'Купите овощи или фрукты 3 раза',
     progress: '2 из 3',
   },
   {
-    brand: 'М',
+    brand: 'Молочные продукты',
     brandClass: 'milk',
+    brandLogo: '/assets/task-brands/milk.webp',
     description: 'Купите молочные продукты 2 раза',
     progress: '0 из 2',
   },
@@ -106,9 +110,19 @@ export function ProfileScreen() {
     )
   })
   const [discountOverlayMode, setDiscountOverlayMode] = useState<'reveal' | 'barcode' | null>(null)
+  const [isTradeOpen, setIsTradeOpen] = useState(false)
   const [shakeOffset, setShakeOffset] = useState({ x: 0, y: 0 })
   const lastPointerRef = useRef<PointerPoint | null>(null)
   const shakeDistanceRef = useRef(0)
+
+  useEffect(() => {
+    if (!isTradeOpen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isTradeOpen])
 
   useEffect(() => {
     if (openingStage !== 'opening') return
@@ -197,6 +211,7 @@ export function ProfileScreen() {
         savingsKopecks={savings}
         activeDiscount={activeDiscount}
         onOpenDiscount={() => setDiscountOverlayMode('barcode')}
+        onOpenTrade={() => setIsTradeOpen(true)}
       />
 
       <nav className="profile-tabs" aria-label="Разделы профиля">
@@ -297,14 +312,12 @@ export function ProfileScreen() {
             <div className="tasks-list">
               {tasks.map((task) => (
                 <article className="task-card" key={task.description}>
-                  <Typography
-                    as="span"
-                    variant="body"
+                  <div
                     className={`task-brand task-brand-${task.brandClass}`}
                     aria-label={`Бренд ${task.brand}`}
                   >
-                    {task.brand}
-                  </Typography>
+                    <img alt="" src={task.brandLogo} />
+                  </div>
                   <div className="task-copy">
                     <Typography as="span" variant="bodySmMedium" className="task-description">
                       {task.description}
@@ -340,17 +353,6 @@ export function ProfileScreen() {
                 onCraft={demo.craft}
                 onRedeem={demo.redeem}
               />
-
-              {demo.store === null ? null : (
-                <DemoTradePanel
-                  key={`trade-${demoState.profile.profile_id}`}
-                  store={demo.store}
-                  isBusy={demo.isBusy}
-                  note={demo.tradeNote}
-                  onCreate={demo.createTrade}
-                  onRespond={demo.respondTrade}
-                />
-              )}
             </section>
           )}
         </>
@@ -413,6 +415,20 @@ export function ProfileScreen() {
               <Typography as="span" variant="control">Забрать</Typography>
             </button>
           </div>
+        </div>
+      ) : null}
+
+      {isTradeOpen && demo.store !== null ? (
+        <div className="profile-trade-overlay">
+          <DemoTradePanel
+            key={`trade-${demoState?.profile.profile_id ?? 'loading'}`}
+            store={demo.store}
+            isBusy={demo.isBusy}
+            note={demo.tradeNote}
+            onClose={() => setIsTradeOpen(false)}
+            onCreate={demo.createTrade}
+            onRespond={demo.respondTrade}
+          />
         </div>
       ) : null}
 

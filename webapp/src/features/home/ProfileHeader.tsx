@@ -16,11 +16,13 @@ export function ProfileHeader({
   savingsKopecks,
   activeDiscount,
   onOpenDiscount,
+  onOpenTrade,
 }: {
   level: number
   savingsKopecks: number
   activeDiscount: CraftedDiscount | null
   onOpenDiscount: () => void
+  onOpenTrade: () => void
 }) {
   return (
     <section className="profile-hero" aria-label="Профиль игрока">
@@ -32,6 +34,17 @@ export function ProfileHeader({
         className="profile-character"
         src="/assets/pyaterochka-profile-character.webp"
       />
+      <button
+        aria-label="Открыть обмен предметами"
+        className="profile-trade-entry"
+        onClick={onOpenTrade}
+        type="button"
+      >
+        <svg aria-hidden="true" viewBox="0 0 32 32">
+          <path d="M7 10h15l-3.5-3.5M25 22H10l3.5 3.5" />
+        </svg>
+        <Typography as="span" variant="bodyXs">Обмен</Typography>
+      </button>
       {activeDiscount !== null ? (
         <ActiveDiscountBadge discount={activeDiscount} onClick={onOpenDiscount} />
       ) : null}
