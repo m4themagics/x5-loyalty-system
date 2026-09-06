@@ -1,6 +1,14 @@
 import { expect, test } from '@playwright/test'
 
-import { DEMO_PROFILES, closeStand, openStand, openTab, standLog, switchProfile } from './stand'
+import {
+  DEMO_PROFILES,
+  closeStand,
+  openStand,
+  openTab,
+  putItemIntoDiscountSlot,
+  standLog,
+  switchProfile,
+} from './stand'
 
 const demoStateKey = 'pyaterochka_demo_challenge_state'
 
@@ -56,7 +64,8 @@ test('computes a challenge from purchase history and issues both rewards once', 
   await expect(page.getByRole('status')).toContainText('Покупка засчитана')
   await closeStand(page)
   await openTab(page, 'Коллекция')
-  await expect(page.getByRole('button', { name: /Молочный кувшин/ })).toBeVisible()
+  // Награда за задание попадает в тот же инвентарь, что и предмет из коробки.
+  await expect(page.getByRole('button', { name: 'Молочный кувшин, Обычный, доступно 1 из 1' })).toBeVisible()
   await openTab(page, 'Задания')
 
   const afterGrant = await readActiveState(page)
@@ -92,7 +101,7 @@ test('keeps the issued item and the fulfilled promise after a reload', async ({ 
 
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
   await openTab(page, 'Коллекция')
-  await expect(page.getByRole('button', { name: /Молочный кувшин/ })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Молочный кувшин, Обычный, доступно 1 из 1' })).toBeVisible()
 })
 
 test('switching synthetic profiles preserves their separate promises and inventory', async ({ page }) => {
@@ -104,7 +113,7 @@ test('switching synthetic profiles preserves their separate promises and invento
 
   await switchProfile(page, DEMO_PROFILES.seeded)
   await openTab(page, 'Коллекция')
-  await expect(page.getByRole('button', { name: 'Клубный тостер', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Клубный тостер, Обычный, доступно 1 из 1' })).toBeVisible()
 
   await switchProfile(page, DEMO_PROFILES.empty)
   await openTab(page, 'Задания')
@@ -126,7 +135,9 @@ test('a free line alone does not close the challenge', async ({ page }) => {
   await closeStand(page)
   await expect(page.getByRole('status')).toContainText('нет оплаченной покупки из нужной категории')
   await openTab(page, 'Коллекция')
-  await expect(page.getByText('Пока пусто.', { exact: false })).toBeVisible()
+  // Единственный инвентарь остался пустым: незачтённый чек ничего не выдал.
+  await expect(page.locator('.inventory-item')).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Коллекция пока пуста' })).toBeVisible()
 })
 
 test('a prepared profile receives a different challenge that completes its recipe', async ({ page }) => {
@@ -140,8 +151,8 @@ test('a prepared profile receives a different challenge that completes its recip
 })
 
 test('four personal items craft one coupon and raise the avatar once', async ({ page }) => {
+  // Показательный профиль: три предмета набора и дубликат, четвёртый приходит за задание.
   await openProfile(page)
-  await switchProfile(page, DEMO_PROFILES.seeded)
   await page.getByRole('button', { name: 'Показать задание' }).click()
   await openStand(page)
   await page.getByRole('button', { name: 'Оплаченная покупка нужной категории' }).click()
@@ -149,18 +160,30 @@ test('four personal items craft one coupon and raise the avatar once', async ({ 
   await closeStand(page)
   await openTab(page, 'Коллекция')
 
-  for (const itemName of ['Клубный тостер', 'Молочный кувшин', 'Термокружка', 'Сковорода завтрака']) {
-    await page.getByRole('button', { name: itemName, exact: true }).click()
+  const breakfastSet = ['Клубный тостер', 'Молочный кувшин', 'Термокружка', 'Сковорода завтрака'] as const
+  for (const [index, itemName] of breakfastSet.entries()) {
+    await putItemIntoDiscountSlot(page, itemName, index + 1)
   }
 
-  await page.getByRole('button', { name: 'Убрать одну копию: Молочный кувшин', exact: true }).click()
-  await expect(page.getByRole('button', { name: 'Создать скидку', exact: true })).toBeDisabled()
-  await page.getByRole('button', { name: 'Молочный кувшин', exact: true }).click()
+  // Освобождённая ячейка снова закрывает сборку: купон стоит ровно четырёх предметов.
+  await page.getByRole('button', { name: /^Молочный кувшин в ячейке 2/ }).click()
+  await expect(page.getByRole('button', { name: 'Пустая ячейка скидки 2' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Добавьте ещё 1' })).toBeDisabled()
+  await putItemIntoDiscountSlot(page, 'Молочный кувшин', 2)
 
-  await page.getByRole('button', { name: 'Создать скидку' }).click()
+  await page.getByRole('button', { name: 'Создать скидку 8%' }).click()
+  const discountDialog = page.getByRole('dialog', { name: 'Созданная скидка' })
+  await expect(discountDialog).toBeVisible()
+  await page.getByRole('button', { name: 'Закрыть скидку' }).click()
+
   await expect(page.getByText('Активная скидка 8%', { exact: false })).toBeVisible()
   await expect(page.locator('.profile-stat-level-value')).toHaveText('1 из 7')
+  // Пока купон активен, второй набор собрать нельзя: ячейки скрыты.
+  await expect(page.getByRole('button', { name: 'Пустая ячейка скидки 1' })).toHaveCount(0)
 
   await page.getByRole('button', { name: 'Погасить (демо)' }).click()
-  await expect(page.getByRole('button', { name: 'Создать скидку' })).toBeVisible()
+  await expect(page.getByText('Активная скидка', { exact: false })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Пустая ячейка скидки 1' })).toBeVisible()
+  // Рецепт засчитан один раз: погашение не поднимает уровень повторно.
+  await expect(page.locator('.profile-stat-level-value')).toHaveText('1 из 7')
 })

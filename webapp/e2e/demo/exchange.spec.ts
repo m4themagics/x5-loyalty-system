@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { DEMO_PROFILES, openTab, switchProfile } from './stand'
+import { DEMO_PROFILES, openTab, putItemIntoDiscountSlot, switchProfile } from './stand'
 
 const storageKey = 'pyaterochka_demo_challenge_state'
 
@@ -13,13 +13,17 @@ async function start(page: import('@playwright/test').Page) {
 
 test('reserves both duplicates, restores the offer and atomically exchanges before crafting', async ({ page }) => {
   await start(page)
+  const milkPitcher = page.getByRole('button', { name: /^Молочный кувшин, / })
+  await expect(milkPitcher).toHaveAccessibleName('Молочный кувшин, Обычный, доступно 2 из 2')
+
   const social = page.getByRole('region', { name: 'Обмен дубликатами' })
   const receiver = social.getByRole('combobox', { name: 'Кому предложить обмен' })
   await receiver.selectOption('demo-trade-boris')
   await expect(receiver).toHaveValue('demo-trade-boris')
   await social.getByRole('button', { name: 'Предложить обмен' }).click()
   await expect(social.getByText('Предложение отправлено.', { exact: false })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Молочный кувшин', exact: true })).toContainText('в обмене 1')
+  // Предложенная копия остаётся во владении, но перестаёт быть доступной для сборки.
+  await expect(milkPitcher).toHaveAccessibleName('Молочный кувшин, Обычный, доступно 1 из 1')
   await expect(social.getByRole('button', { name: 'Предложить обмен' })).toBeDisabled()
 
   await page.reload()
@@ -38,10 +42,13 @@ test('reserves both duplicates, restores the offer and atomically exchanges befo
   expect(swapped.profiles['demo-trade-boris'].profile.inventory.find((item: {item_id: string}) => item.item_id === 'milk-pitcher').quantity).toBe(1)
 
   await switchProfile(page, DEMO_PROFILES.anya)
-  for (const item of ['Клубный тостер', 'Молочный кувшин', 'Термокружка', 'Сковорода завтрака']) {
-    await page.getByRole('button', { name: item, exact: true }).click()
+  const breakfastSet = ['Клубный тостер', 'Молочный кувшин', 'Термокружка', 'Сковорода завтрака'] as const
+  for (const [index, itemName] of breakfastSet.entries()) {
+    await putItemIntoDiscountSlot(page, itemName, index + 1)
   }
-  await page.getByRole('button', { name: 'Создать скидку', exact: true }).click()
+  await page.getByRole('button', { name: 'Создать скидку 8%' }).click()
+  await expect(page.getByRole('dialog', { name: 'Созданная скидка' })).toBeVisible()
+  await page.getByRole('button', { name: 'Закрыть скидку' }).click()
   await expect(page.getByText('Активная скидка 8%', { exact: false })).toBeVisible()
 })
 

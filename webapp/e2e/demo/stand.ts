@@ -41,3 +41,18 @@ export async function openTab(page: Page, name: 'Задания' | 'Коллек
   await tab.click()
   await expect(tab).toHaveAttribute('aria-current', 'page')
 }
+
+/**
+ * Единственный путь сборки скидки: предмет выбирается в «Инвентаре» через его карточку,
+ * затем кладётся в свободную ячейку скидки.
+ */
+export async function putItemIntoDiscountSlot(page: Page, itemName: string, slotNumber: number) {
+  await page.getByRole('button', { name: new RegExp(`^${itemName}, `) }).click()
+  const itemDialog = page.getByRole('dialog', { name: `Предмет «${itemName}»` })
+  await expect(itemDialog).toBeVisible()
+  await itemDialog.getByRole('button', { name: 'Выбрать предмет' }).click()
+  await expect(itemDialog).toHaveCount(0)
+  await page.getByRole('button', { name: `Пустая ячейка скидки ${slotNumber}` }).click()
+  await expect(page.getByRole('button', { name: new RegExp(`^${itemName} в ячейке ${slotNumber}`) }))
+    .toBeVisible()
+}
