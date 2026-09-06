@@ -147,10 +147,13 @@ function transition(store: DemoStore, trades: DemoTrade[], inventories: Record<s
 }
 
 /** Подготовленные профили только для локального социального сценария, не бонус регистрации. */
+/** Профили-«друзья»: только им можно предложить обмен на экране покупателя. */
+export const DEMO_TRADE_FRIEND_PREFIX = 'demo-trade-'
+
 export function createTradeSeedProfiles(template: DemoProfileSnapshot, nowMs: number): DemoProfileSnapshot[] {
   return [
-    { id: 'demo-trade-anya', label: 'Аня · обмен', inventory: [{ item_id: 'milk-pitcher', quantity: 2 }, { item_id: 'club-toaster', quantity: 1 }, { item_id: 'travel-mug', quantity: 1 }] },
-    { id: 'demo-trade-boris', label: 'Борис · обмен', inventory: [{ item_id: 'breakfast-pan', quantity: 2 }, { item_id: 'fruit-basket', quantity: 1 }, { item_id: 'vegetable-crate', quantity: 1 }] },
+    { id: 'demo-trade-anya', label: 'Аня', inventory: [{ item_id: 'milk-pitcher', quantity: 2 }, { item_id: 'club-toaster', quantity: 1 }, { item_id: 'travel-mug', quantity: 1 }] },
+    { id: 'demo-trade-boris', label: 'Борис', inventory: [{ item_id: 'breakfast-pan', quantity: 2 }, { item_id: 'fruit-basket', quantity: 1 }, { item_id: 'vegetable-crate', quantity: 1 }] },
   ].map((seed) => ({
     ...template, profile_id: seed.id, label: seed.label, inventory: seed.inventory,
     receipts: [3, 1].map((days) => ({ receipt_id: `${seed.id}-paid-day-${days}`, purchased_at_ms: nowMs - days * DEMO_TRADE_TTL_MS,

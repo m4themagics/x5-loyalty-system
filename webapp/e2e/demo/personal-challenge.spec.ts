@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { DEMO_PROFILES, closeStand, openStand, standLog, switchProfile } from './stand'
+
 const demoStateKey = 'pyaterochka_demo_challenge_state'
 
 async function readActiveState(page: import('@playwright/test').Page) {
@@ -24,14 +26,27 @@ test.beforeEach(async ({ page }) => {
   }, demoStateKey)
 })
 
+test('the showcase profile opens with one challenge that finishes its set', async ({ page }) => {
+  await openProfile(page)
+
+  await page.getByRole('button', { name: 'Показать задание' }).click()
+  const card = page.getByRole('article', { name: 'Карточка задания' })
+  await expect(card).toBeVisible()
+  await expect(card.locator('.demo-card-headline')).toHaveText('Доброе утро: Термокружка')
+  await expect(card.locator('.demo-recipe-count')).toHaveText('3 из 4')
+  await expect(card.locator('.demo-terms dd').first()).toHaveText('Кофе и чай')
+})
+
 test('computes a challenge from purchase history and issues both rewards once', async ({ page }) => {
   await openProfile(page)
+  await switchProfile(page, DEMO_PROFILES.empty)
 
   await page.getByRole('button', { name: 'Показать задание' }).click()
   const card = page.getByRole('article', { name: 'Карточка задания' })
   await expect(card).toBeVisible()
   await expect(card.locator('.demo-card-headline')).toHaveText('Доброе утро: Молочный кувшин')
 
+  await openStand(page)
   await page.getByRole('button', { name: 'Оплаченная покупка нужной категории' }).click()
   const reveal = page.getByRole('dialog', { name: 'Награда за задание' })
   await expect(reveal).toBeVisible()
@@ -39,6 +54,7 @@ test('computes a challenge from purchase history and issues both rewards once', 
   await reveal.getByRole('button', { name: 'Забрать' }).click()
 
   await expect(page.getByRole('button', { name: /Молочный кувшин/ })).toBeVisible()
+  await expect(page.getByRole('status')).toContainText('Покупка засчитана')
 
   const afterGrant = await readActiveState(page)
   expect(afterGrant.profile.issued_rewards).toHaveLength(1)
@@ -51,7 +67,8 @@ test('computes a challenge from purchase history and issues both rewards once', 
   const replayPayload = (await repeatedRequest).postDataJSON()
   expect(replayPayload.receipt).toEqual(afterGrant.last_receipt.receipt)
   expect(replayPayload.idempotency_key).toBe(`idem-${afterGrant.challenge.challenge_id}-${afterGrant.last_receipt.receipt.receipt_id}`)
-  await expect(page.getByRole('status')).toContainText('duplicate')
+  await expect(standLog(page)).toContainText('duplicate')
+  await expect(page.getByRole('status')).toContainText('Этот чек уже учтён')
 
   const afterReplay = await readActiveState(page)
   expect(afterReplay.profile.issued_rewards).toHaveLength(1)
@@ -60,7 +77,9 @@ test('computes a challenge from purchase history and issues both rewards once', 
 
 test('keeps the issued item and the fulfilled promise after a reload', async ({ page }) => {
   await openProfile(page)
+  await switchProfile(page, DEMO_PROFILES.empty)
   await page.getByRole('button', { name: 'Показать задание' }).click()
+  await openStand(page)
   await page.getByRole('button', { name: 'Оплаченная покупка нужной категории' }).click()
   await page.getByRole('dialog', { name: 'Награда за задание' }).getByRole('button', { name: 'Забрать' }).click()
 
@@ -73,12 +92,15 @@ test('keeps the issued item and the fulfilled promise after a reload', async ({ 
 
 test('switching synthetic profiles preserves their separate promises and inventory', async ({ page }) => {
   await openProfile(page)
+  await switchProfile(page, DEMO_PROFILES.empty)
   await page.getByRole('button', { name: 'Показать задание' }).click()
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
   const original = await readActiveState(page)
-  await page.getByRole('button', { name: /три предмета «Доброго утра»/ }).click()
+
+  await switchProfile(page, DEMO_PROFILES.seeded)
   await expect(page.getByRole('button', { name: 'Клубный тостер', exact: true })).toBeVisible()
-  await page.getByRole('button', { name: original.profile.label, exact: true }).click()
+
+  await switchProfile(page, DEMO_PROFILES.empty)
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
   const restored = await readActiveState(page)
   expect(restored.challenge).toEqual(original.challenge)
@@ -87,17 +109,21 @@ test('switching synthetic profiles preserves their separate promises and invento
 
 test('a free line alone does not close the challenge', async ({ page }) => {
   await openProfile(page)
+  await switchProfile(page, DEMO_PROFILES.empty)
   await page.getByRole('button', { name: 'Показать задание' }).click()
+  await openStand(page)
   await page.getByRole('button', { name: 'Только бесплатная строка' }).click()
 
-  await expect(page.getByRole('status')).toContainText('not_qualified')
+  await expect(standLog(page)).toContainText('not_qualified')
   await expect(page.getByRole('dialog', { name: 'Награда за задание' })).toHaveCount(0)
+  await closeStand(page)
+  await expect(page.getByRole('status')).toContainText('нет оплаченной покупки из нужной категории')
   await expect(page.getByText('Пока пусто.', { exact: false })).toBeVisible()
 })
 
 test('a prepared profile receives a different challenge that completes its recipe', async ({ page }) => {
   await openProfile(page)
-  await page.getByRole('button', { name: /три предмета «Доброго утра»/ }).click()
+  await switchProfile(page, DEMO_PROFILES.seeded)
   await page.getByRole('button', { name: 'Показать задание' }).click()
 
   const card = page.getByRole('article', { name: 'Карточка задания' })
@@ -107,10 +133,12 @@ test('a prepared profile receives a different challenge that completes its recip
 
 test('four personal items craft one coupon and raise the avatar once', async ({ page }) => {
   await openProfile(page)
-  await page.getByRole('button', { name: /три предмета «Доброго утра»/ }).click()
+  await switchProfile(page, DEMO_PROFILES.seeded)
   await page.getByRole('button', { name: 'Показать задание' }).click()
+  await openStand(page)
   await page.getByRole('button', { name: 'Оплаченная покупка нужной категории' }).click()
   await page.getByRole('dialog', { name: 'Награда за задание' }).getByRole('button', { name: 'Забрать' }).click()
+  await closeStand(page)
 
   for (const itemName of ['Клубный тостер', 'Молочный кувшин', 'Термокружка', 'Сковорода завтрака']) {
     await page.getByRole('button', { name: itemName, exact: true }).click()

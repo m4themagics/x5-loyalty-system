@@ -1,10 +1,13 @@
 import { expect, test } from '@playwright/test'
 
+import { openStand } from './stand'
+
 test('X5 role reads compact economic evidence and can inspect the current decision', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
   await page.getByRole('button', { name: 'Показать задание', exact: true }).click()
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
+  await openStand(page)
   const responsePromise = page.waitForResponse((response) => response.url().endsWith('/api/demo/evaluation'))
   await page.getByRole('button', { name: 'Для X5', exact: true }).click()
   const response = await responsePromise

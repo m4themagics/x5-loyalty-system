@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { openStand, standLog } from './stand'
+
 const demoStateKey = 'pyaterochka_demo_challenge_state'
 
 type StoredCampaign = {
@@ -106,6 +108,7 @@ test('the live Ads ledger reserves an impression, bills one CPA, survives reload
   )
   expect(campaignBefore).toBeDefined()
   if (campaignBefore === undefined) return
+  await openStand(page)
   await page.getByRole('button', { name: 'Оплаченная покупка нужной категории' }).click()
   await page.getByRole('dialog', { name: 'Награда за задание' }).getByRole('button', { name: 'Забрать' }).click()
 
@@ -140,13 +143,14 @@ test('the live Ads ledger reserves an impression, bills one CPA, survives reload
   )?.status).toBe('billed')
 
   await page.getByRole('button', { name: 'Тот же чек ещё раз' }).click()
-  await expect(page.getByRole('status')).toContainText('duplicate')
+  await expect(standLog(page)).toContainText('duplicate')
   const afterReplay = await readStore(page)
   expect(afterReplay.ads.billings).toEqual(afterBilling.ads.billings)
   expect(afterReplay.ads.campaigns).toEqual(afterBilling.ads.campaigns)
 
   await page.reload()
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await openStand(page)
   await page.getByRole('button', { name: 'Для X5', exact: true }).click()
   const panel = page.getByRole('region', { name: 'Для X5', exact: true })
   await expect(panel.getByText('Кампания Ads', { exact: true })).toBeVisible()
@@ -155,9 +159,12 @@ test('the live Ads ledger reserves an impression, bills one CPA, survives reload
   await expect(panel.getByText('Резерв кампании / статус показа', { exact: true })).toBeVisible()
   await expect(panel.getByText('Частота показов за 14 дней', { exact: true })).toBeVisible()
   const cpaValue = panel.locator('dt').filter({ hasText: 'CPA начислено' }).locator('xpath=following-sibling::dd')
-  await expect(cpaValue).toHaveText('18 ₽')
+  const billedRubles = `${(billing.amount_kopecks / 100).toLocaleString('ru-RU', { maximumFractionDigits: 2 })} ₽`
+  await expect(cpaValue).toHaveText(billedRubles)
 
+  await page.getByRole('button', { name: 'Закрыть панель X5' }).click()
   await page.getByRole('button', { name: 'Полный сброс демо', exact: true }).click()
+  await page.getByRole('button', { name: 'Для X5', exact: true }).click()
   await expect(cpaValue).toHaveText('0 ₽')
   const reset = await readStore(page)
   expect(reset.ads.billings).toEqual([])
@@ -183,7 +190,9 @@ test('exhausted live campaign budgets produce no_action before a first physical 
   await page.getByRole('button', { name: 'Показать задание', exact: true }).click()
 
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toHaveCount(0)
-  await expect(page.getByText('Нового задания нет:', { exact: false })).toContainText('ads_budget_insufficient')
+  await expect(page.getByText('Пока нет подходящего задания', { exact: false })).toBeVisible()
+  await openStand(page)
+  await expect(page.locator('.demo-diagnostics')).toContainText('ads_budget_insufficient')
   await page.getByRole('button', { name: 'Для X5', exact: true }).click()
   const panel = page.getByRole('region', { name: 'Для X5', exact: true })
   const campaignValue = panel.locator('dt').filter({ hasText: 'Кампания Ads' }).locator('xpath=following-sibling::dd')
@@ -220,7 +229,9 @@ test('frequency-capped campaigns produce no_action for that profile', async ({ p
   await page.getByRole('button', { name: 'Показать задание', exact: true }).click()
 
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toHaveCount(0)
-  await expect(page.getByText('Нового задания нет:', { exact: false })).toContainText('ads_frequency_cap')
+  await expect(page.getByText('Пока нет подходящего задания', { exact: false })).toBeVisible()
+  await openStand(page)
+  await expect(page.locator('.demo-diagnostics')).toContainText('ads_frequency_cap')
   const store = await readStore(page)
   const state = store.profiles[store.active_profile_id]
   expect(state?.challenge).toBeNull()
