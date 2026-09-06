@@ -22,6 +22,12 @@ import {
   serializeCraftedDiscount,
 } from './profile-discount-crafting'
 import type { CharacterMood } from './ProfileCharacter'
+import {
+  persistWornItemIds,
+  readWornItemIds,
+  toggleWornItem,
+  type WearableItemId,
+} from './profile-outfit'
 import { ProfileDiscountOverlay } from './ProfileDiscount'
 import { ProfileHeader } from './ProfileHeader'
 import { ProfileInventoryCrafting } from './ProfileInventoryCrafting'
@@ -108,6 +114,7 @@ export function ProfileScreen() {
   const [isTradeOpen, setIsTradeOpen] = useState(false)
   const [shakeOffset, setShakeOffset] = useState({ x: 0, y: 0 })
   const [isCelebrating, setIsCelebrating] = useState(false)
+  const [wornItemIds, setWornItemIds] = useState<readonly WearableItemId[]>(readWornItemIds)
   const lastPointerRef = useRef<PointerPoint | null>(null)
   const shakeDistanceRef = useRef(0)
   const celebrationTimerRef = useRef(0)
@@ -222,6 +229,21 @@ export function ProfileScreen() {
         quantity: entry.quantity,
       }))
 
+  const ownedItemIds = new Set(inventory.map((entry) => entry.itemId))
+  const ownedWornItemIds = wornItemIds.filter((itemId) => ownedItemIds.has(itemId))
+
+  /** Надеть и снять вещь — отдельное действие: владеть предметом и носить его это разное. */
+  const toggleWorn = useCallback((itemId: WearableItemId) => {
+    setWornItemIds((current) => {
+      const next = toggleWornItem(current, itemId)
+      persistWornItemIds(next)
+      // Радуемся, когда вещь надели, а не когда сняли.
+      if (next.includes(itemId)) celebrate()
+      return next
+    })
+  }, [celebrate])
+
+
   /*
    * Поза маскота реагирует только на то, что видно вместе с шапкой профиля. Тряска коробки
    * и окна наград закрывают экран затемнением, поэтому позы под ними не назначаются:
@@ -246,7 +268,7 @@ export function ProfileScreen() {
         savingsKopecks={savings}
         activeDiscount={activeDiscount}
         characterMood={characterMood}
-        ownedItemIds={inventory.map((entry) => entry.itemId)}
+        wornItemIds={ownedWornItemIds}
         onOpenDiscount={() => setDiscountOverlayMode('barcode')}
         onOpenTrade={() => setIsTradeOpen(true)}
       />
@@ -426,6 +448,9 @@ export function ProfileScreen() {
           <ProfileInventoryCrafting
             craftingDisabled={coupon !== null}
             inventory={inventory}
+            wornItemIds={ownedWornItemIds}
+            onToggleWorn={toggleWorn}
+            onSetAssembled={celebrate}
             onCraft={createProfileDiscount}
           />
         </>
@@ -508,7 +533,11 @@ export function ProfileScreen() {
             note={demo.tradeNote}
             onClose={() => setIsTradeOpen(false)}
             onCreate={demo.createTrade}
-            onRespond={demo.respondTrade}
+            onRespond={(command) => {
+              // Принятый обмен приносит новый предмет — это тоже повод порадоваться.
+              demo.respondTrade(command)
+              if (command.action === 'accept') celebrate()
+            }}
           />
         </div>
       ) : null}

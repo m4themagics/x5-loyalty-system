@@ -10,17 +10,29 @@ const POSE_SRC = {
 } as const
 
 /**
- * Косметика поверх персонажа. Накладки нарисованы на том же холсте, что и позы, поэтому слои
- * просто складываются стопкой и не требуют вычисления координат.
+ * Косметика: каждая комбинация нарисована целой фигурой, а не накладкой поверх персонажа.
+ * Так предмет всегда сидит правильно и рука держит его как надо — накладки давали
+ * вторую лапу и обрывки контура.
  *
- * Носибельны только три предмета каталога: остальные двадцать один — техника и посуда.
- * Одежда ничего не добавляет к скидке. Это видимый статус, а не награда: ценность выдачи
- * определяется рецептом, а не внешним видом персонажа.
+ * Порядок важен: сначала самый полный набор. Одежда ничего не добавляет к скидке,
+ * это видимый статус, а не награда.
  */
-const WEARABLES = [
-  { itemId: 'baker-apron', src: '/assets/character/wear/baker-apron.webp', needsFreeHands: false },
-  { itemId: 'chef-knife', src: '/assets/character/wear/chef-knife.webp', needsFreeHands: true },
-  { itemId: 'golden-chef-hat', src: '/assets/character/wear/golden-chef-hat.webp', needsFreeHands: false },
+const OUTFITS = [
+  {
+    itemIds: ['baker-apron', 'chef-knife'],
+    src: '/assets/character/outfit-apron-knife.webp',
+    happySrc: '/assets/character/outfit-apron-knife-happy.webp',
+  },
+  {
+    itemIds: ['chef-knife'],
+    src: '/assets/character/outfit-knife.webp',
+    happySrc: '/assets/character/outfit-knife-happy.webp',
+  },
+  {
+    itemIds: ['baker-apron'],
+    src: '/assets/character/outfit-apron.webp',
+    happySrc: '/assets/character/outfit-apron-happy.webp',
+  },
 ] as const
 
 const BLINK_PAUSE_MIN_MS = 3_200
@@ -28,20 +40,31 @@ const BLINK_PAUSE_MAX_MS = 6_400
 const BLINK_HOLD_MS = 150
 
 /**
+ * У каждой одежды свои кадры покоя и радости. Раздевать персонажа ради позы нельзя:
+ * это выглядит как сбой. Отдельного кадра удивления в одежде нет — там остаётся спокойный.
+ */
+function findOutfit(wornItemIds: readonly string[]) {
+  const worn = new Set(wornItemIds)
+  return OUTFITS.find((outfit) => outfit.itemIds.every((itemId) => worn.has(itemId))) ?? null
+}
+
+/**
  * Маскот в шапке профиля. Поза отражает то, что сейчас происходит с наградой, а моргание
- * работает только в спокойном состоянии, чтобы не спорить с радостью и удивлением.
+ * работает только в спокойном состоянии без одежды: моргающего кадра в одежде нет.
  */
 export function ProfileCharacter({
   mood,
-  ownedItemIds,
+  wornItemIds,
 }: {
   mood: CharacterMood
-  ownedItemIds: readonly string[]
+  wornItemIds: readonly string[]
 }) {
   const [isBlinking, setIsBlinking] = useState(false)
+  const outfit = findOutfit(wornItemIds)
+  const canBlink = mood === 'idle' && outfit === null
 
   useEffect(() => {
-    if (mood !== 'idle') return
+    if (!canBlink) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     let timer = 0
@@ -63,29 +86,15 @@ export function ProfileCharacter({
       window.clearTimeout(timer)
       setIsBlinking(false)
     }
-  }, [mood])
+  }, [canBlink])
 
-  const owned = new Set(ownedItemIds)
-  // Предмет в лапе рисуется только в спокойной позе: в радости и удивлении руки заняты.
-  const worn = WEARABLES.filter((wearable) =>
-    owned.has(wearable.itemId) && (!wearable.needsFreeHands || mood === 'idle'))
+  const src = outfit !== null
+    ? mood === 'happy' ? outfit.happySrc : outfit.src
+    : POSE_SRC[canBlink && isBlinking ? 'blink' : mood]
 
   return (
-    <div className="profile-character" data-mood={mood}>
-      <img
-        alt="Игровой персонаж профиля"
-        className="profile-character-pose"
-        src={POSE_SRC[mood === 'idle' && isBlinking ? 'blink' : mood]}
-      />
-      {worn.map((wearable) => (
-        <img
-          alt=""
-          aria-hidden="true"
-          className="profile-character-wear"
-          key={wearable.itemId}
-          src={wearable.src}
-        />
-      ))}
+    <div className="profile-character" data-mood={mood} data-dressed={outfit !== null}>
+      <img alt="Игровой персонаж профиля" className="profile-character-pose" src={src} />
     </div>
   )
 }

@@ -17,7 +17,7 @@ export function ProfileHeader({
   savingsKopecks,
   activeDiscount,
   characterMood,
-  ownedItemIds,
+  wornItemIds,
   onOpenDiscount,
   onOpenTrade,
 }: {
@@ -25,7 +25,7 @@ export function ProfileHeader({
   savingsKopecks: number
   activeDiscount: CraftedDiscount | null
   characterMood: CharacterMood
-  ownedItemIds: readonly string[]
+  wornItemIds: readonly string[]
   onOpenDiscount: () => void
   onOpenTrade: () => void
 }) {
@@ -34,7 +34,7 @@ export function ProfileHeader({
       <Typography as="h1" variant="h1" className="profile-title">
         Профиль
       </Typography>
-      <ProfileCharacter mood={characterMood} ownedItemIds={ownedItemIds} />
+      <ProfileCharacter mood={characterMood} wornItemIds={wornItemIds} />
       <button
         aria-label="Открыть обмен предметами"
         className="profile-trade-entry"

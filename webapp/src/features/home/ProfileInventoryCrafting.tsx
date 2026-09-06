@@ -13,6 +13,7 @@ import {
 } from './profile-discount-crafting'
 import type { InventoryEntry } from './profile-inventory'
 import { profileItems, type ItemRarity } from './profile-items'
+import { isWearable, type WearableItemId } from './profile-outfit'
 
 const SLOT_COUNT = 4
 const rarityLabels: Record<ItemRarity, string> = {
@@ -36,12 +37,19 @@ type ProfileInventoryCraftingProps = {
   onCraft: (itemIds: readonly string[]) => void
   /** Пока активна скидка, второй купон собрать нельзя: ячейки прячем, инвентарь оставляем. */
   craftingDisabled?: boolean
+  wornItemIds: readonly WearableItemId[]
+  onToggleWorn: (itemId: WearableItemId) => void
+  /** Четвёртая ячейка заполнена: набор готов к сборке. */
+  onSetAssembled: () => void
 }
 
 export function ProfileInventoryCrafting({
   inventory,
   onCraft,
   craftingDisabled = false,
+  wornItemIds,
+  onToggleWorn,
+  onSetAssembled,
 }: ProfileInventoryCraftingProps) {
   const [slots, setSlots] = useState<(string | null)[]>(
     Array.from({ length: SLOT_COUNT }, () => null),
@@ -163,11 +171,25 @@ export function ProfileInventoryCrafting({
   const inspectedItem = inspectedItemId === null
     ? null
     : profileItems.find((item) => item.id === inspectedItemId) ?? null
+  // Сужаем тип один раз здесь: внутри разметки проверка не переносится на обработчик.
+  const inspectedWearableId = inspectedItem !== null && isWearable(inspectedItem.id)
+    ? inspectedItem.id
+    : null
 
+  const firstFreeSlot = slots.findIndex((slotItemId) => slotItemId === null)
+
+  /**
+   * Кладём предмет в первую свободную ячейку сразу из карточки. Раньше кнопка лишь «выбирала»
+   * предмет и просила нажать ячейку вторым действием — лишний шаг без смысла: ячейки
+   * заполняются по порядку, и выбирать между ними нечего.
+   */
   const chooseInspectedItem = () => {
     if (inspectedItem === null || availableCount(inspectedItem.id) <= 0) return
-    setSelectedItemId(inspectedItem.id)
+    if (firstFreeSlot < 0) return
+    putItemIntoSlot(inspectedItem.id, firstFreeSlot)
     setInspectedItemId(null)
+    // Набор собран — это отдельный момент, ради которого предметы и копились.
+    if (firstFreeSlot === SLOT_COUNT - 1) onSetAssembled()
   }
 
   const createDiscount = () => {
@@ -380,18 +402,37 @@ export function ProfileInventoryCrafting({
             <Typography as="p" variant="bodySm" className="inventory-item-card-description">
               {inspectedItem.description}
             </Typography>
+            {inspectedWearableId !== null ? (
+              <button
+                className="inventory-item-card-wear"
+                onClick={() => {
+                  onToggleWorn(inspectedWearableId)
+                  // Закрываем карточку: иначе результат и радость маскота остаются за затемнением.
+                  setInspectedItemId(null)
+                }}
+                type="button"
+              >
+                <Typography as="span" variant="control">
+                  {wornItemIds.includes(inspectedWearableId) ? 'Снять' : 'Надеть'}
+                </Typography>
+              </button>
+            ) : null}
             <button
               className="inventory-item-card-action"
-              disabled={availableCount(inspectedItem.id) <= 0}
+              disabled={availableCount(inspectedItem.id) <= 0 || firstFreeSlot < 0}
               onClick={chooseInspectedItem}
               type="button"
             >
               <Typography as="span" variant="control">
-                {availableCount(inspectedItem.id) > 0 ? 'Выбрать предмет' : 'Все копии уже в ячейках'}
+                {availableCount(inspectedItem.id) <= 0
+                  ? 'Все копии уже в наборе'
+                  : firstFreeSlot < 0 ? 'Набор уже собран' : 'Добавить в набор'}
               </Typography>
             </button>
             <Typography as="span" variant="bodyXs" className="inventory-item-card-hint">
-              После выбора нажмите на свободную ячейку
+              {firstFreeSlot < 0
+                ? 'Четыре предмета собраны — набор готов'
+                : `Свободных ячеек: ${SLOT_COUNT - filledItemIds.length}`}
             </Typography>
           </div>
         </div>

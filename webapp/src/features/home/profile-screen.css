@@ -52,12 +52,7 @@
   animation: profile-character-breathe 4.2s ease-in-out infinite;
 }
 
-/*
- * Позы и косметика нарисованы на одном холсте, поэтому слои складываются стопкой без координат.
- * Предмет в лапе рисуется поверх фигуры, колпак — поверх всего.
- */
-.profile-character-pose,
-.profile-character-wear {
+.profile-character-pose {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -65,15 +60,12 @@
   object-fit: contain;
 }
 
-.profile-character-wear {
-  pointer-events: none;
-}
-
 /* Радость и удивление коротко подбрасывают персонажа, чтобы смена позы читалась как реакция. */
 .profile-character[data-mood='happy'],
 .profile-character[data-mood='surprised'] {
   animation: profile-character-pop 420ms ease-out;
 }
+
 
 @keyframes profile-character-breathe {
   0%, 100% { transform: scale(1); }
@@ -2111,4 +2103,25 @@ button.profile-trade-slot {
 
 .collection-empty .section-hint[data-slot='typography'] {
   max-width: none;
+}
+
+/* Надеть и снять вещь — второе действие в карточке предмета, рядом с выбором для сборки. */
+.inventory-item-card-wear {
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px 14px;
+  border: 2px solid #16a34a;
+  border-radius: 16px;
+  background: white;
+  color: #11893b;
+  cursor: pointer;
+}
+
+.inventory-item-card-wear:active {
+  transform: scale(.97);
+}
+
+.inventory-item-card-wear:focus-visible {
+  outline: 3px solid rgb(18 153 62 / 38%);
+  outline-offset: 2px;
 }

@@ -73,8 +73,10 @@ test('unlimited demo mode ignores a saved cooldown and keeps the chest openable'
       await expect(page.getByRole('heading', { name: 'Друзья и наборы' })).toBeVisible()
       // Деньги из сравнения убраны: рейтинг говорит только о собранном.
       await expect(page.getByText('Считается только реально погашенная выгода за 28 дней.', { exact: false })).toHaveCount(0)
+      // В карточке друга остаются титул и предметы, но не суммы.
       await expect(page.locator('.demo-friend-score').first()).not.toContainText('₽')
-      await expect(page.locator('.demo-friend').first()).toContainText('предмет')
+      await expect(page.locator('.demo-friend').first()).not.toContainText('₽')
+      await expect(page.locator('.demo-friend')).toHaveCount(3)
       await expect(page.getByRole('heading', { name: 'Титул коллекции' })).toHaveCount(0)
       await expect(page.locator('.demo-title-value')).toBeVisible()
     }
@@ -149,9 +151,8 @@ test('crafts a themed discount from four inventory items and restores its barcod
     const itemDialog = page.getByRole('dialog', { name: `Предмет «${itemName}»` })
     await expect(itemDialog).toBeVisible()
     await expect(itemDialog.getByText(/скидк/i)).toHaveCount(0)
-    await itemDialog.getByRole('button', { name: 'Выбрать предмет' }).click()
+    await itemDialog.getByRole('button', { name: 'Добавить в набор' }).click()
     await expect(itemDialog).toHaveCount(0)
-    await page.getByRole('button', { name: `Пустая ячейка скидки ${slotNumber}` }).click()
     await expect(page.getByRole('button', { name: new RegExp(`${itemName} в ячейке ${slotNumber}`) }))
       .toBeVisible()
   }
