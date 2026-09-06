@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { DEMO_PROFILES, closeStand, openStand, standLog, switchProfile } from './stand'
+import { DEMO_PROFILES, closeStand, openStand, openTab, standLog, switchProfile } from './stand'
 
 const demoStateKey = 'pyaterochka_demo_challenge_state'
 
@@ -53,8 +53,11 @@ test('computes a challenge from purchase history and issues both rewards once', 
   await expect(reveal.getByText('Плюс демонстрационное право на бесплатный товар')).toBeVisible()
   await reveal.getByRole('button', { name: 'Забрать' }).click()
 
-  await expect(page.getByRole('button', { name: /Молочный кувшин/ })).toBeVisible()
   await expect(page.getByRole('status')).toContainText('Покупка засчитана')
+  await closeStand(page)
+  await openTab(page, 'Коллекция')
+  await expect(page.getByRole('button', { name: /Молочный кувшин/ })).toBeVisible()
+  await openTab(page, 'Задания')
 
   const afterGrant = await readActiveState(page)
   expect(afterGrant.profile.issued_rewards).toHaveLength(1)
@@ -62,6 +65,7 @@ test('computes a challenge from purchase history and issues both rewards once', 
   expect(afterGrant.budget.coupon_settled_kopecks).toBe(0)
   expect(afterGrant.budget.coupon_reserved_kopecks).toBe(250)
 
+  await openStand(page)
   const repeatedRequest = page.waitForRequest((request) => request.url().endsWith('/api/demo/event'))
   await page.getByRole('button', { name: 'Тот же чек ещё раз' }).click()
   const replayPayload = (await repeatedRequest).postDataJSON()
@@ -86,8 +90,9 @@ test('keeps the issued item and the fulfilled promise after a reload', async ({ 
   await page.reload()
   await page.getByRole('button', { name: 'Профиль' }).click()
 
-  await expect(page.getByRole('button', { name: /Молочный кувшин/ })).toBeVisible()
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
+  await openTab(page, 'Коллекция')
+  await expect(page.getByRole('button', { name: /Молочный кувшин/ })).toBeVisible()
 })
 
 test('switching synthetic profiles preserves their separate promises and inventory', async ({ page }) => {
@@ -98,9 +103,11 @@ test('switching synthetic profiles preserves their separate promises and invento
   const original = await readActiveState(page)
 
   await switchProfile(page, DEMO_PROFILES.seeded)
+  await openTab(page, 'Коллекция')
   await expect(page.getByRole('button', { name: 'Клубный тостер', exact: true })).toBeVisible()
 
   await switchProfile(page, DEMO_PROFILES.empty)
+  await openTab(page, 'Задания')
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
   const restored = await readActiveState(page)
   expect(restored.challenge).toEqual(original.challenge)
@@ -118,6 +125,7 @@ test('a free line alone does not close the challenge', async ({ page }) => {
   await expect(page.getByRole('dialog', { name: 'Награда за задание' })).toHaveCount(0)
   await closeStand(page)
   await expect(page.getByRole('status')).toContainText('нет оплаченной покупки из нужной категории')
+  await openTab(page, 'Коллекция')
   await expect(page.getByText('Пока пусто.', { exact: false })).toBeVisible()
 })
 
@@ -139,6 +147,7 @@ test('four personal items craft one coupon and raise the avatar once', async ({ 
   await page.getByRole('button', { name: 'Оплаченная покупка нужной категории' }).click()
   await page.getByRole('dialog', { name: 'Награда за задание' }).getByRole('button', { name: 'Забрать' }).click()
   await closeStand(page)
+  await openTab(page, 'Коллекция')
 
   for (const itemName of ['Клубный тостер', 'Молочный кувшин', 'Термокружка', 'Сковорода завтрака']) {
     await page.getByRole('button', { name: itemName, exact: true }).click()
@@ -150,7 +159,7 @@ test('four personal items craft one coupon and raise the avatar once', async ({ 
 
   await page.getByRole('button', { name: 'Создать скидку' }).click()
   await expect(page.getByText('Активная скидка 8%', { exact: false })).toBeVisible()
-  await expect(page.getByText('Уровень 1/7', { exact: true })).toBeVisible()
+  await expect(page.locator('.profile-stat-level-value')).toHaveText('1 из 7')
 
   await page.getByRole('button', { name: 'Погасить (демо)' }).click()
   await expect(page.getByRole('button', { name: 'Создать скидку' })).toBeVisible()

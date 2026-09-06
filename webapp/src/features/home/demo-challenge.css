@@ -1423,3 +1423,47 @@
   letter-spacing: .04em;
   text-transform: uppercase;
 }
+
+/* --- Вкладка «Друзья» ----------------------------------------------------- */
+
+.demo-invite {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid #e4e7e1;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 6px 16px rgb(37 61 42 / 6%);
+}
+
+.demo-invite-text[data-slot='typography'] {
+  margin: 6px 0 0;
+  color: #5c635d;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.demo-invite-status {
+  padding: 10px 12px;
+  border: 1px solid #e6e8e3;
+  border-radius: 14px;
+  background: #fafbf9;
+  font-size: 10.5px;
+  line-height: 1.35;
+}
+
+.demo-invite-status [data-slot='typography'] {
+  color: #5c635d;
+  font-size: 10.5px;
+  line-height: 1.35;
+}
+
+.demo-invite-status-done {
+  border-color: #b6e0c1;
+  background: #eef8ef;
+}
+
+.demo-invite-status-done [data-slot='typography'] {
+  color: #10763a;
+  font-weight: 700;
+}

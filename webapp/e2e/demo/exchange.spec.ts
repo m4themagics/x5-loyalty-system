@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { DEMO_PROFILES, switchProfile } from './stand'
+import { DEMO_PROFILES, openTab, switchProfile } from './stand'
 
 const storageKey = 'pyaterochka_demo_challenge_state'
 
@@ -8,6 +8,7 @@ async function start(page: import('@playwright/test').Page) {
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
   await switchProfile(page, DEMO_PROFILES.anya)
+  await openTab(page, 'Коллекция')
 }
 
 test('reserves both duplicates, restores the offer and atomically exchanges before crafting', async ({ page }) => {
@@ -24,6 +25,7 @@ test('reserves both duplicates, restores the offer and atomically exchanges befo
   await page.reload()
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
   await switchProfile(page, DEMO_PROFILES.boris)
+  await openTab(page, 'Коллекция')
   await social.getByRole('button', { name: 'Принять обмен' }).click()
   await expect(social.getByText('Обмен завершён', { exact: true })).toBeVisible()
   await expect(social.getByRole('button', { name: 'Принять обмен' })).toHaveCount(0)

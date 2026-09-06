@@ -8,7 +8,9 @@
 
 .profile-hero {
   position: relative;
-  height: 236px;
+  display: grid;
+  gap: 12px;
+  padding: 62px 16px 14px;
   overflow: hidden;
   background:
     radial-gradient(circle at 18% 30%, rgb(185 232 245 / 85%) 0 28px, transparent 29px),
@@ -40,13 +42,12 @@
 }
 
 .profile-character {
-  position: absolute;
+  position: relative;
   z-index: 3;
-  right: 50%;
-  bottom: -4px;
-  width: 196px;
-  height: 196px;
-  transform: translateX(50%);
+  justify-self: center;
+  width: 176px;
+  height: 176px;
+  margin-bottom: -8px;
   object-fit: contain;
 }
 
@@ -1245,4 +1246,149 @@
     width: 116px;
     height: 116px;
   }
+}
+
+/* --- Статистика в шапке и вкладки профиля -------------------------------- */
+
+.profile-stats {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1.15fr 1fr;
+}
+
+.profile-stat-level,
+.profile-stat-savings {
+  display: grid;
+  align-content: center;
+  gap: 7px;
+  padding: 11px 12px;
+  border: 1px solid #e2e8e6;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 88%);
+  box-shadow: 0 4px 12px rgb(37 61 42 / 6%);
+}
+
+.profile-stat-level-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.profile-stat-label[data-slot='typography'] {
+  color: #767c77;
+  font-size: 9.5px;
+  line-height: 1.2;
+}
+
+.profile-stat-level-value[data-slot='typography'] {
+  color: #14913e;
+  font-size: 12px;
+  line-height: 1.1;
+  font-weight: 850;
+}
+
+.profile-stat-value[data-slot='typography'] {
+  color: #232824;
+  font-size: 16px;
+  line-height: 1.05;
+  font-weight: 880;
+  letter-spacing: -.02em;
+}
+
+.profile-level-track {
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.profile-level-step {
+  height: 6px;
+  border-radius: 3px;
+  background: #e1e4df;
+}
+
+.profile-level-step-done {
+  background: linear-gradient(90deg, #22ac52, #0f8a3a);
+}
+
+.profile-tabs {
+  position: sticky;
+  z-index: 12;
+  top: 0;
+  display: grid;
+  gap: 4px;
+  padding: 8px 16px 10px;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid #e2e5e0;
+  background: rgb(243 244 241 / 96%);
+  backdrop-filter: blur(8px);
+}
+
+.profile-tab {
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #6b716c;
+  cursor: pointer;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.profile-tab [data-slot='typography'] {
+  font-size: 13px;
+  line-height: 1.1;
+  font-weight: 750;
+}
+
+.profile-tab-active {
+  background: white;
+  color: #14913e;
+  box-shadow: 0 3px 10px rgb(37 61 42 / 10%);
+}
+
+.profile-tab-active [data-slot='typography'] {
+  font-weight: 850;
+}
+
+.profile-tab:focus-visible {
+  outline: 3px solid rgb(18 153 62 / 40%);
+  outline-offset: -2px;
+}
+
+.profile-stand-row {
+  display: grid;
+  padding: 14px 16px 4px;
+  justify-items: center;
+}
+
+@media (max-width: 360px) {
+  .profile-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+.collection-empty {
+  display: grid;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  grid-template-columns: 72px 1fr;
+  border: 1px solid #dfe3dd;
+  border-radius: 20px;
+  background: rgb(255 255 255 / 76%);
+}
+
+.collection-empty img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 8px rgb(97 72 35 / 16%));
+}
+
+.collection-empty .section-hint[data-slot='typography'] {
+  max-width: none;
 }

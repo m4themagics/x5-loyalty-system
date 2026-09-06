@@ -178,6 +178,25 @@ export function ProfileInventoryCrafting({
     ? null
     : profileItems.find((item) => item.id === dragState.itemId) ?? null
 
+  if (inventory.length === 0) {
+    // Пустые сетки занимали пол-экрана и ничего не сообщали: показываем одну строку.
+    return (
+      <section className="profile-section equipment-section" aria-labelledby="equipment-title">
+        <div className="collection-empty">
+          <img alt="" src="/assets/pyaterochka-cardboard-chest.webp" />
+          <div>
+            <Typography as="h2" variant="h2" className="section-title" id="equipment-title">
+              Предметы из коробок
+            </Typography>
+            <Typography as="span" variant="bodyXs" className="section-hint">
+              Здесь копится то, что выпало из коробки. Награды за задания — в блоке ниже.
+            </Typography>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <>
       <section className="profile-section equipment-section" aria-labelledby="equipment-title">

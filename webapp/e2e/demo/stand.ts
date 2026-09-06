@@ -32,3 +32,12 @@ export async function sendReceipt(page: Page, name: string) {
 }
 
 export const standLog = (page: Page) => page.locator('.demo-stand-log')
+
+/** Экран профиля разделён на вкладки: игровые действия доступны только на своей. */
+export async function openTab(page: Page, name: 'Задания' | 'Коллекция' | 'Друзья') {
+  const tab = page
+    .getByRole('navigation', { name: 'Разделы профиля' })
+    .getByRole('button', { name, exact: true })
+  await tab.click()
+  await expect(tab).toHaveAttribute('aria-current', 'page')
+}

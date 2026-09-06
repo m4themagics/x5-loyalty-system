@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { openTab } from './stand'
+
 const chestStorageKey = 'pyaterochka_profile_chest_deadline'
 const inventoryStorageKey = 'pyaterochka_profile_inventory'
 const activeDiscountStorageKey = 'pyaterochka_profile_active_discount'
@@ -27,13 +29,13 @@ test('unlimited demo mode ignores a saved cooldown and keeps the chest openable'
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
   await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeEnabled()
-  await expect(page.getByText('Демо-режим', { exact: true })).toBeVisible()
-  await expect(page.getByText('Без лимита', { exact: true })).toBeVisible()
+  await expect(page.locator('.chest-timer-label')).toHaveText('Коробка')
+  await expect(page.locator('.chest-timer-value')).toHaveText('Готова')
 
   await page.reload()
   await page.getByRole('button', { name: 'Профиль' }).click()
   await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeEnabled()
-  await expect(page.getByText('Без лимита', { exact: true })).toBeVisible()
+  await expect(page.locator('.chest-timer-value')).toHaveText('Готова')
 })
 
 test('opens an available chest after the user shakes it across the screen', async ({ page }) => {
@@ -68,6 +70,7 @@ test('opens an available chest after the user shakes it across the screen', asyn
   expect(savedInventory?.entries).toHaveLength(1)
   expect(savedInventory?.entries[0]?.quantity).toBe(1)
 
+  await openTab(page, 'Задания')
   const chestButton = page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })
   await expect(chestButton).toBeEnabled()
   await chestButton.click()
@@ -95,6 +98,10 @@ test('crafts a themed discount from four inventory items and restores its barcod
 
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
+  await openTab(page, 'Коллекция')
+  // Блок заданий на этой же вкладке приезжает асинхронно: дождёмся его,
+  // чтобы дальнейшие перетаскивания не боролись с догружающейся вёрсткой.
+  await expect(page.getByRole('heading', { name: 'Предметы за задания' })).toBeVisible()
 
   const firstItem = page.getByRole('button', { name: /Фруктовая корзинка/ })
   const firstSlot = page.getByRole('button', { name: 'Пустая ячейка скидки 1' })
@@ -112,7 +119,10 @@ test('crafts a themed discount from four inventory items and restores its barcod
     await expect(itemDialog).toBeVisible()
     await expect(itemDialog.getByText(/скидк/i)).toHaveCount(0)
     await itemDialog.getByRole('button', { name: 'Выбрать предмет' }).click()
+    await expect(itemDialog).toHaveCount(0)
     await page.getByRole('button', { name: `Пустая ячейка скидки ${slotNumber}` }).click()
+    await expect(page.getByRole('button', { name: new RegExp(`${itemName} в ячейке ${slotNumber}`) }))
+      .toBeVisible()
   }
 
   const createButton = page.getByRole('button', { name: 'Создать скидку 10%' })
