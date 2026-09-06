@@ -14,16 +14,9 @@ import {
   type PointerPoint,
 } from './profile-chest-gesture'
 import { drawProfileItem } from './profile-item-drop'
-import {
-  addInventoryItem,
-  consumeInventoryItems,
-  resolveInventory,
-  serializeInventory,
-} from './profile-inventory'
 import { type ItemRarity, type ProfileItem } from './profile-items'
 import { serializeChestCycle } from './profile-countdown'
 import {
-  craftDiscount,
   type CraftedDiscount,
   resolveCraftedDiscount,
   serializeCraftedDiscount,
@@ -32,9 +25,9 @@ import { ProfileDiscountOverlay } from './ProfileDiscount'
 import { ProfileHeader } from './ProfileHeader'
 import { ProfileInventoryCrafting } from './ProfileInventoryCrafting'
 import { avatarLevel } from './demo-progress'
-import { findItem } from './demo-format'
+import { availableDemoInventory } from './demo-state'
+import { findItem, formatRubles } from './demo-format'
 import { DemoQuestSection } from './DemoQuestSection'
-import { DemoItemsSection } from './DemoItemsSection'
 import { DemoSocialSection } from './DemoSocialSection'
 import { DemoTradePanel } from './DemoTradePanel'
 import { DemoStandPanel } from './DemoStandPanel'
@@ -45,8 +38,8 @@ import './profile-screen.css'
 import './demo-challenge.css'
 
 const COUNTDOWN_STORAGE_KEY = 'pyaterochka_profile_chest_deadline'
-const INVENTORY_STORAGE_KEY = 'pyaterochka_profile_inventory'
 const ACTIVE_DISCOUNT_STORAGE_KEY = 'pyaterochka_profile_active_discount'
+const DEMO_BASKET_HINT_KOPECKS = 45_000
 
 const rarityLabels: Record<ItemRarity, string> = {
   common: 'Обычный',
@@ -95,7 +88,7 @@ export function ProfileScreen() {
   const [tab, setTab] = useState<ProfileTab>('quests')
   const [openPanel, setOpenPanel] = useState<'none' | 'stand' | 'x5'>('none')
   const { claimReward, countdown, isOpenable } = useChestCountdown()
-  const { addReceivedItem, consumeReceivedItems, inventory } = useProfileInventory()
+  const collectChestItem = demo.collectChestItem
   const [isInfoOpen, setIsInfoOpen] = useState(false)
   const [openingStage, setOpeningStage] = useState<'closed' | 'shaking' | 'opening' | 'reward'>('closed')
   const [rewardItem, setRewardItem] = useState<ProfileItem | null>(null)
@@ -115,14 +108,14 @@ export function ProfileScreen() {
 
     const revealTimer = window.setTimeout(() => {
       const nextReward = drawProfileItem()
-      addReceivedItem(nextReward.id)
+      collectChestItem(nextReward.id)
       claimReward()
       setRewardItem(nextReward)
       setOpeningStage('reward')
     }, 1_400)
 
     return () => window.clearTimeout(revealTimer)
-  }, [addReceivedItem, claimReward, openingStage])
+  }, [claimReward, collectChestItem, openingStage])
 
   const openChest = () => {
     if (!isOpenable) return
@@ -168,21 +161,36 @@ export function ProfileScreen() {
     setShakeOffset({ x: 0, y: 0 })
   }
 
+  /** Один путь сборки: предметы списываются из общего инвентаря, купон и штрихкод — одна скидка. */
   const createProfileDiscount = useCallback((itemIds: readonly string[]) => {
-    const discount = craftDiscount(itemIds)
-    consumeReceivedItems(itemIds)
+    const discount = demo.craft(itemIds)
+    if (discount === null) return
     window.localStorage.setItem(
       ACTIVE_DISCOUNT_STORAGE_KEY,
       serializeCraftedDiscount(discount),
     )
     setActiveDiscount(discount)
     setDiscountOverlayMode('reveal')
-  }, [consumeReceivedItems])
+  }, [demo])
+
+  const redeemCoupon = useCallback(() => {
+    demo.redeem()
+    window.localStorage.removeItem(ACTIVE_DISCOUNT_STORAGE_KEY)
+    setActiveDiscount(null)
+    setDiscountOverlayMode(null)
+  }, [demo])
 
   const level = demoState === null ? 0 : avatarLevel(demoState.profile.progress.completed_recipe_ids)
   const savings = demoState === null ? 0 : demoState.profile.progress.redeemed_savings_28d_kopecks
   const grant = demoState?.last_grant ?? null
   const grantedItem = grant === null ? null : findItem(grant.item_id)
+  const coupon = demoState?.profile.active_coupon ?? null
+  const inventory = demoState === null
+    ? []
+    : availableDemoInventory(demoState).map((entry) => ({
+        itemId: entry.item_id,
+        quantity: entry.quantity,
+      }))
 
   const changeTab = (next: ProfileTab) => {
     if (next === tab) return
@@ -326,31 +334,58 @@ export function ProfileScreen() {
 
       {tab === 'collection' ? (
         <>
+          {coupon === null ? null : (
+            <section className="profile-section equipment-section" aria-label="Активная скидка">
+              <div className="demo-coupon-live">
+                <Typography as="span" variant="body" className="demo-coupon-percent">
+                  {coupon.percent}%
+                </Typography>
+                <div>
+                  <Typography as="span" variant="bodyXs" className="demo-coupon-copy">
+                    Активная скидка {coupon.percent}%, максимум {formatRubles(coupon.max_kopecks)}.
+                    Новый набор можно собрать после того, как эта скидка сгорит или будет погашена.
+                  </Typography>
+                  <div className="demo-actions demo-coupon-actions">
+                    <button
+                      className="demo-button"
+                      onClick={() => setDiscountOverlayMode('barcode')}
+                      type="button"
+                    >
+                      <Typography as="span" variant="control">Показать штрихкод</Typography>
+                    </button>
+                    <button
+                      className="demo-button"
+                      disabled={demo.isBusy}
+                      onClick={redeemCoupon}
+                      type="button"
+                    >
+                      <Typography as="span" variant="control">Погасить (демо)</Typography>
+                    </button>
+                  </div>
+                  <Typography as="span" variant="bodyXs" className="demo-block-hint">
+                    Погашение считается по корзине {formatRubles(DEMO_BASKET_HINT_KOPECKS)}.
+                  </Typography>
+                </div>
+              </div>
+            </section>
+          )}
+
           <ProfileInventoryCrafting
+            craftingDisabled={coupon !== null}
             inventory={inventory}
             onCraft={createProfileDiscount}
           />
 
-          {demoState === null ? null : (
+          {demoState === null || demo.store === null ? null : (
             <section className="demo-panel">
-              <DemoItemsSection
-                key={`inventory-${demoState.profile.profile_id}-${demoState.revision}`}
-                state={demoState}
+              <DemoTradePanel
+                key={`trade-${demoState.profile.profile_id}`}
+                store={demo.store}
                 isBusy={demo.isBusy}
-                onCraft={demo.craft}
-                onRedeem={demo.redeem}
+                note={demo.tradeNote}
+                onCreate={demo.createTrade}
+                onRespond={demo.respondTrade}
               />
-
-              {demo.store === null ? null : (
-                <DemoTradePanel
-                  key={`trade-${demoState.profile.profile_id}`}
-                  store={demo.store}
-                  isBusy={demo.isBusy}
-                  note={demo.tradeNote}
-                  onCreate={demo.createTrade}
-                  onRespond={demo.respondTrade}
-                />
-              )}
             </section>
           )}
         </>
@@ -521,35 +556,4 @@ function useChestCountdown() {
     countdown: 'Готова',
     isOpenable: true,
   }
-}
-
-function useProfileInventory() {
-  const [inventory, setInventory] = useState(() => {
-    if (typeof window === 'undefined') return []
-    return resolveInventory(window.localStorage.getItem(INVENTORY_STORAGE_KEY))
-  })
-
-  const addReceivedItem = useCallback((itemId: string) => {
-    setInventory((currentInventory) => {
-      const nextInventory = addInventoryItem(currentInventory, itemId)
-      window.localStorage.setItem(
-        INVENTORY_STORAGE_KEY,
-        serializeInventory(nextInventory),
-      )
-      return nextInventory
-    })
-  }, [])
-
-  const consumeReceivedItems = useCallback((itemIds: readonly string[]) => {
-    setInventory((currentInventory) => {
-      const nextInventory = consumeInventoryItems(currentInventory, itemIds)
-      window.localStorage.setItem(
-        INVENTORY_STORAGE_KEY,
-        serializeInventory(nextInventory),
-      )
-      return nextInventory
-    })
-  }, [])
-
-  return { addReceivedItem, consumeReceivedItems, inventory }
 }

@@ -10,6 +10,7 @@ import {
 import { buildDemoReceipt, type DemoReceiptKind } from './demo-receipt'
 import { createShowcaseProfile } from './demo-showcase'
 import {
+  addChestItem,
   applyCraft,
   applyRedemption,
   createDemoState,
@@ -220,10 +221,24 @@ export function useDemoChallenge() {
     persist(revealGrant(state))
   }, [persist, state])
 
+  /** Единственный путь сборки: списывает предметы и возвращает скидку со штрихкодом. */
   const craft = useCallback((itemIds: readonly string[]) => {
-    if (state === null || itemIds.length !== DEMO_CRAFT_SIZE) return
-    persist(applyCraft(state, craftDiscount(itemIds), Date.now()))
+    if (state === null || itemIds.length !== DEMO_CRAFT_SIZE) return null
+    const discount = craftDiscount(itemIds)
+    const next = applyCraft(state, discount, Date.now())
+    if (next === state) return null
+    persist(next)
+    return discount
   }, [persist, state])
+
+  /** Коробка пополняет тот же инвентарь, что и задания. */
+  const collectChestItem = useCallback((itemId: string) => {
+    const current = storeRef.current
+    if (current === null) return
+    const active = current.profiles[current.active_profile_id]
+    if (active === undefined) return
+    persistStore(saveDemoProfile(current, addChestItem(active, itemId)))
+  }, [persistStore])
 
   const redeem = useCallback(() => {
     if (state === null) return
@@ -232,6 +247,7 @@ export function useDemoChallenge() {
 
   return {
     askForChallenge,
+    collectChestItem,
     craft,
     eventLog,
     failure,

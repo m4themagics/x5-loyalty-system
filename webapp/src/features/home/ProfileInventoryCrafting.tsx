@@ -34,11 +34,14 @@ type DragState = {
 type ProfileInventoryCraftingProps = {
   inventory: readonly InventoryEntry[]
   onCraft: (itemIds: readonly string[]) => void
+  /** Пока активна скидка, второй купон собрать нельзя: ячейки прячем, инвентарь оставляем. */
+  craftingDisabled?: boolean
 }
 
 export function ProfileInventoryCrafting({
   inventory,
   onCraft,
+  craftingDisabled = false,
 }: ProfileInventoryCraftingProps) {
   const [slots, setSlots] = useState<(string | null)[]>(
     Array.from({ length: SLOT_COUNT }, () => null),
@@ -186,10 +189,11 @@ export function ProfileInventoryCrafting({
           <img alt="" src="/assets/pyaterochka-cardboard-chest.webp" />
           <div>
             <Typography as="h2" variant="h2" className="section-title" id="equipment-title">
-              Предметы из коробок
+              Коллекция пока пуста
             </Typography>
             <Typography as="span" variant="bodyXs" className="section-hint">
-              Здесь копится то, что выпало из коробки. Награды за задания — в блоке ниже.
+              Сюда попадают предметы из коробок и награды за задания. Четыре предмета одного
+              набора превращаются в скидку.
             </Typography>
           </div>
         </div>
@@ -199,6 +203,7 @@ export function ProfileInventoryCrafting({
 
   return (
     <>
+      {craftingDisabled ? null : (
       <section className="profile-section equipment-section" aria-labelledby="equipment-title">
         <div className="profile-section-heading">
           <div>
@@ -275,6 +280,7 @@ export function ProfileInventoryCrafting({
           </Typography>
         </button>
       </section>
+      )}
 
       <section className="profile-section inventory-section" aria-labelledby="inventory-title">
         <div className="profile-section-heading">

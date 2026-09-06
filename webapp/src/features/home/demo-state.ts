@@ -272,6 +272,27 @@ export function applyCraft(
   }
 }
 
+/** Предмет из коробки попадает в тот же инвентарь, что и награда за задание. */
+export function addChestItem(state: DemoState, itemId: string): DemoState {
+  const known = state.profile.inventory.some((entry) => entry.item_id === itemId)
+  const inventory = known
+    ? state.profile.inventory.map((entry) =>
+        entry.item_id === itemId ? { ...entry, quantity: entry.quantity + 1 } : entry)
+    : [...state.profile.inventory, { item_id: itemId, quantity: 1 }]
+
+  // Каждый непотраченный экземпляр обеспечен теми же 2,50 ₽, что и награда за задание:
+  // предмет из коробки участвует в том же крафте купона.
+  return {
+    ...state,
+    revision: state.revision + 1,
+    profile: { ...state.profile, inventory },
+    budget: {
+      ...state.budget,
+      coupon_reserved_kopecks: state.budget.coupon_reserved_kopecks + DEMO_INSTANCE_RESERVE_KOPECKS,
+    },
+  }
+}
+
 /** Демонстрационное погашение: экономия считается по фактически списанной сумме, не по номиналу. */
 export function applyRedemption(
   state: DemoState,

@@ -1467,3 +1467,15 @@
   color: #10763a;
   font-weight: 700;
 }
+
+/* Карточка активной скидки на вкладке «Коллекция». */
+.demo-coupon-live .demo-coupon-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.demo-coupon-live .demo-button {
+  flex: 1 1 auto;
+  min-height: 40px;
+}

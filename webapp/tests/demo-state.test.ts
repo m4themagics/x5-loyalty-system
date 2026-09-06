@@ -13,6 +13,7 @@ import {
 
 import { craftDiscount } from '../src/features/home/profile-discount-crafting'
 import {
+  addChestItem,
   applyCraft,
   applyDecision,
   applyEvent,
@@ -226,5 +227,17 @@ describe('демонстрационное состояние персональ
       budget,
     )
     expect(state.budget.coupon_reserved_kopecks).toBe(750)
+  })
+  test('предмет из коробки попадает в общий инвентарь и удерживает свой резерв', () => {
+    const initial = createDemoState({ ...profile, inventory: [] }, budget)
+    expect(initial.budget.coupon_reserved_kopecks).toBe(0)
+
+    const withItem = addChestItem(initial, 'club-toaster')
+    expect(withItem.profile.inventory).toEqual([{ item_id: 'club-toaster', quantity: 1 }])
+    expect(withItem.budget.coupon_reserved_kopecks).toBe(250)
+
+    const withDuplicate = addChestItem(withItem, 'club-toaster')
+    expect(withDuplicate.profile.inventory).toEqual([{ item_id: 'club-toaster', quantity: 2 }])
+    expect(withDuplicate.budget.coupon_reserved_kopecks).toBe(500)
   })
 })
