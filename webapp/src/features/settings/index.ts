@@ -1,1 +1,0 @@
-export { AppearancePanel } from './AppearancePanel'
