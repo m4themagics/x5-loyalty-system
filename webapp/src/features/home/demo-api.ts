@@ -24,7 +24,90 @@ export type DemoApiFailure = { code: string; message: string }
 export type DemoApiResult<T> = { ok: true; data: T } | { ok: false; error: DemoApiFailure }
 
 export async function fetchSeedProfiles(): Promise<DemoApiResult<DemoSeedProfilesResponse>> {
-  return request('/api/demo/profiles', { method: 'GET' }, demoSeedProfilesResponseSchema)
+  const result = await request(
+    '/api/demo/profiles',
+    { method: 'GET' },
+    demoSeedProfilesResponseSchema,
+  )
+  return result.ok
+    ? result
+    : { ok: true, data: createOfflineSeedProfiles(Date.now()) }
+}
+
+/**
+ * Статический хостинг не запускает локальный Python API. Этот синтетический профиль
+ * сохраняет браузерный обмен доступным; решения и проверка чеков по-прежнему требуют API.
+ */
+export function createOfflineSeedProfiles(nowMs: number): DemoSeedProfilesResponse {
+  const dayMs = 86_400_000
+  return demoSeedProfilesResponseSchema.parse({
+    contract_version: DEMO_CONTRACT_VERSION,
+    profiles: [{
+      snapshot_version: DEMO_CONTRACT_VERSION,
+      profile_id: 'demo-offline',
+      label: 'Автономный демонстрационный профиль',
+      synthetic: true,
+      receipts: [
+        {
+          receipt_id: 'offline-receipt-milk',
+          purchased_at_ms: nowMs - dayMs,
+          store_id: 'offline-store',
+          returned: false,
+          lines: [{
+            sku_id: 'offline-milk',
+            category: 'Молочные продукты',
+            quantity: 1,
+            paid: true,
+            amount_kopecks: 9_900,
+          }],
+        },
+        {
+          receipt_id: 'offline-receipt-bread',
+          purchased_at_ms: nowMs - dayMs * 3,
+          store_id: 'offline-store',
+          returned: false,
+          lines: [{
+            sku_id: 'offline-bread',
+            category: 'Хлеб и выпечка',
+            quantity: 1,
+            paid: true,
+            amount_kopecks: 6_900,
+          }],
+        },
+      ],
+      inventory: [],
+      issued_rewards: [],
+      processed_event_ids: [],
+      active_coupon: null,
+      outstanding_promise: null,
+      progress: {
+        completed_recipe_ids: [],
+        avatar_level: 0,
+        redeemed_savings_28d_kopecks: 0,
+      },
+      referral: {
+        invited_by_profile_id: null,
+        invited_at_ms: null,
+        had_confirmed_purchase_before_invite: false,
+        inviter_rewards_in_window: 0,
+      },
+      risk_signals: {
+        device_id: 'offline-demo-device',
+        household_id: null,
+        account_age_days: 30,
+        confirmed_purchase_days: 2,
+      },
+    }],
+    budget: {
+      coupon_fund_kopecks: 1_000_000,
+      coupon_settled_kopecks: 0,
+      coupon_reserved_kopecks: 0,
+      physical_fund_kopecks: 0,
+      physical_settled_kopecks: 0,
+      physical_reserved_kopecks: 0,
+    },
+    ads: { campaigns: [], exposures: [], billings: [] },
+  })
 }
 
 export async function fetchDemoEvaluation(): Promise<DemoApiResult<DemoEvaluationResponse>> {

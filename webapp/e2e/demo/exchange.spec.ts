@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { DEMO_PROFILES, openTab, putItemIntoDiscountSlot, switchProfile } from './stand'
+import { DEMO_PROFILES, openTab, switchProfile } from './stand'
 
 const storageKey = 'pyaterochka_demo_challenge_state'
 
@@ -11,28 +11,51 @@ async function start(page: import('@playwright/test').Page) {
   await openTab(page, 'Коллекция')
 }
 
-test('reserves both duplicates, restores the offer and atomically exchanges before crafting', async ({ page }) => {
-  await start(page)
-  const milkPitcher = page.getByRole('button', { name: /^Молочный кувшин, / })
-  await expect(milkPitcher).toHaveAccessibleName('Молочный кувшин, Обычный, доступно 2 из 2')
+async function openTrade(page: import('@playwright/test').Page) {
+  await page.getByRole('button', { name: 'Открыть обмен предметами' }).click()
+  const trade = page.getByRole('dialog', { name: 'Обмен предметами' })
+  await expect(trade).toBeVisible()
+  return trade
+}
 
-  const social = page.getByRole('region', { name: 'Обмен дубликатами' })
+async function prepareOffer(page: import('@playwright/test').Page) {
+  const trade = await openTrade(page)
+  await expect(trade.getByLabel('Правила обмена')).toHaveCount(0)
+  await trade.getByRole('button', { name: 'Информация об обмене' }).click()
+  await expect(trade.getByLabel('Правила обмена')).toBeVisible()
+  await expect(trade.getByText('Предложение действует 24 часа.', { exact: false })).toBeVisible()
+  await trade.getByRole('button', { name: 'Информация об обмене' }).click()
+  await trade.getByRole('button', { name: 'Добавить свой предмет для обмена' }).click()
+  await expect(trade.getByRole('button', { name: 'Выбрать Клубный тостер для обмена' })).toBeVisible()
+  await expect(trade.getByRole('button', { name: 'Выбрать Термокружка для обмена' })).toBeVisible()
+  await trade.getByRole('button', { name: 'Выбрать Молочный кувшин для обмена' }).click()
+  await trade.getByRole('button', { name: 'Показать QR-код для подключения' }).click()
+  await expect(trade.getByRole('img', { name: 'QR-код подключения к обмену' })).toBeVisible()
+  return trade
+}
+
+test('reserves both items, restores the offer and exchanges atomically', async ({ page }) => {
+  await start(page)
+  const social = await prepareOffer(page)
   const receiver = social.getByRole('combobox', { name: 'Кому предложить обмен' })
   await receiver.selectOption('demo-trade-boris')
   await expect(receiver).toHaveValue('demo-trade-boris')
-  await social.getByRole('button', { name: 'Предложить обмен' }).click()
+  await social.getByRole('button', { name: 'Подтвердить обмен' }).click()
   await expect(social.getByText('Предложение отправлено.', { exact: false })).toBeVisible()
-  // Предложенная копия остаётся во владении, но перестаёт быть доступной для сборки.
-  await expect(milkPitcher).toHaveAccessibleName('Молочный кувшин, Обычный, доступно 1 из 1')
-  await expect(social.getByRole('button', { name: 'Предложить обмен' })).toBeDisabled()
+  await social.getByRole('button', { name: 'Закрыть обмен' }).click()
+  const reserved = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), storageKey)
+  expect(reserved.profiles['demo-trade-anya'].trade_reserved_items).toEqual([
+    { item_id: 'milk-pitcher', quantity: 1 },
+  ])
 
   await page.reload()
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
   await switchProfile(page, DEMO_PROFILES.boris)
   await openTab(page, 'Коллекция')
-  await social.getByRole('button', { name: 'Принять обмен' }).click()
-  await expect(social.getByText('Обмен завершён', { exact: true })).toBeVisible()
-  await expect(social.getByRole('button', { name: 'Принять обмен' })).toHaveCount(0)
+  const receiverTrade = await openTrade(page)
+  await receiverTrade.getByRole('button', { name: 'Принять обмен' }).click()
+  await expect(receiverTrade.getByText('Обмен завершён', { exact: true })).toBeVisible()
+  await expect(receiverTrade.getByRole('button', { name: 'Принять обмен' })).toHaveCount(0)
 
   const swapped = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), storageKey)
   expect(swapped.store_version).toBe(3)
@@ -40,26 +63,18 @@ test('reserves both duplicates, restores the offer and atomically exchanges befo
   expect(swapped.trades[0].status).toBe('accepted')
   expect(swapped.profiles['demo-trade-anya'].trade_reserved_items).toEqual([])
   expect(swapped.profiles['demo-trade-boris'].profile.inventory.find((item: {item_id: string}) => item.item_id === 'milk-pitcher').quantity).toBe(1)
-
-  await switchProfile(page, DEMO_PROFILES.anya)
-  const breakfastSet = ['Клубный тостер', 'Молочный кувшин', 'Термокружка', 'Сковорода завтрака'] as const
-  for (const [index, itemName] of breakfastSet.entries()) {
-    await putItemIntoDiscountSlot(page, itemName, index + 1)
-  }
-  await page.getByRole('button', { name: 'Создать скидку 8%' }).click()
-  await expect(page.getByRole('dialog', { name: 'Созданная скидка' })).toBeVisible()
-  await page.getByRole('button', { name: 'Закрыть скидку' }).click()
-  await expect(page.getByText('Активная скидка 8%', { exact: false })).toBeVisible()
 })
 
-test('receiver can reject without transferring either reserved duplicate', async ({ page }) => {
+test('receiver can reject without transferring either reserved item', async ({ page }) => {
   await start(page)
-  const social = page.getByRole('region', { name: 'Обмен дубликатами' })
+  const social = await prepareOffer(page)
   await social.getByRole('combobox', { name: 'Кому предложить обмен' }).selectOption('demo-trade-boris')
-  await social.getByRole('button', { name: 'Предложить обмен' }).click()
+  await social.getByRole('button', { name: 'Подтвердить обмен' }).click()
+  await social.getByRole('button', { name: 'Закрыть обмен' }).click()
   await switchProfile(page, DEMO_PROFILES.boris)
-  await social.getByRole('button', { name: 'Отклонить обмен' }).click()
-  await expect(social.getByText('Обмен отклонён', { exact: true })).toBeVisible()
+  const receiverTrade = await openTrade(page)
+  await receiverTrade.getByRole('button', { name: 'Отклонить обмен' }).click()
+  await expect(receiverTrade.getByText('Обмен отклонён', { exact: true })).toBeVisible()
   const snapshot = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), storageKey)
   expect(snapshot.profiles['demo-trade-anya'].profile.inventory.find((item: {item_id: string}) => item.item_id === 'milk-pitcher').quantity).toBe(2)
   expect(snapshot.profiles['demo-trade-boris'].profile.inventory.find((item: {item_id: string}) => item.item_id === 'breakfast-pan').quantity).toBe(2)

@@ -1,6 +1,6 @@
 import { Typography } from '@/components/typography'
 
-import { daysUntil, findItem, formatDaysLeft, formatFailure } from './demo-format'
+import { daysUntil, findItem, formatDaysLeft } from './demo-format'
 import type { DemoState } from './demo-state'
 import { DISCOUNT_RECIPES } from './profile-discount-crafting'
 import type { DemoChallengeController } from './use-demo-challenge'
@@ -20,17 +20,8 @@ export function DemoQuestSection({ demo, state }: { demo: DemoChallengeControlle
           <Typography as="h2" variant="h2" className="section-title" id="demo-title">
             Персональный челлендж
           </Typography>
-          <Typography as="span" variant="bodyXs" className="section-hint">
-            Одно задание по вашим покупкам. Выполните его за обычный поход в магазин.
-          </Typography>
         </div>
       </div>
-
-      {demo.failure !== null ? (
-        <Typography as="p" variant="bodySm" className="demo-error" role="alert">
-          {formatFailure(demo.failure)}
-        </Typography>
-      ) : null}
 
       {challenge !== null && card !== null ? (
         <>
@@ -59,7 +50,7 @@ export function DemoQuestSection({ demo, state }: { demo: DemoChallengeControlle
           </Typography>
           <Typography as="p" variant="bodySm" className="demo-empty">
             {state.decision === null
-              ? 'Мы подберём одно задание по вашим прошлым покупкам — его можно выполнить за один обычный поход в магазин.'
+              ? 'Подобрали особое задание на основе ваших прошлых покупок.'
               : 'Новое задание появится, когда подойдёт подходящее предложение. Собранные предметы и обещанные награды сохраняются.'}
           </Typography>
           <button

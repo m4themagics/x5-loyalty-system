@@ -32,7 +32,7 @@ function eligibility(store: DemoStore, ids: string[], nowMs: number): string | n
   return null
 }
 
-/** Отправитель подтверждает передачу своей копии созданием предложения; обе копии резервируются. */
+/** Отправитель подтверждает передачу своего предмета созданием предложения; оба предмета резервируются. */
 export function createDemoTrade(initial: DemoStore, input: DemoTradeCreate, nowMs: number): DemoTradeResult {
   const parsed = demoTradeCreateSchema.safeParse(input)
   if (!parsed.success) return { store: initial, reason: 'trade_invalid_command' }
@@ -57,7 +57,7 @@ export function createDemoTrade(initial: DemoStore, input: DemoTradeCreate, nowM
   if (offered.id === requested.id) return refuse('trade_identical_items')
   const senderCopies = availableDemoInventory(store.profiles[command.actor_profile_id]).find((entry) => entry.item_id === offered.id)?.quantity ?? 0
   const receiverCopies = availableDemoInventory(store.profiles[command.receiver_profile_id]).find((entry) => entry.item_id === requested.id)?.quantity ?? 0
-  if (senderCopies < 2 || receiverCopies < 2) return refuse('trade_duplicate_unavailable')
+  if (senderCopies < 1 || receiverCopies < 1) return refuse('trade_duplicate_unavailable')
   const trade: DemoTrade = {
     trade_id: command.trade_id, sender_profile_id: command.actor_profile_id, receiver_profile_id: command.receiver_profile_id,
     offered_item_id: offered.id, requested_item_id: requested.id, rarity: offered.rarity, quantity: 1,

@@ -281,7 +281,7 @@ function tradeReason(reason: string): string {
     trade_idempotent: 'Это действие уже учтено; повторной передачи нет.',
     trade_weekly_limit: 'У одного из участников уже три завершённых обмена за последние семь дней.',
     trade_purchase_days_insufficient: 'Каждому участнику нужны минимум два оплаченных покупочных дня.',
-    trade_duplicate_unavailable: 'Свободного дубликата уже нет. Обновите выбор.',
+    trade_duplicate_unavailable: 'Выбранный предмет уже недоступен. Обновите выбор.',
     trade_stale_revision: 'Состояние изменилось. Проверьте предложение и повторите действие.',
     trade_rarity_mismatch: 'Можно обмениваться только предметами одной редкости.',
     trade_receiver_required: 'Подтвердить или отклонить предложение может только получатель.',

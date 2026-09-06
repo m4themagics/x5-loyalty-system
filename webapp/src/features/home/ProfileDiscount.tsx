@@ -97,12 +97,14 @@ export function ProfileDiscountOverlay({
           </>
         ) : (
           <>
-            <Typography as="span" variant="bodyXs" className="discount-result-eyebrow">
-              Покажите на кассе
-            </Typography>
-            <Typography as="h2" variant="h2" className="discount-barcode-title">
-              {discount.title} · −{discount.percent}%
-            </Typography>
+            <div className="discount-barcode-heading">
+              <Typography as="h2" variant="h2" className="discount-barcode-title">
+                {discount.title}
+              </Typography>
+              <Typography as="strong" variant="body" className="discount-barcode-percent">
+                −{discount.percent}%
+              </Typography>
+            </div>
             <Ean13Barcode value={discount.barcode} />
             <Typography as="span" variant="bodySm" className="discount-result-category">
               {discount.category}

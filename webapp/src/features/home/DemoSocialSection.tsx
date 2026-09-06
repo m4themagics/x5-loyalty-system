@@ -40,8 +40,7 @@ export function DemoSocialSection({
             Позовите друга
           </Typography>
           <Typography as="p" variant="bodySm" className="demo-invite-text">
-            Когда приглашённый сделает первую покупку, вы получите предмет для своей коллекции.
-            Награда одна за неделю и только за подтверждённую покупку.
+            Когда приглашенный друг сделает первую покупку, вы получите предмет для своей коллекции.
           </Typography>
         </div>
         <div className={`demo-invite-status ${referralIssued ? 'demo-invite-status-done' : ''}`}>
@@ -62,11 +61,7 @@ export function DemoSocialSection({
       <section className="demo-progress" aria-labelledby="ranking-title">
         <div>
           <Typography as="h2" variant="h2" className="demo-block-title" id="ranking-title">
-            Рейтинг по экономии
-          </Typography>
-          <Typography as="span" variant="bodyXs" className="demo-block-hint">
-            Считается только реально погашенная выгода за 28 дней. Место в рейтинге не меняет
-            размер награды.
+            Рейтинг экономии
           </Typography>
         </div>
 

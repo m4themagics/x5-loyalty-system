@@ -13,7 +13,7 @@ import {
   addShakeMovement,
   type PointerPoint,
 } from './profile-chest-gesture'
-import { drawProfileItem } from './profile-item-drop'
+import { ITEM_DROP_RATES, drawProfileItem } from './profile-item-drop'
 import { type ItemRarity, type ProfileItem } from './profile-items'
 import { serializeChestCycle } from './profile-countdown'
 import {
@@ -57,26 +57,30 @@ type ProfileTab = (typeof profileTabs)[number]['id']
 
 const tasks = [
   {
-    brand: 'D',
+    brand: 'Добрый',
     brandClass: 'dobry',
+    brandLogo: '/assets/task-brands/dobry.webp',
     description: 'Купите 5 напитков «Добрый»',
     progress: '2 из 5',
   },
   {
-    brand: 'Р',
+    brand: 'Рестория',
     brandClass: 'restoria',
+    brandLogo: '/assets/task-brands/restoria.webp',
     description: 'Купите 3 готовых блюда «Рестория»',
     progress: '1 из 3',
   },
   {
-    brand: 'GV',
+    brand: 'Овощи и фрукты',
     brandClass: 'global-village',
+    brandLogo: '/assets/task-brands/apples.webp',
     description: 'Купите овощи или фрукты 3 раза',
     progress: '2 из 3',
   },
   {
-    brand: 'М',
+    brand: 'Молочные продукты',
     brandClass: 'milk',
+    brandLogo: '/assets/task-brands/milk.webp',
     description: 'Купите молочные продукты 2 раза',
     progress: '0 из 2',
   },
@@ -99,9 +103,19 @@ export function ProfileScreen() {
     )
   })
   const [discountOverlayMode, setDiscountOverlayMode] = useState<'reveal' | 'barcode' | null>(null)
+  const [isTradeOpen, setIsTradeOpen] = useState(false)
   const [shakeOffset, setShakeOffset] = useState({ x: 0, y: 0 })
   const lastPointerRef = useRef<PointerPoint | null>(null)
   const shakeDistanceRef = useRef(0)
+
+  useEffect(() => {
+    if (!isTradeOpen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isTradeOpen])
 
   useEffect(() => {
     if (openingStage !== 'opening') return
@@ -205,7 +219,79 @@ export function ProfileScreen() {
         savingsKopecks={savings}
         activeDiscount={activeDiscount}
         onOpenDiscount={() => setDiscountOverlayMode('barcode')}
+        onOpenTrade={() => setIsTradeOpen(true)}
       />
+
+      <section className="profile-chest-panel" aria-label="Коробка награды">
+        <div className="chest-timer">
+          <Typography as="span" variant="bodyXs" className="chest-timer-label">
+            Коробка
+          </Typography>
+          <Typography as="time" variant="body" className="chest-timer-value">
+            {countdown}
+          </Typography>
+        </div>
+
+        <button
+          aria-label="Открыть коробку Пятёрочки"
+          className="profile-chest-trigger"
+          disabled={!isOpenable}
+          onClick={openChest}
+          type="button"
+        >
+          <img
+            alt=""
+            className="profile-chest-image"
+            src="/assets/pyaterochka-cardboard-chest.webp"
+          />
+          <Typography as="span" variant="bodyXs" className="chest-tap-hint">
+            Нажмите, чтобы открыть
+          </Typography>
+        </button>
+
+        <div className="chest-info-wrap">
+          <button
+            aria-expanded={isInfoOpen}
+            aria-label="Информация о коробке"
+            className="chest-info-button"
+            onClick={() => setIsInfoOpen((isOpen) => !isOpen)}
+            type="button"
+          >
+            <Typography as="span" variant="body" aria-hidden="true">i</Typography>
+          </button>
+          {isInfoOpen ? (
+            <div className="chest-info-popover" role="dialog" aria-label="Как открыть коробку">
+              <button
+                aria-label="Закрыть информацию"
+                className="info-close"
+                onClick={() => setIsInfoOpen(false)}
+                type="button"
+              >
+                <Typography as="span" variant="body" aria-hidden="true">×</Typography>
+              </button>
+              <Typography as="strong" variant="emphasis" className="info-title">
+                Коробка награды
+              </Typography>
+              <Typography as="span" variant="bodySm" className="info-copy">
+                Открой коробку движением по экрану.
+              </Typography>
+              <Typography as="strong" variant="bodyXs" className="chest-drop-rates-title">
+                Шансы выпадения
+              </Typography>
+              <ul className="chest-drop-rates" aria-label="Шансы выпадения предметов">
+                {(Object.keys(rarityLabels) as ItemRarity[]).map((rarity) => (
+                  <li className={`item-rarity-${rarity}`} key={rarity}>
+                    <Typography as="span" variant="bodyXs">{rarityLabels[rarity]}</Typography>
+                    <Typography as="strong" variant="bodyXs">
+                      {ITEM_DROP_RATES[rarity] * 100}%
+                    </Typography>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </div>
+      </section>
 
       <nav className="profile-tabs" aria-label="Разделы профиля">
         {profileTabs.map((item) => (
@@ -231,72 +317,11 @@ export function ProfileScreen() {
             <DemoQuestSection demo={demo} state={demoState} />
           )}
 
-          <section className="profile-chest-panel" aria-label="Коробка награды">
-            <div className="chest-timer">
-              <Typography as="span" variant="bodyXs" className="chest-timer-label">
-                Коробка
-              </Typography>
-              <Typography as="time" variant="body" className="chest-timer-value">
-                {countdown}
-              </Typography>
-            </div>
-
-            <button
-              aria-label="Открыть коробку Пятёрочки"
-              className="profile-chest-trigger"
-              disabled={!isOpenable}
-              onClick={openChest}
-              type="button"
-            >
-              <img
-                alt=""
-                className="profile-chest-image"
-                src="/assets/pyaterochka-cardboard-chest.webp"
-              />
-              <Typography as="span" variant="bodyXs" className="chest-tap-hint">
-                Нажмите, чтобы открыть
-              </Typography>
-            </button>
-
-            <div className="chest-info-wrap">
-              <button
-                aria-expanded={isInfoOpen}
-                aria-label="Информация о коробке"
-                className="chest-info-button"
-                onClick={() => setIsInfoOpen((isOpen) => !isOpen)}
-                type="button"
-              >
-                <Typography as="span" variant="body" aria-hidden="true">i</Typography>
-              </button>
-              {isInfoOpen ? (
-                <div className="chest-info-popover" role="dialog" aria-label="Как открыть коробку">
-                  <button
-                    aria-label="Закрыть информацию"
-                    className="info-close"
-                    onClick={() => setIsInfoOpen(false)}
-                    type="button"
-                  >
-                    <Typography as="span" variant="body" aria-hidden="true">×</Typography>
-                  </button>
-                  <Typography as="strong" variant="emphasis" className="info-title">
-                    Коробка награды
-                  </Typography>
-                  <Typography as="span" variant="bodySm" className="info-copy">
-                    Сейчас коробку можно открывать без ограничений. Нажмите на неё, зажмите и потрясите движениями по экрану — после получения предмета коробка сразу станет доступна снова.
-                  </Typography>
-                </div>
-              ) : null}
-            </div>
-          </section>
-
           <section className="profile-tasks" aria-labelledby="tasks-title">
             <div className="tasks-heading-row">
               <div>
                 <Typography as="h2" variant="h2" className="section-title" id="tasks-title">
                   Задания недели
-                </Typography>
-                <Typography as="span" variant="bodyXs" className="section-hint">
-                  Общие задания магазина — их видят все покупатели
                 </Typography>
               </div>
               <Typography as="span" variant="bodyXs" className="week-badge">7 дней</Typography>
@@ -305,14 +330,12 @@ export function ProfileScreen() {
             <div className="tasks-list">
               {tasks.map((task) => (
                 <article className="task-card" key={task.description}>
-                  <Typography
-                    as="span"
-                    variant="body"
+                  <div
                     className={`task-brand task-brand-${task.brandClass}`}
                     aria-label={`Бренд ${task.brand}`}
                   >
-                    {task.brand}
-                  </Typography>
+                    <img alt="" src={task.brandLogo} />
+                  </div>
                   <div className="task-copy">
                     <Typography as="span" variant="bodySmMedium" className="task-description">
                       {task.description}
@@ -343,7 +366,7 @@ export function ProfileScreen() {
                 <div>
                   <Typography as="span" variant="bodyXs" className="demo-coupon-copy">
                     Активная скидка {coupon.percent}%, максимум {formatRubles(coupon.max_kopecks)}.
-                    Новый набор можно собрать после того, как эта скидка сгорит или будет погашена.
+                    Новый набор можно собрать после погашения.
                   </Typography>
                   <div className="demo-actions demo-coupon-actions">
                     <button
@@ -375,19 +398,6 @@ export function ProfileScreen() {
             inventory={inventory}
             onCraft={createProfileDiscount}
           />
-
-          {demoState === null || demo.store === null ? null : (
-            <section className="demo-panel">
-              <DemoTradePanel
-                key={`trade-${demoState.profile.profile_id}`}
-                store={demo.store}
-                isBusy={demo.isBusy}
-                note={demo.tradeNote}
-                onCreate={demo.createTrade}
-                onRespond={demo.respondTrade}
-              />
-            </section>
-          )}
         </>
       ) : null}
 
@@ -451,6 +461,20 @@ export function ProfileScreen() {
         </div>
       ) : null}
 
+      {isTradeOpen && demo.store !== null ? (
+        <div className="profile-trade-overlay">
+          <DemoTradePanel
+            key={`trade-${demoState?.profile.profile_id ?? 'loading'}`}
+            store={demo.store}
+            isBusy={demo.isBusy}
+            note={demo.tradeNote}
+            onClose={() => setIsTradeOpen(false)}
+            onCreate={demo.createTrade}
+            onRespond={demo.respondTrade}
+          />
+        </div>
+      ) : null}
+
       {activeDiscount !== null && discountOverlayMode !== null ? (
         <ProfileDiscountOverlay
           discount={activeDiscount}
@@ -492,12 +516,7 @@ export function ProfileScreen() {
               type="button"
             >
               <img
-                className="opening-chest-part opening-chest-base"
-                src="/assets/pyaterochka-cardboard-chest.webp"
-                alt=""
-              />
-              <img
-                className="opening-chest-part opening-chest-lid"
+                className="opening-chest-image"
                 src="/assets/pyaterochka-cardboard-chest.webp"
                 alt=""
               />

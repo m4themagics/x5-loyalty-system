@@ -22,8 +22,8 @@ function offer(store = initial(), id = 'trade-1') {
   return createDemoTrade(store, { trade_id: id, actor_profile_id: a.profile_id, receiver_profile_id: b.profile_id, offered_item_id: 'milk-pitcher', requested_item_id: 'breakfast-pan', expected_store_revision: store.store_revision }, NOW)
 }
 
-describe('обмен цифровыми дубликатами', () => {
-  test('резервирует обе копии, затем передаёт их одним снимком без изменения денежного резерва', () => {
+describe('обмен цифровыми предметами', () => {
+  test('резервирует оба предмета, затем передаёт их одним снимком без изменения денежного резерва', () => {
     const created = offer()
     expect(created.reason).toBe('trade_created')
     expect(created.store.profiles[a.profile_id].trade_reserved_items).toEqual([{ item_id: 'milk-pitcher', quantity: 1 }])
@@ -38,12 +38,34 @@ describe('обмен цифровыми дубликатами', () => {
     expect(accepted.store.profiles[a.profile_id].trade_reserved_items).toEqual([])
   })
 
-  test('крафт и второе предложение не расходуют зарезервированную копию', () => {
+  test('крафт не расходует резерв, а каждую доступную копию можно предложить отдельно', () => {
     const created = offer()
     const state = created.store.profiles[a.profile_id]
     const ids = ['milk-pitcher', 'milk-pitcher', 'club-toaster', 'travel-mug']
     expect(applyCraft(state, craftDiscount(ids, NOW, 0.5), NOW)).toBe(state)
-    expect(offer(created.store, 'trade-2').reason).toBe('trade_duplicate_unavailable')
+    const second = offer(created.store, 'trade-2')
+    expect(second.reason).toBe('trade_created')
+    expect(second.store.profiles[a.profile_id].trade_reserved_items).toEqual([
+      { item_id: 'milk-pitcher', quantity: 2 },
+    ])
+    expect(offer(second.store, 'trade-3').reason).toBe('trade_duplicate_unavailable')
+  })
+
+  test('позволяет предложить единственную доступную копию предмета', () => {
+    const store = initial()
+    const result = createDemoTrade(store, {
+      trade_id: 'single-copy',
+      actor_profile_id: a.profile_id,
+      receiver_profile_id: b.profile_id,
+      offered_item_id: 'club-toaster',
+      requested_item_id: 'fruit-basket',
+      expected_store_revision: store.store_revision,
+    }, NOW)
+
+    expect(result.reason).toBe('trade_created')
+    expect(result.store.profiles[a.profile_id].trade_reserved_items).toEqual([
+      { item_id: 'club-toaster', quantity: 1 },
+    ])
   })
 
   test('отклонение и истечение через 24 часа освобождают предметы без передачи', () => {
@@ -58,7 +80,7 @@ describe('обмен цифровыми дубликатами', () => {
     expect(expired.profiles[b.profile_id].trade_reserved_items).toEqual([])
   })
 
-  test('допускает только дубликаты одинаковой редкости и два оплаченных покупочных дня', () => {
+  test('допускает только предметы одинаковой редкости и два оплаченных покупочных дня', () => {
     const store = initial()
     const receiver = store.profiles[b.profile_id]
     receiver.profile = { ...receiver.profile, inventory: [...receiver.profile.inventory, { item_id: 'power-blender', quantity: 2 }] }
