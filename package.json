@@ -29,6 +29,7 @@
     "test:eval": "python3 -m unittest discover -s recsys/eval -p 'test_*.py'",
     "validate:recsys": "python3 recsys/validate.py && python3 recsys/validate_explanation.py && python3 recsys/eval_creatives.py",
     "e2e:demo": "bun run --cwd webapp e2e:demo",
+    "docs:shots": "bun run --cwd webapp docs:shots",
     "check": "bun run typecheck && bun run lint && bun run test && bun run test:engine && bun run test:eval && bun run validate:recsys"
   }
 }

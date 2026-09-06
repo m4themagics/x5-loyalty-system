@@ -48,7 +48,50 @@
   width: 176px;
   height: 176px;
   margin-bottom: -8px;
+  transform-origin: 50% 100%;
+  animation: profile-character-breathe 4.2s ease-in-out infinite;
+}
+
+/*
+ * Позы и косметика нарисованы на одном холсте, поэтому слои складываются стопкой без координат.
+ * Предмет в лапе рисуется поверх фигуры, колпак — поверх всего.
+ */
+.profile-character-pose,
+.profile-character-wear {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+}
+
+.profile-character-wear {
+  pointer-events: none;
+}
+
+/* Радость и удивление коротко подбрасывают персонажа, чтобы смена позы читалась как реакция. */
+.profile-character[data-mood='happy'],
+.profile-character[data-mood='surprised'] {
+  animation: profile-character-pop 420ms ease-out;
+}
+
+@keyframes profile-character-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.022); }
+}
+
+@keyframes profile-character-pop {
+  0% { transform: scale(.94) translateY(4px); }
+  55% { transform: scale(1.06) translateY(-6px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-character,
+  .profile-character[data-mood='happy'],
+  .profile-character[data-mood='surprised'] {
+    animation: none;
+  }
 }
 
 .profile-trade-entry {

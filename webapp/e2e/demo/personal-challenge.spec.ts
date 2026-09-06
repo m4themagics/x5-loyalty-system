@@ -191,13 +191,16 @@ test('four personal items craft one coupon and raise the avatar once', async ({ 
   await expect(discountDialog).toBeVisible()
   await page.getByRole('button', { name: 'Закрыть скидку' }).click()
 
-  await expect(page.getByText('Активная скидка 8%', { exact: false })).toBeVisible()
+  // Активный купон проверяем по структуре карточки, а не по её тексту: копию правят отдельно.
+  const activeCoupon = page.getByRole('region', { name: 'Активная скидка' })
+  await expect(activeCoupon).toBeVisible()
+  await expect(activeCoupon.locator('.demo-coupon-percent')).toHaveText('8%')
   await expect(page.locator('.profile-stat-level-value')).toHaveText('1 из 7')
   // Пока купон активен, второй набор собрать нельзя: ячейки скрыты.
   await expect(page.getByRole('button', { name: 'Пустая ячейка скидки 1' })).toHaveCount(0)
 
   await page.getByRole('button', { name: 'Погасить (демо)' }).click()
-  await expect(page.getByText('Активная скидка', { exact: false })).toHaveCount(0)
+  await expect(activeCoupon).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Пустая ячейка скидки 1' })).toBeVisible()
   // Рецепт засчитан один раз: погашение не поднимает уровень повторно.
   await expect(page.locator('.profile-stat-level-value')).toHaveText('1 из 7')

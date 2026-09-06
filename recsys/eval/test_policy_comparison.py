@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import patch
 
 from recsys.engine.decision import handle_decision
-from recsys.engine.policy import load_policy
+from recsys.engine.policy import load_campaigns, load_policy
 from recsys.eval import compare_policies, simulate
 from recsys.eval.policies import choose_decision
 
@@ -82,12 +82,36 @@ class PolicyComparisonTest(unittest.TestCase):
                 self.assertNotIn(latent, text)
 
     def test_broad_and_sponsored_onboarding_are_distinct_allocation_policies(self):
+        # Политики расходятся только там, где рекламного финансирования не хватает на всех.
+        # Полный каталог покрывает все игровые категории, поэтому дефицит задаётся явно:
+        # кампании остаются лишь в молочной категории. Иначе тест проверял бы не правило
+        # финансирования, а случайную полноту каталога.
+        catalog = load_campaigns()
+        scarce = {
+            **catalog,
+            "campaigns": [
+                entry for entry in catalog["campaigns"]
+                if "dairy" in entry["eligible_categories"]
+            ],
+        }
+        self.assertTrue(scarce["campaigns"], "нужна хотя бы одна кампания для сравнения")
+
         value = scenario()
-        broad = simulate.run_scenario(value, policy_name="personalized_broad")
-        sponsored = simulate.run_scenario(value, policy_name="sponsored_onboarding")
+        with patch("recsys.engine.decision.load_campaigns", return_value=scarce):
+            broad = simulate.run_scenario(value, policy_name="personalized_broad")
+            sponsored = simulate.run_scenario(value, policy_name="sponsored_onboarding")
+
         self.assertGreater(broad["served_users"], sponsored["served_users"])
         self.assertGreater(broad["offers"], sponsored["offers"])
         self.assertGreater(sponsored["refusal_reasons"].get("funding_gate", 0), 0)
+
+    def test_full_catalog_funds_an_advertiser_in_every_game_category(self):
+        """Обратная сторона: на полном каталоге гейт финансирования не должен быть узким местом."""
+        value = scenario()
+        sponsored = simulate.run_scenario(value, policy_name="sponsored_onboarding")
+
+        self.assertEqual(sponsored["refusal_reasons"].get("ads_no_eligible_campaign", 0), 0)
+        self.assertEqual(sponsored["refusal_reasons"].get("funding_gate", 0), 0)
 
     def test_evaluation_funding_override_does_not_change_runtime_policy(self):
         self.assertEqual(load_policy()["first_cycle_funding_policy"], "advertiser_only")

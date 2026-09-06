@@ -113,8 +113,61 @@ class LearnedRecSysTest(unittest.TestCase):
         for run in first["runs"]:
             self.assertEqual(
                 set(run["policy_net_kopecks"]),
-                {"learned_profit_gated", "rules_affinity", "fixed_dairy"},
+                {
+                    "learned_profit_gated",
+                    "rules_profit_ranked",
+                    "rules_runtime",
+                    "rules_affinity",
+                    "fixed_dairy",
+                },
             )
+
+    def test_runtime_rules_baseline_reproduces_the_shipped_ordering(self):
+        """Экономика в боевом rank_key недостижима: непрерывная affinity решает раньше.
+
+        Тест фиксирует это как свойство, а не как случайность: при равной affinity и
+        одинаковом рецепте выбор обязан уйти к большему ожидаемому нетто, но когда
+        affinity различается, она перевешивает экономику.
+        """
+        def candidate(action_id, *, affinity, net_margin, eligible=True):
+            action = next(row for row in learned_recsys.ACTION_CATALOG if row["action_id"] == action_id)
+            return {
+                "action_id": action_id,
+                "eligible": eligible,
+                "recipe_match": False,
+                "category_affinity": affinity,
+                "inventory_progress": 0,
+                "recency_score": 0.5,
+                "sponsored": action["sponsored"],
+                "economics": {
+                    "margin_kopecks": net_margin,
+                    "reward_cost_kopecks": action["reward_cost_kopecks"],
+                    "cpa_kopecks": action["cpa_kopecks"],
+                    "operation_cost_kopecks": learned_recsys.OPERATION_COST_KOPECKS,
+                },
+            }
+
+        # Более знакомая категория выигрывает, хотя её экономика заметно хуже.
+        # Маржа dairy подобрана так, чтобы кандидат проходил порог прироста и сравнение
+        # действительно доходило до экономики, а не обрывалось на допуске.
+        candidates = [
+            candidate("dairy", affinity=0.90, net_margin=5_000),
+            candidate("coffee", affinity=0.20, net_margin=90_000),
+        ]
+        runtime, _ = learned_recsys._rules_runtime_choice(candidates)
+        profit, _ = learned_recsys._rules_profit_ranked_choice(candidates)
+        self.assertEqual(runtime["action_id"], "dairy")
+        self.assertEqual(profit["action_id"], "coffee")
+
+        # Ни один кандидат не проходит порог ожидаемого прироста — обе политики молчат.
+        starved = [candidate("dairy", affinity=0.9, net_margin=0)]
+        self.assertIsNone(learned_recsys._rules_runtime_choice(starved)[0])
+        self.assertIsNone(learned_recsys._rules_profit_ranked_choice(starved)[0])
+
+        # Недопустимый кандидат не выбирается ни при какой экономике.
+        blocked = [candidate("coffee", affinity=0.9, net_margin=90_000, eligible=False)]
+        self.assertIsNone(learned_recsys._rules_runtime_choice(blocked)[0])
+        self.assertIsNone(learned_recsys._rules_profit_ranked_choice(blocked)[0])
 
 
 if __name__ == "__main__":

@@ -23,6 +23,11 @@ DEFAULT_USERS = 6000
 DEFAULT_SEED = 20260906
 OPERATION_COST_KOPECKS = 120
 ISOTONIC_WEIGHT = 0.35
+# Совпадает с recsys/engine/data/policy.json и webapp: четыре копии на один купон,
+# порог ожидаемого прироста — 1 ₽. Значения продублированы, потому что оценочный
+# контур намеренно не импортирует боевую политику.
+MIN_EXPECTED_INCREMENT_KOPECKS = 100
+CRAFT_SIZE = 4
 
 FEATURE_NAMES = (
     "visits_28d",
@@ -659,6 +664,12 @@ def _learned_choice(
 
 
 def _rules_choice(candidates: list[dict]) -> tuple[dict | None, dict | None]:
+    """Наивная эвристика без экономики: только полезность коллекции и знакомость категории.
+
+    Отдельная от :func:`_rules_runtime_choice` политика. Пара нужна, чтобы разделить вклад
+    экономического отбора и вклад обученной модели: иначе выигрыш learned над одной наивной
+    эвристикой ошибочно читается как заслуга ML.
+    """
     eligible = [row for row in candidates if row["eligible"]]
     if not eligible:
         return None, None
@@ -666,6 +677,77 @@ def _rules_choice(candidates: list[dict]) -> tuple[dict | None, dict | None]:
         int(row["recipe_match"]), row["category_affinity"], row["inventory_progress"], row["action_id"]
     ))
     return winner, None
+
+
+def _rules_expected_net_kopecks(observable: dict) -> int:
+    """Экономика правил: статичное допущение о марже, без обученной вероятности.
+
+    Повторяет runtime: ожидаемая дополнительная маржа категории плюс платёж рекламодателя
+    минус стоимость награды и операции. Ни один член не взвешен предсказанным откликом —
+    в этом и состоит отличие от :func:`_learned_choice`.
+    """
+    economics = observable["economics"]
+    sponsor_income = economics["cpa_kopecks"] if observable["sponsored"] else 0
+    return (
+        economics["margin_kopecks"]
+        + sponsor_income
+        - economics["reward_cost_kopecks"]
+        - economics["operation_cost_kopecks"]
+    )
+
+
+def _rules_runtime_choice(candidates: list[dict]) -> tuple[dict | None, dict | None]:
+    """Порядок и допуск боевого движка, перенесённые на синтетический каталог.
+
+    Лексикографический ключ повторяет ``Candidate.rank_key`` из ``recsys/engine/candidates.py``:
+    целевой рецепт, знакомость категории, завершение набора, прогресс, давность, экономика,
+    стабильный идентификатор. Жёсткий отбор повторяет ``min_expected_increment_kopecks``.
+    """
+    scored = []
+    for observable in candidates:
+        if not observable["eligible"]:
+            continue
+        net = _rules_expected_net_kopecks(observable)
+        if net < MIN_EXPECTED_INCREMENT_KOPECKS:
+            continue
+        completes = observable["inventory_progress"] >= CRAFT_SIZE - 1
+        scored.append((
+            not observable["recipe_match"],
+            -observable["category_affinity"],
+            not completes,
+            -observable["inventory_progress"],
+            -observable["recency_score"],
+            -net,
+            observable["action_id"],
+        ))
+    if not scored:
+        return None, {"reason": "no_candidate_clears_the_expected_increment_floor"}
+    winner_key = min(scored)
+    winner = next(row for row in candidates if row["action_id"] == winner_key[-1])
+    return winner, {"rules_expected_net_kopecks": _rules_expected_net_kopecks(winner)}
+
+
+def _rules_profit_ranked_choice(candidates: list[dict]) -> tuple[dict | None, dict | None]:
+    """Правила, в которых экономика решает, а не стоит шестой в лексикографическом ключе.
+
+    В боевом ``rank_key`` экономика недостижима: непрерывная ``category_affinity`` разрывает
+    любое сравнение раньше. Эта политика отделяет вклад экономического отбора от вклада
+    обученной модели: она берёт ту же статичную экономику, но ранжирует по ней напрямую.
+    """
+    scored = []
+    for observable in candidates:
+        if not observable["eligible"]:
+            continue
+        net = _rules_expected_net_kopecks(observable)
+        if net < MIN_EXPECTED_INCREMENT_KOPECKS:
+            continue
+        scored.append((-net, not observable["recipe_match"], -observable["category_affinity"],
+                       observable["action_id"]))
+    if not scored:
+        return None, {"reason": "no_candidate_clears_the_expected_increment_floor"}
+    winner_key = min(scored)
+    winner = next(row for row in candidates if row["action_id"] == winner_key[-1])
+    return winner, {"rules_expected_net_kopecks": _rules_expected_net_kopecks(winner)}
 
 
 def _fixed_choice(candidates: list[dict]) -> tuple[dict | None, dict | None]:
@@ -692,6 +774,10 @@ def _evaluate_policy(
             selected, diagnostics = _learned_choice(
                 public_candidates, control_model, treatment_model, billable_model, calibrator
             )
+        elif name == "rules_runtime":
+            selected, diagnostics = _rules_runtime_choice(public_candidates)
+        elif name == "rules_profit_ranked":
+            selected, diagnostics = _rules_profit_ranked_choice(public_candidates)
         elif name == "rules_affinity":
             selected, diagnostics = _rules_choice(public_candidates)
         elif name == "fixed_dairy":
@@ -763,7 +849,7 @@ def build_report(*, users: int = DEFAULT_USERS, seed: int = DEFAULT_SEED) -> dic
     test_users = [row for row in dataset["users"] if row["split"] == "test"]
     comparisons = [
         _evaluate_policy(name, test_users, control_model, treatment_model, billable_model, calibrator)
-        for name in ("learned_profit_gated", "rules_affinity", "fixed_dairy")
+        for name in ("learned_profit_gated", "rules_profit_ranked", "rules_runtime", "rules_affinity", "fixed_dairy")
     ]
     split_counts = Counter(row["split"] for row in dataset["logged"])
     arm_counts = {
@@ -814,9 +900,24 @@ def build_report(*, users: int = DEFAULT_USERS, seed: int = DEFAULT_SEED) -> dic
         "heldout_model_metrics": metrics,
         "heldout_policy_comparison": comparisons,
         "baseline_definitions": {
+            "rules_runtime": (
+                "Faithful port of the runtime allocator: the lexicographic Candidate.rank_key order "
+                "from recsys/engine/candidates.py (goal recipe, category familiarity, set completion, "
+                "progress, recency, expected net, stable ID) plus the same min_expected_increment "
+                "floor. Its economics use a static per-category margin assumption and the advertiser "
+                "payment, never a predicted response."
+            ),
+            "rules_profit_ranked": (
+                "Same static economics as rules_runtime, but ranked by expected net first. In the "
+                "shipped rank_key the economic term sits sixth and the continuous category affinity "
+                "resolves every comparison before it is reached, so economics never changes the "
+                "runtime choice. This baseline isolates what economic ranking is worth on its own, "
+                "separately from the learned model."
+            ),
             "rules_affinity": (
                 "Rules-style baseline on the same candidates: recipe match, then category affinity, "
-                "inventory progress and stable action ID; it applies the same eligibility filter."
+                "inventory progress and stable action ID; it applies the same eligibility filter and "
+                "no economic gate."
             ),
             "fixed_dairy": (
                 "One dairy challenge for every test user whose dairy candidate passes the same "
@@ -852,13 +953,15 @@ def build_robustness_summary(*, users: int, seeds: Sequence[int]) -> dict:
             "test_users": policies["learned_profit_gated"]["assigned_users"],
             "policy_net_kopecks": {
                 name: policies[name]["net_kopecks"]
-                for name in ("learned_profit_gated", "rules_affinity", "fixed_dairy")
+                for name in ("learned_profit_gated", "rules_profit_ranked", "rules_runtime", "rules_affinity", "fixed_dairy")
             },
             "learned_coverage": policies["learned_profit_gated"]["coverage"],
             "uplift_rmse": report["heldout_model_metrics"]["uplift_rmse"],
             "billable_auc": report["heldout_model_metrics"]["billable_auc"],
         })
     learned_values = [row["policy_net_kopecks"]["learned_profit_gated"] for row in runs]
+    runtime_values = [row["policy_net_kopecks"]["rules_runtime"] for row in runs]
+    profit_values = [row["policy_net_kopecks"]["rules_profit_ranked"] for row in runs]
     rules_values = [row["policy_net_kopecks"]["rules_affinity"] for row in runs]
     fixed_values = [row["policy_net_kopecks"]["fixed_dairy"] for row in runs]
     return {
@@ -867,9 +970,23 @@ def build_robustness_summary(*, users: int, seeds: Sequence[int]) -> dict:
         "runs": runs,
         "learned_positive_seeds": sum(value > 0 for value in learned_values),
         "learned_beats_rules_seeds": sum(learned > rules for learned, rules in zip(learned_values, rules_values)),
+        "learned_beats_runtime_rules_seeds": sum(
+            learned > runtime for learned, runtime in zip(learned_values, runtime_values)
+        ),
+        "runtime_rules_beat_affinity_rules_seeds": sum(
+            runtime > rules for runtime, rules in zip(runtime_values, rules_values)
+        ),
+        "learned_beats_profit_ranked_rules_seeds": sum(
+            learned > profit for learned, profit in zip(learned_values, profit_values)
+        ),
+        "profit_ranked_rules_beat_runtime_rules_seeds": sum(
+            profit > runtime for profit, runtime in zip(profit_values, runtime_values)
+        ),
         "learned_beats_fixed_seeds": sum(learned > fixed for learned, fixed in zip(learned_values, fixed_values)),
         "mean_policy_net_kopecks": {
             "learned_profit_gated": round(statistics.mean(learned_values), 2),
+            "rules_runtime": round(statistics.mean(runtime_values), 2),
+            "rules_profit_ranked": round(statistics.mean(profit_values), 2),
             "rules_affinity": round(statistics.mean(rules_values), 2),
             "fixed_dairy": round(statistics.mean(fixed_values), 2),
         },
@@ -899,9 +1016,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         f"{learned['net_rubles']:+.2f} RUB."
     )
     print(
-        "Baselines: rules "
+        "Baselines: runtime rules "
+        f"{comparison['rules_runtime']['net_rubles']:+.2f} RUB; profit-ranked rules "
+        f"{comparison['rules_profit_ranked']['net_rubles']:+.2f} RUB; affinity-only rules "
         f"{comparison['rules_affinity']['net_rubles']:+.2f} RUB; fixed dairy "
         f"{comparison['fixed_dairy']['net_rubles']:+.2f} RUB."
+    )
+    print(
+        "Decomposition: ranking by static economics adds "
+        f"{comparison['rules_profit_ranked']['net_rubles'] - comparison['rules_runtime']['net_rubles']:+.2f} "
+        "RUB over the shipped runtime order; the calibrated uplift model adds a further "
+        f"{learned['net_rubles'] - comparison['rules_profit_ranked']['net_rubles']:+.2f} RUB."
     )
     print(
         "Synthetic randomized evaluation only; policy inputs contain no labels, "

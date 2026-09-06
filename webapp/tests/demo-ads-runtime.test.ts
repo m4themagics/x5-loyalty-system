@@ -97,7 +97,13 @@ function runEngine<T>(command: 'decision' | 'event', payload: object): T {
   return JSON.parse(result.stdout) as T
 }
 
-function adsState(): RuntimeAds {
+/**
+ * Состояние Ads из каталога. `exhausted` обнуляет бюджеты всех кампаний: это единственный
+ * честный способ получить «нет рекламного финансирования» теперь, когда каталог покрывает
+ * все игровые категории. Раньше для этого брали категорию без кампаний, но такое условие
+ * проверяло полноту каталога, а не правило финансирования.
+ */
+function adsState(options: { exhausted?: boolean } = {}): RuntimeAds {
   const catalog = readJson<{ campaigns: Array<{
     campaign_id: string
     remaining_budget: number
@@ -106,7 +112,9 @@ function adsState(): RuntimeAds {
   return {
     campaigns: catalog.campaigns.map((campaign) => ({
       campaign_id: campaign.campaign_id,
-      remaining_budget_kopecks: Math.round(campaign.remaining_budget * 100),
+      remaining_budget_kopecks: options.exhausted === true
+        ? 0
+        : Math.round(campaign.remaining_budget * 100),
       reserved_kopecks: 0,
       settled_kopecks: 0,
       frequency_cap_14d: campaign.frequency_cap_14d,
@@ -145,7 +153,7 @@ test('the first physical promise is published only with advertiser funding', () 
       amount_kopecks: 8_900,
     }],
   }]
-  ownMargin.ads = adsState()
+  ownMargin.ads = adsState({ exhausted: true })
   const refused = runEngine<DecisionResponse>('decision', ownMargin)
 
   expect(refused.status).toBe('no_action')

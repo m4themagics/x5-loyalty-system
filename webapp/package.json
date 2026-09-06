@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "e2e:demo": "playwright test -c playwright.demo.config.ts",
-    "e2e:install": "playwright install chromium"
+    "e2e:install": "playwright install chromium",
+    "docs:shots": "playwright test -c scripts/docs-shots/playwright.config.ts && node scripts/docs-shots/build.mjs"
   },
   "dependencies": {
     "@fontsource-variable/figtree": "^5.3.0",

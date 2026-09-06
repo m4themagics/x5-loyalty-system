@@ -21,6 +21,7 @@ import {
   resolveCraftedDiscount,
   serializeCraftedDiscount,
 } from './profile-discount-crafting'
+import type { CharacterMood } from './ProfileCharacter'
 import { ProfileDiscountOverlay } from './ProfileDiscount'
 import { ProfileHeader } from './ProfileHeader'
 import { ProfileInventoryCrafting } from './ProfileInventoryCrafting'
@@ -40,6 +41,7 @@ import './demo-challenge.css'
 const COUNTDOWN_STORAGE_KEY = 'pyaterochka_profile_chest_deadline'
 const ACTIVE_DISCOUNT_STORAGE_KEY = 'pyaterochka_profile_active_discount'
 const DEMO_BASKET_HINT_KOPECKS = 45_000
+const CELEBRATION_MS = 2_600
 
 const rarityLabels: Record<ItemRarity, string> = {
   common: 'Обычный',
@@ -105,8 +107,22 @@ export function ProfileScreen() {
   const [discountOverlayMode, setDiscountOverlayMode] = useState<'reveal' | 'barcode' | null>(null)
   const [isTradeOpen, setIsTradeOpen] = useState(false)
   const [shakeOffset, setShakeOffset] = useState({ x: 0, y: 0 })
+  const [isCelebrating, setIsCelebrating] = useState(false)
   const lastPointerRef = useRef<PointerPoint | null>(null)
   const shakeDistanceRef = useRef(0)
+  const celebrationTimerRef = useRef(0)
+
+  /**
+   * Радость маскота включается после закрытия окна награды, а не под ним: пока окно открыто,
+   * шапка профиля не видна и анимация прошла бы впустую.
+   */
+  const celebrate = useCallback(() => {
+    window.clearTimeout(celebrationTimerRef.current)
+    setIsCelebrating(true)
+    celebrationTimerRef.current = window.setTimeout(() => setIsCelebrating(false), CELEBRATION_MS)
+  }, [])
+
+  useEffect(() => () => window.clearTimeout(celebrationTimerRef.current), [])
 
   useEffect(() => {
     if (!isTradeOpen) return
@@ -206,6 +222,17 @@ export function ProfileScreen() {
         quantity: entry.quantity,
       }))
 
+  /*
+   * Поза маскота реагирует только на то, что видно вместе с шапкой профиля. Тряска коробки
+   * и окна наград закрывают экран затемнением, поэтому позы под ними не назначаются:
+   * радость включается после закрытия окна, а ожидание — пока движок считает решение.
+   */
+  const characterMood: CharacterMood = isCelebrating
+    ? 'happy'
+    : demo.isBusy
+      ? 'surprised'
+      : 'idle'
+
   const changeTab = (next: ProfileTab) => {
     if (next === tab) return
     window.scrollTo(0, 0)
@@ -218,6 +245,8 @@ export function ProfileScreen() {
         level={level}
         savingsKopecks={savings}
         activeDiscount={activeDiscount}
+        characterMood={characterMood}
+        ownedItemIds={inventory.map((entry) => entry.itemId)}
         onOpenDiscount={() => setDiscountOverlayMode('barcode')}
         onOpenTrade={() => setIsTradeOpen(true)}
       />
@@ -365,8 +394,8 @@ export function ProfileScreen() {
                 </Typography>
                 <div>
                   <Typography as="span" variant="bodyXs" className="demo-coupon-copy">
-                    Активная скидка {coupon.percent}%, максимум {formatRubles(coupon.max_kopecks)}.
-                    Новый набор можно собрать после погашения.
+                    Скидка готова: покажите штрихкод на кассе. Новый набор можно собрать,
+                    когда эта скидка сработает.
                   </Typography>
                   <div className="demo-actions demo-coupon-actions">
                     <button
@@ -386,7 +415,8 @@ export function ProfileScreen() {
                     </button>
                   </div>
                   <Typography as="span" variant="bodyXs" className="demo-block-hint">
-                    Погашение считается по корзине {formatRubles(DEMO_BASKET_HINT_KOPECKS)}.
+                    В демонстрации выгода по купону ограничена {formatRubles(coupon.max_kopecks)},
+                    погашение считается по корзине {formatRubles(DEMO_BASKET_HINT_KOPECKS)}.
                   </Typography>
                 </div>
               </div>
@@ -458,7 +488,11 @@ export function ProfileScreen() {
                 Плюс демонстрационное право на бесплатный товар
               </Typography>
             ) : null}
-            <button className="demo-button demo-button-primary" onClick={demo.reveal} type="button">
+            <button
+              className="demo-button demo-button-primary"
+              onClick={() => { demo.reveal(); celebrate() }}
+              type="button"
+            >
               <Typography as="span" variant="control">Забрать</Typography>
             </button>
           </div>
@@ -483,7 +517,11 @@ export function ProfileScreen() {
         <ProfileDiscountOverlay
           discount={activeDiscount}
           mode={discountOverlayMode}
-          onClose={() => setDiscountOverlayMode(null)}
+          onClose={() => {
+            // Скидка собрана — радуемся только после закрытия окна создания, не штрихкода.
+            if (discountOverlayMode === 'reveal') celebrate()
+            setDiscountOverlayMode(null)
+          }}
           onShowBarcode={() => setDiscountOverlayMode('barcode')}
         />
       ) : null}
@@ -545,7 +583,7 @@ export function ProfileScreen() {
                 </div>
                 <button
                   className="collect-reward-button"
-                  onClick={() => { setOpeningStage('closed'); setTab('collection') }}
+                  onClick={() => { setOpeningStage('closed'); setTab('collection'); celebrate() }}
                   type="button"
                 >
                   <Typography as="span" variant="control">Забрать</Typography>

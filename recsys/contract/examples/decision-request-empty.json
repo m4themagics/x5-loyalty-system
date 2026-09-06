@@ -461,6 +461,62 @@
         "reserved_kopecks": 0,
         "settled_kopecks": 0,
         "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_080",
+        "remaining_budget_kopecks": 4750000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_084",
+        "remaining_budget_kopecks": 6830000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_088",
+        "remaining_budget_kopecks": 7410000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_092",
+        "remaining_budget_kopecks": 8860000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_096",
+        "remaining_budget_kopecks": 5190000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_100",
+        "remaining_budget_kopecks": 9640000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_104",
+        "remaining_budget_kopecks": 5820000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_108",
+        "remaining_budget_kopecks": 5270000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
       }
     ],
     "exposures": [],

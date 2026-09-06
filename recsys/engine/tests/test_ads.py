@@ -496,5 +496,101 @@ class AdsAuctionTest(unittest.TestCase):
         self.assertEqual(sponsorship.reserve_kopecks, 4_550)
 
 
+class DerivedPacingTest(unittest.TestCase):
+    """Каталог не задаёт темп расходования: он выводится из фактического расхода по флайту.
+
+    Флайт 2026-09-01..2026-09-30 (30 дней), «сегодня» — пятый день, бюджет 100 ₽.
+    Плановый расход к этому дню — 16,67 ₽, поэтому недобор ускоряет показы, а перерасход
+    их замедляет. Множитель ограничен диапазоном 0,5x-1,5x.
+    """
+
+    NOW_MS = 1_788_598_800_000
+
+    def sponsorship_for(self, settled_kopecks: int):
+        catalog = {
+            "incrementality_floor": 0.04,
+            "advertisers": [{"advertiser_id": "brand-1", "name": "Brand one"}],
+            "campaigns": [
+                {
+                    "campaign_id": "c-1",
+                    "advertiser_id": "brand-1",
+                    "eligible_categories": ["dairy"],
+                    "flight_start": "2026-09-01",
+                    "flight_end": "2026-09-30",
+                    "frequency_cap_14d": 5,
+                    "bid_per_qualified_visit": 18.0,
+                    "reward_cost": 0.0,
+                    "quality_score": 0.9,
+                    "uplift": 0.06,
+                    "p_billable": 0.8,
+                    "total_budget": 100.0,
+                    "remaining_budget": 100.0,
+                }
+            ],
+        }
+        policy = {
+            "campaign_category_map": {"Молочные продукты": "dairy"},
+            "min_expected_increment_kopecks": 100,
+            "expected_incremental_margin_default_kopecks": 3_500,
+        }
+        ads = {
+            "campaigns": [
+                {
+                    "campaign_id": "c-1",
+                    "remaining_budget_kopecks": 10_000 - settled_kopecks,
+                    "reserved_kopecks": 0,
+                    "settled_kopecks": settled_kopecks,
+                    "frequency_cap_14d": 5,
+                }
+            ],
+            "exposures": [],
+            "billings": [],
+        }
+        return select_sponsorship(
+            "Молочные продукты",
+            self.NOW_MS,
+            policy,
+            catalog,
+            ads=ads,
+            profile_id="u-1",
+            reward_cost_kopecks=250,
+        )
+
+    def test_catalog_no_longer_pins_the_pacing_multiplier(self) -> None:
+        for entry in load_campaigns()["campaigns"]:
+            self.assertNotIn("pacing_multiplier", entry, entry["campaign_id"])
+
+    def test_a_campaign_that_has_not_spent_yet_gets_maximum_catch_up(self) -> None:
+        self.assertEqual(self.sponsorship_for(0).pacing_bps, 15_000)
+
+    def test_spending_on_plan_keeps_the_neutral_multiplier(self) -> None:
+        self.assertEqual(self.sponsorship_for(1_667).pacing_bps, 10_000)
+
+    def test_underspending_accelerates_and_overspending_throttles(self) -> None:
+        underspent = self.sponsorship_for(1_000).pacing_bps
+        on_plan = self.sponsorship_for(1_667).pacing_bps
+        overspent = self.sponsorship_for(3_000).pacing_bps
+
+        self.assertGreater(underspent, on_plan)
+        self.assertLess(overspent, on_plan)
+
+    def test_the_multiplier_stays_inside_the_bounded_range(self) -> None:
+        # Каждое значение оставляет кампании бюджет на резерв, иначе она отсеется до скоринга.
+        for settled in (1, 500, 1_667, 4_000, 8_000):
+            with self.subTest(settled=settled):
+                self.assertTrue(5_000 <= self.sponsorship_for(settled).pacing_bps <= 15_000)
+
+    def test_pacing_changes_ranking_but_never_the_billed_price(self) -> None:
+        throttled = self.sponsorship_for(8_000)
+        accelerated = self.sponsorship_for(500)
+
+        self.assertLess(throttled.rank_score_kopecks, accelerated.rank_score_kopecks)
+        self.assertEqual(throttled.bid_kopecks, accelerated.bid_kopecks)
+        self.assertEqual(
+            resolve_billing(throttled.billing_intent, qualified=True, verified=True).charge_kopecks,
+            resolve_billing(accelerated.billing_intent, qualified=True, verified=True).charge_kopecks,
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

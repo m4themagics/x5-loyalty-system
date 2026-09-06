@@ -272,6 +272,54 @@
       }
     },
     {
+      "policy": "rules_profit_ranked",
+      "assigned_users": 1215,
+      "served_users": 1192,
+      "coverage": 0.98107,
+      "no_action": 23,
+      "incremental_purchases": 210,
+      "incremental_purchase_rate_per_served": 0.176174,
+      "billable_events": 469,
+      "reward_and_operation_spend_kopecks": 1747440,
+      "incremental_margin_kopecks": 1909000,
+      "sponsor_income_kopecks": 1510800,
+      "net_kopecks": 1672360,
+      "net_rubles": 16723.6,
+      "expected_true_net_kopecks": 1565977.78,
+      "mean_true_uplift_selected": 0.170609,
+      "mean_predicted_uplift_selected": null,
+      "selected_actions": {
+        "coffee": 1045,
+        "dairy": 1,
+        "produce": 17,
+        "ready_meal": 129
+      }
+    },
+    {
+      "policy": "rules_runtime",
+      "assigned_users": 1215,
+      "served_users": 1192,
+      "coverage": 0.98107,
+      "no_action": 23,
+      "incremental_purchases": 287,
+      "incremental_purchase_rate_per_served": 0.240772,
+      "billable_events": 445,
+      "reward_and_operation_spend_kopecks": 2181440,
+      "incremental_margin_kopecks": 2535500,
+      "sponsor_income_kopecks": 999300,
+      "net_kopecks": 1353360,
+      "net_rubles": 13533.6,
+      "expected_true_net_kopecks": 1347149.11,
+      "mean_true_uplift_selected": 0.24059,
+      "mean_predicted_uplift_selected": null,
+      "selected_actions": {
+        "coffee": 276,
+        "dairy": 304,
+        "produce": 302,
+        "ready_meal": 310
+      }
+    },
+    {
       "policy": "rules_affinity",
       "assigned_users": 1215,
       "served_users": 1192,
@@ -318,7 +366,9 @@
     }
   ],
   "baseline_definitions": {
-    "rules_affinity": "Rules-style baseline on the same candidates: recipe match, then category affinity, inventory progress and stable action ID; it applies the same eligibility filter.",
+    "rules_runtime": "Faithful port of the runtime allocator: the lexicographic Candidate.rank_key order from recsys/engine/candidates.py (goal recipe, category familiarity, set completion, progress, recency, expected net, stable ID) plus the same min_expected_increment floor. Its economics use a static per-category margin assumption and the advertiser payment, never a predicted response.",
+    "rules_profit_ranked": "Same static economics as rules_runtime, but ranked by expected net first. In the shipped rank_key the economic term sits sixth and the continuous category affinity resolves every comparison before it is reached, so economics never changes the runtime choice. This baseline isolates what economic ranking is worth on its own, separately from the learned model.",
+    "rules_affinity": "Rules-style baseline on the same candidates: recipe match, then category affinity, inventory progress and stable action ID; it applies the same eligibility filter and no economic gate.",
     "fixed_dairy": "One dairy challenge for every test user whose dairy candidate passes the same familiarity, stock and risk checks."
   },
   "guardrails": {
@@ -349,6 +399,8 @@
         "test_users": 1236,
         "policy_net_kopecks": {
           "learned_profit_gated": 1768360,
+          "rules_profit_ranked": 1680700,
+          "rules_runtime": 1198000,
           "rules_affinity": 1198000,
           "fixed_dairy": -705840
         },
@@ -361,6 +413,8 @@
         "test_users": 1206,
         "policy_net_kopecks": {
           "learned_profit_gated": 1582820,
+          "rules_profit_ranked": 1383520,
+          "rules_runtime": 1240720,
           "rules_affinity": 1240720,
           "fixed_dairy": -576880
         },
@@ -373,6 +427,8 @@
         "test_users": 1207,
         "policy_net_kopecks": {
           "learned_profit_gated": 1721020,
+          "rules_profit_ranked": 1569320,
+          "rules_runtime": 1319920,
           "rules_affinity": 1319920,
           "fixed_dairy": -649480
         },
@@ -385,6 +441,8 @@
         "test_users": 1224,
         "policy_net_kopecks": {
           "learned_profit_gated": 1943160,
+          "rules_profit_ranked": 1527260,
+          "rules_runtime": 1676460,
           "rules_affinity": 1676460,
           "fixed_dairy": -725000
         },
@@ -397,6 +455,8 @@
         "test_users": 1215,
         "policy_net_kopecks": {
           "learned_profit_gated": 1866520,
+          "rules_profit_ranked": 1672360,
+          "rules_runtime": 1353360,
           "rules_affinity": 1353360,
           "fixed_dairy": -679060
         },
@@ -407,9 +467,15 @@
     ],
     "learned_positive_seeds": 5,
     "learned_beats_rules_seeds": 5,
+    "learned_beats_runtime_rules_seeds": 5,
+    "runtime_rules_beat_affinity_rules_seeds": 0,
+    "learned_beats_profit_ranked_rules_seeds": 5,
+    "profit_ranked_rules_beat_runtime_rules_seeds": 4,
     "learned_beats_fixed_seeds": 5,
     "mean_policy_net_kopecks": {
       "learned_profit_gated": 1776376,
+      "rules_runtime": 1357692,
+      "rules_profit_ranked": 1566632,
       "rules_affinity": 1357692,
       "fixed_dairy": -667252
     },

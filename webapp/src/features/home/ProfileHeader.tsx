@@ -1,6 +1,7 @@
 import { Typography } from '@/components/typography'
 
 import { formatRubles } from './demo-format'
+import { type CharacterMood, ProfileCharacter } from './ProfileCharacter'
 import { ActiveDiscountBadge } from './ProfileDiscount'
 import type { CraftedDiscount } from './profile-discount-crafting'
 
@@ -15,12 +16,16 @@ export function ProfileHeader({
   level,
   savingsKopecks,
   activeDiscount,
+  characterMood,
+  ownedItemIds,
   onOpenDiscount,
   onOpenTrade,
 }: {
   level: number
   savingsKopecks: number
   activeDiscount: CraftedDiscount | null
+  characterMood: CharacterMood
+  ownedItemIds: readonly string[]
   onOpenDiscount: () => void
   onOpenTrade: () => void
 }) {
@@ -29,11 +34,7 @@ export function ProfileHeader({
       <Typography as="h1" variant="h1" className="profile-title">
         Профиль
       </Typography>
-      <img
-        alt="Игровой персонаж профиля"
-        className="profile-character"
-        src="/assets/pyaterochka-profile-character.webp"
-      />
+      <ProfileCharacter mood={characterMood} ownedItemIds={ownedItemIds} />
       <button
         aria-label="Открыть обмен предметами"
         className="profile-trade-entry"
