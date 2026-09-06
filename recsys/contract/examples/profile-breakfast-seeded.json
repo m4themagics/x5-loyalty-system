@@ -1,7 +1,7 @@
 {
-  "snapshot_version": 1,
+  "snapshot_version": 2,
   "profile_id": "demo-breakfast-seeded",
-  "label": "Подготовленный профиль: три предмета «Доброго утра» выданы заранее (синтетический профиль)",
+  "label": "Подготовленный профиль: onboarding пройден, собраны три предмета «Доброго утра» (синтетический профиль)",
   "synthetic": true,
   "receipts": [
     {
@@ -55,8 +55,19 @@
     { "item_id": "milk-pitcher", "quantity": 1 },
     { "item_id": "travel-mug", "quantity": 1 }
   ],
-  "issued_rewards": [],
-  "processed_event_ids": [],
+  "issued_rewards": [
+    {
+      "reward_id": "rwd-seeded-onboarding",
+      "challenge_id": "chl-seeded-onboarding",
+      "source_event_id": "evt-seeded-onboarding",
+      "item_instance_id": "inst-seeded-toaster",
+      "item_id": "club-toaster",
+      "sku_entitlement_id": "ent-seeded-bun",
+      "sku_id": "gift-bun-60",
+      "issued_at_ms": 1786000000000
+    }
+  ],
+  "processed_event_ids": ["evt-seeded-onboarding"],
   "active_coupon": null,
   "outstanding_promise": null,
   "progress": {

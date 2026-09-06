@@ -3,6 +3,8 @@
 Пороговые значения не выдумываются в момент выдачи задания: они читаются из
 `data/policy.json`. Отсутствие обязательного параметра запрещает новое обещание.
 """
+from __future__ import annotations
+
 import json
 import pathlib
 from typing import Any
@@ -22,6 +24,14 @@ def load_policy(path: pathlib.Path | None = None) -> dict[str, Any]:
         raise PolicyError(f"нет обязательных параметров политики: {', '.join(sorted(missing))}")
     if policy.get("insufficient_history_policy") not in {"refuse", "fixed_challenge"}:
         raise PolicyError("insufficient_history_policy должен быть refuse или fixed_challenge")
+    if policy.get("first_cycle_funding_policy") not in {
+        "advertiser_only",
+        "advertiser_or_positive_margin",
+    }:
+        raise PolicyError(
+            "first_cycle_funding_policy должен быть advertiser_only "
+            "или advertiser_or_positive_margin"
+        )
     return policy
 
 

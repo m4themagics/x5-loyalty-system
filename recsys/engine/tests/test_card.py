@@ -43,7 +43,7 @@ class CardTest(unittest.TestCase):
             card = handle_decision(copy.deepcopy(self.request))["card"]
         draft = {field: card[field] for field in
                  ("headline", "body", "reward_line", "deadline_line", "sponsor_line")}
-        self.assertEqual(check(draft, self.challenge, "Термокружка"), [])
+        self.assertEqual(check(draft, self.challenge, "Молочный кувшин"), [])
 
     def test_invalid_model_json_falls_back_and_says_so(self) -> None:
         with mock.patch.dict("os.environ", {"LLM_PROVIDER": "yandexgpt"}), mock.patch.object(llm.yandexgpt, "is_configured", return_value=True), mock.patch.object(
@@ -67,7 +67,7 @@ class CardTest(unittest.TestCase):
         )
 
     def test_a_valid_model_card_is_shown_and_marked_as_llm(self) -> None:
-        draft = {"headline": "Термокружка: кофейный чекпоинт"}
+        draft = {"headline": "Молочный кувшин: утренний чекпоинт"}
         with mock.patch.dict("os.environ", {"LLM_PROVIDER": "yandexgpt"}), mock.patch.object(llm.yandexgpt, "is_configured", return_value=True), mock.patch.object(
             llm.yandexgpt,
             "complete",
@@ -75,11 +75,11 @@ class CardTest(unittest.TestCase):
         ):
             response = handle_decision(copy.deepcopy(self.request))
         self.assertEqual(response["card"]["source"], "llm")
-        self.assertEqual(response["card"]["headline"], "Термокружка: кофейный чекпоинт")
+        self.assertEqual(response["card"]["headline"], "Молочный кувшин: утренний чекпоинт")
         self.assertEqual(response["diagnostics"]["llm"]["latency_ms"], 300)
 
     def test_local_ollama_card_is_used_without_cloud_credentials(self) -> None:
-        draft = {"headline": "Термокружка для доброго утра"}
+        draft = {"headline": "Молочный кувшин для доброго утра"}
         with mock.patch.dict("os.environ", {"LLM_PROVIDER": "ollama"}), mock.patch.object(
             llm.ollama,
             "complete",
@@ -87,7 +87,7 @@ class CardTest(unittest.TestCase):
         ):
             response = handle_decision(copy.deepcopy(self.request))
         self.assertEqual(response["card"]["source"], "llm")
-        self.assertEqual(response["card"]["headline"], "Термокружка для доброго утра")
+        self.assertEqual(response["card"]["headline"], "Молочный кувшин для доброго утра")
         self.assertIn("Купите один оплаченный товар", response["card"]["body"])
         self.assertEqual(response["diagnostics"]["llm"]["model"], "qwen3:1.7b")
 
@@ -112,57 +112,57 @@ class CardContractTest(unittest.TestCase):
     def setUp(self) -> None:
         self.challenge = offer_challenge()
         self.valid = {
-            "headline": "Кофейный чекпоинт",
-            "body": "Купите один товар до 12.09.2026 — «Термокружка» приблизит рецепт.",
-            "reward_line": "Предмет «Термокружка»",
+            "headline": "Молочный чекпоинт",
+            "body": "Купите один товар до 12.09.2026 — «Молочный кувшин» приблизит рецепт.",
+            "reward_line": "Предмет «Молочный кувшин»",
             "deadline_line": "До 12.09.2026",
             "sponsor_line": "При поддержке бренда",
         }
 
     def test_a_clean_card_has_no_violations(self) -> None:
-        self.assertEqual(check(self.valid, self.challenge, "Термокружка"), [])
+        self.assertEqual(check(self.valid, self.challenge, "Молочный кувшин"), [])
 
     def test_an_invented_price_is_blocked(self) -> None:
-        card = {**self.valid, "reward_line": "Предмет «Термокружка» за 149 ₽"}
-        self.assertIn("invented_price", check(card, self.challenge, "Термокружка"))
+        card = {**self.valid, "reward_line": "Предмет «Молочный кувшин» за 149 ₽"}
+        self.assertIn("invented_price", check(card, self.challenge, "Молочный кувшин"))
 
     def test_an_invented_sku_is_blocked(self) -> None:
-        card = {**self.valid, "body": "Купите sku-fake-999 — «Термокружка» приблизит рецепт."}
-        self.assertIn("invented_sku", check(card, self.challenge, "Термокружка"))
+        card = {**self.valid, "body": "Купите sku-fake-999 — «Молочный кувшин» приблизит рецепт."}
+        self.assertIn("invented_sku", check(card, self.challenge, "Молочный кувшин"))
 
     def test_a_changed_deadline_is_blocked(self) -> None:
         card = {**self.valid, "deadline_line": "Осталось 14 дней"}
-        self.assertIn("changed_deadline", check(card, self.challenge, "Термокружка"))
+        self.assertIn("changed_deadline", check(card, self.challenge, "Молочный кувшин"))
 
     def test_a_promised_causal_effect_is_blocked(self) -> None:
-        card = {**self.valid, "body": "Покупка гарантирует скидку, «Термокружка» ваша."}
-        self.assertIn("promised_causal_lift", check(card, self.challenge, "Термокружка"))
+        card = {**self.valid, "body": "Покупка гарантирует скидку, «Молочный кувшин» ваша."}
+        self.assertIn("promised_causal_lift", check(card, self.challenge, "Молочный кувшин"))
 
     def test_a_lifted_hold_is_blocked(self) -> None:
-        card = {**self.valid, "body": "Награда ваша, забирайте сейчас, «Термокружка» ждёт."}
-        self.assertIn("released_hold", check(card, self.challenge, "Термокружка"))
+        card = {**self.valid, "body": "Награда ваша, забирайте сейчас, «Молочный кувшин» ждёт."}
+        self.assertIn("released_hold", check(card, self.challenge, "Молочный кувшин"))
 
     def test_hidden_sponsorship_is_blocked(self) -> None:
         card = {**self.valid, "sponsor_line": None}
-        self.assertIn("hidden_sponsorship", check(card, self.challenge, "Термокружка"))
+        self.assertIn("hidden_sponsorship", check(card, self.challenge, "Молочный кувшин"))
 
     def test_false_urgency_is_blocked(self) -> None:
-        card = {**self.valid, "headline": "Только сегодня: Термокружка"}
-        self.assertIn("false_urgency", check(card, self.challenge, "Термокружка"))
+        card = {**self.valid, "headline": "Только сегодня: Молочный кувшин"}
+        self.assertIn("false_urgency", check(card, self.challenge, "Молочный кувшин"))
 
     def test_a_card_that_forgets_the_reward_is_blocked(self) -> None:
         card = {**self.valid, "reward_line": "Полезный предмет"}
         card["body"] = "Купите один товар до 12.09.2026 и продвиньтесь по рецепту."
         card["headline"] = "Кофейный чекпоинт"
-        self.assertIn("reward_mismatch", check(card, self.challenge, "Термокружка"))
+        self.assertIn("reward_mismatch", check(card, self.challenge, "Молочный кувшин"))
 
     def test_a_card_without_a_next_step_is_blocked(self) -> None:
-        card = {**self.valid, "body": "«Термокружка» — приятный предмет коллекции."}
-        self.assertIn("missing_next_step", check(card, self.challenge, "Термокружка"))
+        card = {**self.valid, "body": "«Молочный кувшин» — приятный предмет коллекции."}
+        self.assertIn("missing_next_step", check(card, self.challenge, "Молочный кувшин"))
 
     def test_extra_fields_are_blocked(self) -> None:
         card = {**self.valid, "price": "149"}
-        self.assertIn("unexpected_card_field", check(card, self.challenge, "Термокружка"))
+        self.assertIn("unexpected_card_field", check(card, self.challenge, "Молочный кувшин"))
 
 
 if __name__ == "__main__":

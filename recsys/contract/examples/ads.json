@@ -1,0 +1,41 @@
+{
+  "campaigns": [
+    {
+      "campaign_id": "camp_042",
+      "remaining_budget_kopecks": 8240000,
+      "reserved_kopecks": 0,
+      "settled_kopecks": 0,
+      "frequency_cap_14d": 2
+    },
+    {
+      "campaign_id": "camp_067",
+      "remaining_budget_kopecks": 6400000,
+      "reserved_kopecks": 0,
+      "settled_kopecks": 0,
+      "frequency_cap_14d": 2
+    },
+    {
+      "campaign_id": "camp_058",
+      "remaining_budget_kopecks": 7120000,
+      "reserved_kopecks": 0,
+      "settled_kopecks": 0,
+      "frequency_cap_14d": 3
+    },
+    {
+      "campaign_id": "camp_063",
+      "remaining_budget_kopecks": 5080000,
+      "reserved_kopecks": 0,
+      "settled_kopecks": 0,
+      "frequency_cap_14d": 2
+    },
+    {
+      "campaign_id": "camp_071",
+      "remaining_budget_kopecks": 40000,
+      "reserved_kopecks": 0,
+      "settled_kopecks": 0,
+      "frequency_cap_14d": 2
+    }
+  ],
+  "exposures": [],
+  "billings": []
+}

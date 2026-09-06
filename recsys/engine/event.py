@@ -3,6 +3,8 @@
 Повтор легитимного запроса возвращает прежний результат и сам по себе не является
 мошенничеством. Бесплатные строки не закрывают задание.
 """
+from __future__ import annotations
+
 import hashlib
 from typing import Any
 
@@ -33,10 +35,16 @@ def handle_event(request: dict[str, Any]) -> dict[str, Any]:
     risk = assess(profile, receipt, history, policy).as_contract()
 
     processed = set(profile["processed_event_ids"])
+    event_id = _stable_id("evt", request["idempotency_key"])
     already_issued = any(
         reward["challenge_id"] == challenge["challenge_id"] for reward in profile["issued_rewards"]
     )
-    if request["idempotency_key"] in processed or receipt["receipt_id"] in processed or already_issued:
+    if (
+        request["idempotency_key"] in processed
+        or event_id in processed
+        or receipt["receipt_id"] in processed
+        or already_issued
+    ):
         reasons = ["idempotent_replay"]
         if already_issued:
             reasons.append("reward_already_issued")
@@ -124,16 +132,43 @@ def _response(
     grant: dict[str, Any] | None,
     reason_codes: list[str],
 ) -> dict[str, Any]:
+    event_id = _stable_id("evt", request["idempotency_key"])
+    billing = _build_billing(request, event_id) if grant is not None and not replay else None
+    if billing is not None:
+        reason_codes = [*reason_codes, "ad_billed_once"]
     return {
-        "contract_version": 1,
+        "contract_version": 2,
         "request_id": request["request_id"],
         "server_time_ms": request["now_ms"],
-        "event_id": _stable_id("evt", request["idempotency_key"]),
+        "event_id": event_id,
         "qualification": qualification,
         "idempotent_replay": replay,
         "risk": risk,
         "grant": grant,
+        "billing": billing,
         "reason_codes": reason_codes,
+    }
+
+
+def _build_billing(request: dict[str, Any], event_id: str) -> dict[str, Any] | None:
+    """First-price CPA: оплата равна ставке и возникает только после allow+выдачи."""
+    economics = request["challenge"]["economics"]
+    campaign_id = economics.get("campaign_id")
+    advertiser_id = economics.get("advertiser_id")
+    if economics.get("funding_source") != "advertiser" or not campaign_id or not advertiser_id:
+        return None
+    bid = int(economics["bid_per_qualified_event_kopecks"])
+    subsidy = int(economics["subsidy_kopecks"])
+    return {
+        "billing_id": _stable_id("bill", f"{event_id}|{campaign_id}"),
+        "event_id": event_id,
+        "profile_id": request["profile"]["profile_id"],
+        "challenge_id": request["challenge"]["challenge_id"],
+        "campaign_id": campaign_id,
+        "advertiser_id": advertiser_id,
+        "amount_kopecks": bid,
+        "subsidy_kopecks": subsidy,
+        "billed_at_ms": request["now_ms"],
     }
 
 

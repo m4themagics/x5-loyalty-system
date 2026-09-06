@@ -88,11 +88,11 @@ describe('обмен цифровыми дубликатами', () => {
     expect(createDemoTrade(capped, { trade_id: 'fourth', actor_profile_id: a.profile_id, receiver_profile_id: b.profile_id, offered_item_id: 'milk-pitcher', requested_item_id: 'breakfast-pan', expected_store_revision: capped.store_revision }, NOW + 2).reason).toBe('trade_weekly_limit')
   })
 
-  test('store v1 мигрирует в v2 без потери состояния, ожидающий обмен переживает reload', () => {
+  test('store v1 мигрирует в v3 без потери состояния, ожидающий обмен переживает reload', () => {
     const store = initial()
     const legacy = { store_version: 1, active_profile_id: store.active_profile_id, profiles: store.profiles, referral_awards: [] }
     const migrated = resolveDemoStore(JSON.stringify(legacy))!
-    expect(migrated.store_version).toBe(2)
+    expect(migrated.store_version).toBe(3)
     expect(migrated.trades).toEqual([])
     expect(migrated.profiles[a.profile_id].profile.inventory).toEqual(a.inventory)
     const pending = offer().store

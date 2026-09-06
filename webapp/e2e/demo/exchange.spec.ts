@@ -25,7 +25,7 @@ test('reserves both duplicates, restores the offer and atomically exchanges befo
   await expect(social.getByRole('button', { name: 'Принять обмен' })).toHaveCount(0)
 
   const swapped = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)!), storageKey)
-  expect(swapped.store_version).toBe(2)
+  expect(swapped.store_version).toBe(3)
   expect(swapped.trades).toHaveLength(1)
   expect(swapped.trades[0].status).toBe('accepted')
   expect(swapped.profiles['demo-trade-anya'].trade_reserved_items).toEqual([])

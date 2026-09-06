@@ -3,12 +3,15 @@
 Каталог предметов и рецепты приходят в запросе снимком игры. Движок не хранит второй каталог
 и не считает процент скидки: это правило игры.
 """
+from __future__ import annotations
+
 from typing import Any, NamedTuple
 
 from .economics import (
     Budget,
     Sponsorship,
     build_economics,
+    expected_incremental_margin,
     expected_net_kopecks,
     select_sponsorship,
 )
@@ -120,6 +123,8 @@ def build_candidates(
                     excluded=excluded,
                     coupon_reserve=coupon_reserve,
                     grant_physical=grant_physical,
+                    ads=request.get("ads"),
+                    profile_id=request["profile"]["profile_id"],
                 )
             )
 
@@ -142,6 +147,8 @@ def _evaluate(
     excluded: set[str],
     coupon_reserve: int,
     grant_physical: bool,
+    ads: dict[str, Any] | None,
+    profile_id: str,
 ) -> Candidate:
     category = item["category"]
     reasons: list[str] = []
@@ -177,13 +184,40 @@ def _evaluate(
             reasons.append("physical_budget_insufficient")
         accepted = False
 
-    sponsorship = select_sponsorship(category, now_ms, policy, campaigns)
+    completes = progress["matched_count"] + 1 >= craft_size
+    reward_cost = coupon_reserve + physical_reserve
+    expected_margin = expected_incremental_margin(category, policy)
+    sponsorship = select_sponsorship(
+        category,
+        now_ms,
+        policy,
+        campaigns,
+        ads=ads,
+        profile_id=profile_id,
+        candidate_relevance_bps=_candidate_relevance_bps(
+            familiar_days=history.days_in_category(category),
+            is_goal_recipe=recipe["id"] == goal_recipe_id,
+            completes_recipe=completes,
+        ),
+        expected_x5_margin_kopecks=expected_margin,
+        reward_cost_kopecks=reward_cost,
+        # The shared coupon fund reserves the digital item separately. The advertiser
+        # must fully cover only the physical SKU promised in this first-cycle offer.
+        required_physical_funding_kopecks=physical_reserve if grant_physical else 0,
+    )
+    if (
+        grant_physical
+        and policy["first_cycle_funding_policy"] == "advertiser_only"
+        and sponsorship.campaign_id is None
+    ):
+        reasons.extend(("funding_gate", "physical_reward_requires_advertiser"))
+        reasons.extend(_ads_reason_codes(sponsorship.reason_codes))
+        accepted = False
     economics = build_economics(category, coupon_reserve, physical_reserve, sponsorship, policy)
     if expected_net_kopecks(economics) < policy["min_expected_increment_kopecks"]:
         reasons.append("sku_economics_negative")
         accepted = False
 
-    completes = progress["matched_count"] + 1 >= craft_size
     if completes:
         reasons.append("recipe_completion_reachable")
     elif progress["matched_count"] == 0:
@@ -231,3 +265,42 @@ def _pick_gift_sku(category: str, sku_catalog: dict[str, Any]) -> dict[str, Any]
     if not available:
         return None
     return min(available, key=lambda sku: (sku["unit_cost_kopecks"], sku["sku_id"]))
+
+
+def _candidate_relevance_bps(
+    *, familiar_days: int, is_goal_recipe: bool, completes_recipe: bool
+) -> int:
+    """Transparent rules baseline: history first, then useful collection progress."""
+    return min(
+        10_000,
+        7_000
+        + min(familiar_days, 3) * 500
+        + 750 * int(is_goal_recipe)
+        + 750 * int(completes_recipe),
+    )
+
+
+def _ads_reason_codes(reason_codes: tuple[str, ...]) -> list[str]:
+    mapped = {
+        "campaign_budget_insufficient": (
+            "advertiser_budget_insufficient",
+            "ads_budget_insufficient",
+        ),
+        "frequency_cap_reached": ("frequency_cap_reached", "ads_frequency_cap"),
+        "quality_below_floor": ("quality_below_floor", "ads_quality_below_floor"),
+        "increment_below_floor": ("increment_below_floor", "ads_quality_below_floor"),
+        "physical_reward_funding_insufficient": (
+            "physical_reward_funding_insufficient",
+        ),
+        "category_mismatch": ("ads_no_eligible_campaign",),
+        "flight_inactive": ("ads_no_eligible_campaign",),
+        "no_eligible_campaign": ("ads_no_eligible_campaign",),
+        "ads_category_unmapped": ("ads_no_eligible_campaign",),
+    }
+    return list(
+        dict.fromkeys(
+            mapped_code
+            for code in reason_codes
+            for mapped_code in mapped.get(code, ())
+        )
+    )

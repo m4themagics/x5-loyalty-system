@@ -1,5 +1,5 @@
 {
-  "contract_version": 1,
+  "contract_version": 2,
   "request_id": "req-demo-event-replay",
   "server_time_ms": 1788685260000,
   "event_id": "evt_demo_0001",
@@ -13,6 +13,7 @@
     ]
   },
   "grant": null,
+  "billing": null,
   "reason_codes": [
     "idempotent_replay",
     "reward_already_issued"

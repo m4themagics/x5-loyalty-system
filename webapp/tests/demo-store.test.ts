@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test'
 import { readFileSync } from 'node:fs'
-import { demoBudgetSnapshotSchema, demoDecisionResponseSchema, demoEventResponseSchema, demoProfileSnapshotSchema } from '@pyaterochka-game-demo/contracts'
+import { demoAdsStateSchema, demoBudgetSnapshotSchema, demoDecisionResponseSchema, demoEventResponseSchema, demoProfileSnapshotSchema } from '@pyaterochka-game-demo/contracts'
 import { applyDecision, applyEvent, createDemoState, serializeDemoState } from '../src/features/home/demo-state'
-import { applyReferralReward, createDemoStore, resolveDemoStore, saveDemoProfile, selectDemoProfile, serializeDemoStore } from '../src/features/home/demo-store'
+import { applyDemoDecision, applyDemoEvent, applyReferralReward, createDemoStore, releaseExpiredDemoPromises, resetDemoStore, resolveDemoStore, saveDemoProfile, selectDemoProfile, serializeDemoStore } from '../src/features/home/demo-store'
 import { addDemoSelection, removeDemoSelection } from '../src/features/home/demo-selection'
 import { buildDemoReceipt } from '../src/features/home/demo-receipt'
 
@@ -10,6 +10,7 @@ const example = (file: string) => JSON.parse(readFileSync(new URL(`../../recsys/
 const profile = demoProfileSnapshotSchema.parse(example('profile-empty.json'))
 const prepared = demoProfileSnapshotSchema.parse(example('profile-breakfast-seeded.json'))
 const budget = demoBudgetSnapshotSchema.parse(example('budget.json'))
+const ads = demoAdsStateSchema.parse(example('ads.json'))
 const nowMs = 1_788_598_800_000
 
 function referralScenario() {
@@ -48,6 +49,80 @@ describe('сохранение персональных сценариев', () 
     const restored = resolveDemoStore(serializeDemoState(state))!
     expect(restored.active_profile_id).toBe(prepared.profile_id)
     expect(restored.profiles[prepared.profile_id]).toEqual(state)
+  })
+})
+
+describe('живой Ads-журнал', () => {
+  test('атомарно резервирует показ и один раз списывает first-price CPA', () => {
+    const offer = demoDecisionResponseSchema.parse(example('decision-response-offer.json'))
+    const event = demoEventResponseSchema.parse(example('event-response-granted.json'))
+    let store = createDemoStore(createDemoState(profile, budget), ads)
+    const initialCampaign = store.ads.campaigns.find((entry) => entry.campaign_id === 'camp_058')!
+
+    store = applyDemoDecision(store, profile.profile_id, offer, 1, nowMs)
+    expect(store.ads.exposures).toHaveLength(1)
+    expect(store.ads.exposures[0]).toMatchObject({ decision_id: offer.decision_id, status: 'reserved', reserved_kopecks: 4300 })
+    expect(store.ads.campaigns.find((entry) => entry.campaign_id === 'camp_058')?.reserved_kopecks).toBe(4300)
+
+    const state = store.profiles[profile.profile_id]
+    const receipt = buildDemoReceipt('qualifying', state.challenge!, nowMs, 'rcp-ledger-test')
+    store = applyDemoEvent(store, profile.profile_id, event, receipt, state.revision, nowMs)
+    const settled = store.ads.campaigns.find((entry) => entry.campaign_id === 'camp_058')!
+    expect(store.ads.billings).toHaveLength(1)
+    expect(settled.remaining_budget_kopecks).toBe(initialCampaign.remaining_budget_kopecks - 4300)
+    expect(settled.reserved_kopecks).toBe(0)
+    expect(settled.settled_kopecks).toBe(4300)
+    expect(store.ads.exposures[0]?.status).toBe('billed')
+
+    const reset = resetDemoStore([profile, prepared], budget, ads)
+    expect(reset.active_profile_id).toBe(profile.profile_id)
+    expect(reset.profiles[profile.profile_id].profile.issued_rewards).toEqual([])
+    expect(reset.profiles[prepared.profile_id].profile.inventory).toHaveLength(3)
+    expect(reset.ads).toEqual(ads)
+    expect(reset.trades).toEqual([])
+    expect(reset.referral_awards).toEqual([])
+  })
+
+  test('отклоняет подмену billing, его пропуск и необеспеченное списание', () => {
+    const offer = demoDecisionResponseSchema.parse(example('decision-response-offer.json'))
+    const event = demoEventResponseSchema.parse(example('event-response-granted.json'))
+    let store = createDemoStore(createDemoState(profile, budget), ads)
+    store = applyDemoDecision(store, profile.profile_id, offer, 1, nowMs)
+    const before = store
+    const state = store.profiles[profile.profile_id]
+    const receipt = buildDemoReceipt('qualifying', state.challenge!, nowMs, 'rcp-forged-billing')
+    const forged = { ...event, billing: { ...event.billing!, amount_kopecks: event.billing!.amount_kopecks + 1 } }
+    expect(applyDemoEvent(store, profile.profile_id, forged, receipt, state.revision, nowMs)).toBe(before)
+    expect(applyDemoEvent(store, profile.profile_id, { ...event, billing: null }, receipt, state.revision, nowMs)).toBe(before)
+
+    const duplicateBilling = {
+      ...store,
+      ads: { ...store.ads, billings: [event.billing!] },
+    }
+    expect(applyDemoEvent(duplicateBilling, profile.profile_id, event, receipt, state.revision, nowMs)).toBe(duplicateBilling)
+
+    const depleted = {
+      ...store,
+      ads: {
+        ...store.ads,
+        campaigns: store.ads.campaigns.map((campaign) => campaign.campaign_id === 'camp_058'
+          ? { ...campaign, remaining_budget_kopecks: 4_299 }
+          : campaign),
+      },
+    }
+    expect(applyDemoEvent(depleted, profile.profile_id, event, receipt, state.revision, nowMs)).toBe(depleted)
+  })
+
+  test('освобождает истёкшие Ads-резервы всех профилей', () => {
+    const offer = demoDecisionResponseSchema.parse(example('decision-response-offer.json'))
+    let store = createDemoStore(createDemoState(profile, budget), ads)
+    store = applyDemoDecision(store, profile.profile_id, offer, 1, nowMs)
+    store = selectDemoProfile(store, prepared, budget)
+
+    store = releaseExpiredDemoPromises(store, offer.challenge!.target.deadline_ms + 1)
+    expect(store.ads.exposures[0]?.status).toBe('released')
+    expect(store.ads.campaigns.find((entry) => entry.campaign_id === 'camp_058')?.reserved_kopecks).toBe(0)
+    expect(store.active_profile_id).toBe(prepared.profile_id)
   })
 })
 

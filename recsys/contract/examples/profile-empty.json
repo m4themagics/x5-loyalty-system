@@ -1,12 +1,12 @@
 {
-  "snapshot_version": 1,
+  "snapshot_version": 2,
   "profile_id": "demo-empty",
   "label": "Новый участник, пустой инвентарь (синтетический профиль)",
   "synthetic": true,
   "receipts": [
     {
       "receipt_id": "rcp-empty-001",
-      "purchased_at_ms": 1786784400000,
+      "purchased_at_ms": 1788339600000,
       "store_id": "store-demo-1",
       "returned": false,
       "lines": [
@@ -24,7 +24,7 @@
     },
     {
       "receipt_id": "rcp-empty-003",
-      "purchased_at_ms": 1788339600000,
+      "purchased_at_ms": 1786784400000,
       "store_id": "store-demo-1",
       "returned": false,
       "lines": [

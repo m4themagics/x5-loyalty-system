@@ -2,15 +2,19 @@
   "notes": "Синтетические рекламодатели и кампании. Сгенерированы LLM по brand brief, проверены критиком. Ни один бренд не является реальным партнёром X5.",
   "contribution_margin_rub": 120.0,
   "incrementality_floor": 0.04,
+  "min_quality_bps": 4500,
   "advertisers": [
     { "advertiser_id": "brand_07", "name": "Кофейный бренд", "category": "coffee" },
     { "advertiser_id": "brand_12", "name": "Молочный бренд", "category": "dairy" },
-    { "advertiser_id": "brand_19", "name": "Детское питание", "category": "baby" }
+    { "advertiser_id": "brand_19", "name": "Детское питание", "category": "baby" },
+    { "advertiser_id": "brand_21", "name": "Бренд быстрых завтраков", "category": "dairy" },
+    { "advertiser_id": "brand_22", "name": "Альтернативный кофейный бренд", "category": "coffee" }
   ],
   "campaigns": [
     {
       "campaign_id": "camp_042", "advertiser_id": "brand_07", "objective": "qualified_product_trial",
       "bid_per_qualified_visit": 32.0, "total_budget": 150000.0, "remaining_budget": 82400.0,
+      "quality_score": 0.86, "uplift": 0.075, "p_billable": 0.72, "pacing_multiplier": 1.05,
       "flight_start": "2026-09-05", "flight_end": "2026-09-20", "frequency_cap_14d": 2,
       "eligible_categories": ["coffee"], "reward_sku_id": "sku_318", "reward_cost": 18.0,
       "mechanics_allowed": ["personal_finish", "family_relay"],
@@ -20,18 +24,42 @@
       ]
     },
     {
+      "campaign_id": "camp_067", "advertiser_id": "brand_22", "objective": "qualified_product_trial",
+      "bid_per_qualified_visit": 45.0, "total_budget": 80000.0, "remaining_budget": 64000.0,
+      "quality_score": 0.48, "uplift": 0.045, "p_billable": 0.45, "pacing_multiplier": 0.7,
+      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 2,
+      "eligible_categories": ["coffee"], "reward_sku_id": null, "reward_cost": 0.0,
+      "mechanics_allowed": ["personal_finish"],
+      "creatives": [
+        { "creative_id": "cr_067_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Кофейный маршрут", "next_step": "один визит в течение семи дней" }
+      ]
+    },
+    {
       "campaign_id": "camp_058", "advertiser_id": "brand_12", "objective": "category_reactivation",
       "bid_per_qualified_visit": 18.0, "total_budget": 90000.0, "remaining_budget": 71200.0,
+      "quality_score": 0.92, "uplift": 0.065, "p_billable": 0.82, "pacing_multiplier": 1.2,
       "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 3,
-      "eligible_categories": ["dairy"], "reward_sku_id": null, "reward_cost": 0.0,
+      "eligible_categories": ["dairy"], "reward_sku_id": "gift-milk-500", "reward_cost": 25.0,
       "mechanics_allowed": ["store_coop", "personal_finish"],
       "creatives": [
         { "creative_id": "cr_058_a", "mechanic_family": "store_coop", "behavioral_lever": "collective_progress", "title": "Чекпоинт своей Пятёрочки", "next_step": "визит в течение семи дней" }
       ]
     },
     {
+      "campaign_id": "camp_063", "advertiser_id": "brand_21", "objective": "qualified_product_trial",
+      "bid_per_qualified_visit": 32.0, "total_budget": 70000.0, "remaining_budget": 50800.0,
+      "quality_score": 0.56, "uplift": 0.05, "p_billable": 0.55, "pacing_multiplier": 0.8,
+      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 2,
+      "eligible_categories": ["dairy"], "reward_sku_id": null, "reward_cost": 0.0,
+      "mechanics_allowed": ["personal_finish"],
+      "creatives": [
+        { "creative_id": "cr_063_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Быстрый завтрак", "next_step": "один визит в течение семи дней" }
+      ]
+    },
+    {
       "campaign_id": "camp_071", "advertiser_id": "brand_19", "objective": "repeat_purchase",
       "bid_per_qualified_visit": 36.0, "total_budget": 120000.0, "remaining_budget": 400.0,
+      "quality_score": 0.82, "uplift": 0.055, "p_billable": 0.75, "pacing_multiplier": 1.35,
       "flight_start": "2026-09-03", "flight_end": "2026-09-17", "frequency_cap_14d": 2,
       "eligible_categories": ["baby"], "reward_sku_id": "sku_204", "reward_cost": 21.0,
       "mechanics_allowed": ["personal_finish"],

@@ -1,5 +1,7 @@
 import type { Connect, Plugin, ViteDevServer } from 'vite'
 
+const DEMO_CONTRACT_VERSION = 2
+
 /**
  * Подключает локальный демонстрационный API к dev-серверу.
  *
@@ -20,7 +22,7 @@ export function demoApiPlugin(): Plugin {
           response.statusCode = 500
           response.setHeader('content-type', 'application/json; charset=utf-8')
           response.end(JSON.stringify({
-            contract_version: 1,
+            contract_version: DEMO_CONTRACT_VERSION,
             request_id: 'unknown',
             error: {
               code: 'engine_failed',

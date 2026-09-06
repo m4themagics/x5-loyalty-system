@@ -20,7 +20,8 @@ import { DEMO_AVATAR_MAX_LEVEL, DEMO_COUPON_MAX_KOPECKS, DEMO_INSTANCE_RESERVE_K
  * отбрасывается и не перезаписывает более новое состояние.
  */
 
-export const DEMO_STATE_VERSION = 1
+// v2 сбрасывает старые снимки: их Ads-обещания нельзя списать безопасно.
+export const DEMO_STATE_VERSION = 2
 
 export type DemoState = {
   state_version: typeof DEMO_STATE_VERSION

@@ -1,5 +1,5 @@
 {
-  "contract_version": 1,
+  "contract_version": 2,
   "request_id": "req-demo-decision-empty",
   "server_time_ms": 1788598800000,
   "decision_id": "dec_demo_0001",
@@ -27,8 +27,8 @@
     "reward": {
       "digital_item_id": "milk-pitcher",
       "physical_sku": {
-        "sku_id": "sku-milk-1l",
-        "name": "Молоко питьевое 1 л (синтетический SKU)",
+        "sku_id": "gift-milk-500",
+        "name": "Молоко 0,5 л (синтетический SKU)",
         "unit_cost_kopecks": 2500,
         "stock_reserved": true
       }
@@ -43,23 +43,33 @@
       "advertiser_id": "brand_12",
       "campaign_id": "camp_058",
       "bid_per_qualified_event_kopecks": 1800,
-      "subsidy_kopecks": 0,
-      "uncovered_reward_cost_kopecks": 2750,
-      "expected_incremental_margin_kopecks": 4500
+      "subsidy_kopecks": 2500,
+      "uncovered_reward_cost_kopecks": 250,
+      "expected_incremental_margin_kopecks": 4500,
+      "auction_type": "quality_adjusted_first_price_cpa",
+      "quality_score": 0.759,
+      "predicted_billable_probability": 0.82,
+      "pacing_multiplier": 1.2,
+      "auction_score_kopecks": 5594,
+      "campaign_reserve_kopecks": 4300,
+      "auction_candidate_count": 2,
+      "auction_eligible_count": 2,
+      "highest_candidate_bid_kopecks": 3200,
+      "winner_was_highest_bid": false
     }
   },
   "card": {
     "headline": "Молочный старт недели",
     "body": "Купите один молочный товар до 12 сентября — и «Молочный кувшин» откроет путь к рецепту «Доброе утро».",
-    "reward_line": "Молочный кувшин + бесплатное молоко 1 л",
+    "reward_line": "Молочный кувшин + бесплатное молоко 0,5 л",
     "deadline_line": "До 12 сентября, одна оплаченная покупка",
     "sponsor_line": "Спонсировано: Молочный бренд",
     "source": "fallback",
     "violations": []
   },
   "diagnostics": {
-    "engine_version": "0.1.0",
-    "policy_version": "poc-rules-1",
+    "engine_version": "0.2.0",
+    "policy_version": "poc-sponsored-onboarding-2",
     "candidates": [
       {
         "candidate_id": "cnd_milk_breakfast",

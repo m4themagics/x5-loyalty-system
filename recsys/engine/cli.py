@@ -16,7 +16,7 @@ from recsys.engine.decision import handle_decision  # noqa: E402
 from recsys.engine.event import handle_event  # noqa: E402
 
 HANDLERS = {"decision": handle_decision, "event": handle_event}
-CONTRACT_VERSION = 1
+CONTRACT_VERSION = 2
 
 
 def main(argv: list[str]) -> int:

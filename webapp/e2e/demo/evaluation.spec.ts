@@ -16,7 +16,7 @@ test('X5 role reads compact economic evidence and can inspect the current decisi
   expect(body.primary.runs).toBeUndefined()
   const panel = page.getByRole('region', { name: 'Для X5', exact: true })
   await expect(panel.getByText('Финансируемый первый подарок', { exact: true })).toBeVisible()
-  await expect(panel.getByText('Итог после полного обеспечения обязательств', { exact: true })).toBeVisible()
+  await expect(panel.getByText('Итог X5 на 1 000 пользователей после обеспечения', { exact: true })).toBeVisible()
   await expect(panel.getByText('CPA безубыточности с обеспечением', { exact: true })).toBeVisible()
   await expect(panel.getByText(`${body.primary.conservative_positive_net_seeds} из ${body.primary.seed_count} seed`, { exact: true })).toBeVisible()
   await expect(panel.getByText('Источник финансирования', { exact: true })).toBeVisible()

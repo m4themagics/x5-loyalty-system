@@ -110,7 +110,8 @@ describe('реферальный расчёт', () => {
   })
 
   test('квалифицирующей считается только выданная награда', () => {
-    expect(firstQualifyingPurchaseMs(seeded)).toBeNull()
+    expect(firstQualifyingPurchaseMs({ ...seeded, issued_rewards: [] })).toBeNull()
+    expect(firstQualifyingPurchaseMs(seeded)).toBe(1_786_000_000_000)
   })
 })
 

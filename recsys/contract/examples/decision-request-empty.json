@@ -1,16 +1,16 @@
 {
-  "contract_version": 1,
+  "contract_version": 2,
   "request_id": "req-demo-decision-empty",
   "now_ms": 1788598800000,
   "profile": {
-    "snapshot_version": 1,
+    "snapshot_version": 2,
     "profile_id": "demo-empty",
     "label": "Новый участник, пустой инвентарь (синтетический профиль)",
     "synthetic": true,
     "receipts": [
       {
         "receipt_id": "rcp-empty-001",
-        "purchased_at_ms": 1786784400000,
+        "purchased_at_ms": 1788339600000,
         "store_id": "store-demo-1",
         "returned": false,
         "lines": [
@@ -40,7 +40,7 @@
       },
       {
         "receipt_id": "rcp-empty-003",
-        "purchased_at_ms": 1788339600000,
+        "purchased_at_ms": 1786784400000,
         "store_id": "store-demo-1",
         "returned": false,
         "lines": [
@@ -424,5 +424,46 @@
     "physical_fund_kopecks": 2500000,
     "physical_settled_kopecks": 0,
     "physical_reserved_kopecks": 0
+  },
+  "ads": {
+    "campaigns": [
+      {
+        "campaign_id": "camp_042",
+        "remaining_budget_kopecks": 8240000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_067",
+        "remaining_budget_kopecks": 6400000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_058",
+        "remaining_budget_kopecks": 7120000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 3
+      },
+      {
+        "campaign_id": "camp_063",
+        "remaining_budget_kopecks": 5080000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_071",
+        "remaining_budget_kopecks": 40000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      }
+    ],
+    "exposures": [],
+    "billings": []
   }
 }

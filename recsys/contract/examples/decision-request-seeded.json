@@ -1,11 +1,11 @@
 {
-  "contract_version": 1,
+  "contract_version": 2,
   "request_id": "req-demo-decision-seeded",
   "now_ms": 1788598800000,
   "profile": {
-    "snapshot_version": 1,
+    "snapshot_version": 2,
     "profile_id": "demo-breakfast-seeded",
-    "label": "Подготовленный профиль: три предмета «Доброго утра» выданы заранее (синтетический профиль)",
+    "label": "Подготовленный профиль: onboarding пройден, собраны три предмета «Доброго утра» (синтетический профиль)",
     "synthetic": true,
     "receipts": [
       {
@@ -98,8 +98,21 @@
         "quantity": 1
       }
     ],
-    "issued_rewards": [],
-    "processed_event_ids": [],
+    "issued_rewards": [
+      {
+        "reward_id": "rwd-seeded-onboarding",
+        "challenge_id": "chl-seeded-onboarding",
+        "source_event_id": "evt-seeded-onboarding",
+        "item_instance_id": "inst-seeded-toaster",
+        "item_id": "club-toaster",
+        "sku_entitlement_id": "ent-seeded-bun",
+        "sku_id": "gift-bun-60",
+        "issued_at_ms": 1786000000000
+      }
+    ],
+    "processed_event_ids": [
+      "evt-seeded-onboarding"
+    ],
     "active_coupon": null,
     "outstanding_promise": null,
     "progress": {
@@ -471,5 +484,46 @@
     "physical_fund_kopecks": 2500000,
     "physical_settled_kopecks": 0,
     "physical_reserved_kopecks": 0
+  },
+  "ads": {
+    "campaigns": [
+      {
+        "campaign_id": "camp_042",
+        "remaining_budget_kopecks": 8240000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_067",
+        "remaining_budget_kopecks": 6400000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_058",
+        "remaining_budget_kopecks": 7120000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 3
+      },
+      {
+        "campaign_id": "camp_063",
+        "remaining_budget_kopecks": 5080000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      },
+      {
+        "campaign_id": "camp_071",
+        "remaining_budget_kopecks": 40000,
+        "reserved_kopecks": 0,
+        "settled_kopecks": 0,
+        "frequency_cap_14d": 2
+      }
+    ],
+    "exposures": [],
+    "billings": []
   }
 }

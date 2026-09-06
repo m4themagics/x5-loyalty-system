@@ -82,7 +82,7 @@ describe('демонстрационное состояние персональ
     const state = grantedState()
     expect(state.profile.inventory).toEqual([{ item_id: 'milk-pitcher', quantity: 1 }])
     expect(state.profile.issued_rewards).toHaveLength(1)
-    expect(state.profile.issued_rewards[0].sku_id).toBe('sku-milk-1l')
+    expect(state.profile.issued_rewards[0].sku_id).toBe('gift-milk-500')
     expect(state.profile.outstanding_promise?.fulfilled).toBe(true)
     expect(state.budget.coupon_settled_kopecks).toBe(0)
     expect(state.budget.physical_settled_kopecks).toBe(2500)

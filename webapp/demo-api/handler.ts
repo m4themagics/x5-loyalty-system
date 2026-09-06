@@ -53,7 +53,8 @@ export async function handleDemoRequest(
   if (route === '/evaluation' && request.method === 'GET') {
     try {
       const report = JSON.parse(readFileSync(path.join(REPO_ROOT, 'recsys/eval/results/policy-comparison.json'), 'utf8'))
-      sendJson(response, 200, summarizeDemoEvaluation(report))
+      const learned = JSON.parse(readFileSync(path.join(REPO_ROOT, 'recsys/eval/results/learned-recsys.json'), 'utf8'))
+      sendJson(response, 200, summarizeDemoEvaluation(report, learned))
     } catch {
       sendError(response, 'evaluation', 'engine_failed', 'Отчёт оценки отсутствует или не соответствует контракту. Повторите локальную оценку.')
     }
@@ -110,7 +111,7 @@ export async function handleDemoRequest(
       response,
       requestId,
       engine.exitCode === 0 ? 'engine_invalid_output' : 'engine_failed',
-      engine.stderr.trim() || 'движок не вернул JSON',
+      engine.stderr.trim() === '' ? 'движок не вернул JSON' : conciseEngineError(engine.stderr),
     )
     return
   }
@@ -121,7 +122,7 @@ export async function handleDemoRequest(
       sendJson(response, STATUS_BY_CODE[parsedError.data.error.code], parsedError.data)
       return
     }
-    sendError(response, requestId, 'engine_failed', engine.stderr.trim() || 'движок завершился с ошибкой')
+    sendError(response, requestId, 'engine_failed', conciseEngineError(engine.stderr))
     return
   }
 
@@ -133,6 +134,12 @@ export async function handleDemoRequest(
   }
 
   sendJson(response, 200, parsedResponse.data)
+}
+
+function conciseEngineError(stderr: string): string {
+  const lines = stderr.split('\n').map((line) => line.trim()).filter(Boolean)
+  if (lines.length === 0) return 'движок завершился с ошибкой'
+  return lines.slice(-4).join(' \u00b7 ')
 }
 
 type EngineRun = {
@@ -184,6 +191,7 @@ function readSeedProfiles() {
     contract_version: DEMO_CONTRACT_VERSION,
     profiles: PROFILE_FILES.map((file) => readExample(file)),
     budget: readExample('budget.json'),
+    ads: readExample('ads.json'),
   })
 }
 

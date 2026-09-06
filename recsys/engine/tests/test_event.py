@@ -39,6 +39,17 @@ class EventTest(unittest.TestCase):
         self.assertIsNone(response["grant"])
         self.assertIn("idempotent_replay", response["reason_codes"])
 
+        # Клиент хранит возвращённый event_id, а повтор может прийти с тем же
+        # idempotency key и изменённым телом чека. Это всё ещё одно событие.
+        request = copy.deepcopy(self.request)
+        first = handle_event(request)
+        request["profile"]["processed_event_ids"] = [first["event_id"]]
+        request["receipt"]["receipt_id"] = "rcp-changed-after-first-attempt"
+        response = handle_event(request)
+        self.assertEqual(response["qualification"], "duplicate")
+        self.assertTrue(response["idempotent_replay"])
+        self.assertIsNone(response["grant"])
+
     def test_replayed_receipt_id_returns_a_duplicate(self) -> None:
         request = copy.deepcopy(self.request)
         request["profile"]["processed_event_ids"] = [request["receipt"]["receipt_id"]]

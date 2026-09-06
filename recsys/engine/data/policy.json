@@ -1,6 +1,6 @@
 {
-  "policy_version": "poc-rules-1",
-  "engine_version": "0.1.0",
+  "policy_version": "poc-sponsored-onboarding-2",
+  "engine_version": "0.2.0",
   "notes": "Пороговые значения — параметры перед запуском. Отсутствие обязательного параметра запрещает новое обещание: движок отвечает объяснимым отказом, а не подставляет число.",
   "required_parameters": [
     "challenge_window_days",
@@ -12,6 +12,9 @@
     "history_window_days",
     "exploration_enabled",
     "insufficient_history_policy",
+    "first_cycle_funding_policy",
+    "ads_min_quality_bps",
+    "ads_min_increment_bps",
     "risk"
   ],
   "challenge_window_days": 7,
@@ -35,6 +38,9 @@
   "exploration_enabled": false,
   "insufficient_history_policy": "refuse",
   "first_cycle_physical_reward": true,
+  "first_cycle_funding_policy": "advertiser_only",
+  "ads_min_quality_bps": 4500,
+  "ads_min_increment_bps": 400,
   "campaign_category_map": {
     "Молочные продукты": "dairy",
     "Кофе и чай": "coffee",

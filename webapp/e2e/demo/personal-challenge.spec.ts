@@ -30,7 +30,7 @@ test('computes a challenge from purchase history and issues both rewards once', 
   await page.getByRole('button', { name: 'Показать задание' }).click()
   const card = page.getByRole('article', { name: 'Карточка задания' })
   await expect(card).toBeVisible()
-  await expect(card.locator('.demo-card-headline')).toHaveText('Доброе утро: Термокружка')
+  await expect(card.locator('.demo-card-headline')).toHaveText('Доброе утро: Молочный кувшин')
 
   await page.getByRole('button', { name: 'Оплаченная покупка нужной категории' }).click()
   const reveal = page.getByRole('dialog', { name: 'Награда за задание' })
@@ -38,7 +38,7 @@ test('computes a challenge from purchase history and issues both rewards once', 
   await expect(reveal.getByText('Плюс демонстрационное право на бесплатный товар')).toBeVisible()
   await reveal.getByRole('button', { name: 'Забрать' }).click()
 
-  await expect(page.getByRole('button', { name: /Термокружка/ })).toBeVisible()
+  await expect(page.getByRole('button', { name: /Молочный кувшин/ })).toBeVisible()
 
   const afterGrant = await readActiveState(page)
   expect(afterGrant.profile.issued_rewards).toHaveLength(1)
@@ -55,7 +55,7 @@ test('computes a challenge from purchase history and issues both rewards once', 
 
   const afterReplay = await readActiveState(page)
   expect(afterReplay.profile.issued_rewards).toHaveLength(1)
-  expect(afterReplay.profile.inventory).toEqual([{ item_id: 'travel-mug', quantity: 1 }])
+  expect(afterReplay.profile.inventory).toEqual([{ item_id: 'milk-pitcher', quantity: 1 }])
 })
 
 test('keeps the issued item and the fulfilled promise after a reload', async ({ page }) => {
@@ -67,7 +67,7 @@ test('keeps the issued item and the fulfilled promise after a reload', async ({ 
   await page.reload()
   await page.getByRole('button', { name: 'Профиль' }).click()
 
-  await expect(page.getByRole('button', { name: /Термокружка/ })).toBeVisible()
+  await expect(page.getByRole('button', { name: /Молочный кувшин/ })).toBeVisible()
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
 })
 

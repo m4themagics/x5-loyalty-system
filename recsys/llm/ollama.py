@@ -1,4 +1,5 @@
 """Локальный LLM-провайдер через HTTP API Ollama, без Python SDK."""
+from __future__ import annotations
 
 import json
 import os

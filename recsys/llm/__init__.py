@@ -4,6 +4,8 @@
 отсутствие ключа или нарушение контракта дают корректный детерминированный шаблон
 с источником `fallback`. Живая генерация без доступа к API не считается проверенной.
 """
+from __future__ import annotations
+
 import datetime as dt
 import json
 import os

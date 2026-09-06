@@ -3,11 +3,12 @@ import copy
 import json
 import pathlib
 import unittest
+from unittest.mock import patch
 
 from recsys.engine.decision import handle_decision
 from recsys.engine.economics import available_budget
 from recsys.engine.history import PurchaseHistory
-from recsys.engine.policy import rubles_to_kopecks
+from recsys.engine.policy import load_campaigns, rubles_to_kopecks
 
 EXAMPLES = pathlib.Path(__file__).resolve().parents[3] / "recsys" / "contract" / "examples"
 DAY_MS = 86_400_000
@@ -71,6 +72,26 @@ class DecisionTest(unittest.TestCase):
             challenge["reservation"]["physical_reserve_kopecks"], physical["unit_cost_kopecks"]
         )
         self.assertEqual(challenge["reservation"]["coupon_reserve_kopecks"], 250)
+
+    def test_first_cycle_refuses_an_ad_that_does_not_fully_fund_the_physical_sku(self) -> None:
+        campaigns = load_campaigns()
+        campaigns["campaigns"] = [
+            {
+                **next(
+                    campaign
+                    for campaign in campaigns["campaigns"]
+                    if campaign["campaign_id"] == "camp_058"
+                ),
+                "bid_per_qualified_visit": 10.0,
+                "reward_cost": 14.99,
+            }
+        ]
+
+        with patch("recsys.engine.decision.load_campaigns", return_value=campaigns):
+            response = handle_decision(copy.deepcopy(self.empty))
+
+        self.assertEqual(response["status"], "no_action")
+        self.assertIn("physical_reward_funding_insufficient", response["reason_codes"])
 
     def test_repeat_cycle_promises_no_second_physical_gift(self) -> None:
         request = copy.deepcopy(self.empty)

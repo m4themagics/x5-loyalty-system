@@ -1,4 +1,6 @@
 """Признаки истории покупок: покупочные дни, знакомые категории, давность и ритм визитов."""
+from __future__ import annotations
+
 import datetime as dt
 from typing import Any
 

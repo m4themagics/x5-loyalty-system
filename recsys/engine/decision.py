@@ -1,4 +1,6 @@
 """Выбор одного следующего задания и сборка ответа `decision`."""
+from __future__ import annotations
+
 import hashlib
 from typing import Any
 
@@ -74,7 +76,7 @@ def handle_decision(request: dict[str, Any]) -> dict[str, Any]:
     card, llm_diagnostics = build_card(challenge, winner, policy)
 
     return {
-        "contract_version": 1,
+        "contract_version": 2,
         "request_id": request["request_id"],
         "server_time_ms": now_ms,
         "decision_id": _decision_id(profile["profile_id"], now_ms, winner.candidate_id),
@@ -143,7 +145,7 @@ def _no_action(
     llm_error: str | None = None,
 ) -> dict[str, Any]:
     return {
-        "contract_version": 1,
+        "contract_version": 2,
         "request_id": request["request_id"],
         "server_time_ms": request["now_ms"],
         "decision_id": _decision_id(
@@ -170,8 +172,28 @@ def _aggregate_reasons(candidates: list[Candidate]) -> list[str]:
             if reason in {"category_in_history", "recipe_completion_reachable", "recipe_goal_first_copy"}:
                 continue
             counts[reason] = counts.get(reason, 0) + 1
-    ranked = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
-    return ["no_eligible_candidate", *[reason for reason, _ in ranked[:3]]]
+    decisive = [
+        reason
+        for reason in (
+            "physical_reward_requires_advertiser",
+            "physical_reward_funding_insufficient",
+            "advertiser_budget_insufficient",
+            "frequency_cap_reached",
+            "quality_below_floor",
+            "funding_gate",
+            "ads_budget_insufficient",
+            "ads_frequency_cap",
+            "ads_quality_below_floor",
+            "ads_no_eligible_campaign",
+        )
+        if reason in counts
+    ]
+    ranked = [
+        reason
+        for reason, _ in sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+        if reason not in decisive
+    ]
+    return ["no_eligible_candidate", *decisive, *ranked[:3]]
 
 
 def _trace(candidates: list[Candidate]) -> list[dict[str, Any]]:

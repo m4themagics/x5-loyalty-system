@@ -8,11 +8,11 @@ import { z } from 'zod'
  * `recsys/engine` на Python. Он не является серверным реестром прав. Поля в snake_case, потому
  * что вторая сторона — Python и существующий `recsys/schema/action.schema.json`.
  *
- * Деньги — целые копейки. Обмен предметами, повторные товарные цели и полный аукцион в этот
- * контракт не входят: у них нет идентификатора экземпляра и они вынесены на следующий этап.
+ * Деньги — целые копейки. Контракт v2 также переносит локальный снимок рекламных бюджетов,
+ * показов и CPA-списаний. Это демонстрационный журнал, а не промышленный биллинг.
  */
 
-export const DEMO_CONTRACT_VERSION = 1
+export const DEMO_CONTRACT_VERSION = 2
 
 export const DEMO_CRAFT_SIZE = 4
 export const DEMO_COUPON_MAX_KOPECKS = 1_000
@@ -51,6 +51,12 @@ export const DEMO_REASON_CODES = [
   'receipt_returned',
   'reward_already_issued',
   'idempotent_replay',
+  'funding_gate',
+  'ads_no_eligible_campaign',
+  'ads_frequency_cap',
+  'ads_budget_insufficient',
+  'ads_quality_below_floor',
+  'ad_billed_once',
 ] as const
 
 const identifierSchema = z.string().min(1).max(120)
@@ -210,6 +216,51 @@ export const demoBudgetSnapshotSchema = z
   })
   .strict()
 
+export const demoAdsCampaignStateSchema = z
+  .object({
+    campaign_id: identifierSchema,
+    remaining_budget_kopecks: kopecksSchema,
+    reserved_kopecks: kopecksSchema,
+    settled_kopecks: kopecksSchema,
+    frequency_cap_14d: z.number().int().positive(),
+  })
+  .strict()
+
+export const demoAdExposureSchema = z
+  .object({
+    exposure_id: identifierSchema,
+    decision_id: identifierSchema,
+    profile_id: identifierSchema,
+    campaign_id: identifierSchema,
+    shown_at_ms: timestampSchema,
+    reserved_kopecks: kopecksSchema,
+    status: z.enum(['reserved', 'billed', 'released']),
+  })
+  .strict()
+
+export const demoAdsBillingSchema = z
+  .object({
+    billing_id: identifierSchema,
+    event_id: identifierSchema,
+    profile_id: identifierSchema,
+    challenge_id: identifierSchema,
+    campaign_id: identifierSchema,
+    advertiser_id: identifierSchema,
+    amount_kopecks: kopecksSchema,
+    subsidy_kopecks: kopecksSchema,
+    billed_at_ms: timestampSchema,
+  })
+  .strict()
+
+/** Глобальный для локальной вкладки журнал Ads: бюджеты общие для всех демопрофилей. */
+export const demoAdsStateSchema = z
+  .object({
+    campaigns: z.array(demoAdsCampaignStateSchema),
+    exposures: z.array(demoAdExposureSchema),
+    billings: z.array(demoAdsBillingSchema),
+  })
+  .strict()
+
 /**
  * Единый версионированный снимок: он же хранится в браузере, он же уходит в движок.
  * `synthetic` обязателен и всегда true — данные демонстрационные.
@@ -238,6 +289,7 @@ export const demoSeedProfilesResponseSchema = z
     contract_version: z.literal(DEMO_CONTRACT_VERSION),
     profiles: z.array(demoProfileSnapshotSchema).min(1),
     budget: demoBudgetSnapshotSchema,
+    ads: demoAdsStateSchema,
   })
   .strict()
 
@@ -255,6 +307,7 @@ export const demoDecisionRequestSchema = demoRequestEnvelopeSchema
     game: demoGameSnapshotSchema,
     game_features: demoGameFeaturesSchema,
     budget: demoBudgetSnapshotSchema,
+    ads: demoAdsStateSchema,
   })
   .strict()
 
@@ -302,6 +355,16 @@ export const demoEconomicsSchema = z
     subsidy_kopecks: kopecksSchema,
     uncovered_reward_cost_kopecks: kopecksSchema,
     expected_incremental_margin_kopecks: z.number().int().max(1_000_000_000),
+    auction_type: z.enum(['quality_adjusted_first_price_cpa', 'organic']),
+    quality_score: z.number().min(0).max(1),
+    predicted_billable_probability: z.number().min(0).max(1),
+    pacing_multiplier: z.number().min(0).max(2),
+    auction_score_kopecks: z.number().int(),
+    campaign_reserve_kopecks: kopecksSchema,
+    auction_candidate_count: z.number().int().nonnegative(),
+    auction_eligible_count: z.number().int().nonnegative(),
+    highest_candidate_bid_kopecks: kopecksSchema,
+    winner_was_highest_bid: z.boolean(),
   })
   .strict()
 
@@ -417,6 +480,8 @@ export const demoGrantSchema = z
   })
   .strict()
 
+export const demoEventBillingSchema = demoAdsBillingSchema
+
 export const demoEventResponseSchema = demoResponseEnvelopeSchema
   .extend({
     event_id: identifierSchema,
@@ -424,6 +489,7 @@ export const demoEventResponseSchema = demoResponseEnvelopeSchema
     idempotent_replay: z.boolean(),
     risk: demoRiskAssessmentSchema,
     grant: demoGrantSchema.nullable(),
+    billing: demoEventBillingSchema.nullable(),
     reason_codes: z.array(reasonCodeSchema).min(1),
   })
   .strict()
@@ -434,6 +500,10 @@ export const demoEventResponseSchema = demoResponseEnvelopeSchema
   .refine(
     (value) => value.grant === null || value.risk.decision === 'allow',
     { message: 'a held or rejected event may not carry a grant', path: ['grant'] },
+  )
+  .refine(
+    (value) => value.billing === null || (value.grant !== null && !value.idempotent_replay),
+    { message: 'only a fresh granted event may be billable', path: ['billing'] },
   )
 
 export const demoErrorResponseSchema = z
@@ -465,6 +535,10 @@ export type DemoProgress = z.infer<typeof demoProgressSchema>
 export type DemoReferral = z.infer<typeof demoReferralSchema>
 export type DemoRiskSignals = z.infer<typeof demoRiskSignalsSchema>
 export type DemoBudgetSnapshot = z.infer<typeof demoBudgetSnapshotSchema>
+export type DemoAdsCampaignState = z.infer<typeof demoAdsCampaignStateSchema>
+export type DemoAdExposure = z.infer<typeof demoAdExposureSchema>
+export type DemoAdsBilling = z.infer<typeof demoAdsBillingSchema>
+export type DemoAdsState = z.infer<typeof demoAdsStateSchema>
 export type DemoProfileSnapshot = z.infer<typeof demoProfileSnapshotSchema>
 export type DemoSeedProfilesResponse = z.infer<typeof demoSeedProfilesResponseSchema>
 export type DemoDecisionRequest = z.infer<typeof demoDecisionRequestSchema>
@@ -481,5 +555,6 @@ export type DemoEventRequest = z.infer<typeof demoEventRequestSchema>
 export type DemoRiskDecision = z.infer<typeof demoRiskDecisionSchema>
 export type DemoRiskAssessment = z.infer<typeof demoRiskAssessmentSchema>
 export type DemoGrant = z.infer<typeof demoGrantSchema>
+export type DemoEventBilling = z.infer<typeof demoEventBillingSchema>
 export type DemoEventResponse = z.infer<typeof demoEventResponseSchema>
 export type DemoErrorResponse = z.infer<typeof demoErrorResponseSchema>

@@ -21,19 +21,30 @@ import {
 } from './demo-receipt'
 import {
   applyCraft,
-  applyDecision,
-  applyEvent,
   applyRedemption,
   availableDemoInventory,
   createDemoState,
   refreshDemoSavings,
-  releaseExpiredPromise,
   revealGrant,
   type DemoState,
 } from './demo-state'
-import { applyReferralReward, createDemoStore, resolveDemoStore, saveDemoProfile, selectDemoProfile, serializeDemoStore, type DemoStore } from './demo-store'
+import {
+  applyDemoDecision,
+  applyDemoEvent,
+  applyReferralReward,
+  createDemoStore,
+  hydrateDemoAds,
+  releaseExpiredDemoPromise,
+  releaseExpiredDemoPromises,
+  resetDemoStore,
+  resolveDemoStore,
+  saveDemoProfile,
+  selectDemoProfile,
+  serializeDemoStore,
+  type DemoStore,
+} from './demo-store'
 import { addDemoSelection, removeDemoSelection } from './demo-selection'
-import { cancelProfileTrades, createDemoTrade, createTradeSeedProfiles, expireDemoTrades, respondDemoTrade } from './demo-trades'
+import { createDemoTrade, createTradeSeedProfiles, expireDemoTrades, respondDemoTrade } from './demo-trades'
 import { DemoTradePanel } from './DemoTradePanel'
 import { DemoEvaluationPanel } from './DemoEvaluationPanel'
 import { craftDiscount, previewCraftedDiscount } from './profile-discount-crafting'
@@ -99,7 +110,7 @@ export function DemoChallengePanel() {
       <button className="demo-button" type="button" aria-expanded={showX5} onClick={() => setShowX5((visible) => !visible)}>
         <Typography as="span" variant="control">Для X5</Typography>
       </button>
-      {showX5 ? <DemoEvaluationPanel state={state} /> : null}
+      {showX5 ? <DemoEvaluationPanel state={state} store={demo.store!} /> : null}
 
       <div className="demo-profile-switch" role="group" aria-label="Синтетический профиль">
         {demo.profiles.map((profile) => (
@@ -130,10 +141,10 @@ export function DemoChallengePanel() {
         <button
           className="demo-button"
           disabled={demo.isBusy}
-          onClick={demo.resetProfile}
+          onClick={demo.resetDemo}
           type="button"
         >
-          <Typography as="span" variant="control">Сбросить демо</Typography>
+          <Typography as="span" variant="control">Полный сброс демо</Typography>
         </button>
       </div>
 
@@ -421,13 +432,15 @@ function useDemoChallenge() {
       const expanded = { ...result, data: { ...result.data, profiles: [...result.data.profiles, ...createTradeSeedProfiles(result.data.profiles[0], Date.now())] } }
       setSeed(expanded)
       let loaded = resolveDemoStore(window.localStorage.getItem(DEMO_STATE_STORAGE_KEY))
-        ?? createDemoStore(createDemoState(result.data.profiles[0], result.data.budget))
+        ?? createDemoStore(createDemoState(result.data.profiles[0], result.data.budget), result.data.ads)
+      loaded = hydrateDemoAds(loaded, result.data.ads)
       for (const profile of expanded.data.profiles) {
         if (loaded.profiles[profile.profile_id] === undefined) {
           loaded = { ...loaded, profiles: { ...loaded.profiles, [profile.profile_id]: createDemoState(profile, result.data.budget) } }
         }
       }
       loaded = expireDemoTrades(loaded, Date.now())
+      loaded = releaseExpiredDemoPromises(loaded, Date.now())
       const active = refreshDemoSavings(loaded.profiles[loaded.active_profile_id], Date.now())
       persistStore(saveDemoProfile(loaded, active))
     })
@@ -438,7 +451,8 @@ function useDemoChallenge() {
     const timer = window.setInterval(() => {
       const stored = storeRef.current
       if (stored === null || busyRef.current) return
-      const current = expireDemoTrades(stored, Date.now())
+      const traded = expireDemoTrades(stored, Date.now())
+      const current = releaseExpiredDemoPromises(traded, Date.now())
       const active = current.profiles[current.active_profile_id]
       const next = refreshDemoSavings(active, Date.now())
       if (next !== active || current !== stored) persistStore(saveDemoProfile(current, next))
@@ -459,15 +473,13 @@ function useDemoChallenge() {
     persistStore(saveDemoProfile(selected, refreshDemoSavings(selected.profiles[profileId], Date.now())))
   }, [persistStore, seed])
 
-  const resetProfile = useCallback(() => {
-    if (state === null || seed?.ok !== true || busyRef.current) return
-    const profile = seed.data.profiles.find((candidate) => candidate.profile_id === state.profile.profile_id)
-    if (profile === undefined) return
+  const resetDemo = useCallback(() => {
+    if (seed?.ok !== true || busyRef.current) return
     setFailure(null)
     setLastEventNote(null)
-    const current = storeRef.current
-    if (current !== null) persistStore(saveDemoProfile(cancelProfileTrades(current, profile.profile_id, Date.now()), createDemoState(profile, seed.data.budget)))
-  }, [persistStore, seed, state])
+    setTradeNote(null)
+    persistStore(resetDemoStore(seed.data.profiles, seed.data.budget, seed.data.ads))
+  }, [persistStore, seed])
 
   const createTrade = useCallback((command: DemoTradeCreate) => {
     const current = storeRef.current
@@ -486,17 +498,21 @@ function useDemoChallenge() {
   }, [persistStore])
 
   const askForChallenge = useCallback(async () => {
-    if (state === null || busyRef.current) return
+    const initialStore = storeRef.current
+    if (state === null || initialStore === null || busyRef.current) return
     const nowMs = Date.now()
-    const current = releaseExpiredPromise(refreshDemoSavings(state, nowMs), nowMs)
-    if (current !== state) persist(current)
+    let currentStore = releaseExpiredDemoPromise(initialStore, state.profile.profile_id, nowMs)
+    const refreshed = refreshDemoSavings(currentStore.profiles[state.profile.profile_id], nowMs)
+    if (refreshed !== currentStore.profiles[state.profile.profile_id]) currentStore = saveDemoProfile(currentStore, refreshed)
+    if (currentStore !== initialStore) persistStore(currentStore)
+    const current = currentStore.profiles[state.profile.profile_id]
 
     setIsBusy(true)
     busyRef.current = true
     setFailure(null)
     setLastEventNote(null)
     const requestRevision = current.revision
-    const result = await requestDecision(current.profile, current.budget, nowMs)
+    const result = await requestDecision(current.profile, current.budget, currentStore.ads, nowMs)
     setIsBusy(false)
     busyRef.current = false
 
@@ -504,10 +520,11 @@ function useDemoChallenge() {
       setFailure(result.error)
       return
     }
-    const latest = storeRef.current?.profiles[current.profile.profile_id]
-    if (latest === undefined || storeRef.current?.active_profile_id !== current.profile.profile_id) return
-    persist(applyDecision(latest, result.data, requestRevision, nowMs))
-  }, [persist, state])
+    const latestStore = storeRef.current
+    const latest = latestStore?.profiles[current.profile.profile_id]
+    if (latestStore === null || latestStore === undefined || latest === undefined || latestStore.active_profile_id !== current.profile.profile_id) return
+    persistStore(applyDemoDecision(latestStore, current.profile.profile_id, result.data, requestRevision, nowMs))
+  }, [persistStore, state])
 
   const sendReceipt = useCallback(async (kind: DemoReceiptKind, replay: boolean) => {
     if (state === null || state.challenge === null || busyRef.current) return
@@ -532,8 +549,9 @@ function useDemoChallenge() {
     const current = storeRef.current
     const latest = current?.profiles[state.profile.profile_id]
     if (current === null || latest === undefined || current.active_profile_id !== state.profile.profile_id || latest.revision !== requestRevision) return
-    const next = applyEvent(latest, result.data, receipt, requestRevision, nowMs)
-    const referral = applyReferralReward(saveDemoProfile(current, next), state.profile.profile_id, result.data, receipt, nowMs)
+    const applied = applyDemoEvent(current, state.profile.profile_id, result.data, receipt, requestRevision, nowMs)
+    if (applied === current) return
+    const referral = applyReferralReward(applied, state.profile.profile_id, result.data, receipt, nowMs)
     setLastEventNote(`${result.data.qualification} · риск: ${result.data.risk.decision} · ${result.data.reason_codes.join(', ')}${state.profile.referral.invited_by_profile_id === null ? '' : ` · ${referral.reason}`}`)
     persistStore(referral.store)
   }, [persistStore, state])
@@ -562,7 +580,7 @@ function useDemoChallenge() {
     profiles,
     referralIssued: store?.referral_awards.some((award) => award.invitee_profile_id === state?.profile.profile_id) ?? false,
     redeem,
-    resetProfile,
+    resetDemo,
     reveal,
     selectProfile,
     sendReceipt,

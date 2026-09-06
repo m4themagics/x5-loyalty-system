@@ -19,9 +19,29 @@ const reportSchema = z.object({
   })),
 })
 
-export function summarizeDemoEvaluation(raw: unknown) {
+const learnedReportSchema = z.object({
+  evidence_type: z.literal('synthetic_randomized_offline_evaluation'),
+  dataset: z.object({ users: z.number().int().positive(), split_counts: z.object({ test: z.number().int().positive() }) }),
+  heldout_model_metrics: z.object({ uplift_rmse: z.number().nonnegative(), billable_auc: z.number().min(0).max(1) }),
+  heldout_policy_comparison: z.array(z.object({ policy: z.string(), net_kopecks: z.number() })).min(3),
+  robustness: z.object({
+    seeds: z.array(z.number().int()).min(1),
+    learned_positive_seeds: z.number().int().nonnegative(),
+    learned_beats_rules_seeds: z.number().int().nonnegative(),
+    mean_policy_net_kopecks: z.object({ learned_profit_gated: z.number() }),
+    learned_net_range_kopecks: z.tuple([z.number(), z.number()]),
+  }),
+})
+
+export function summarizeDemoEvaluation(raw: unknown, learnedRaw: unknown) {
   const report = reportSchema.parse(raw)
+  const learned = learnedReportSchema.parse(learnedRaw)
   const p = report.primary_result
+  const policyNet = Object.fromEntries(learned.heldout_policy_comparison.map((row) => [row.policy, row.net_kopecks]))
+  const learnedNet = policyNet.learned_profit_gated
+  const rulesNet = policyNet.rules_affinity
+  const fixedNet = policyNet.fixed_dairy
+  if (learnedNet === undefined || rulesNet === undefined || fixedNet === undefined) throw new Error('learned RecSys baselines are incomplete')
   return demoEvaluationResponseSchema.parse({
     contract_version: 1, synthetic: true,
     primary: {
@@ -45,5 +65,20 @@ export function summarizeDemoEvaluation(raw: unknown) {
         net_kopecks: world.net_kopecks, coverage: world.served_users / world.users, incremental_purchase_days: world.incremental_purchases,
       })),
     ],
+    learned_recsys: {
+      evidence_type: learned.evidence_type,
+      seed_count: learned.robustness.seeds.length,
+      training_users_per_seed: learned.dataset.users,
+      heldout_users: learned.dataset.split_counts.test,
+      heldout_learned_net_kopecks: learnedNet,
+      heldout_rules_net_kopecks: rulesNet,
+      heldout_fixed_net_kopecks: fixedNet,
+      mean_learned_net_kopecks: learned.robustness.mean_policy_net_kopecks.learned_profit_gated,
+      learned_net_range_kopecks: learned.robustness.learned_net_range_kopecks,
+      learned_positive_seeds: learned.robustness.learned_positive_seeds,
+      learned_beats_rules_seeds: learned.robustness.learned_beats_rules_seeds,
+      uplift_rmse: learned.heldout_model_metrics.uplift_rmse,
+      billable_auc: learned.heldout_model_metrics.billable_auc,
+    },
   })
 }

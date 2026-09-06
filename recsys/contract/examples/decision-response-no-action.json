@@ -1,5 +1,5 @@
 {
-  "contract_version": 1,
+  "contract_version": 2,
   "request_id": "req-demo-decision-outstanding",
   "server_time_ms": 1788598800000,
   "decision_id": "dec_demo_0002",
@@ -10,8 +10,8 @@
   "challenge": null,
   "card": null,
   "diagnostics": {
-    "engine_version": "0.1.0",
-    "policy_version": "poc-rules-1",
+    "engine_version": "0.2.0",
+    "policy_version": "poc-sponsored-onboarding-2",
     "candidates": [],
     "coupon_available_kopecks": 999750,
     "physical_available_kopecks": 2497500,

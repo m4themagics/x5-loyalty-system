@@ -4,6 +4,8 @@
 не печатаются, не логируются и не сохраняются в файлы.
 Справка по API: https://aistudio.yandex.ru/ru/docs/ai-studio/text-generation/api-ref/TextGeneration/completion
 """
+from __future__ import annotations
+
 import json
 import os
 import time

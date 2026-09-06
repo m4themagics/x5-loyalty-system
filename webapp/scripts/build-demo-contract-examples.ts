@@ -32,6 +32,7 @@ const requests = [
 ] as const
 
 const budget = readJson('budget.json')
+const ads = readJson('ads.json')
 const generated = new Map<string, string>([
   ['game-snapshot.json', serialize(buildDemoGameSnapshot())],
 ])
@@ -46,6 +47,7 @@ for (const request of requests) {
     game: buildDemoGameSnapshot(),
     game_features: buildDemoGameFeatures(fromDemoInventory(profile.inventory)),
     budget,
+    ads,
   })))
 }
 

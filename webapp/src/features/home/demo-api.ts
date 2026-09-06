@@ -1,6 +1,7 @@
 import {
   DEMO_CONTRACT_VERSION,
   type DemoBudgetSnapshot,
+  type DemoAdsState,
   type DemoChallenge,
   type DemoDecisionResponse,
   type DemoEventResponse,
@@ -33,6 +34,7 @@ export async function fetchDemoEvaluation(): Promise<DemoApiResult<DemoEvaluatio
 export async function requestDecision(
   profile: DemoProfileSnapshot,
   budget: DemoBudgetSnapshot,
+  ads: DemoAdsState,
   nowMs: number,
 ): Promise<DemoApiResult<DemoDecisionResponse>> {
   return request(
@@ -48,6 +50,7 @@ export async function requestDecision(
         game: buildDemoGameSnapshot(),
         game_features: buildDemoGameFeatures(fromDemoInventory(profile.inventory)),
         budget,
+        ads,
       }),
     },
     demoDecisionResponseSchema,
