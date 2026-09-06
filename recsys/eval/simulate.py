@@ -155,14 +155,14 @@ def _run_scenario(scenario: dict, policy_name: str = "personalized_broad") -> di
         # Publish the cohort first; all current promises reserve their full maxima together.
         for index, profile in enumerate(profiles):
             decision = choose_decision({
-                "contract_version": 1, "request_id": f"sim-{index}-{cycle}", "now_ms": now,
+                "contract_version": 2, "request_id": f"sim-{index}-{cycle}", "now_ms": now,
                 "profile": profile, "game": game,
                 "game_features": build_game_features(profile, game), "budget": dict(budget),
             }, handle_decision, policy_name)
             if decision["status"] != "offer":
                 counts["refusals"] += 1
                 reasons.update(decision["reason_codes"])
-                counts["budget_refusals"] += any("budget_insufficient" in r for r in decision["reason_codes"])
+                counts["budget_refusals"] += _is_budget_refusal(decision)
                 continue
             challenge = decision["challenge"]
             reservation = challenge["reservation"]
@@ -236,7 +236,7 @@ def _run_scenario(scenario: dict, policy_name: str = "personalized_broad") -> di
                                "amount_kopecks": 10000}],
                 }
                 event = handle_event({
-                    "contract_version": 1, "request_id": f"event-sim-{index}-{cycle}",
+                    "contract_version": 2, "request_id": f"event-sim-{index}-{cycle}",
                     "idempotency_key": receipt["receipt_id"], "now_ms": now + DAY_MS,
                     "profile": profile, "challenge": challenge, "receipt": receipt,
                 })
@@ -351,6 +351,25 @@ def realised_funding(challenge, scenario_economics):
         raise ValueError("Funding collection multipliers must lie in [0, 1]")
     return (round(economics["bid_per_qualified_event_kopecks"] * payment),
             round(economics["subsidy_kopecks"] * subsidy))
+
+
+def _is_budget_refusal(decision: dict) -> bool:
+    """Classify a refusal from the complete candidate trace, not its short summary.
+
+    The runtime response intentionally keeps only the most useful top-level reasons. A
+    hard budget rejection can therefore be present on every candidate while another
+    reason (for example Ads eligibility) occupies the compact summary.
+    """
+    reason_groups = [decision.get("reason_codes", [])]
+    reason_groups.extend(
+        candidate.get("reason_codes", [])
+        for candidate in decision.get("diagnostics", {}).get("candidates", [])
+    )
+    return any(
+        "budget_insufficient" in reason
+        for reason_codes in reason_groups
+        for reason in reason_codes
+    )
 
 
 def _slice_add(stats, key, label, field, value):

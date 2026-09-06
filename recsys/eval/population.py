@@ -3,6 +3,8 @@
 Only the five audience shares come from the case Q&A. Interest and behaviour are
 scenario assumptions: they are latent outcomes and must never become policy inputs.
 """
+from __future__ import annotations
+
 import json
 import pathlib
 import random

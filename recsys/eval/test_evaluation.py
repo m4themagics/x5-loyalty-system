@@ -3,10 +3,12 @@ import contextlib
 import io
 import json
 import pathlib
+import random
 import unittest
 from unittest.mock import patch
 
 from recsys.eval import fraud_eval, population, run_relevance, simulate
+from recsys.eval import build_profiles
 
 ROOT = pathlib.Path(__file__).resolve().parent
 
@@ -33,6 +35,63 @@ class EvaluationTest(unittest.TestCase):
                 contextlib.redirect_stdout(io.StringIO()) as output:
             self.assertEqual(run_relevance.main(), 1)
         self.assertIn("ОШИБКА eval-refusal-01", output.getvalue())
+
+    def test_relevance_request_uses_contract_v2_and_ads_state(self):
+        profile = json.loads(
+            (ROOT / "profiles/eligible/eval-01.json").read_text(encoding="utf-8")
+        )
+        game = json.loads(
+            (ROOT.parent / "contract/examples/game-snapshot.json").read_text(encoding="utf-8")
+        )
+        budget = json.loads(
+            (ROOT.parent / "contract/examples/budget.json").read_text(encoding="utf-8")
+        )
+        ads = json.loads(
+            (ROOT.parent / "contract/examples/ads.json").read_text(encoding="utf-8")
+        )
+
+        completed = type(
+            "Completed",
+            (),
+            {"returncode": 0, "stdout": '{"status":"no_action"}', "stderr": ""},
+        )()
+        profile = run_relevance.prepare_post_onboarding_profile(profile)
+        with patch.object(run_relevance.subprocess, "run", return_value=completed) as run:
+            run_relevance.call_engine(profile, game, budget, ads)
+
+        request = json.loads(run.call_args.kwargs["input"])
+        self.assertEqual(request["contract_version"], 2)
+        self.assertEqual(request["profile"]["snapshot_version"], 2)
+        self.assertEqual(len(request["profile"]["issued_rewards"]), 1)
+        self.assertEqual(request["ads"], ads)
+
+    def test_relevance_profiles_are_post_onboarding_to_isolate_rec_sys_ranking(self):
+        game = json.loads(
+            (ROOT.parent / "contract/examples/game-snapshot.json").read_text(encoding="utf-8")
+        )
+        catalog = json.loads(
+            (ROOT.parent / "engine/data/sku_catalog.json").read_text(encoding="utf-8")
+        )
+        gift_categories = sorted(
+            {sku["category"] for sku in catalog["gift_skus"] if sku["stock"] > 0}
+        )
+        paid_categories = {sku["category"] for sku in catalog["skus"] if sku["stock"] > 0}
+        fundable = [category for category in gift_categories if category in paid_categories]
+        items_by_category = {}
+        for item in game["items"]:
+            items_by_category.setdefault(item["category"], []).append(item["id"])
+        in_any_recipe = {
+            item_id for recipe in game["recipes"] for item_id in recipe["item_ids"]
+        }
+
+        profile, _ = build_profiles.build_eligible_profile(
+            1, fundable, items_by_category, in_any_recipe, random.Random(20260905)
+        )
+        self.assertEqual(profile["snapshot_version"], 2)
+        self.assertEqual(profile["issued_rewards"], [])
+        prepared = run_relevance.prepare_post_onboarding_profile(profile)
+        self.assertEqual(len(prepared["issued_rewards"]), 1)
+        self.assertEqual(profile["issued_rewards"], [])
 
     def test_simulation_calls_the_real_decision_and_stops_at_zero_budget(self):
         from recsys.engine.decision import handle_decision
@@ -73,6 +132,8 @@ class EvaluationTest(unittest.TestCase):
                                  budget[f"{fund}_fund_kopecks"])
 
     def test_existing_promises_stop_later_publications_before_outcomes(self):
+        from recsys.engine.decision import handle_decision
+
         scenario = self.scenario()
         scenario["missing_history_share"] = 0
         scenario["budget"] = {
@@ -80,7 +141,28 @@ class EvaluationTest(unittest.TestCase):
             "coupon_settled_kopecks": 0, "physical_fund_kopecks": 2900,
             "physical_reserved_kopecks": 0, "physical_settled_kopecks": 0,
         }
-        result = simulate.run_scenario(scenario)
+
+        def eligible_dairy_decision(request):
+            # Keep this check about cohort-level reservation, independent of the
+            # heterogeneous templates' unrelated stock/category eligibility.
+            prepared = json.loads(json.dumps(request))
+            prepared["profile"]["receipts"] = [{
+                "receipt_id": "prior-paid-dairy",
+                "purchased_at_ms": prepared["now_ms"] - simulate.DAY_MS,
+                "store_id": "synthetic-store",
+                "returned": False,
+                "lines": [{
+                    "sku_id": "synthetic-dairy",
+                    "category": "Молочные продукты",
+                    "quantity": 1,
+                    "paid": True,
+                    "amount_kopecks": 10_000,
+                }],
+            }]
+            return handle_decision(prepared)
+
+        with patch.object(simulate, "handle_decision", side_effect=eligible_dairy_decision):
+            result = simulate.run_scenario(scenario)
         self.assertEqual(result["offers"], 1)
         self.assertEqual(result["budget_refusals"], 7)
 

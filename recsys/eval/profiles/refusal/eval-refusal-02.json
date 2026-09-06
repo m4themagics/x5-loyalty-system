@@ -1,5 +1,5 @@
 {
-  "snapshot_version": 1,
+  "snapshot_version": 2,
   "profile_id": "eval-refusal-02",
   "label": "Отказ: только бесплатные строки в истории",
   "synthetic": true,

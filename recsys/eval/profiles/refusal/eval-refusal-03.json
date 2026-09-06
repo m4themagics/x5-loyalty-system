@@ -1,5 +1,5 @@
 {
-  "snapshot_version": 1,
+  "snapshot_version": 2,
   "profile_id": "eval-refusal-03",
   "label": "Отказ: покупки только вне игрового каталога",
   "synthetic": true,

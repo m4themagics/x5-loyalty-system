@@ -23,6 +23,7 @@ LABEL_STATUS = "agent_draft"
 LABELLED_ON = "2026-09-05"
 
 SEED = 20260905
+CONTRACT_VERSION = 2
 
 
 def main() -> None:
@@ -55,7 +56,9 @@ def main() -> None:
         "notes": (
             "Независимая разметка. Приемлемым считается любое задание, категория которого есть в "
             "истории покупок профиля и предмет которого недостающий в каком-либо рецепте. "
-            "Рубрика допускает множество решений и не повторяет порядок ранжирования движка."
+            "Рубрика допускает множество решений и не повторяет порядок ранжирования движка. "
+            "Допустимые профили оцениваются в цифровом цикле после onboarding: так прогон измеряет "
+            "релевантность RecSys отдельно от охвата Ads первого физического подарка."
         ),
         "label_status": LABEL_STATUS,
         "labelled_on": LABELLED_ON,
@@ -137,7 +140,7 @@ def build_eligible_profile(
     )
 
     profile = {
-        "snapshot_version": 1,
+        "snapshot_version": CONTRACT_VERSION,
         "profile_id": profile_id,
         "label": f"Оценочный синтетический профиль {index:02d}",
         "synthetic": True,
@@ -202,7 +205,7 @@ def build_refusal_profiles(
 ) -> list[tuple[dict, dict]]:
     def base(profile_id: str, label: str) -> dict:
         return {
-            "snapshot_version": 1,
+            "snapshot_version": CONTRACT_VERSION,
             "profile_id": profile_id,
             "label": label,
             "synthetic": True,

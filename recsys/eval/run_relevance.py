@@ -7,17 +7,22 @@
 
 Запуск из корня репозитория: python3 recsys/eval/run_relevance.py
 """
+from __future__ import annotations
+
 import json
 import os
 import pathlib
 import subprocess
 import sys
+from copy import deepcopy
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 EVAL_ROOT = ROOT / "recsys" / "eval"
 EXAMPLES = ROOT / "recsys" / "contract" / "examples"
 ENGINE = ROOT / "recsys" / "engine" / "cli.py"
 NOW_MS = 1_788_598_800_000
+CONTRACT_VERSION = 2
+DAY_MS = 86_400_000
 
 
 def main() -> int:
@@ -28,11 +33,14 @@ def main() -> int:
     rubric = json.loads((EVAL_ROOT / "rubric.json").read_text(encoding="utf-8"))
     game = json.loads((EXAMPLES / "game-snapshot.json").read_text(encoding="utf-8"))
     budget = json.loads((EXAMPLES / "budget.json").read_text(encoding="utf-8"))
+    ads = json.loads((EXAMPLES / "ads.json").read_text(encoding="utf-8"))
 
     hits, misses = [], []
     for entry in rubric["eligible"]:
-        profile = load_profile("eligible", entry["profile_id"])
-        response = call_engine(profile, game, budget)
+        profile = prepare_post_onboarding_profile(
+            load_profile("eligible", entry["profile_id"])
+        )
+        response = call_engine(profile, game, budget, ads)
         if response is None:
             misses.append((entry["profile_id"], "движок вернул ошибку"))
             continue
@@ -48,7 +56,7 @@ def main() -> int:
     refusal_correct, refusal_wrong = [], []
     for entry in rubric["refusal"]:
         profile = load_profile("refusal", entry["profile_id"])
-        response = call_engine(profile, game, budget)
+        response = call_engine(profile, game, budget, ads)
         if response is None:
             refusal_wrong.append((entry["profile_id"], "движок вернул ошибку"))
             continue
@@ -69,6 +77,7 @@ def main() -> int:
     minimum = rubric["threshold"]["minimum_hits"]
 
     print("Релевантность по отдельно хранимой рубрике синтетических профилей")
+    print("  контур: повторный цифровой цикл после onboarding; Ads state передан")
     print(f"  разметка: {rubric['label_status']} от {rubric['labelled_on']}, "
           f"экспертное подтверждение: {rubric['expert_confirmation']}")
     print(f"  знаменатель: {total}, порог: {minimum}")
@@ -124,15 +133,40 @@ def build_game_features(profile: dict, game: dict) -> dict:
     }
 
 
-def call_engine(profile: dict, game: dict, budget: dict) -> dict | None:
+def prepare_post_onboarding_profile(profile: dict) -> dict:
+    """Move an eligible fixture to a repeat digital cycle without changing its rubric.
+
+    The relevance test intentionally isolates next-best-action ranking from the limited
+    advertiser coverage of the first physical gift. The synthetic onboarding reward is
+    already spent, so it changes neither current inventory nor acceptable item ids.
+    """
+    prepared = deepcopy(profile)
+    profile_id = prepared["profile_id"]
+    prepared["issued_rewards"] = [
+        {
+            "reward_id": f"rwd-{profile_id}-onboarding",
+            "challenge_id": f"chl-{profile_id}-onboarding",
+            "source_event_id": f"evt-{profile_id}-onboarding",
+            "item_instance_id": f"inst-{profile_id}-spent",
+            "item_id": "club-toaster",
+            "sku_entitlement_id": f"ent-{profile_id}-redeemed",
+            "sku_id": "gift-bun-60",
+            "issued_at_ms": NOW_MS - 70 * DAY_MS,
+        }
+    ]
+    return prepared
+
+
+def call_engine(profile: dict, game: dict, budget: dict, ads: dict) -> dict | None:
     request = {
-        "contract_version": 1,
+        "contract_version": CONTRACT_VERSION,
         "request_id": f"req-eval-{profile['profile_id']}",
         "now_ms": NOW_MS,
         "profile": profile,
         "game": game,
         "game_features": build_game_features(profile, game),
         "budget": budget,
+        "ads": ads,
     }
     result = subprocess.run(
         [sys.executable, str(ENGINE), "decision"],

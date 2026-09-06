@@ -1,0 +1,421 @@
+{
+  "report_version": 1,
+  "evidence_type": "synthetic_randomized_offline_evaluation",
+  "seed": 20260906,
+  "dataset": {
+    "users": 6000,
+    "candidate_actions_per_user": 4,
+    "split_counts": {
+      "calibration": 1165,
+      "test": 1215,
+      "train": 3620
+    },
+    "randomized_arm_counts": {
+      "train": {
+        "control": 1801,
+        "treatment": 1819
+      },
+      "calibration": {
+        "control": 582,
+        "treatment": 583
+      },
+      "test": {
+        "control": 606,
+        "treatment": 609
+      }
+    },
+    "treatment_propensity": 0.5,
+    "logged_action_propensity": 0.25,
+    "case_fact": "Audience segment shares only",
+    "synthetic_assumptions": [
+      "purchase probabilities and treatment effects",
+      "SKU margin, reward cost and advertiser CPA",
+      "stock, risk and billable-event outcomes"
+    ]
+  },
+  "models": {
+    "uplift": "two_model_logistic_regression_plus_isotonic",
+    "billable": "separate_logistic_regression",
+    "features": [
+      "visits_28d",
+      "recency_score",
+      "average_basket",
+      "category_affinity",
+      "category_share",
+      "inventory_progress",
+      "recipe_match",
+      "history_reliability",
+      "sponsored",
+      "action_dairy",
+      "action_coffee",
+      "action_produce",
+      "action_ready_meal"
+    ],
+    "control": {
+      "iterations": 280,
+      "intercept": -0.90057734,
+      "coefficients": {
+        "visits_28d": 0.13061918,
+        "recency_score": 0.07819185,
+        "average_basket": 0.1390064,
+        "category_affinity": 0.28437104,
+        "category_share": 0.02682761,
+        "inventory_progress": -0.02957248,
+        "recipe_match": -0.01566364,
+        "history_reliability": 0.09803656,
+        "sponsored": -0.06952806,
+        "action_dairy": 0.14888553,
+        "action_coffee": -0.06556686,
+        "action_produce": 0.06952806,
+        "action_ready_meal": -0.15657689
+      }
+    },
+    "treatment": {
+      "iterations": 280,
+      "intercept": -0.41856348,
+      "coefficients": {
+        "visits_28d": 0.0567122,
+        "recency_score": 0.08609855,
+        "average_basket": -0.02476536,
+        "category_affinity": 0.482277,
+        "category_share": 0.32263137,
+        "inventory_progress": 0.14179542,
+        "recipe_match": 0.2636612,
+        "history_reliability": 0.14331544,
+        "sponsored": -0.07280728,
+        "action_dairy": -0.01420764,
+        "action_coffee": 0.08251746,
+        "action_produce": 0.07280728,
+        "action_ready_meal": -0.14179025
+      }
+    },
+    "billable_event": {
+      "iterations": 280,
+      "intercept": -1.38044038,
+      "coefficients": {
+        "visits_28d": 0.06877599,
+        "recency_score": 0.02824719,
+        "average_basket": -0.0127994,
+        "category_affinity": 0.40673553,
+        "category_share": 0.28909705,
+        "inventory_progress": 0.13090065,
+        "recipe_match": 0.24248714,
+        "history_reliability": 0.14868001,
+        "sponsored": 0.51070374,
+        "action_dairy": 0.18121411,
+        "action_coffee": 0.2656905,
+        "action_produce": -0.51070374,
+        "action_ready_meal": 0.05081545
+      }
+    },
+    "isotonic_weight": 0.35,
+    "isotonic_blocks": [
+      {
+        "min_score": -0.10296547,
+        "max_score": -0.0437254,
+        "weight": 196,
+        "calibrated_uplift": -0.0357887
+      },
+      {
+        "min_score": -0.00895245,
+        "max_score": -0.00895245,
+        "weight": 98,
+        "calibrated_uplift": 0.12244898
+      },
+      {
+        "min_score": 0.02221595,
+        "max_score": 0.12190669,
+        "weight": 392,
+        "calibrated_uplift": 0.12558195
+      },
+      {
+        "min_score": 0.15867721,
+        "max_score": 0.15867721,
+        "weight": 98,
+        "calibrated_uplift": 0.13975803
+      },
+      {
+        "min_score": 0.19367305,
+        "max_score": 0.2339678,
+        "weight": 196,
+        "calibrated_uplift": 0.17392007
+      },
+      {
+        "min_score": 0.28876943,
+        "max_score": 0.38933456,
+        "weight": 185,
+        "calibrated_uplift": 0.38697483
+      }
+    ]
+  },
+  "calibration_points": [
+    {
+      "raw_score": -0.10296547,
+      "empirical_uplift": 0.00754717,
+      "weight": 98,
+      "treated": 53,
+      "control": 45
+    },
+    {
+      "raw_score": -0.0437254,
+      "empirical_uplift": -0.07912458,
+      "weight": 98,
+      "treated": 44,
+      "control": 54
+    },
+    {
+      "raw_score": -0.00895245,
+      "empirical_uplift": 0.12244898,
+      "weight": 98,
+      "treated": 49,
+      "control": 49
+    },
+    {
+      "raw_score": 0.02221595,
+      "empirical_uplift": 0.17735849,
+      "weight": 98,
+      "treated": 53,
+      "control": 45
+    },
+    {
+      "raw_score": 0.05095542,
+      "empirical_uplift": 0.11705686,
+      "weight": 98,
+      "treated": 46,
+      "control": 52
+    },
+    {
+      "raw_score": 0.08676141,
+      "empirical_uplift": 0.12289562,
+      "weight": 98,
+      "treated": 44,
+      "control": 54
+    },
+    {
+      "raw_score": 0.12190669,
+      "empirical_uplift": 0.08501684,
+      "weight": 98,
+      "treated": 54,
+      "control": 44
+    },
+    {
+      "raw_score": 0.15867721,
+      "empirical_uplift": 0.13975803,
+      "weight": 98,
+      "treated": 47,
+      "control": 51
+    },
+    {
+      "raw_score": 0.19367305,
+      "empirical_uplift": 0.18367347,
+      "weight": 98,
+      "treated": 49,
+      "control": 49
+    },
+    {
+      "raw_score": 0.2339678,
+      "empirical_uplift": 0.16416667,
+      "weight": 98,
+      "treated": 50,
+      "control": 48
+    },
+    {
+      "raw_score": 0.28876943,
+      "empirical_uplift": 0.40666667,
+      "weight": 98,
+      "treated": 48,
+      "control": 50
+    },
+    {
+      "raw_score": 0.38933456,
+      "empirical_uplift": 0.36479321,
+      "weight": 87,
+      "treated": 46,
+      "control": 41
+    }
+  ],
+  "heldout_model_metrics": {
+    "test_logged_rows": 1215,
+    "control_log_loss": 0.570683,
+    "treatment_log_loss": 0.60956,
+    "control_brier": 0.192384,
+    "treatment_brier": 0.21008,
+    "billable_log_loss": 0.462542,
+    "billable_brier": 0.154965,
+    "billable_auc": 0.801916,
+    "raw_uplift_rmse": 0.067954,
+    "uplift_rmse": 0.063689
+  },
+  "heldout_policy_comparison": [
+    {
+      "policy": "learned_profit_gated",
+      "assigned_users": 1215,
+      "served_users": 1169,
+      "coverage": 0.96214,
+      "no_action": 46,
+      "incremental_purchases": 271,
+      "incremental_purchase_rate_per_served": 0.231822,
+      "billable_events": 462,
+      "reward_and_operation_spend_kopecks": 2033680,
+      "incremental_margin_kopecks": 2513000,
+      "sponsor_income_kopecks": 1387200,
+      "net_kopecks": 1866520,
+      "net_rubles": 18665.2,
+      "expected_true_net_kopecks": 1777767.42,
+      "mean_true_uplift_selected": 0.225825,
+      "mean_predicted_uplift_selected": 0.258163,
+      "selected_actions": {
+        "coffee": 693,
+        "dairy": 9,
+        "produce": 159,
+        "ready_meal": 308
+      }
+    },
+    {
+      "policy": "rules_affinity",
+      "assigned_users": 1215,
+      "served_users": 1192,
+      "coverage": 0.98107,
+      "no_action": 23,
+      "incremental_purchases": 287,
+      "incremental_purchase_rate_per_served": 0.240772,
+      "billable_events": 445,
+      "reward_and_operation_spend_kopecks": 2181440,
+      "incremental_margin_kopecks": 2535500,
+      "sponsor_income_kopecks": 999300,
+      "net_kopecks": 1353360,
+      "net_rubles": 13533.6,
+      "expected_true_net_kopecks": 1347149.11,
+      "mean_true_uplift_selected": 0.24059,
+      "mean_predicted_uplift_selected": null,
+      "selected_actions": {
+        "coffee": 276,
+        "dairy": 304,
+        "produce": 302,
+        "ready_meal": 310
+      }
+    },
+    {
+      "policy": "fixed_dairy",
+      "assigned_users": 1215,
+      "served_users": 1063,
+      "coverage": 0.874897,
+      "no_action": 152,
+      "incremental_purchases": 87,
+      "incremental_purchase_rate_per_served": 0.081844,
+      "billable_events": 430,
+      "reward_and_operation_spend_kopecks": 1804060,
+      "incremental_margin_kopecks": 609000,
+      "sponsor_income_kopecks": 516000,
+      "net_kopecks": -679060,
+      "net_rubles": -6790.6,
+      "expected_true_net_kopecks": -705778.92,
+      "mean_true_uplift_selected": 0.075852,
+      "mean_predicted_uplift_selected": null,
+      "selected_actions": {
+        "dairy": 1063
+      }
+    }
+  ],
+  "baseline_definitions": {
+    "rules_affinity": "Rules-style baseline on the same candidates: recipe match, then category affinity, inventory progress and stable action ID; it applies the same eligibility filter.",
+    "fixed_dairy": "One dairy challenge for every test user whose dairy candidate passes the same familiarity, stock and risk checks."
+  },
+  "guardrails": {
+    "randomized_logged_treatment": true,
+    "randomized_logged_action": true,
+    "policy_inputs_exclude_labels_and_outcomes": true,
+    "test_set_used_only_for_final_evaluation": true,
+    "same_test_users_and_potential_outcomes_for_all_policies": true,
+    "money_is_integer_kopecks": true
+  },
+  "interpretation": {
+    "claim": "Offline implementation proof: the learned gated policy can recover positive synthetic value on held-out users.",
+    "not_claimed": "No measured X5 uplift, production quality, advertiser demand or proven habit formation.",
+    "next_test": "Randomized pilot with logged propensities and SKU-level realized margin."
+  },
+  "robustness": {
+    "users_per_seed": 6000,
+    "seeds": [
+      20260902,
+      20260903,
+      20260904,
+      20260905,
+      20260906
+    ],
+    "runs": [
+      {
+        "seed": 20260902,
+        "test_users": 1236,
+        "policy_net_kopecks": {
+          "learned_profit_gated": 1768360,
+          "rules_affinity": 1198000,
+          "fixed_dairy": -705840
+        },
+        "learned_coverage": 0.956311,
+        "uplift_rmse": 0.051923,
+        "billable_auc": 0.809161
+      },
+      {
+        "seed": 20260903,
+        "test_users": 1206,
+        "policy_net_kopecks": {
+          "learned_profit_gated": 1582820,
+          "rules_affinity": 1240720,
+          "fixed_dairy": -576880
+        },
+        "learned_coverage": 0.965174,
+        "uplift_rmse": 0.04951,
+        "billable_auc": 0.805538
+      },
+      {
+        "seed": 20260904,
+        "test_users": 1207,
+        "policy_net_kopecks": {
+          "learned_profit_gated": 1721020,
+          "rules_affinity": 1319920,
+          "fixed_dairy": -649480
+        },
+        "learned_coverage": 0.964374,
+        "uplift_rmse": 0.047054,
+        "billable_auc": 0.826733
+      },
+      {
+        "seed": 20260905,
+        "test_users": 1224,
+        "policy_net_kopecks": {
+          "learned_profit_gated": 1943160,
+          "rules_affinity": 1676460,
+          "fixed_dairy": -725000
+        },
+        "learned_coverage": 0.924837,
+        "uplift_rmse": 0.043148,
+        "billable_auc": 0.825136
+      },
+      {
+        "seed": 20260906,
+        "test_users": 1215,
+        "policy_net_kopecks": {
+          "learned_profit_gated": 1866520,
+          "rules_affinity": 1353360,
+          "fixed_dairy": -679060
+        },
+        "learned_coverage": 0.96214,
+        "uplift_rmse": 0.063689,
+        "billable_auc": 0.801916
+      }
+    ],
+    "learned_positive_seeds": 5,
+    "learned_beats_rules_seeds": 5,
+    "learned_beats_fixed_seeds": 5,
+    "mean_policy_net_kopecks": {
+      "learned_profit_gated": 1776376,
+      "rules_affinity": 1357692,
+      "fixed_dairy": -667252
+    },
+    "learned_net_range_kopecks": [
+      1582820,
+      1943160
+    ]
+  }
+}

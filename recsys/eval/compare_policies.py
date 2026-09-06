@@ -10,7 +10,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from recsys.eval.policies import POLICIES  # noqa: E402
+from recsys.eval.policies import FUNDING_POLICY, POLICIES  # noqa: E402
 from recsys.eval.simulate import EVAL, load_json, rubles, run_scenario  # noqa: E402
 
 SEEDS = tuple(range(20260901, 20260906))
@@ -95,6 +95,8 @@ def build_report(scenario=None, seeds=SEEDS):
             "response_world": "positive", "reward_only_response_multiplier": scenario.get("reward_only_response_multiplier", 0.75),
             "reward_only_sensitivity": "Set multiplier to 1 to represent no incremental game value; identical rules and rewards, later state may diverge after responses.",
             "fixed_dairy": "Fixed safe dairy category; real familiarity/stock/risk/economics filters; outcome model has no learned category response.",
+            "policy_funding_assumptions": dict(FUNDING_POLICY),
+            "runtime_funding_policy_unchanged": True,
             "budget": scenario["budget"], "economics": scenario["economics"],
             "interest_is_hidden_from_policy": True, "common_random_numbers": True,
             "baseline_population_unchanged": True, "not_a_forecast": True,

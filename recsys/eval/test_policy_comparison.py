@@ -6,6 +6,7 @@ import unittest
 from unittest.mock import patch
 
 from recsys.engine.decision import handle_decision
+from recsys.engine.policy import load_policy
 from recsys.eval import compare_policies, simulate
 from recsys.eval.policies import choose_decision
 
@@ -38,11 +39,12 @@ class PolicyComparisonTest(unittest.TestCase):
             "reward": {"physical_sku": {"sku_id": "demo"}},
             "economics": {"funding_source": "x5"}}, "card": {"title": "fixed"},
             "reason_codes": ["offer_published"], "diagnostics": {}}
-        rejected = choose_decision(request, lambda _: copy.deepcopy(offer), "sponsored_onboarding")
-        self.assertEqual(rejected["status"], "no_action")
-        self.assertEqual(rejected["reason_codes"], ["funding_gate"])
-        self.assertIsNone(rejected["challenge"])
-        self.assertIsNone(rejected["card"])
+        for policy_name in ("sponsored_onboarding", "reward_only"):
+            rejected = choose_decision(request, lambda _: copy.deepcopy(offer), policy_name)
+            self.assertEqual(rejected["status"], "no_action")
+            self.assertEqual(rejected["reason_codes"], ["funding_gate"])
+            self.assertIsNone(rejected["challenge"])
+            self.assertIsNone(rejected["card"])
         offer["challenge"]["reward"]["physical_sku"] = None
         self.assertEqual(choose_decision(request, lambda _: offer,
                                         "sponsored_onboarding")["status"], "offer")
@@ -79,10 +81,23 @@ class PolicyComparisonTest(unittest.TestCase):
                            "audience_segment", "game_uplift_probability"):
                 self.assertNotIn(latent, text)
 
+    def test_broad_and_sponsored_onboarding_are_distinct_allocation_policies(self):
+        value = scenario()
+        broad = simulate.run_scenario(value, policy_name="personalized_broad")
+        sponsored = simulate.run_scenario(value, policy_name="sponsored_onboarding")
+        self.assertGreater(broad["served_users"], sponsored["served_users"])
+        self.assertGreater(broad["offers"], sponsored["offers"])
+        self.assertGreater(sponsored["refusal_reasons"].get("funding_gate", 0), 0)
+
+    def test_evaluation_funding_override_does_not_change_runtime_policy(self):
+        self.assertEqual(load_policy()["first_cycle_funding_policy"], "advertiser_only")
+        simulate.run_scenario(scenario(), policy_name="personalized_broad")
+        self.assertEqual(load_policy()["first_cycle_funding_policy"], "advertiser_only")
+
     def test_reward_only_identity_when_response_multiplier_is_one(self):
         value = scenario()
         value["reward_only_response_multiplier"] = 1.0
-        first = simulate.run_scenario(value)
+        first = simulate.run_scenario(value, policy_name="sponsored_onboarding")
         second = simulate.run_scenario(value, policy_name="reward_only")
         for key in first:
             if key != "policy":
@@ -108,6 +123,16 @@ class PolicyComparisonTest(unittest.TestCase):
         self.assertIsNone(compare_policies.break_even_cpa(row))
         self.assertEqual(report["primary_result"]["policy"], "sponsored_onboarding")
         self.assertEqual(len(report["stress_appendix"]), 3)
+        self.assertEqual(
+            report["assumptions"]["policy_funding_assumptions"],
+            {
+                "personalized_broad": "advertiser_or_positive_margin",
+                "fixed_dairy": "advertiser_or_positive_margin",
+                "sponsored_onboarding": "advertiser_only",
+                "reward_only": "advertiser_only",
+            },
+        )
+        self.assertTrue(report["assumptions"]["runtime_funding_policy_unchanged"])
 
     def test_conservative_result_subtracts_only_growth_of_outstanding_liability(self):
         value = scenario()
@@ -141,8 +166,33 @@ class PolicyComparisonTest(unittest.TestCase):
         trait = simulate.build_population(value)[0]
         trait.update(inventory_count=4, missing_history=False, coupon_craft_probability=1,
                      coupon_redemption_probability=1, baseline_purchase_multiplier=1)
-        with patch.object(simulate, "build_population", return_value=[trait]):
+
+        def eligible_repeat_decision(request):
+            # Isolate the liability invariant from first-cycle Ads eligibility. The
+            # synthetic user has already completed onboarding and has recent history in
+            # a category that can award a missing breakfast item.
+            prepared = copy.deepcopy(request)
+            prepared["profile"]["issued_rewards"] = [{"reward_id": "prior-onboarding"}]
+            prepared["profile"]["receipts"] = [{
+                "receipt_id": "prior-paid-bread",
+                "purchased_at_ms": prepared["now_ms"] - simulate.DAY_MS,
+                "store_id": "synthetic-store",
+                "returned": False,
+                "lines": [{
+                    "sku_id": "synthetic-bread",
+                    "category": "Хлеб и выпечка",
+                    "quantity": 1,
+                    "paid": True,
+                    "amount_kopecks": 10_000,
+                }],
+            }]
+            return handle_decision(prepared)
+
+        with patch.object(simulate, "build_population", return_value=[trait]), \
+                patch.object(simulate, "handle_decision", side_effect=eligible_repeat_decision):
             result = simulate.run_scenario(value)
+        self.assertEqual(result["offers"], 1)
+        self.assertEqual(result["coupons_redeemed"], 1)
         self.assertLess(result["ending_coupon_liability_kopecks"], result["opening_coupon_liability_kopecks"])
         self.assertEqual(result["outstanding_liability_delta_kopecks"], 0)
         self.assertEqual(result["conservative_net_after_outstanding_max_liability_kopecks"], result["net_kopecks"])
