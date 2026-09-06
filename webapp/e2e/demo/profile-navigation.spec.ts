@@ -10,6 +10,10 @@ test('returns to the top when switching from the scrolled profile to Home', asyn
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
   await expect(page.getByRole('heading', { level: 1, name: 'Профиль' })).toBeVisible()
+  await expect(page.getByText('Выгода за 28 дней')).toBeVisible()
+  await expect(page.getByText('Сэкономлено за 28 дней')).toHaveCount(0)
+  await expect(page.locator('.profile-stat-value')).toHaveCSS('color', 'rgb(20, 145, 62)')
+  await expect(page.locator('.profile-trade-entry [data-slot="typography"]')).toHaveCSS('color', 'rgb(32, 33, 36)')
 
   await page.evaluate(() => window.scrollTo(0, 600))
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
@@ -29,8 +33,17 @@ test('unlimited demo mode ignores a saved cooldown and keeps the chest openable'
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
   await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeEnabled()
+  await expect(page.getByText('Общие задания магазина — их видят все покупатели')).toHaveCount(0)
   await expect(page.locator('.chest-timer-label')).toHaveText('Коробка')
   await expect(page.locator('.chest-timer-value')).toHaveText('Готова')
+
+  await page.getByRole('button', { name: 'Информация о коробке' }).click()
+  const chestInfo = page.getByRole('dialog', { name: 'Как открыть коробку' })
+  await expect(chestInfo.getByText('Открой коробку движением по экрану.')).toBeVisible()
+  await expect(chestInfo.getByRole('list', { name: 'Шансы выпадения предметов' })).toContainText('Обычный70%')
+  await expect(chestInfo.getByRole('list', { name: 'Шансы выпадения предметов' })).toContainText('Эпический25%')
+  await expect(chestInfo.getByRole('list', { name: 'Шансы выпадения предметов' })).toContainText('Легендарный5%')
+  await chestInfo.getByRole('button', { name: 'Закрыть информацию' }).click()
 
   await page.reload()
   await page.getByRole('button', { name: 'Профиль' }).click()
@@ -40,6 +53,12 @@ test('unlimited demo mode ignores a saved cooldown and keeps the chest openable'
   for (const tab of ['Коллекция', 'Друзья', 'Задания']) {
     await openTab(page, tab)
     await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeVisible()
+    if (tab === 'Друзья') {
+      await expect(page.getByText('Когда приглашенный друг сделает первую покупку, вы получите предмет для своей коллекции.')).toBeVisible()
+      await expect(page.getByText('Награда одна за неделю и только за подтверждённую покупку.')).toHaveCount(0)
+      await expect(page.getByRole('heading', { name: 'Рейтинг экономии' })).toBeVisible()
+      await expect(page.getByText('Считается только реально погашенная выгода за 28 дней.', { exact: false })).toHaveCount(0)
+    }
   }
 })
 
@@ -104,6 +123,10 @@ test('crafts a themed discount from four inventory items and restores its barcod
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
   await openTab(page, 'Коллекция')
+  await expect(page.getByText('Собери 4 предмета')).toBeVisible()
+  await expect(page.getByText('Полученные вами предметы, которые можно использовать для создания скидки.')).toBeVisible()
+  await expect(page.getByText('Перетащите четыре предмета. При создании потратится по одной копии.')).toHaveCount(0)
+  await expect(page.getByText('Тяните предмет вверх или выберите его нажатием, затем нажмите на ячейку.')).toHaveCount(0)
   await expect(page.getByRole('heading', { name: 'Предметы за задания' })).toHaveCount(0)
 
   const firstItem = page.getByRole('button', { name: /Фруктовая корзинка/ })
@@ -138,12 +161,17 @@ test('crafts a themed discount from four inventory items and restores its barcod
   await expect(page.getByRole('heading', { name: 'Свежий выбор' })).toBeVisible()
   await expect(discountDialog.getByText('−10%', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Показать штрихкод' }).click()
-  await expect(page.getByRole('dialog', { name: 'Штрихкод скидки' })).toBeVisible()
+  const barcodeDialog = page.getByRole('dialog', { name: 'Штрихкод скидки' })
+  await expect(barcodeDialog).toBeVisible()
+  await expect(barcodeDialog.getByText('Покажите на кассе')).toHaveCount(0)
+  await expect(barcodeDialog.getByRole('heading', { name: 'Свежий выбор' })).toBeVisible()
+  await expect(barcodeDialog.locator('.discount-barcode-percent')).toHaveText('−10%')
   await expect(page.getByRole('img', { name: /^Штрихкод \d{13}$/ })).toBeVisible()
   await page.getByRole('button', { name: 'Закрыть скидку' }).click()
 
   const discountBadge = page.getByRole('button', { name: /Открыть скидку 10% «Свежий выбор»/ })
   await expect(discountBadge).toBeVisible()
+  await expect(discountBadge).toHaveCSS('border-top-color', 'rgb(22, 163, 74)')
   await page.reload()
   await page.getByRole('button', { name: 'Профиль' }).click()
   await expect(discountBadge).toBeVisible()

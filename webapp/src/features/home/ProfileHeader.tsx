@@ -70,12 +70,14 @@ export function ProfileHeader({
         </div>
 
         <div className="profile-stat-savings">
-          <Typography as="span" variant="bodyXs" className="profile-stat-label">
-            Сэкономлено за 28 дней
-          </Typography>
-          <Typography as="span" variant="body" className="profile-stat-value">
-            {formatRubles(savingsKopecks)}
-          </Typography>
+          <div className="profile-stat-level-row">
+            <Typography as="span" variant="bodyXs" className="profile-stat-label">
+              Выгода за 28 дней
+            </Typography>
+            <Typography as="span" variant="body" className="profile-stat-value">
+              {formatRubles(savingsKopecks)}
+            </Typography>
+          </div>
         </div>
       </div>
     </section>

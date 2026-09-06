@@ -13,7 +13,7 @@ import {
   addShakeMovement,
   type PointerPoint,
 } from './profile-chest-gesture'
-import { drawProfileItem } from './profile-item-drop'
+import { ITEM_DROP_RATES, drawProfileItem } from './profile-item-drop'
 import {
   addInventoryItem,
   consumeInventoryItems,
@@ -264,8 +264,21 @@ export function ProfileScreen() {
                 Коробка награды
               </Typography>
               <Typography as="span" variant="bodySm" className="info-copy">
-                Сейчас коробку можно открывать без ограничений. Нажмите на неё, зажмите и потрясите движениями по экрану — после получения предмета коробка сразу станет доступна снова.
+                Открой коробку движением по экрану.
               </Typography>
+              <Typography as="strong" variant="bodyXs" className="chest-drop-rates-title">
+                Шансы выпадения
+              </Typography>
+              <ul className="chest-drop-rates" aria-label="Шансы выпадения предметов">
+                {(Object.keys(rarityLabels) as ItemRarity[]).map((rarity) => (
+                  <li className={`item-rarity-${rarity}`} key={rarity}>
+                    <Typography as="span" variant="bodyXs">{rarityLabels[rarity]}</Typography>
+                    <Typography as="strong" variant="bodyXs">
+                      {ITEM_DROP_RATES[rarity] * 100}%
+                    </Typography>
+                  </li>
+                ))}
+              </ul>
             </div>
           ) : null}
         </div>
@@ -300,9 +313,6 @@ export function ProfileScreen() {
               <div>
                 <Typography as="h2" variant="h2" className="section-title" id="tasks-title">
                   Задания недели
-                </Typography>
-                <Typography as="span" variant="bodyXs" className="section-hint">
-                  Общие задания магазина — их видят все покупатели
                 </Typography>
               </div>
               <Typography as="span" variant="bodyXs" className="week-badge">7 дней</Typography>
@@ -458,12 +468,7 @@ export function ProfileScreen() {
               type="button"
             >
               <img
-                className="opening-chest-part opening-chest-base"
-                src="/assets/pyaterochka-cardboard-chest.webp"
-                alt=""
-              />
-              <img
-                className="opening-chest-part opening-chest-lid"
+                className="opening-chest-image"
                 src="/assets/pyaterochka-cardboard-chest.webp"
                 alt=""
               />

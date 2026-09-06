@@ -81,6 +81,7 @@
 }
 
 .profile-trade-entry [data-slot='typography'] {
+  color: #202124;
   font-size: 10px;
   line-height: 1;
   font-weight: 850;
@@ -105,7 +106,7 @@
   min-height: 70px;
   padding: 9px 8px;
   place-items: center;
-  border: 3px solid var(--item-rarity-color);
+  border: 3px solid #16a34a;
   border-radius: 20px;
   background: linear-gradient(145deg, #fff 38%, var(--item-rarity-soft));
   color: #202421;
@@ -316,6 +317,45 @@
   color: #5d635e;
   font-size: 12px;
   line-height: 1.35;
+}
+
+.chest-drop-rates-title[data-slot='typography'] {
+  display: block;
+  margin-top: 13px;
+  color: #202421;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 850;
+}
+
+.chest-drop-rates {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chest-drop-rates li {
+  display: flex;
+  min-height: 30px;
+  padding: 6px 9px;
+  align-items: center;
+  justify-content: space-between;
+  border-left: 4px solid var(--item-rarity-color);
+  border-radius: 8px;
+  background: var(--item-rarity-soft);
+  color: #343934;
+}
+
+.chest-drop-rates li [data-slot='typography'] {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.chest-drop-rates li strong[data-slot='typography'] {
+  color: var(--item-rarity-color);
+  font-weight: 900;
 }
 
 .profile-section,
@@ -909,35 +949,40 @@
   filter: blur(28px);
 }
 
-.opening-chest-part {
+.opening-chest::before {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  inset: 34px;
+  border: 3px solid rgb(190 255 136 / 0%);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.opening-chest-image {
   position: absolute;
   width: 100%;
   height: 100%;
   inset: 0;
   object-fit: contain;
   pointer-events: none;
-}
-
-.opening-chest-base {
-  clip-path: inset(40% 0 0 0);
-}
-
-.opening-chest-lid {
-  z-index: 2;
-  clip-path: inset(0 0 60% 0);
-  transform-origin: 50% 44%;
+  transform-origin: 50% 62%;
 }
 
 .chest-opening-scene-opening .opening-chest {
-  animation: chest-shake 1.25s ease-in-out both;
+  animation: chest-open-float 1.4s cubic-bezier(.2, .72, .25, 1) both;
 }
 
 .chest-opening-scene-opening .opening-chest::after {
-  animation: chest-glow 1.35s ease-in both;
+  animation: chest-glow 1.4s ease-in-out both;
 }
 
-.chest-opening-scene-opening .opening-chest-lid {
-  animation: chest-lid-open 650ms 760ms cubic-bezier(.2, .8, .2, 1) both;
+.chest-opening-scene-opening .opening-chest::before {
+  animation: chest-ring 1.4s cubic-bezier(.18, .76, .3, 1) both;
+}
+
+.chest-opening-scene-opening .opening-chest-image {
+  animation: chest-open-dissolve 1.4s cubic-bezier(.2, .72, .25, 1) both;
 }
 
 .chest-opening-scene-reward .opening-chest {
@@ -1195,8 +1240,32 @@
 }
 
 .discount-barcode-title[data-slot='typography'] {
-  margin-top: 14px;
+  max-width: none;
+  margin: 0;
   font-size: 22px;
+}
+
+.discount-barcode-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.discount-barcode-percent[data-slot='typography'] {
+  display: inline-flex;
+  min-height: 34px;
+  padding: 6px 12px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #e6f6e9;
+  color: #139542;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 950;
 }
 
 .ean-barcode {
@@ -1777,29 +1846,31 @@ button.profile-trade-slot {
   to { opacity: 1; }
 }
 
-@keyframes chest-shake {
-  0%, 16% { transform: translate(0, 0) rotate(0); }
-  22% { transform: translate(-8px, 1px) rotate(-4deg); }
-  29% { transform: translate(9px, -2px) rotate(5deg); }
-  36% { transform: translate(-10px, 0) rotate(-5deg); }
-  43% { transform: translate(8px, -3px) rotate(4deg); }
-  50% { transform: translate(-6px, 0) rotate(-3deg); }
-  58% { transform: translate(4px, -3px) rotate(2deg); }
-  68% { transform: translate(0, -7px) rotate(0); }
-  78% { transform: translate(0, 5px) scale(1.04); }
-  100% { transform: translate(0, 0) scale(1.1); }
+@keyframes chest-open-float {
+  0% { transform: translateY(0); }
+  24% { transform: translateY(8px); }
+  54% { transform: translateY(-10px); }
+  100% { transform: translateY(-28px); }
 }
 
-@keyframes chest-lid-open {
-  0% { transform: translateY(0) rotate(0); }
-  45% { transform: translateY(-32px) rotate(-5deg); }
-  100% { transform: translate(24px, -80px) rotate(18deg); opacity: 0; }
+@keyframes chest-open-dissolve {
+  0% { opacity: 1; transform: scale(1) rotate(0); filter: brightness(1) blur(0); }
+  24% { opacity: 1; transform: scale(.96) rotate(-1deg); filter: brightness(1) blur(0); }
+  48% { opacity: 1; transform: scale(1.08) rotate(1deg); filter: brightness(1.08) blur(0); }
+  72% { opacity: .94; transform: scale(1.16) rotate(0); filter: brightness(1.28) blur(0); }
+  100% { opacity: 0; transform: scale(1.34) rotate(0); filter: brightness(1.7) blur(7px); }
 }
 
 @keyframes chest-glow {
-  0%, 52% { opacity: 0; transform: scale(.5); }
-  78% { opacity: .95; transform: scale(1.2); }
-  100% { opacity: .55; transform: scale(1.55); }
+  0%, 22% { opacity: 0; transform: scale(.55); }
+  58% { opacity: .82; transform: scale(1.05); }
+  100% { opacity: 0; transform: scale(1.9); }
+}
+
+@keyframes chest-ring {
+  0%, 42% { border-color: rgb(190 255 136 / 0%); opacity: 0; transform: scale(.55); }
+  65% { border-color: rgb(190 255 136 / 80%); opacity: .9; }
+  100% { border-color: rgb(190 255 136 / 0%); opacity: 0; transform: scale(2.25); }
 }
 
 @keyframes reward-pop {
@@ -1814,7 +1885,8 @@ button.profile-trade-slot {
   .profile-trade-sheet,
   .discount-result-card,
   .opening-chest,
-  .opening-chest-lid,
+  .opening-chest-image,
+  .opening-chest::before,
   .opening-chest::after,
   .revealed-reward {
     animation-duration: 1ms !important;
@@ -1896,7 +1968,7 @@ button.profile-trade-slot {
 }
 
 .profile-stat-value[data-slot='typography'] {
-  color: #232824;
+  color: #14913e;
   font-size: 16px;
   line-height: 1.05;
   font-weight: 880;

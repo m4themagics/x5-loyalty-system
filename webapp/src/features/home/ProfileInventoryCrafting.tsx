@@ -206,7 +206,7 @@ export function ProfileInventoryCrafting({
               Ячейки скидок
             </Typography>
             <Typography as="span" variant="bodyXs" className="section-hint">
-              Перетащите четыре предмета. При создании потратится по одной копии.
+              Собери 4 предмета
             </Typography>
           </div>
           <Typography as="span" variant="bodyXs" className="slots-counter">
@@ -283,7 +283,7 @@ export function ProfileInventoryCrafting({
               Инвентарь
             </Typography>
             <Typography as="span" variant="bodyXs" className="section-hint">
-              Тяните предмет вверх или выберите его нажатием, затем нажмите на ячейку.
+              Полученные вами предметы, которые можно использовать для создания скидки.
             </Typography>
           </div>
           <Typography as="span" variant="bodyXs" className="slots-counter">

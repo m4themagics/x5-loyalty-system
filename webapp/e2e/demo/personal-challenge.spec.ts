@@ -15,6 +15,8 @@ async function openProfile(page: import('@playwright/test').Page) {
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
   await expect(page.getByRole('heading', { level: 2, name: 'Персональный челлендж' })).toBeVisible()
+  await expect(page.getByText('Одно задание по вашим покупкам. Выполните его за обычный поход в магазин.')).toHaveCount(0)
+  await expect(page.getByText('Подобрали особое задание на основе ваших прошлых покупок.')).toBeVisible()
 }
 
 test.beforeEach(async ({ page }) => {
@@ -24,6 +26,19 @@ test.beforeEach(async ({ page }) => {
     window.localStorage.removeItem(key)
     window.sessionStorage.setItem('demo-state-cleared', 'true')
   }, demoStateKey)
+})
+
+test('keeps the challenge preview unchanged when the engine is unavailable', async ({ page }) => {
+  await page.route('**/api/demo/decision', async (route) => {
+    await route.abort('failed')
+  })
+  await openProfile(page)
+
+  await page.getByRole('button', { name: 'Показать задание' }).click()
+
+  await expect(page.getByRole('alert')).toHaveCount(0)
+  await expect(page.getByText('Задание готово к показу')).toBeVisible()
+  await expect(page.getByText('Подобрали особое задание на основе ваших прошлых покупок.')).toBeVisible()
 })
 
 test('the showcase profile opens with one challenge that finishes its set', async ({ page }) => {
