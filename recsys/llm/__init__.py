@@ -86,6 +86,7 @@ def _facts(challenge: dict[str, Any], candidate: Any) -> dict[str, Any]:
         "recipe_title": candidate.recipe_title,
         "matched_count": candidate.matched_count,
         "category": challenge["target"]["category"],
+        "target_sku_names": candidate.target_sku_names,
         "quantity": challenge["target"]["quantity"],
         "window_days": challenge["target"]["window_days"],
         "deadline_date": _format_date(challenge["target"]["deadline_ms"]),
@@ -100,19 +101,22 @@ def _template_card(challenge: dict[str, Any], facts: dict[str, Any]) -> dict[str
     if facts["physical_name"]:
         reward += f" и бесплатный товар: {facts['physical_name']}"
 
+    target_names = " или ".join(f"«{name}»" for name in facts["target_sku_names"])
+    target = (
+        target_names
+        if len(facts["target_sku_names"]) == 1
+        else f"один из товаров: {target_names}"
+    )
     body = (
-        f"Купите один оплаченный товар из категории «{facts['category']}» до "
-        f"{facts['deadline_date']} — предмет «{facts['item_name']}» приблизит рецепт "
-        f"«{facts['recipe_title']}»."
+        f"До {facts['deadline_date']} купите {target} — получите предмет "
+        f"«{facts['item_name']}» для рецепта «{facts['recipe_title']}»."
     )
 
     return {
         "headline": _clip(challenge["title"], 60),
         "body": _clip(body, 220),
         "reward_line": _clip(reward, 120),
-        "deadline_line": _clip(
-            f"До {facts['deadline_date']}, оплаченных покупок: {facts['quantity']}", 120
-        ),
+        "deadline_line": f"Срок: до {facts['deadline_date']}",
         "sponsor_line": (
             _clip(f"При поддержке бренда: {facts['sponsor_name'] or 'партнёр'}", 120)
             if facts["sponsored"]

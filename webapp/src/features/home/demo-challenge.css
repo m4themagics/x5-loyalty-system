@@ -1284,6 +1284,25 @@
   line-height: 1.35;
 }
 
+.demo-title-retry {
+  width: max-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: white;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.demo-title-retry:focus-visible,
+.demo-friend-collection:focus-visible {
+  outline: 3px solid rgb(255 255 255 / 52%);
+  outline-offset: 3px;
+}
+
 /* --- Карточки друзей ------------------------------------------------------ */
 
 .demo-friend-list {
@@ -1349,6 +1368,13 @@
   line-height: 1.2;
 }
 
+.demo-friend-title[data-slot='typography'] {
+  color: #14913e;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 750;
+}
+
 .demo-friend-items {
   display: flex;
   align-items: center;
@@ -1406,6 +1432,21 @@
 
 .demo-friend-step-done {
   background: linear-gradient(90deg, #22ac52, #0f8a3a);
+}
+
+.demo-friend-collection {
+  width: max-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #107f36;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.demo-friend-collection:focus-visible {
+  outline-color: rgb(18 153 62 / 40%);
 }
 
 .demo-friend-medal.demo-friend-place[data-slot='typography'] {

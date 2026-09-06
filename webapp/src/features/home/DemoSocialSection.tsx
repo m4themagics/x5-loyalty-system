@@ -35,16 +35,19 @@ export function DemoSocialSection({
   state,
   store,
   referralIssued,
+  onOpenCollection,
 }: {
   state: DemoState
   store: DemoStore
   referralIssued: boolean
+  onOpenCollection: () => void
 }) {
+  const [titleRetry, setTitleRetry] = useState(0)
   const titles = useCollectionTitles([state.profile, ...Object.values(store.profiles)
     .filter((entry) => entry.profile.profile_id.startsWith(DEMO_TRADE_FRIEND_PREFIX)
       && entry.profile.profile_id !== state.profile.profile_id)
-    .map((entry) => entry.profile)])
-  const title = titles.get(state.profile.profile_id) ?? null
+    .map((entry) => entry.profile)], titleRetry)
+  const title = collectionTitleFor(titles, state.profile)
   const participants: Participant[] = [
     ...Object.values(store.profiles)
       .filter((entry) => entry.profile.profile_id.startsWith(DEMO_TRADE_FRIEND_PREFIX)
@@ -77,88 +80,110 @@ export function DemoSocialSection({
           Титул коллекции
         </Typography>
         <Typography as="h2" variant="h2" className="demo-title-value" id="collection-title">
-          {title === null ? '…' : title.title}
+          {title?.status === 'ready' ? title.title : title?.status === 'error' ? 'Ваша коллекция' : 'Подбираем титул…'}
         </Typography>
         <Typography as="span" variant="bodyXs" className="demo-title-subtitle">
-          {title === null ? 'Подбираем титул по вашей коллекции' : title.subtitle}
+          {title?.status === 'ready'
+            ? title.subtitle
+            : title?.status === 'error'
+              ? 'Титул пока недоступен'
+              : 'Смотрим, что вы уже собрали'}
         </Typography>
+        {title?.status === 'error' ? (
+          <button className="demo-title-retry" onClick={() => setTitleRetry((value) => value + 1)} type="button">
+            <Typography as="span" variant="controlXs">Обновить титул</Typography>
+          </button>
+        ) : null}
       </section>
 
       <section className="demo-progress" aria-labelledby="ranking-title">
         <div>
           <Typography as="h2" variant="h2" className="demo-block-title" id="ranking-title">
-            Друзья и наборы
+            Прогресс друзей
           </Typography>
           <Typography as="span" variant="bodyXs" className="demo-block-hint">
-            Сравниваются собранные наборы и предметы. Суммы покупок и скидок в рейтинг не
-            попадают, а место не меняет размер награды.
+            Место зависит только от собранных наборов и предметов.
           </Typography>
         </div>
 
         <ol className="demo-friend-list">
-          {ranking.map((entry) => (
-            <li
-              className={`demo-friend ${entry.alias === 'Вы' ? 'demo-friend-you' : ''}`}
-              key={entry.profile_id}
-            >
-              <div className="demo-friend-head">
-                <Typography
-                  as="span"
-                  variant="body"
-                  className={`demo-friend-medal ${entry.medal === null ? 'demo-friend-place' : ''}`}
-                  aria-label={`Место ${entry.rank}`}
-                >
-                  {entry.medal ?? entry.rank}
-                </Typography>
-                <div className="demo-friend-name">
-                  <Typography as="strong" variant="bodySmMedium" className="demo-friend-alias">
-                    {entry.alias}
+          {ranking.map((entry) => {
+            const friendTitle = collectionTitleFor(titles, entry.profile)
+            return (
+              <li
+                className={`demo-friend ${entry.alias === 'Вы' ? 'demo-friend-you' : ''}`}
+                key={entry.profile_id}
+              >
+                <div className="demo-friend-head">
+                  <Typography
+                    as="span"
+                    variant="body"
+                    className={`demo-friend-medal ${entry.medal === null ? 'demo-friend-place' : ''}`}
+                    aria-label={`Место ${entry.rank}`}
+                  >
+                    {entry.medal ?? entry.rank}
                   </Typography>
-                  <Typography as="span" variant="bodyXs" className="demo-friend-score">
-                    {titles.get(entry.profile_id)?.title ?? formatSets(entry.recipes_completed)}
-                  </Typography>
-                </div>
-              </div>
-
-              {entry.itemIds.length === 0 ? (
-                <Typography as="span" variant="bodyXs" className="demo-friend-empty">
-                  Коллекция пока пуста
-                </Typography>
-              ) : (
-                <div className="demo-friend-items" aria-hidden="true">
-                  {entry.itemIds.slice(0, 5).map((itemId) => {
-                    const item = findItem(itemId)
-                    return item === null ? null : (
-                      <img alt="" className={`item-rarity-${item.rarity}`} key={itemId} src={item.iconSrc} />
-                    )
-                  })}
-                  {entry.itemIds.length > 5 ? (
-                    <Typography as="span" variant="bodyXs" className="demo-friend-more">
-                      +{entry.itemIds.length - 5}
+                  <div className="demo-friend-name">
+                    <Typography as="strong" variant="bodySmMedium" className="demo-friend-alias">
+                      {entry.alias}
                     </Typography>
-                  ) : null}
-                </div>
-              )}
-
-              {entry.closest === null || entry.alias !== 'Вы' ? null : (
-                <div className="demo-friend-progress">
-                  <Typography as="span" variant="bodyXs" className="demo-friend-goal">
-                    {entry.closest.owned === entry.closest.required
-                      ? `Набор «${entry.closest.title}» готов к сборке`
-                      : `До «${entry.closest.title}» — ещё ${entry.closest.required - entry.closest.owned}`}
-                  </Typography>
-                  <div className="demo-friend-track" aria-hidden="true">
-                    {Array.from({ length: CRAFT_SIZE }).map((_unused, slot) => (
-                      <span
-                        className={`demo-friend-step ${slot < entry.closest!.owned ? 'demo-friend-step-done' : ''}`}
-                        key={slot}
-                      />
-                    ))}
+                    <Typography as="span" variant="bodyXs" className="demo-friend-score">
+                      {formatCollectionScore(entry.recipes_completed, entry.items_collected)}
+                    </Typography>
+                    {friendTitle?.status === 'ready' ? (
+                      <Typography as="span" variant="bodyXs" className="demo-friend-title">
+                        {friendTitle.title}
+                      </Typography>
+                    ) : null}
                   </div>
                 </div>
-              )}
-            </li>
-          ))}
+
+                {entry.itemIds.length === 0 ? (
+                  <Typography as="span" variant="bodyXs" className="demo-friend-empty">
+                    Коллекция пока пуста
+                  </Typography>
+                ) : (
+                  <div className="demo-friend-items" aria-hidden="true">
+                    {entry.itemIds.slice(0, 5).map((itemId) => {
+                      const item = findItem(itemId)
+                      return item === null ? null : (
+                        <img alt="" className={`item-rarity-${item.rarity}`} key={itemId} src={item.iconSrc} />
+                      )
+                    })}
+                    {entry.itemIds.length > 5 ? (
+                      <Typography as="span" variant="bodyXs" className="demo-friend-more">
+                        +{entry.itemIds.length - 5}
+                      </Typography>
+                    ) : null}
+                  </div>
+                )}
+
+                {entry.closest === null || entry.alias !== 'Вы' ? null : (
+                  <div className="demo-friend-progress">
+                    <Typography as="span" variant="bodyXs" className="demo-friend-goal">
+                      {entry.closest.owned === entry.closest.required
+                        ? `Можно собрать «${entry.closest.title}»`
+                        : `До «${entry.closest.title}» — ещё ${entry.closest.required - entry.closest.owned}`}
+                    </Typography>
+                    <div className="demo-friend-track" aria-hidden="true">
+                      {Array.from({ length: CRAFT_SIZE }).map((_unused, slot) => (
+                        <span
+                          className={`demo-friend-step ${slot < entry.closest!.owned ? 'demo-friend-step-done' : ''}`}
+                          key={slot}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {entry.alias === 'Вы' ? (
+                  <button className="demo-friend-collection" onClick={onOpenCollection} type="button">
+                    <Typography as="span" variant="controlXs">Открыть коллекцию</Typography>
+                  </button>
+                ) : null}
+              </li>
+            )
+          })}
         </ol>
       </section>
 
@@ -213,29 +238,67 @@ function formatSets(count: number): string {
   return `${count} ${tail}`
 }
 
+function formatItems(count: number): string {
+  const tail = count % 100 >= 11 && count % 100 <= 14
+    ? 'предметов'
+    : count % 10 === 1
+      ? 'предмет'
+      : count % 10 >= 2 && count % 10 <= 4
+        ? 'предмета'
+        : 'предметов'
+  return `${count} ${tail}`
+}
+
+function formatCollectionScore(sets: number, items: number): string {
+  return `${formatSets(sets)} · ${formatItems(items)}`
+}
+
 /**
  * Титулы коллекций: по одному запросу на участника. Их пишет модель, а при недоступности
  * или нарушении контракта движок возвращает детерминированный шаблон.
  */
-function useCollectionTitles(profiles: readonly DemoState['profile'][]) {
-  const [titles, setTitles] = useState(new Map<string, { title: string; subtitle: string }>())
-  const key = profiles.map((profile) => `${profile.profile_id}:${profile.inventory.length}:${profile.progress.completed_recipe_ids.length}`).join('|')
+type CollectionTitleState = (
+  | { status: 'error' }
+  | { status: 'ready'; title: string; subtitle: string }
+) & { signature: string }
+
+function profileCollectionSignature(profile: DemoState['profile']): string {
+  return [
+    profile.profile_id,
+    profile.inventory.map((entry) => `${entry.item_id}:${entry.quantity}`).join(','),
+    profile.progress.completed_recipe_ids.join(','),
+  ].join(':')
+}
+
+function collectionTitleFor(
+  titles: ReadonlyMap<string, CollectionTitleState>,
+  profile: DemoState['profile'],
+): CollectionTitleState | undefined {
+  const title = titles.get(profile.profile_id)
+  return title?.signature === profileCollectionSignature(profile) ? title : undefined
+}
+
+function useCollectionTitles(profiles: readonly DemoState['profile'][], retry: number) {
+  const [titles, setTitles] = useState(new Map<string, CollectionTitleState>())
+  const key = profiles.map(profileCollectionSignature).join('|')
 
   useEffect(() => {
     let cancelled = false
-    void Promise.all(profiles.map(async (profile) => {
-      const result = await requestCollectionTitle(profile, Date.now())
-      return result.ok
-        ? [profile.profile_id, { title: result.data.title, subtitle: result.data.subtitle }] as const
-        : null
-    })).then((entries) => {
-      if (cancelled) return
-      setTitles(new Map(entries.filter((entry) => entry !== null)))
+    profiles.forEach((profile) => {
+      void (async () => {
+        const result = await requestCollectionTitle(profile, Date.now())
+        if (cancelled) return
+        const signature = profileCollectionSignature(profile)
+        const next: CollectionTitleState = result.ok
+          ? { status: 'ready', title: result.data.title, subtitle: result.data.subtitle, signature }
+          : { status: 'error', signature }
+        setTitles((current) => new Map(current).set(profile.profile_id, next))
+      })()
     })
     return () => { cancelled = true }
     // Состав коллекций полностью определяет титулы.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key])
+  }, [key, retry])
 
   return titles
 }

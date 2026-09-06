@@ -50,9 +50,10 @@ test('снимает картинки для документации', async ({
   await card.screenshot({ path: `${raw}challenge.png`, animations: 'disabled' })
 
   await openTab(page, 'Друзья')
-  await expect(page.getByRole('heading', { name: 'Друзья и наборы' })).toBeVisible()
+  const ranking = page.locator('.demo-progress')
+  await expect(ranking.getByRole('heading', { name: 'Прогресс друзей' })).toBeVisible()
   await page.waitForTimeout(400)
-  await shot(page, 'friends')
+  await ranking.screenshot({ path: `${raw}friends.png`, animations: 'disabled' })
 
   await openTab(page, 'Задания')
   await page.getByRole('button', { name: 'Демо-стенд', exact: true }).click()

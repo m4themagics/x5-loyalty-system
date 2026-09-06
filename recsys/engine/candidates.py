@@ -31,6 +31,7 @@ class Candidate(NamedTuple):
     familiar_days: int
     days_since_last: int | None
     target_sku_ids: list[str]
+    target_sku_names: list[str]
     gift_sku: dict[str, Any] | None
     sponsorship: Sponsorship
     economics: dict[str, Any] | None
@@ -166,7 +167,9 @@ def _evaluate(
         if not policy["exploration_enabled"]:
             reasons.append("exploration_disabled")
 
-    target_sku_ids = _eligible_target_skus(category, sku_catalog)
+    target_skus = _eligible_target_skus(category, sku_catalog)
+    target_sku_ids = [sku["sku_id"] for sku in target_skus]
+    target_sku_names = [sku["name"] for sku in target_skus]
     if not target_sku_ids:
         reasons.append("sku_out_of_stock")
         accepted = False
@@ -236,6 +239,7 @@ def _evaluate(
         familiar_days=history.days_in_category(category),
         days_since_last=history.days_since_last(category),
         target_sku_ids=target_sku_ids,
+        target_sku_names=target_sku_names,
         gift_sku=gift_sku,
         sponsorship=sponsorship,
         economics=economics,
@@ -246,12 +250,17 @@ def _evaluate(
     )
 
 
-def _eligible_target_skus(category: str, sku_catalog: dict[str, Any]) -> list[str]:
+def _eligible_target_skus(category: str, sku_catalog: dict[str, Any]) -> list[dict[str, Any]]:
     """Список оплачиваемых SKU категории фиксируется до показа задания."""
     return sorted(
-        sku["sku_id"]
-        for sku in sku_catalog["skus"]
-        if sku["category"] == category and sku["stock"] > 0 and sku["unit_cost_kopecks"] > 0
+        (
+            sku
+            for sku in sku_catalog["skus"]
+            if sku["category"] == category
+            and sku["stock"] > 0
+            and sku["unit_cost_kopecks"] > 0
+        ),
+        key=lambda sku: sku["sku_id"],
     )
 
 

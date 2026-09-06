@@ -462,6 +462,7 @@ export function ProfileScreen() {
             state={demoState}
             store={demo.store}
             referralIssued={demo.referralIssued}
+            onOpenCollection={() => changeTab('collection')}
           />
         </section>
       ) : null}

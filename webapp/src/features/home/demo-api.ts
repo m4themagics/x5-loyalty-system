@@ -22,6 +22,8 @@ import { buildDemoGameFeatures, buildDemoGameSnapshot, fromDemoInventory } from 
 
 /** Клиент локального демонстрационного API. Ответ движка валидируется тем же контрактом. */
 
+const TITLE_REQUEST_TIMEOUT_MS = 5_000
+
 export type DemoApiFailure = { code: string; message: string }
 export type DemoApiResult<T> = { ok: true; data: T } | { ok: false; error: DemoApiFailure }
 
@@ -129,6 +131,7 @@ export async function requestCollectionTitle(
     {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
+      signal: AbortSignal.timeout(TITLE_REQUEST_TIMEOUT_MS),
       body: JSON.stringify({
         contract_version: DEMO_CONTRACT_VERSION,
         request_id: `req-title-${nowMs}`,

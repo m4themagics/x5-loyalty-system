@@ -88,7 +88,12 @@ class CardTest(unittest.TestCase):
             response = handle_decision(copy.deepcopy(self.request))
         self.assertEqual(response["card"]["source"], "llm")
         self.assertEqual(response["card"]["headline"], "Молочный кувшин для доброго утра")
-        self.assertIn("Купите один оплаченный товар", response["card"]["body"])
+        self.assertEqual(
+            response["card"]["body"],
+            "До 12.09.2026 купите «Молоко питьевое 1 л» — получите предмет "
+            "«Молочный кувшин» для рецепта «Доброе утро».",
+        )
+        self.assertEqual(response["card"]["deadline_line"], "Срок: до 12.09.2026")
         self.assertEqual(response["diagnostics"]["llm"]["model"], "qwen3:1.7b")
 
     def test_local_ollama_timeout_returns_a_fallback_result(self) -> None:
