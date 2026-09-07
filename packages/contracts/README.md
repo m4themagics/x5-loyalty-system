@@ -1,47 +1,45 @@
 # Contracts
 
-The contracts package is the shared source of truth for API payloads, DTOs, and error shapes. Backend, web, and mobile import these schemas instead of redefining request or response shapes locally.
+`@pyaterochka-game-demo/contracts` — единственный контракт провода между webapp и локальным
+Python-движком. Обе стороны импортируют схемы отсюда и не переопределяют формы запросов и
+ответов у себя.
 
-## Stack
+## Состав
 
-- TypeScript
-- Zod
+| Модуль | Что описывает |
+| --- | --- |
+| `src/demo-poc.ts` | Contract v2: профиль, решение, событие, Ads-снимок, фонды и лимиты |
+| `src/demo-trade.ts` | Обмен предметами между локальными синтетическими профилями |
+| `src/demo-evaluation.ts` | Ответ панели «Для X5» с результатами сравнения политик |
 
-## Commands
+Всё экспортируется из `src/index.ts`.
 
-From the repository root:
+## Стек
+
+TypeScript и Zod. Других зависимостей у пакета нет.
+
+## Команды
 
 ```bash
 bun run --cwd packages/contracts typecheck
+bun run --cwd packages/contracts test
 ```
 
-From `packages/contracts`:
+## Правила
 
-```bash
-bun run typecheck
-bun run build
-```
+Контракт меняется одной согласованной правкой: Zod-схемы здесь, эталонные payload в
+`recsys/contract/examples/`, Python-движок в `recsys/engine/` и webapp — вместе. Изменение
+только одной стороны ломает границу, потому что валидация стоит на обеих.
 
-## Practice
+Деньги — целые копейки. Никакой рантайм-логики здесь быть не должно: пакет отвечает за
+валидацию, нормализацию и общие типы.
 
-Add or change API shapes here before updating backend routes or client forms. Export schemas and inferred TypeScript types from `src/index.ts` so all consumers use the same contract.
+После изменения схемы проверьте обе стороны в одном проходе: тесты пакета, тесты движка
+(`python3 -m unittest discover -s recsys/engine/tests`) и тесты webapp.
 
-When a schema changes, validate both sides in the same pass:
+## Внешняя документация
 
-- backend route/service validation and serialization;
-- web API client, form parsing, and UI state;
-- mobile API client, form parsing, and UI state;
-- relevant unit/integration/E2E tests from [../../docs/TESTING.md](../../docs/TESTING.md).
+По поведению библиотек авторитетна их документация, а не этот файл.
 
-Do not add runtime-only business logic here. Contracts should stay focused on data validation, normalization, and shared TypeScript types.
-
-For user-provided or database-stored public media URLs, validate the scheme explicitly instead of relying on `.url()` alone. Public image, video, and file URL fields should require `https:` unless a product has a documented reason to accept another scheme.
-
-## Current Upstream Documentation
-
-For schema, TypeScript, or consumer integration questions, consult the current upstream documentation linked here first. This README describes this package's conventions; upstream docs are authoritative for library behavior.
-
-- [Zod docs](https://zod.dev/)
-- [TypeScript docs](https://www.typescriptlang.org/docs/)
-- [Hono docs](https://hono.dev/docs)
-- [TanStack Form React docs](https://tanstack.com/form/latest/docs/framework/react/quick-start)
+- [Zod](https://zod.dev/)
+- [TypeScript](https://www.typescriptlang.org/docs/)
