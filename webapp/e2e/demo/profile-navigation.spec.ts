@@ -39,7 +39,7 @@ test('returns to the top when switching from the scrolled profile to Home', asyn
   await expect(page.getByRole('region', { name: 'Карта лояльности' })).toBeVisible()
 })
 
-test('login box records one day across reloads and keeps the rules visible', async ({ page }) => {
+test('the demo chest stays available across reloads and keeps its rules visible', async ({ page }) => {
   await page.addInitScript(
     ({ key, deadline }) => window.localStorage.setItem(key, String(deadline)),
     { key: chestStorageKey, deadline: Date.now() + 24 * 60 * 60 * 1_000 },
@@ -48,14 +48,14 @@ test('login box records one day across reloads and keeps the rules visible', asy
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
   await dismissLoginDay(page)
-  await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeDisabled()
+  await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeEnabled()
   await expect(page.getByText('Общие задания магазина — их видят все покупатели')).toHaveCount(0)
-  await expect(page.locator('.chest-timer-label')).toHaveText('За возвращение')
-  await expect(page.locator('.chest-timer-value')).toHaveText('1 из 3 дней')
+  await expect(page.locator('.chest-timer-label')).toHaveText('Коробка Пятёрочки')
+  await expect(page.locator('.chest-timer-value')).toHaveText('Готова')
 
   await page.getByRole('button', { name: 'Информация о коробке' }).click()
   const chestInfo = page.getByRole('dialog', { name: 'Как открыть коробку' })
-  await expect(chestInfo.getByText('Заходите в три разных дня по московскому времени', { exact: false })).toBeVisible()
+  await expect(chestInfo.getByText('Демонстрационный режим', { exact: false })).toBeVisible()
   await expect(chestInfo.getByRole('list', { name: 'Шансы выпадения предметов' })).toContainText('Обычный70%')
   await expect(chestInfo.getByRole('list', { name: 'Шансы выпадения предметов' })).toContainText('Эпический25%')
   await expect(chestInfo.getByRole('list', { name: 'Шансы выпадения предметов' })).toContainText('Легендарный5%')
@@ -64,8 +64,8 @@ test('login box records one day across reloads and keeps the rules visible', asy
   await page.reload()
   await page.getByRole('button', { name: 'Профиль' }).click()
   await dismissLoginDay(page)
-  await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeDisabled()
-  await expect(page.locator('.chest-timer-value')).toHaveText('1 из 3 дней')
+  await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeEnabled()
+  await expect(page.locator('.chest-timer-value')).toHaveText('Готова')
 
   for (const tab of ['Коллекция', 'Друзья', 'Задания']) {
     await openTab(page, tab)

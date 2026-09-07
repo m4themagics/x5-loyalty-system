@@ -30,6 +30,7 @@ import {
 import { ProfileDiscountOverlay } from './ProfileDiscount'
 import { ProfileHeader } from './ProfileHeader'
 import { ProfileInventoryCrafting } from './ProfileInventoryCrafting'
+import { canReserveInstance } from './demo-state'
 import { avatarLevel } from './demo-progress'
 import { availableDemoInventory } from './demo-state'
 import { findItem, formatRubles } from './demo-format'
@@ -97,13 +98,9 @@ export function ProfileScreen() {
   const demoState = demo.state
   const [tab, setTab] = useState<ProfileTab>('quests')
   const [openPanel, setOpenPanel] = useState<'none' | 'stand' | 'x5'>('none')
-  const loginBox = demoState?.login_box
-  const isOpenable = loginBox?.days === 3 && loginBox.reserved && !demo.isBusy
-  const claimedBoxes = loginBox?.claimed_days.filter(day => day > demo.loginToday - 28).length ?? 0
-  const greeting = demo.loginGreeting
-  const boxStatus = demoState === null ? 'Загружаем…' : isOpenable ? 'Готова'
-    : loginBox?.reserved ? `${loginBox.days} из 3 дней`
-      : claimedBoxes >= 4 ? '4 из 4 получены' : 'Пока недоступна'
+  // Демо: коробка открывается всегда, пока фонд покрывает резерв экземпляра.
+  const isOpenable = demoState !== null && !demo.isBusy && canReserveInstance(demoState)
+  const boxStatus = demoState === null ? 'Загружаем…' : isOpenable ? 'Готова' : 'Фонд исчерпан'
   const collectChestItem = demo.collectChestItem
   const [isInfoOpen, setIsInfoOpen] = useState(false)
   const [openingStage, setOpeningStage] = useState<'closed' | 'shaking' | 'opening' | 'reward'>('closed')
@@ -283,7 +280,7 @@ export function ProfileScreen() {
       <section className="profile-chest-panel" aria-label="Коробка награды">
         <div className="chest-timer">
           <Typography as="span" variant="bodyXs" className="chest-timer-label">
-            За возвращение
+            Коробка Пятёрочки
           </Typography>
           <Typography as="span" variant="body" className="chest-timer-value" aria-live="polite">
             {boxStatus}
@@ -303,7 +300,7 @@ export function ProfileScreen() {
             src="/assets/pyaterochka-cardboard-chest.webp"
           />
           <Typography as="span" variant="bodyXs" className="chest-tap-hint">
-            {isOpenable ? 'Нажмите, чтобы открыть' : 'Три разных дня — один предмет'}
+            {isOpenable ? 'Нажмите, чтобы открыть' : 'Резерв фонда исчерпан'}
           </Typography>
         </button>
 
@@ -331,9 +328,9 @@ export function ProfileScreen() {
                 Коробка награды
               </Typography>
               <Typography as="span" variant="bodySm" className="info-copy">
-                Заходите в три разных дня по московскому времени — получите предмет.
-                Не более четырёх коробок за последние 28 дней. Дни не обязательно подряд.
-                Готовую коробку откройте движением по экрану.
+                Демонстрационный режим: коробку можно открывать без ограничения по дням.
+                Каждый предмет удерживает свои 2,50 ₽ в купонном фонде, поэтому выдача
+                останавливается, когда фонд исчерпан. Откройте коробку движением по экрану.
               </Typography>
               <Typography as="strong" variant="bodyXs" className="chest-drop-rates-title">
                 Шансы выпадения
@@ -564,62 +561,6 @@ export function ProfileScreen() {
           }}
           onShowBarcode={() => setDiscountOverlayMode('barcode')}
         />
-      ) : null}
-
-      {greeting !== null && openingStage === 'closed' ? (
-        <div className="login-day-overlay">
-          <div className="login-day-card" role="dialog" aria-modal="true" aria-label="День входа">
-            <button
-              aria-label="Закрыть окно дня входа"
-              className="discount-overlay-close"
-              onClick={demo.dismissLoginGreeting}
-              type="button"
-            >
-              <Typography as="span" variant="body" aria-hidden="true">×</Typography>
-            </button>
-
-            <Typography as="h2" variant="h2" className="login-day-title">
-              {greeting.ready ? 'Коробка готова' : `День ${greeting.days} из 3`}
-            </Typography>
-
-            <div className="login-box-dots" aria-label={`${greeting.days} из 3 дней входа`}>
-              {[1, 2, 3].map(day => (
-                <Typography
-                  as="span"
-                  variant="bodyXs"
-                  key={day}
-                  className={day <= greeting.days ? 'is-complete' : ''}
-                  aria-hidden="true"
-                >
-                  {day <= greeting.days ? '✓' : day}
-                </Typography>
-              ))}
-            </div>
-
-            <Typography as="p" variant="bodySm" className="login-day-text">
-              {greeting.ready
-                ? 'Три разных дня набраны. Откройте коробку и заберите предмет.'
-                : 'Дни не обязательно подряд: пропуск не сбрасывает прогресс.'}
-            </Typography>
-
-            <Typography as="span" variant="bodyXs" className="login-day-limit">
-              Получено за 28 дней: {claimedBoxes} из 4
-            </Typography>
-
-            <button
-              className="demo-button demo-button-primary demo-button-block"
-              onClick={() => {
-                demo.dismissLoginGreeting()
-                if (greeting.ready) openChest()
-              }}
-              type="button"
-            >
-              <Typography as="span" variant="bodySm">
-                {greeting.ready ? 'Открыть коробку' : 'Понятно'}
-              </Typography>
-            </button>
-          </div>
-        </div>
       ) : null}
 
       {openingStage !== 'closed' ? (

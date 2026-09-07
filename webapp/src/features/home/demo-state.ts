@@ -278,19 +278,34 @@ export function applyCraft(
 }
 
 /** Предмет из коробки попадает в тот же инвентарь, что и награда за задание. */
+/**
+ * Демонстрационный режим: коробка открывается без набора дней входа.
+ * Поставьте `false`, чтобы вернуть механику трёх разных дней и лимит четырёх коробок за 28 дней.
+ */
+export const DEMO_UNLIMITED_CHEST = true
+
+/** Хватает ли свободных денег фонда на резерв ещё одного экземпляра. */
+export function canReserveInstance(state: DemoState): boolean {
+  const available = state.budget.coupon_fund_kopecks
+    - state.budget.coupon_settled_kopecks - state.budget.coupon_reserved_kopecks
+  return state.login_box.reserved || available >= DEMO_INSTANCE_RESERVE_KOPECKS
+}
+
 export function addChestItem(state: DemoState, itemId: string, nowMs: number = Date.now()): DemoState {
-  if (
-    !state.login_box.reserved
-    || state.login_box.days !== 3
-    || !profileItems.some(item => item.id === itemId)
-  ) return state
+  if (!profileItems.some(item => item.id === itemId)) return state
+  if (!DEMO_UNLIMITED_CHEST && (!state.login_box.reserved || state.login_box.days !== 3)) return state
+  if (!canReserveInstance(state)) return state
   const today = Math.max(loginDay(nowMs), state.login_box.last_day ?? 0)
 
-  // Резерв показанной коробки переходит предмету, повторно деньги не удерживаются.
+  // Резерв показанной коробки переходит предмету; без него удерживаются деньги под новый экземпляр.
   return {
     ...state,
     revision: state.revision + 1,
     profile: { ...state.profile, inventory: addInventoryQuantity(state.profile.inventory, itemId) },
+    budget: state.login_box.reserved ? state.budget : {
+      ...state.budget,
+      coupon_reserved_kopecks: state.budget.coupon_reserved_kopecks + DEMO_INSTANCE_RESERVE_KOPECKS,
+    },
     login_box: {
       days: 0,
       last_day: today,

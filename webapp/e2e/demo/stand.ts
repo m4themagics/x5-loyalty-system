@@ -70,16 +70,8 @@ export async function putItemIntoDiscountSlot(page: Page, itemName: string, slot
     .toBeVisible()
 }
 
-/** Проходим реальные шаги через явно обозначенный демо-счётчик. */
+/** В демо-режиме коробка доступна сразу; helper только дожидается загруженного состояния. */
 export async function prepareLoginBox(page: Page) {
   await dismissLoginDay(page)
-  await expect(page.locator('.chest-timer-value')).toHaveText(/из 3 дней/)
-  await openStand(page)
-  const nextDay = page.getByRole('button', { name: 'Следующий день входа (демо)' })
-  for (let day = 0; day < 3 && await nextDay.isEnabled(); day++) {
-    await nextDay.click()
-    await dismissLoginDay(page)
-  }
-  await closeStand(page)
   await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeEnabled()
 }

@@ -15,33 +15,35 @@ test('10 RUB coupon is fully covered by four 2.50 RUB item reserves', () => {
   expect(DEMO_INSTANCE_RESERVE_KOPECKS * 4).toBe(1_000)
 })
 
-test('three distinct Moscow days unlock one box, gaps and reload preserve progress', () => {
+test('the demo chest opens without collecting login days and reserves each instance', () => {
   const first = recordLoginVisit(fresh(), now)
   expect(first.login_box.days).toBe(1)
   expect(first.budget.coupon_reserved_kopecks).toBe(250)
-  expect(recordLoginVisit(first, now + 60_000)).toBe(first)
-  expect(addChestItem(first, 'club-toaster', now)).toBe(first)
-  const second = recordLoginVisit(resolveDemoState(serializeDemoState(first))!, now + 4 * day)
-  const ready = recordLoginVisit(second, now + 7 * day)
-  expect(ready.login_box.days).toBe(3)
-  const claimed = addChestItem(ready, 'club-toaster', now + 7 * day)
+
+  // Первый предмет забирает уже удержанный резерв показанного счётчика.
+  const claimed = addChestItem(first, 'club-toaster', now)
   expect(claimed.profile.inventory).toEqual([{ item_id: 'club-toaster', quantity: 1 }])
   expect(claimed.budget.coupon_reserved_kopecks).toBe(250)
-  expect(addChestItem(claimed, 'club-toaster', now + 7 * day)).toBe(claimed)
-  expect(recordLoginVisit(claimed, now + 7 * day)).toBe(claimed)
+
+  // Дальше коробка не ждёт новых дней: каждый следующий предмет удерживает свои 2,50 ₽.
+  const second = addChestItem(claimed, 'milk-pitcher', now)
+  expect(second.budget.coupon_reserved_kopecks).toBe(500)
+  const third = addChestItem(second, 'travel-mug', now)
+  expect(third.profile.inventory).toHaveLength(3)
+  expect(third.budget.coupon_reserved_kopecks).toBe(750)
+
+  expect(addChestItem(third, 'unknown-item', now)).toBe(third)
 })
 
-test('four boxes in a rolling 28-day window; earlier progress is not lost', () => {
-  let state = fresh()
-  for (let index = 0; index < 12; index++) {
-    state = recordLoginVisit(state, now + index * day)
-    if (index % 3 === 2) state = addChestItem(state, 'club-toaster', now + index * day)
-  }
-  expect(state.profile.inventory[0].quantity).toBe(4)
-  expect(recordLoginVisit(state, now + 28 * day)).toBe(state)
-  const resumed = recordLoginVisit(state, now + 30 * day)
-  expect(resumed.login_box.days).toBe(1)
-  expect(resumed.budget.coupon_reserved_kopecks).toBe(1_250)
+test('the chest stops when the coupon fund can no longer cover a reserve', () => {
+  const poor = fresh()
+  poor.budget.coupon_fund_kopecks = 500
+  const first = addChestItem(poor, 'club-toaster', now)
+  expect(first.budget.coupon_reserved_kopecks).toBe(250)
+  const second = addChestItem(first, 'milk-pitcher', now)
+  expect(second.budget.coupon_reserved_kopecks).toBe(500)
+  // Свободных денег больше нет — выдача останавливается, а не уходит в минус.
+  expect(addChestItem(second, 'travel-mug', now)).toBe(second)
 })
 
 test('no unfunded promise; already reserved box remains claimable without free budget', () => {
