@@ -795,4 +795,4 @@ Reward fading необязателен и сам по себе не отделя
 | Позы и одежда маскота | [ProfileCharacter.tsx](../../webapp/src/features/home/ProfileCharacter.tsx), [profile-outfit.ts](../../webapp/src/features/home/profile-outfit.ts) |
 | EAN-13 и показ результата | [profile-barcode.ts](../../webapp/src/features/home/profile-barcode.ts), [ProfileDiscount.tsx](../../webapp/src/features/home/ProfileDiscount.tsx) |
 
-Проверены 11 контрактных, 108 web-тестов, 84 теста Python-движка и 41 аналитический тест. Браузерные сценарии обновлены; повторный запуск Playwright заблокирован разрешением среды. Скриншоты показывают предыдущую версию.
+Проверены 11 контрактных, 111 web-тестов, 86 тестов Python-движка и 41 аналитический тест (07.09.2026). Демо-набор Playwright: 19 сценариев из 20 проходят; сценарий с коробкой падает на ожидании отключённой кнопки «Открыть коробку Пятёрочки» после получения предмета.

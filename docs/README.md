@@ -12,6 +12,14 @@
 | [poc-status.md](project/poc-status.md) | Что реализовано, а что осталось гипотезой |
 | [context-pack.md](project/context-pack.md) | Рабочий контекст проекта |
 
+## Материалы защиты
+
+Переданные материалы хранятся в `submission/` как есть и не поддерживаются вместе с кодом:
+
+- [presentation.pdf](submission/presentation.pdf) — слайды защиты
+- [product-materials.pdf](submission/product-materials.pdf) — продуктовые материалы
+- [project-description-final.md](submission/project-description-final.md) — финальное описание проекта
+
 ## Движок решений
 
 Контракты, границы и результаты независимой оценки описаны отдельно:
