@@ -76,6 +76,10 @@ export function ProfileDiscountOverlay({
             <Typography as="span" variant="bodySm" className="discount-result-category">
               {discount.category}
             </Typography>
+            <Typography as="p" variant="bodySm" className="discount-result-category">
+              Не более {discount.maxKopecks / 100} ₽ на подходящие товары.
+              При сумме 500 ₽ — экономия {Math.min(discount.percent * 5, discount.maxKopecks / 100)} ₽.
+            </Typography>
             <div className="discount-ingredient-row" aria-label="Использованные предметы">
               {ingredients.map((item, index) => (
                 <div className={`discount-ingredient item-rarity-${item.rarity}`} key={`${item.id}-${index}`}>
@@ -110,7 +114,7 @@ export function ProfileDiscountOverlay({
               {discount.category}
             </Typography>
             <Typography as="span" variant="bodyXs" className="discount-barcode-note">
-              Демо-штрихкод EAN‑13. В реальном приложении скидку подтверждает backend.
+              Не более {discount.maxKopecks / 100} ₽ на подходящие товары. Демо-штрихкод, на кассе не действует.
             </Typography>
           </>
         )}

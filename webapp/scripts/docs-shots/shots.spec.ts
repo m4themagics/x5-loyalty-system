@@ -1,3 +1,4 @@
+import { prepareLoginBox } from '../../e2e/demo/stand'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
@@ -66,6 +67,7 @@ test('снимает картинки для документации', async ({
 
 test('снимает открытие коробки', async ({ page }) => {
   await openProfile(page)
+  await prepareLoginBox(page)
   await page.getByRole('button', { name: 'Открыть коробку Пятёрочки' }).click()
   const shakeTarget = page.getByRole('button', { name: 'Трясти коробку' })
   await expect(shakeTarget).toBeVisible()

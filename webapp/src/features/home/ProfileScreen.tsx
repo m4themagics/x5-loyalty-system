@@ -15,7 +15,6 @@ import {
 } from './profile-chest-gesture'
 import { ITEM_DROP_RATES, drawProfileItem } from './profile-item-drop'
 import { type ItemRarity, type ProfileItem } from './profile-items'
-import { serializeChestCycle } from './profile-countdown'
 import {
   type CraftedDiscount,
   resolveCraftedDiscount,
@@ -44,7 +43,6 @@ import { useDemoChallenge } from './use-demo-challenge'
 import './profile-screen.css'
 import './demo-challenge.css'
 
-const COUNTDOWN_STORAGE_KEY = 'pyaterochka_profile_chest_deadline'
 const ACTIVE_DISCOUNT_STORAGE_KEY = 'pyaterochka_profile_active_discount'
 const DEMO_BASKET_HINT_KOPECKS = 45_000
 const CELEBRATION_MS = 2_600
@@ -99,7 +97,12 @@ export function ProfileScreen() {
   const demoState = demo.state
   const [tab, setTab] = useState<ProfileTab>('quests')
   const [openPanel, setOpenPanel] = useState<'none' | 'stand' | 'x5'>('none')
-  const { claimReward, countdown, isOpenable } = useChestCountdown()
+  const loginBox = demoState?.login_box
+  const isOpenable = loginBox?.days === 3 && loginBox.reserved && !demo.isBusy
+  const claimedBoxes = loginBox?.claimed_days.filter(day => day > demo.loginToday - 28).length ?? 0
+  const boxStatus = demoState === null ? 'Загружаем…' : isOpenable ? 'Готова'
+    : loginBox?.reserved ? `${loginBox.days} из 3 дней`
+      : claimedBoxes >= 4 ? '4 из 4 получены' : 'Пока недоступна'
   const collectChestItem = demo.collectChestItem
   const [isInfoOpen, setIsInfoOpen] = useState(false)
   const [openingStage, setOpeningStage] = useState<'closed' | 'shaking' | 'opening' | 'reward'>('closed')
@@ -145,14 +148,16 @@ export function ProfileScreen() {
 
     const revealTimer = window.setTimeout(() => {
       const nextReward = drawProfileItem()
-      collectChestItem(nextReward.id)
-      claimReward()
+      if (!collectChestItem(nextReward.id)) {
+        setOpeningStage('closed')
+        return
+      }
       setRewardItem(nextReward)
       setOpeningStage('reward')
     }, 1_400)
 
     return () => window.clearTimeout(revealTimer)
-  }, [claimReward, collectChestItem, openingStage])
+  }, [collectChestItem, openingStage])
 
   const openChest = () => {
     if (!isOpenable) return
@@ -276,10 +281,10 @@ export function ProfileScreen() {
       <section className="profile-chest-panel" aria-label="Коробка награды">
         <div className="chest-timer">
           <Typography as="span" variant="bodyXs" className="chest-timer-label">
-            Коробка
+            За возвращение
           </Typography>
-          <Typography as="time" variant="body" className="chest-timer-value">
-            {countdown}
+          <Typography as="span" variant="body" className="chest-timer-value" aria-live="polite">
+            {boxStatus}
           </Typography>
         </div>
 
@@ -296,9 +301,21 @@ export function ProfileScreen() {
             src="/assets/pyaterochka-cardboard-chest.webp"
           />
           <Typography as="span" variant="bodyXs" className="chest-tap-hint">
-            Нажмите, чтобы открыть
+            {isOpenable ? 'Нажмите, чтобы открыть' : 'Три разных дня — один предмет'}
           </Typography>
         </button>
+
+        <div className="login-box-progress">
+          <div className="login-box-dots" aria-label={`${loginBox?.days ?? 0} из 3 дней входа`}>
+            {[1, 2, 3].map(day => <Typography as="span" variant="bodyXs" key={day} className={day <= (loginBox?.days ?? 0) ? 'is-complete' : ''} aria-hidden="true">{day <= (loginBox?.days ?? 0) ? '✓' : day}</Typography>)}
+          </div>
+          <Typography as="p" variant="bodyXs">
+            {claimedBoxes >= 4 ? 'Все четыре коробки получены. Новые станут доступны после окончания лимита 28 дней.'
+              : loginBox?.reserved ? 'Дни не обязательно подряд. Пропуск не сбрасывает прогресс.'
+                : demoState === null ? 'Загружаем прогресс входов.' : 'Новых коробок пока нет. Ваши предметы сохраняются.'}
+          </Typography>
+          <Typography as="span" variant="bodyXs">Получено за 28 дней: {claimedBoxes} из 4</Typography>
+        </div>
 
         <div className="chest-info-wrap">
           <button
@@ -324,7 +341,9 @@ export function ProfileScreen() {
                 Коробка награды
               </Typography>
               <Typography as="span" variant="bodySm" className="info-copy">
-                Открой коробку движением по экрану.
+                Заходите в три разных дня по московскому времени — получите предмет.
+                Не более четырёх коробок за последние 28 дней. Дни не обязательно подряд.
+                Готовую коробку откройте движением по экрану.
               </Typography>
               <Typography as="strong" variant="bodyXs" className="chest-drop-rates-title">
                 Шансы выпадения
@@ -483,6 +502,7 @@ export function ProfileScreen() {
           onSendReceipt={demo.sendReceipt}
           onRecompute={demo.askForChallenge}
           onReset={demo.resetDemo}
+          onAdvanceLoginDay={demo.advanceLoginDay}
           onOpenX5={() => setOpenPanel('x5')}
           onClose={() => setOpenPanel('none')}
         />
@@ -625,26 +645,4 @@ export function ProfileScreen() {
       ) : null}
     </main>
   )
-}
-
-function useChestCountdown() {
-  useEffect(() => {
-    window.localStorage.setItem(
-      COUNTDOWN_STORAGE_KEY,
-      serializeChestCycle({ status: 'openable' }),
-    )
-  }, [])
-
-  const claimReward = useCallback(() => {
-    window.localStorage.setItem(
-      COUNTDOWN_STORAGE_KEY,
-      serializeChestCycle({ status: 'openable' }),
-    )
-  }, [])
-
-  return {
-    claimReward,
-    countdown: 'Готова',
-    isOpenable: true,
-  }
 }

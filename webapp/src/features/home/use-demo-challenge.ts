@@ -14,6 +14,8 @@ import {
   applyCraft,
   applyRedemption,
   createDemoState,
+  loginDay,
+  recordLoginVisit,
   refreshDemoSavings,
   revealGrant,
   type DemoState,
@@ -46,6 +48,7 @@ export type DemoLastEvent = {
 }
 
 export function useDemoChallenge() {
+  const [today, setToday] = useState(() => loginDay(Date.now()))
   const [seed, setSeed] = useState<Awaited<ReturnType<typeof fetchSeedProfiles>> | null>(null)
   const [store, setStore] = useState<DemoStore | null>(null)
   const storeRef = useRef<DemoStore | null>(null)
@@ -97,14 +100,32 @@ export function useDemoChallenge() {
       }
       loaded = expireDemoTrades(loaded, Date.now())
       loaded = releaseExpiredDemoPromises(loaded, Date.now())
-      const active = refreshDemoSavings(loaded.profiles[loaded.active_profile_id], Date.now())
+      const active = recordLoginVisit(refreshDemoSavings(loaded.profiles[loaded.active_profile_id], Date.now()), Date.now())
       persistStore(saveDemoProfile(loaded, active))
     })
     return () => { cancelled = true }
   }, [persistStore])
 
   useEffect(() => {
+    const visit = () => {
+      setToday(loginDay(Date.now()))
+      const current = storeRef.current
+      if (current === null || busyRef.current || document.visibilityState !== 'visible') return
+      const active = current.profiles[current.active_profile_id]
+      const next = recordLoginVisit(active, Date.now())
+      if (next !== active) persistStore(saveDemoProfile(current, next))
+    }
+    window.addEventListener('focus', visit)
+    document.addEventListener('visibilitychange', visit)
+    return () => {
+      window.removeEventListener('focus', visit)
+      document.removeEventListener('visibilitychange', visit)
+    }
+  }, [persistStore])
+
+  useEffect(() => {
     const timer = window.setInterval(() => {
+      setToday(loginDay(Date.now()))
       const stored = storeRef.current
       if (stored === null || busyRef.current) return
       const traded = expireDemoTrades(stored, Date.now())
@@ -127,7 +148,7 @@ export function useDemoChallenge() {
     setTradeNote(null)
     setFailure(null)
     const selected = selectDemoProfile(expireDemoTrades(storeRef.current, Date.now()), profile, seed.data.budget)
-    persistStore(saveDemoProfile(selected, refreshDemoSavings(selected.profiles[profileId], Date.now())))
+    persistStore(saveDemoProfile(selected, recordLoginVisit(refreshDemoSavings(selected.profiles[profileId], Date.now()), Date.now())))
   }, [persistStore, seed])
 
   const resetDemo = useCallback(() => {
@@ -136,7 +157,8 @@ export function useDemoChallenge() {
     setLastEvent(null)
     setEventLog(null)
     setTradeNote(null)
-    persistStore(resetDemoStore(seed.data.profiles, seed.data.budget, seed.data.ads))
+    const reset = resetDemoStore(seed.data.profiles, seed.data.budget, seed.data.ads)
+    persistStore(saveDemoProfile(reset, recordLoginVisit(reset.profiles[reset.active_profile_id], Date.now())))
   }, [persistStore, seed])
 
   const createTrade = useCallback((command: DemoTradeCreate) => {
@@ -234,10 +256,23 @@ export function useDemoChallenge() {
   /** Коробка пополняет тот же инвентарь, что и задания. */
   const collectChestItem = useCallback((itemId: string) => {
     const current = storeRef.current
-    if (current === null) return
+    if (current === null || busyRef.current) return false
     const active = current.profiles[current.active_profile_id]
-    if (active === undefined) return
-    persistStore(saveDemoProfile(current, addChestItem(active, itemId)))
+    if (active === undefined) return false
+    const next = addChestItem(active, itemId)
+    if (next === active) return false
+    persistStore(saveDemoProfile(current, next))
+    return true
+  }, [persistStore])
+
+  // Только для демо-стенда: меняется день входа, а не время чеков и кампаний.
+  const advanceLoginDay = useCallback(() => {
+    const current = storeRef.current
+    if (current === null || busyRef.current) return
+    const active = current.profiles[current.active_profile_id]
+    const nextDay = Math.max(loginDay(Date.now()), active.login_box.last_day ?? 0) + 1
+    const next = recordLoginVisit(active, nextDay * 86_400_000)
+    if (next !== active) persistStore(saveDemoProfile(current, next))
   }, [persistStore])
 
   const redeem = useCallback(() => {
@@ -247,6 +282,7 @@ export function useDemoChallenge() {
 
   return {
     askForChallenge,
+    advanceLoginDay,
     collectChestItem,
     craft,
     eventLog,
@@ -261,6 +297,7 @@ export function useDemoChallenge() {
     selectProfile,
     sendReceipt,
     state,
+    loginToday: Math.max(today, state?.login_box.last_day ?? 0),
     store,
     tradeNote,
     createTrade,

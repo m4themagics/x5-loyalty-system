@@ -1,4 +1,5 @@
 import { Typography } from '@/components/typography'
+import { DEMO_COUPON_MAX_KOPECKS } from '@pyaterochka-game-demo/contracts'
 import {
   type DragEvent as ReactDragEvent,
   type PointerEvent as ReactPointerEvent,
@@ -276,7 +277,7 @@ export function ProfileInventoryCrafting({
             <Typography as="span" variant="bodyXs" className="crafting-guidance-copy">
               {preview === null
                 ? guidance.description
-                : `${preview.category} · сила ${preview.rarityScore}/12${preview.synergyBonus > 0 ? ` · бонус +${preview.synergyBonus}%` : ''}`}
+                : `${preview.category} · не более ${DEMO_COUPON_MAX_KOPECKS / 100} ₽ · при сумме подходящих товаров 500 ₽ экономия ${Math.min(preview.percent * 5, DEMO_COUPON_MAX_KOPECKS / 100)} ₽${preview.synergyBonus > 0 ? ` · бонус +${preview.synergyBonus}%` : ''}`}
             </Typography>
           </div>
           {preview === null && guidance.suggestedItemIds.length > 0 ? (

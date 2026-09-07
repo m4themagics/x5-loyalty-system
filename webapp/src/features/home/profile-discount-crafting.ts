@@ -1,4 +1,5 @@
 import { createEan13, isValidEan13 } from './profile-barcode'
+import { DEMO_COUPON_MAX_KOPECKS } from '@pyaterochka-game-demo/contracts'
 import { profileItems, type ItemRarity } from './profile-items'
 
 const RARITY_POINTS: Record<ItemRarity, number> = {
@@ -63,6 +64,7 @@ export type DiscountCraftingPreview = {
 }
 
 export type CraftedDiscount = DiscountCraftingPreview & {
+  maxKopecks: number
   id: string
   itemIds: string[]
   barcode: string
@@ -150,6 +152,7 @@ export function craftDiscount(
 
   return {
     ...preview,
+    maxKopecks: DEMO_COUPON_MAX_KOPECKS,
     id: `discount-${createdAt}-${Math.floor(normalizedRandom * 1_000_000)}`,
     itemIds: [...itemIds],
     barcode: createEan13(createdAt, normalizedRandom),
@@ -189,7 +192,8 @@ export function resolveCraftedDiscount(rawDiscount: string | null): CraftedDisco
       return null
     }
 
-    return discount as CraftedDiscount
+    if (discount.maxKopecks !== undefined && discount.maxKopecks !== 1000 && discount.maxKopecks !== DEMO_COUPON_MAX_KOPECKS) return null
+    return { ...discount, maxKopecks: discount.maxKopecks ?? 1000 } as CraftedDiscount
   } catch {
     return null
   }

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { openTab } from './stand'
+import { openTab, prepareLoginBox } from './stand'
 
 const chestStorageKey = 'pyaterochka_profile_chest_deadline'
 const demoStateKey = 'pyaterochka_demo_challenge_state'
@@ -38,7 +38,7 @@ test('returns to the top when switching from the scrolled profile to Home', asyn
   await expect(page.getByRole('region', { name: 'Карта лояльности' })).toBeVisible()
 })
 
-test('unlimited demo mode ignores a saved cooldown and keeps the chest openable', async ({ page }) => {
+test('login box records one day across reloads and keeps the rules visible', async ({ page }) => {
   await page.addInitScript(
     ({ key, deadline }) => window.localStorage.setItem(key, String(deadline)),
     { key: chestStorageKey, deadline: Date.now() + 24 * 60 * 60 * 1_000 },
@@ -46,14 +46,14 @@ test('unlimited demo mode ignores a saved cooldown and keeps the chest openable'
 
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
-  await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeEnabled()
+  await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeDisabled()
   await expect(page.getByText('Общие задания магазина — их видят все покупатели')).toHaveCount(0)
-  await expect(page.locator('.chest-timer-label')).toHaveText('Коробка')
-  await expect(page.locator('.chest-timer-value')).toHaveText('Готова')
+  await expect(page.locator('.chest-timer-label')).toHaveText('За возвращение')
+  await expect(page.locator('.chest-timer-value')).toHaveText('1 из 3 дней')
 
   await page.getByRole('button', { name: 'Информация о коробке' }).click()
   const chestInfo = page.getByRole('dialog', { name: 'Как открыть коробку' })
-  await expect(chestInfo.getByText('Открой коробку движением по экрану.')).toBeVisible()
+  await expect(chestInfo.getByText('Заходите в три разных дня по московскому времени', { exact: false })).toBeVisible()
   await expect(chestInfo.getByRole('list', { name: 'Шансы выпадения предметов' })).toContainText('Обычный70%')
   await expect(chestInfo.getByRole('list', { name: 'Шансы выпадения предметов' })).toContainText('Эпический25%')
   await expect(chestInfo.getByRole('list', { name: 'Шансы выпадения предметов' })).toContainText('Легендарный5%')
@@ -61,8 +61,8 @@ test('unlimited demo mode ignores a saved cooldown and keeps the chest openable'
 
   await page.reload()
   await page.getByRole('button', { name: 'Профиль' }).click()
-  await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeEnabled()
-  await expect(page.locator('.chest-timer-value')).toHaveText('Готова')
+  await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeDisabled()
+  await expect(page.locator('.chest-timer-value')).toHaveText('1 из 3 дней')
 
   for (const tab of ['Коллекция', 'Друзья', 'Задания']) {
     await openTab(page, tab)
@@ -87,6 +87,7 @@ test('opens an available chest after the user shakes it across the screen', asyn
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
   await expect(page.getByRole('heading', { level: 2, name: 'Персональный челлендж' })).toBeVisible()
+  await prepareLoginBox(page)
   const copiesBefore = await readOwnedCopies(page)
   await page.getByRole('button', { name: 'Открыть коробку Пятёрочки' }).click()
 
@@ -114,9 +115,11 @@ test('opens an available chest after the user shakes it across the screen', asyn
 
   await openTab(page, 'Задания')
   const chestButton = page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })
-  await expect(chestButton).toBeEnabled()
-  await chestButton.click()
-  await expect(page.getByRole('heading', { name: 'Потрясите коробку' })).toBeVisible()
+  await expect(chestButton).toBeDisabled()
+  await page.reload()
+  await page.getByRole('button', { name: 'Профиль' }).click()
+  await expect(chestButton).toBeDisabled()
+  expect(await readOwnedCopies(page)).toBe(copiesAfter)
 })
 
 test('crafts a themed discount from four inventory items and restores its barcode', async ({ page }) => {

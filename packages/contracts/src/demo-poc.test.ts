@@ -80,8 +80,8 @@ describe('local PoC demo contract', () => {
 
   test('pins the PoC coupon fund constants used by both sides', () => {
     const challenge = demoDecisionResponseSchema.parse(offerResponse).challenge
-    expect(DEMO_COUPON_MAX_KOPECKS).toBe(1_000)
-    expect(DEMO_INSTANCE_RESERVE_KOPECKS).toBe(250)
+    expect(DEMO_COUPON_MAX_KOPECKS).toBe(10_000)
+    expect(DEMO_INSTANCE_RESERVE_KOPECKS).toBe(2500)
     expect(challenge?.reservation.coupon_reserve_kopecks).toBe(DEMO_INSTANCE_RESERVE_KOPECKS)
     expect(challenge?.reservation.physical_reserve_kopecks)
       .toBe(challenge?.reward.physical_sku?.unit_cost_kopecks)

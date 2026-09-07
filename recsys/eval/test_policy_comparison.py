@@ -162,7 +162,7 @@ class PolicyComparisonTest(unittest.TestCase):
         value = scenario()
         value["budget"]["coupon_reserved_kopecks"] = 12000
         result = simulate.run_scenario(value, policy_name="sponsored_onboarding")
-        opening = 12000 + result["initial_item_instances"] * 250
+        opening = 12000 + result["initial_item_instances"] * 2500
         ending = result["final_budget"]["coupon_reserved_kopecks"]
         self.assertEqual(result["opening_coupon_liability_kopecks"], opening)
         self.assertEqual(result["ending_coupon_liability_kopecks"], ending)

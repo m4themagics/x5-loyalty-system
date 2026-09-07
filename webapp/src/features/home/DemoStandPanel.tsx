@@ -25,6 +25,7 @@ export function DemoStandPanel({
   onSendReceipt,
   onRecompute,
   onReset,
+  onAdvanceLoginDay,
   onOpenX5,
   onClose,
 }: {
@@ -36,6 +37,7 @@ export function DemoStandPanel({
   onSendReceipt: (kind: DemoReceiptKind, replay: boolean) => void
   onRecompute: () => void
   onReset: () => void
+  onAdvanceLoginDay: () => void
   onOpenX5: () => void
   onClose: () => void
 }) {
@@ -118,6 +120,9 @@ export function DemoStandPanel({
             Управление демонстрацией
           </Typography>
           <div className="demo-chip-row">
+            <button className="demo-button" disabled={isBusy || state.login_box.days === 3} onClick={onAdvanceLoginDay} type="button">
+              <Typography as="span" variant="bodyXs">Следующий день входа (демо)</Typography>
+            </button>
             <button className="demo-button" disabled={isBusy} onClick={onRecompute} type="button">
               <Typography as="span" variant="bodyXs">Пересчитать задание</Typography>
             </button>
@@ -125,6 +130,7 @@ export function DemoStandPanel({
               <Typography as="span" variant="bodyXs">Полный сброс демо</Typography>
             </button>
           </div>
+          <Typography as="p" variant="bodyXs">Дни входа: {state.login_box.days} из 3. Кнопка меняет только счётчик коробки, не время чеков и кампаний.</Typography>
           <button className="demo-button demo-button-primary demo-button-block" onClick={onOpenX5} type="button">
             <Typography as="span" variant="bodyXs">Для X5</Typography>
           </button>

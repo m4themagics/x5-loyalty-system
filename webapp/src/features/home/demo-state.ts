@@ -10,6 +10,7 @@ import type {
 } from '@pyaterochka-game-demo/contracts'
 
 import type { CraftedDiscount } from './profile-discount-crafting'
+import { profileItems } from './profile-items'
 import { DEMO_AVATAR_MAX_LEVEL, DEMO_COUPON_MAX_KOPECKS, DEMO_INSTANCE_RESERVE_KOPECKS, DEMO_RANKING_WINDOW_DAYS } from '@pyaterochka-game-demo/contracts'
 
 /**
@@ -36,6 +37,8 @@ export type DemoState = {
   redemptions: { coupon_id: string; redeemed_at_ms: number; saved_kopecks: number }[]
   trade_reserved_items: { item_id: string; quantity: number }[]
   last_risk: DemoRiskAssessment | null
+  item_reserve_kopecks: number
+  login_box: { days: number; last_day: number | null; claimed_days: number[]; reserved: boolean }
 }
 
 export type DemoDecisionSummary = {
@@ -83,6 +86,8 @@ export function createDemoState(
     redemptions: [],
     trade_reserved_items: [],
     last_risk: null,
+    item_reserve_kopecks: DEMO_INSTANCE_RESERVE_KOPECKS,
+    login_box: { days: 0, last_day: null, claimed_days: [], reserved: false },
   }
 }
 
@@ -273,22 +278,50 @@ export function applyCraft(
 }
 
 /** Предмет из коробки попадает в тот же инвентарь, что и награда за задание. */
-export function addChestItem(state: DemoState, itemId: string): DemoState {
-  const known = state.profile.inventory.some((entry) => entry.item_id === itemId)
-  const inventory = known
-    ? state.profile.inventory.map((entry) =>
-        entry.item_id === itemId ? { ...entry, quantity: entry.quantity + 1 } : entry)
-    : [...state.profile.inventory, { item_id: itemId, quantity: 1 }]
+export function addChestItem(state: DemoState, itemId: string, nowMs: number = Date.now()): DemoState {
+  if (
+    !state.login_box.reserved
+    || state.login_box.days !== 3
+    || !profileItems.some(item => item.id === itemId)
+  ) return state
+  const today = Math.max(loginDay(nowMs), state.login_box.last_day ?? 0)
 
-  // Каждый непотраченный экземпляр обеспечен теми же 2,50 ₽, что и награда за задание:
-  // предмет из коробки участвует в том же крафте купона.
+  // Резерв показанной коробки переходит предмету, повторно деньги не удерживаются.
   return {
     ...state,
     revision: state.revision + 1,
-    profile: { ...state.profile, inventory },
+    profile: { ...state.profile, inventory: addInventoryQuantity(state.profile.inventory, itemId) },
+    login_box: {
+      days: 0,
+      last_day: today,
+      reserved: false,
+      claimed_days: [...state.login_box.claimed_days.filter(day => day > today - 28), today],
+    },
+  }
+}
+
+/** Календарные дни по Москве. Открытая фоновая вкладка не зарабатывает дни. */
+export function loginDay(nowMs: number): number {
+  return Math.floor((nowMs + 3 * 3_600_000) / 86_400_000)
+}
+
+/** Начатое обещание обеспечено полностью; пропуски дней не обнуляют прогресс. */
+export function recordLoginVisit(state: DemoState, nowMs: number): DemoState {
+  const box = state.login_box
+  const today = loginDay(nowMs)
+  if (!Number.isSafeInteger(today) || (box.last_day !== null && today <= box.last_day) || box.days === 3) return state
+  const claimed = box.claimed_days.filter(day => day > today - 28)
+  const available = state.budget.coupon_fund_kopecks
+    - state.budget.coupon_settled_kopecks - state.budget.coupon_reserved_kopecks
+  if (!box.reserved && (claimed.length >= 4 || available < DEMO_INSTANCE_RESERVE_KOPECKS)) return state
+  return {
+    ...state,
+    revision: state.revision + 1,
+    login_box: { days: box.days + 1, last_day: today, claimed_days: claimed, reserved: true },
     budget: {
       ...state.budget,
-      coupon_reserved_kopecks: state.budget.coupon_reserved_kopecks + DEMO_INSTANCE_RESERVE_KOPECKS,
+      coupon_reserved_kopecks: state.budget.coupon_reserved_kopecks
+        + (box.reserved ? 0 : DEMO_INSTANCE_RESERVE_KOPECKS),
     },
   }
 }
@@ -305,7 +338,7 @@ export function applyRedemption(
 
   const savedKopecks = Math.min(
     Math.floor((basketKopecks * coupon.percent) / 100),
-    DEMO_COUPON_MAX_KOPECKS,
+    coupon.max_kopecks,
   )
 
   return refreshDemoSavings({
@@ -356,7 +389,21 @@ export function resolveDemoState(raw: string | null): DemoState | null {
     ) {
       return null
     }
-    return { ...saved, last_receipt: saved.last_receipt ?? null, redemptions: saved.redemptions ?? [], trade_reserved_items: saved.trade_reserved_items ?? [], last_risk: saved.last_risk ?? null } as DemoState
+    // Старые экземпляры получают обеспечение нового потолка ровно один раз.
+    // Фонд не увеличиваем: при нехватке новые обещания блокируются, права сохраняются.
+    const oldReserve = saved.item_reserve_kopecks ?? 250
+    const delta = Math.max(0, DEMO_INSTANCE_RESERVE_KOPECKS - oldReserve)
+    const count = saved.profile.inventory.reduce((total, entry) => total + entry.quantity, 0)
+    const pending = saved.profile.outstanding_promise?.fulfilled === false && saved.challenge != null
+    const challenge = pending && delta > 0 ? { ...saved.challenge!, reservation: {
+      ...saved.challenge!.reservation,
+      coupon_reserve_kopecks: saved.challenge!.reservation.coupon_reserve_kopecks + delta,
+    } } : saved.challenge
+    return { ...saved, challenge,
+      budget: { ...saved.budget, coupon_reserved_kopecks: saved.budget.coupon_reserved_kopecks + delta * (count + Number(pending)) },
+      item_reserve_kopecks: DEMO_INSTANCE_RESERVE_KOPECKS,
+      login_box: saved.login_box ?? { days: 0, last_day: null, claimed_days: [], reserved: false },
+      last_receipt: saved.last_receipt ?? null, redemptions: saved.redemptions ?? [], trade_reserved_items: saved.trade_reserved_items ?? [], last_risk: saved.last_risk ?? null } as DemoState
   } catch {
     return null
   }

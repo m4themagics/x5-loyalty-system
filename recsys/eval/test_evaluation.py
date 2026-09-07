@@ -123,7 +123,7 @@ class EvaluationTest(unittest.TestCase):
         self.assertEqual(result["remaining_item_instances"],
                          result["initial_item_instances"] + result["items_granted"] - result["items_consumed"])
         self.assertEqual(result["final_budget"]["coupon_reserved_kopecks"],
-                         250 * result["remaining_item_instances"] + 1000 * result["outstanding_coupons"])
+                         2500 * result["remaining_item_instances"] + 10000 * result["outstanding_coupons"])
         self.assertLessEqual(result["physical_gifts"], result["users"])
         for fund in ("coupon", "physical"):
             budget = result["final_budget"]
@@ -137,7 +137,7 @@ class EvaluationTest(unittest.TestCase):
         scenario = self.scenario()
         scenario["missing_history_share"] = 0
         scenario["budget"] = {
-            "coupon_fund_kopecks": 250, "coupon_reserved_kopecks": 0,
+            "coupon_fund_kopecks": 2500, "coupon_reserved_kopecks": 0,
             "coupon_settled_kopecks": 0, "physical_fund_kopecks": 2900,
             "physical_reserved_kopecks": 0, "physical_settled_kopecks": 0,
         }

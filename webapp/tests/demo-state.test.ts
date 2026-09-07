@@ -14,6 +14,7 @@ import {
 import { craftDiscount } from '../src/features/home/profile-discount-crafting'
 import {
   addChestItem,
+  recordLoginVisit,
   applyCraft,
   applyDecision,
   applyEvent,
@@ -59,7 +60,7 @@ describe('демонстрационное состояние персональ
   test('публикует обещание и держит полный максимальный резерв', () => {
     const state = offeredState()
     expect(state.profile.outstanding_promise?.fulfilled).toBe(false)
-    expect(state.budget.coupon_reserved_kopecks).toBe(250)
+    expect(state.budget.coupon_reserved_kopecks).toBe(2500)
     expect(state.budget.physical_reserved_kopecks).toBe(2500)
     expect(state.card?.source).toBe('fallback')
   })
@@ -87,7 +88,7 @@ describe('демонстрационное состояние персональ
     expect(state.profile.outstanding_promise?.fulfilled).toBe(true)
     expect(state.budget.coupon_settled_kopecks).toBe(0)
     expect(state.budget.physical_settled_kopecks).toBe(2500)
-    expect(state.budget.coupon_reserved_kopecks).toBe(250)
+    expect(state.budget.coupon_reserved_kopecks).toBe(2500)
   })
 
   test('повтор того же начисления не выдаёт вторую награду', () => {
@@ -138,10 +139,10 @@ describe('демонстрационное состояние персональ
 
     expect(state.profile.inventory).toEqual([])
     expect(state.profile.active_coupon?.percent).toBe(8)
-    expect(state.profile.active_coupon?.max_kopecks).toBe(1000)
+    expect(state.profile.active_coupon?.max_kopecks).toBe(10000)
     expect(state.profile.progress.completed_recipe_ids).toEqual(['breakfast'])
     expect(state.profile.progress.avatar_level).toBe(1)
-    expect(state.budget.coupon_reserved_kopecks).toBe(1000)
+    expect(state.budget.coupon_reserved_kopecks).toBe(10000)
     expect(state.budget.coupon_settled_kopecks).toBe(0)
   })
 
@@ -183,7 +184,7 @@ describe('демонстрационное состояние персональ
     state = applyRedemption(state, 45_000)
 
     expect(state.profile.active_coupon).toBeNull()
-    expect(state.profile.progress.redeemed_savings_28d_kopecks).toBe(1000)
+    expect(state.profile.progress.redeemed_savings_28d_kopecks).toBe(3600)
   })
 
   test('крафт без достаточного количества копий не меняет состояние', () => {
@@ -226,18 +227,20 @@ describe('демонстрационное состояние персональ
       { ...profile, inventory: itemIds.map((item_id) => ({ item_id, quantity: 1 })) },
       budget,
     )
-    expect(state.budget.coupon_reserved_kopecks).toBe(750)
+    expect(state.budget.coupon_reserved_kopecks).toBe(7500)
   })
   test('предмет из коробки попадает в общий инвентарь и удерживает свой резерв', () => {
     const initial = createDemoState({ ...profile, inventory: [] }, budget)
     expect(initial.budget.coupon_reserved_kopecks).toBe(0)
 
-    const withItem = addChestItem(initial, 'club-toaster')
+    const ready = [0, 1, 2].reduce((state, day) => recordLoginVisit(state, NOW_MS + day * 86_400_000), initial)
+    const withItem = addChestItem(ready, 'club-toaster', NOW_MS + 2 * 86_400_000)
     expect(withItem.profile.inventory).toEqual([{ item_id: 'club-toaster', quantity: 1 }])
-    expect(withItem.budget.coupon_reserved_kopecks).toBe(250)
+    expect(withItem.budget.coupon_reserved_kopecks).toBe(2500)
 
-    const withDuplicate = addChestItem(withItem, 'club-toaster')
+    const nextReady = [3, 4, 5].reduce((state, day) => recordLoginVisit(state, NOW_MS + day * 86_400_000), withItem)
+    const withDuplicate = addChestItem(nextReady, 'club-toaster', NOW_MS + 5 * 86_400_000)
     expect(withDuplicate.profile.inventory).toEqual([{ item_id: 'club-toaster', quantity: 2 }])
-    expect(withDuplicate.budget.coupon_reserved_kopecks).toBe(500)
+    expect(withDuplicate.budget.coupon_reserved_kopecks).toBe(5000)
   })
 })

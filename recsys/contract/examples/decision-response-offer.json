@@ -34,7 +34,7 @@
       }
     },
     "reservation": {
-      "coupon_reserve_kopecks": 250,
+      "coupon_reserve_kopecks": 2500,
       "physical_reserve_kopecks": 2500
     },
     "economics": {
@@ -44,13 +44,13 @@
       "campaign_id": "camp_058",
       "bid_per_qualified_event_kopecks": 1800,
       "subsidy_kopecks": 2500,
-      "uncovered_reward_cost_kopecks": 250,
+      "uncovered_reward_cost_kopecks": 2500,
       "expected_incremental_margin_kopecks": 4500,
       "auction_type": "quality_adjusted_first_price_cpa",
       "quality_score": 0.759,
       "predicted_billable_probability": 0.82,
       "pacing_multiplier": 1.5,
-      "auction_score_kopecks": 5930,
+      "auction_score_kopecks": 3680,
       "campaign_reserve_kopecks": 4300,
       "auction_candidate_count": 2,
       "auction_eligible_count": 2,
@@ -59,11 +59,11 @@
     }
   },
   "card": {
-    "headline": "Молочный старт недели",
-    "body": "Купите один молочный товар до 12 сентября — и «Молочный кувшин» откроет путь к рецепту «Доброе утро».",
-    "reward_line": "Молочный кувшин + бесплатное молоко 0,5 л",
-    "deadline_line": "До 12 сентября, одна оплаченная покупка",
-    "sponsor_line": "Спонсировано: Молочный бренд",
+    "headline": "Доброе утро: Молочный кувшин",
+    "body": "До 12.09.2026 купите «Молоко питьевое 1 л» — получите предмет «Молочный кувшин» для рецепта «Доброе утро».",
+    "reward_line": "Предмет «Молочный кувшин» и бесплатный товар: Молоко 0,5 л (синтетический SKU)",
+    "deadline_line": "Срок: до 12.09.2026",
+    "sponsor_line": "При поддержке бренда: Молочный бренд",
     "source": "fallback",
     "violations": []
   },
@@ -98,7 +98,7 @@
         ]
       }
     ],
-    "coupon_available_kopecks": 999750,
+    "coupon_available_kopecks": 997500,
     "physical_available_kopecks": 2497500,
     "llm": {
       "source": "fallback",

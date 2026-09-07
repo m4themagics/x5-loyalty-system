@@ -174,7 +174,7 @@
 .profile-chest-panel {
   position: relative;
   display: grid;
-  height: 154px;
+  min-height: 154px;
   align-items: center;
   padding: 14px 16px;
   grid-template-columns: 1fr 126px 1fr;
@@ -262,7 +262,33 @@
   box-shadow: 0 2px 7px rgb(38 80 46 / 10%);
 }
 
+.login-box-progress {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 0 16px 16px;
+  text-align: center;
+}
+
+.login-box-progress p { margin: 0; }
+
+.login-box-dots { display: flex; gap: 8px; }
+.login-box-dots span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #edf0e9;
+  color: #596357;
+}
+.login-box-dots .is-complete { background: #14913e; color: white; }
+
 .chest-info-wrap {
+  grid-column: 3;
+  grid-row: 1;
   position: relative;
   display: flex;
   justify-content: flex-end;

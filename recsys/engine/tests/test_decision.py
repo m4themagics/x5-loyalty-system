@@ -71,7 +71,7 @@ class DecisionTest(unittest.TestCase):
         self.assertEqual(
             challenge["reservation"]["physical_reserve_kopecks"], physical["unit_cost_kopecks"]
         )
-        self.assertEqual(challenge["reservation"]["coupon_reserve_kopecks"], 250)
+        self.assertEqual(challenge["reservation"]["coupon_reserve_kopecks"], 2500)
 
     def test_first_cycle_refuses_an_ad_that_does_not_fully_fund_the_physical_sku(self) -> None:
         campaigns = load_campaigns()

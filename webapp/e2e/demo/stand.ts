@@ -55,3 +55,13 @@ export async function putItemIntoDiscountSlot(page: Page, itemName: string, slot
   await expect(page.getByRole('button', { name: new RegExp(`^${itemName} в ячейке ${slotNumber}`) }))
     .toBeVisible()
 }
+
+/** Проходим реальные шаги через явно обозначенный демо-счётчик. */
+export async function prepareLoginBox(page: Page) {
+  await expect(page.locator('.chest-timer-value')).toHaveText(/из 3 дней/)
+  await openStand(page)
+  const nextDay = page.getByRole('button', { name: 'Следующий день входа (демо)' })
+  for (let day = 0; day < 3 && await nextDay.isEnabled(); day++) await nextDay.click()
+  await closeStand(page)
+  await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeEnabled()
+}
