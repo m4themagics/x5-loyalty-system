@@ -1,10 +1,11 @@
 import { expect, test } from '@playwright/test'
 
-import { openStand } from './stand'
+import { openStand, dismissLoginDay } from './stand'
 
 test('X5 role reads compact economic evidence and can inspect the current decision', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await dismissLoginDay(page)
   await page.getByRole('button', { name: 'Показать задание', exact: true }).click()
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
   await openStand(page)

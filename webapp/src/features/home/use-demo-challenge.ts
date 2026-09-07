@@ -15,10 +15,12 @@ import {
   applyRedemption,
   createDemoState,
   loginDay,
+  loginGreetingFor,
   recordLoginVisit,
   refreshDemoSavings,
   revealGrant,
   type DemoState,
+  type LoginGreeting,
 } from './demo-state'
 import {
   applyDemoDecision,
@@ -59,6 +61,7 @@ export function useDemoChallenge() {
   const [lastEvent, setLastEvent] = useState<DemoLastEvent | null>(null)
   const [eventLog, setEventLog] = useState<string | null>(null)
   const [tradeNote, setTradeNote] = useState<string | null>(null)
+  const [loginGreeting, setLoginGreeting] = useState<LoginGreeting | null>(null)
 
   const persistStore = useCallback((next: DemoStore) => {
     window.localStorage.setItem(DEMO_STATE_STORAGE_KEY, serializeDemoStore(next))
@@ -100,7 +103,9 @@ export function useDemoChallenge() {
       }
       loaded = expireDemoTrades(loaded, Date.now())
       loaded = releaseExpiredDemoPromises(loaded, Date.now())
-      const active = recordLoginVisit(refreshDemoSavings(loaded.profiles[loaded.active_profile_id], Date.now()), Date.now())
+      const opened = refreshDemoSavings(loaded.profiles[loaded.active_profile_id], Date.now())
+      const active = recordLoginVisit(opened, Date.now())
+      setLoginGreeting(loginGreetingFor(opened, active))
       persistStore(saveDemoProfile(loaded, active))
     })
     return () => { cancelled = true }
@@ -113,7 +118,9 @@ export function useDemoChallenge() {
       if (current === null || busyRef.current || document.visibilityState !== 'visible') return
       const active = current.profiles[current.active_profile_id]
       const next = recordLoginVisit(active, Date.now())
-      if (next !== active) persistStore(saveDemoProfile(current, next))
+      if (next === active) return
+      setLoginGreeting(loginGreetingFor(active, next))
+      persistStore(saveDemoProfile(current, next))
     }
     window.addEventListener('focus', visit)
     document.addEventListener('visibilitychange', visit)
@@ -148,7 +155,10 @@ export function useDemoChallenge() {
     setTradeNote(null)
     setFailure(null)
     const selected = selectDemoProfile(expireDemoTrades(storeRef.current, Date.now()), profile, seed.data.budget)
-    persistStore(saveDemoProfile(selected, recordLoginVisit(refreshDemoSavings(selected.profiles[profileId], Date.now()), Date.now())))
+    const opened = refreshDemoSavings(selected.profiles[profileId], Date.now())
+    const active = recordLoginVisit(opened, Date.now())
+    setLoginGreeting(loginGreetingFor(opened, active))
+    persistStore(saveDemoProfile(selected, active))
   }, [persistStore, seed])
 
   const resetDemo = useCallback(() => {
@@ -157,6 +167,7 @@ export function useDemoChallenge() {
     setLastEvent(null)
     setEventLog(null)
     setTradeNote(null)
+    setLoginGreeting(null)
     const reset = resetDemoStore(seed.data.profiles, seed.data.budget, seed.data.ads)
     persistStore(saveDemoProfile(reset, recordLoginVisit(reset.profiles[reset.active_profile_id], Date.now())))
   }, [persistStore, seed])
@@ -272,7 +283,9 @@ export function useDemoChallenge() {
     const active = current.profiles[current.active_profile_id]
     const nextDay = Math.max(loginDay(Date.now()), active.login_box.last_day ?? 0) + 1
     const next = recordLoginVisit(active, nextDay * 86_400_000)
-    if (next !== active) persistStore(saveDemoProfile(current, next))
+    if (next === active) return
+    setLoginGreeting(loginGreetingFor(active, next))
+    persistStore(saveDemoProfile(current, next))
   }, [persistStore])
 
   const redeem = useCallback(() => {
@@ -280,9 +293,13 @@ export function useDemoChallenge() {
     persist(applyRedemption(state, DEMO_BASKET_KOPECKS, Date.now()))
   }, [persist, state])
 
+  const dismissLoginGreeting = useCallback(() => setLoginGreeting(null), [])
+
   return {
     askForChallenge,
     advanceLoginDay,
+    dismissLoginGreeting,
+    loginGreeting,
     collectChestItem,
     craft,
     eventLog,

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { openTab, prepareLoginBox } from './stand'
+import { openTab, prepareLoginBox, dismissLoginDay } from './stand'
 
 const chestStorageKey = 'pyaterochka_profile_chest_deadline'
 const demoStateKey = 'pyaterochka_demo_challenge_state'
@@ -23,6 +23,7 @@ const activeDiscountStorageKey = 'pyaterochka_profile_active_discount'
 test('returns to the top when switching from the scrolled profile to Home', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
+  await dismissLoginDay(page)
   await expect(page.getByRole('heading', { level: 1, name: 'Профиль' })).toBeVisible()
   await expect(page.getByText('Выгода за 28 дней')).toBeVisible()
   await expect(page.getByText('Сэкономлено за 28 дней')).toHaveCount(0)
@@ -46,6 +47,7 @@ test('login box records one day across reloads and keeps the rules visible', asy
 
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
+  await dismissLoginDay(page)
   await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeDisabled()
   await expect(page.getByText('Общие задания магазина — их видят все покупатели')).toHaveCount(0)
   await expect(page.locator('.chest-timer-label')).toHaveText('За возвращение')
@@ -61,6 +63,7 @@ test('login box records one day across reloads and keeps the rules visible', asy
 
   await page.reload()
   await page.getByRole('button', { name: 'Профиль' }).click()
+  await dismissLoginDay(page)
   await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeDisabled()
   await expect(page.locator('.chest-timer-value')).toHaveText('1 из 3 дней')
 
@@ -86,6 +89,7 @@ test('login box records one day across reloads and keeps the rules visible', asy
 test('opens an available chest after the user shakes it across the screen', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
+  await dismissLoginDay(page)
   await expect(page.getByRole('heading', { level: 2, name: 'Персональный челлендж' })).toBeVisible()
   await prepareLoginBox(page)
   const copiesBefore = await readOwnedCopies(page)
@@ -118,6 +122,7 @@ test('opens an available chest after the user shakes it across the screen', asyn
   await expect(chestButton).toBeDisabled()
   await page.reload()
   await page.getByRole('button', { name: 'Профиль' }).click()
+  await dismissLoginDay(page)
   await expect(chestButton).toBeDisabled()
   expect(await readOwnedCopies(page)).toBe(copiesAfter)
 })
@@ -131,6 +136,7 @@ test('crafts a themed discount from four inventory items and restores its barcod
 
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
+  await dismissLoginDay(page)
   await openTab(page, 'Коллекция')
   await expect(page.getByText('Собери 4 предмета')).toBeVisible()
   await expect(page.getByText('Полученные вами предметы, которые можно использовать для создания скидки.')).toBeVisible()
@@ -183,6 +189,7 @@ test('crafts a themed discount from four inventory items and restores its barcod
   await expect(discountBadge).toHaveCSS('border-top-color', 'rgb(22, 163, 74)')
   await page.reload()
   await page.getByRole('button', { name: 'Профиль' }).click()
+  await dismissLoginDay(page)
   await expect(discountBadge).toBeVisible()
   await discountBadge.click()
   await expect(page.getByRole('img', { name: /^Штрихкод \d{13}$/ })).toBeVisible()

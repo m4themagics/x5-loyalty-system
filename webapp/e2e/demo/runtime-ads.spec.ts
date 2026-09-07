@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { openStand, standLog } from './stand'
+import { openStand, standLog, dismissLoginDay } from './stand'
 
 const demoStateKey = 'pyaterochka_demo_challenge_state'
 
@@ -56,6 +56,7 @@ type StoredDemo = {
 async function openProfile(page: import('@playwright/test').Page) {
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await dismissLoginDay(page)
   await expect(page.getByRole('heading', { level: 2, name: 'Персональный челлендж' })).toBeVisible()
   await page.waitForFunction((key) => {
     const raw = window.localStorage.getItem(key)
@@ -150,6 +151,7 @@ test('the live Ads ledger reserves an impression, bills one CPA, survives reload
 
   await page.reload()
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await dismissLoginDay(page)
   await openStand(page)
   await page.getByRole('button', { name: 'Для X5', exact: true }).click()
   const panel = page.getByRole('region', { name: 'Для X5', exact: true })
@@ -187,6 +189,7 @@ test('exhausted live campaign budgets produce no_action before a first physical 
   }, demoStateKey)
   await page.reload()
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await dismissLoginDay(page)
   await page.getByRole('button', { name: 'Показать задание', exact: true }).click()
 
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toHaveCount(0)
@@ -226,6 +229,7 @@ test('frequency-capped campaigns produce no_action for that profile', async ({ p
   }, demoStateKey)
   await page.reload()
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await dismissLoginDay(page)
   await page.getByRole('button', { name: 'Показать задание', exact: true }).click()
 
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toHaveCount(0)

@@ -100,6 +100,7 @@ export function ProfileScreen() {
   const loginBox = demoState?.login_box
   const isOpenable = loginBox?.days === 3 && loginBox.reserved && !demo.isBusy
   const claimedBoxes = loginBox?.claimed_days.filter(day => day > demo.loginToday - 28).length ?? 0
+  const greeting = demo.loginGreeting
   const boxStatus = demoState === null ? 'Загружаем…' : isOpenable ? 'Готова'
     : loginBox?.reserved ? `${loginBox.days} из 3 дней`
       : claimedBoxes >= 4 ? '4 из 4 получены' : 'Пока недоступна'
@@ -304,18 +305,6 @@ export function ProfileScreen() {
             {isOpenable ? 'Нажмите, чтобы открыть' : 'Три разных дня — один предмет'}
           </Typography>
         </button>
-
-        <div className="login-box-progress">
-          <div className="login-box-dots" aria-label={`${loginBox?.days ?? 0} из 3 дней входа`}>
-            {[1, 2, 3].map(day => <Typography as="span" variant="bodyXs" key={day} className={day <= (loginBox?.days ?? 0) ? 'is-complete' : ''} aria-hidden="true">{day <= (loginBox?.days ?? 0) ? '✓' : day}</Typography>)}
-          </div>
-          <Typography as="p" variant="bodyXs">
-            {claimedBoxes >= 4 ? 'Все четыре коробки получены. Новые станут доступны после окончания лимита 28 дней.'
-              : loginBox?.reserved ? 'Дни не обязательно подряд. Пропуск не сбрасывает прогресс.'
-                : demoState === null ? 'Загружаем прогресс входов.' : 'Новых коробок пока нет. Ваши предметы сохраняются.'}
-          </Typography>
-          <Typography as="span" variant="bodyXs">Получено за 28 дней: {claimedBoxes} из 4</Typography>
-        </div>
 
         <div className="chest-info-wrap">
           <button
@@ -574,6 +563,62 @@ export function ProfileScreen() {
           }}
           onShowBarcode={() => setDiscountOverlayMode('barcode')}
         />
+      ) : null}
+
+      {greeting !== null && openingStage === 'closed' ? (
+        <div className="login-day-overlay">
+          <div className="login-day-card" role="dialog" aria-modal="true" aria-label="День входа">
+            <button
+              aria-label="Закрыть окно дня входа"
+              className="discount-overlay-close"
+              onClick={demo.dismissLoginGreeting}
+              type="button"
+            >
+              <Typography as="span" variant="body" aria-hidden="true">×</Typography>
+            </button>
+
+            <Typography as="h2" variant="h2" className="login-day-title">
+              {greeting.ready ? 'Коробка готова' : `День ${greeting.days} из 3`}
+            </Typography>
+
+            <div className="login-box-dots" aria-label={`${greeting.days} из 3 дней входа`}>
+              {[1, 2, 3].map(day => (
+                <Typography
+                  as="span"
+                  variant="bodyXs"
+                  key={day}
+                  className={day <= greeting.days ? 'is-complete' : ''}
+                  aria-hidden="true"
+                >
+                  {day <= greeting.days ? '✓' : day}
+                </Typography>
+              ))}
+            </div>
+
+            <Typography as="p" variant="bodySm" className="login-day-text">
+              {greeting.ready
+                ? 'Три разных дня набраны. Откройте коробку и заберите предмет.'
+                : 'Дни не обязательно подряд: пропуск не сбрасывает прогресс.'}
+            </Typography>
+
+            <Typography as="span" variant="bodyXs" className="login-day-limit">
+              Получено за 28 дней: {claimedBoxes} из 4
+            </Typography>
+
+            <button
+              className="demo-button demo-button-primary demo-button-block"
+              onClick={() => {
+                demo.dismissLoginGreeting()
+                if (greeting.ready) openChest()
+              }}
+              type="button"
+            >
+              <Typography as="span" variant="bodySm">
+                {greeting.ready ? 'Открыть коробку' : 'Понятно'}
+              </Typography>
+            </button>
+          </div>
+        </div>
       ) : null}
 
       {openingStage !== 'closed' ? (

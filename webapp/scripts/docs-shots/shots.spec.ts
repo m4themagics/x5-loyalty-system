@@ -1,10 +1,9 @@
-import { prepareLoginBox } from '../../e2e/demo/stand'
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 import { expect, test, type Page } from '@playwright/test'
 
-import { openTab, putItemIntoDiscountSlot } from '../../e2e/demo/stand'
+import { dismissLoginDay, openTab, prepareLoginBox, putItemIntoDiscountSlot } from '../../e2e/demo/stand'
 
 /**
  * Кадры уходят сырыми в артефакты, а `build.mjs` собирает из них WebP и GIF в docs/assets.
@@ -19,6 +18,7 @@ const shot = (page: Page, name: string) =>
 async function openProfile(page: Page) {
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await dismissLoginDay(page)
   await expect(page.getByRole('heading', { level: 1, name: 'Профиль' })).toBeVisible()
 }
 

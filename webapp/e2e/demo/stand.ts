@@ -9,6 +9,18 @@ export const DEMO_PROFILES = {
   boris: 'Борис',
 } as const
 
+/**
+ * Окно дня входа открывается на каждом новом засчитанном дне, в том числе на первой
+ * загрузке. Ждём, пока состояние демо загрузится, иначе окно появится после проверки.
+ */
+export async function dismissLoginDay(page: Page) {
+  await expect(page.locator('.chest-timer-value')).not.toHaveText('Загружаем…')
+  const dialog = page.getByRole('dialog', { name: 'День входа' })
+  if (await dialog.count() === 0) return
+  await dialog.getByRole('button', { name: 'Закрыть окно дня входа' }).click()
+  await expect(dialog).toHaveCount(0)
+}
+
 export async function openStand(page: Page) {
   await page.getByRole('button', { name: 'Демо-стенд', exact: true }).click()
   await expect(page.getByRole('region', { name: 'Демо-стенд' })).toBeVisible()
@@ -23,6 +35,8 @@ export async function closeStand(page: Page) {
 export async function switchProfile(page: Page, name: string | RegExp) {
   await openStand(page)
   await page.getByRole('button', { name }).click()
+  // Новому профилю засчитывается день входа: окно перекрывает кнопку закрытия стенда.
+  await dismissLoginDay(page)
   await closeStand(page)
 }
 
@@ -58,10 +72,14 @@ export async function putItemIntoDiscountSlot(page: Page, itemName: string, slot
 
 /** Проходим реальные шаги через явно обозначенный демо-счётчик. */
 export async function prepareLoginBox(page: Page) {
+  await dismissLoginDay(page)
   await expect(page.locator('.chest-timer-value')).toHaveText(/из 3 дней/)
   await openStand(page)
   const nextDay = page.getByRole('button', { name: 'Следующий день входа (демо)' })
-  for (let day = 0; day < 3 && await nextDay.isEnabled(); day++) await nextDay.click()
+  for (let day = 0; day < 3 && await nextDay.isEnabled(); day++) {
+    await nextDay.click()
+    await dismissLoginDay(page)
+  }
   await closeStand(page)
   await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeEnabled()
 }

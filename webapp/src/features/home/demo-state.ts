@@ -326,6 +326,17 @@ export function recordLoginVisit(state: DemoState, nowMs: number): DemoState {
   }
 }
 
+export type LoginGreeting = { days: number; ready: boolean }
+
+/**
+ * Окно входа показывается только когда засчитан новый день, а не на любое обновление
+ * состояния: восстановление из хранилища и пересчёт накоплений не должны его открывать.
+ */
+export function loginGreetingFor(previous: DemoState, next: DemoState): LoginGreeting | null {
+  if (next.login_box.days <= previous.login_box.days) return null
+  return { days: next.login_box.days, ready: next.login_box.days === 3 }
+}
+
 /** Демонстрационное погашение: экономия считается по фактически списанной сумме, не по номиналу. */
 export function applyRedemption(
   state: DemoState,

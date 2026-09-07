@@ -262,17 +262,46 @@
   box-shadow: 0 2px 7px rgb(38 80 46 / 10%);
 }
 
-.login-box-progress {
-  grid-column: 1 / -1;
-  grid-row: 2;
+.login-day-overlay {
+  position: fixed;
+  /* Выше демо-стенда (320) и карточек инвентаря (350): окно входа перекрывает всё. */
+  z-index: 500;
+  inset: 0;
   display: grid;
-  justify-items: center;
-  gap: 8px;
-  padding: 0 16px 16px;
-  text-align: center;
+  padding: 20px;
+  place-items: center;
+  overflow-y: auto;
+  background:
+    radial-gradient(circle at 50% 30%, rgb(78 209 112 / 26%), transparent 44%),
+    rgb(7 20 11 / 86%);
+  backdrop-filter: blur(6px);
+  animation: chest-overlay-in 200ms ease-out both;
 }
 
-.login-box-progress p { margin: 0; }
+.login-day-card {
+  position: relative;
+  display: grid;
+  width: min(100%, 320px);
+  justify-items: center;
+  gap: 12px;
+  padding: 28px 22px 22px;
+  border-radius: 26px;
+  background: #fff;
+  color: #202421;
+  text-align: center;
+  box-shadow: 0 24px 54px rgb(0 0 0 / 44%);
+  animation: reward-pop 420ms cubic-bezier(.17, .89, .32, 1.25) both;
+}
+
+.login-day-title[data-slot='typography'] {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.15;
+  font-weight: 850;
+}
+
+.login-day-text[data-slot='typography'] { margin: 0; color: #4a5349; }
+.login-day-limit[data-slot='typography'] { color: #6d766b; }
 
 .login-box-dots { display: flex; gap: 8px; }
 .login-box-dots span {

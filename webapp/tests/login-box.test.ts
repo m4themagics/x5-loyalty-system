@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test'
 import { DEMO_COUPON_MAX_KOPECKS, DEMO_INSTANCE_RESERVE_KOPECKS } from '@pyaterochka-game-demo/contracts'
 import { readFileSync } from 'node:fs'
-import { addChestItem, applyCraft, applyRedemption, createDemoState, recordLoginVisit, releaseExpiredPromise, resolveDemoState, serializeDemoState } from '../src/features/home/demo-state'
+import { addChestItem, applyCraft, applyRedemption, createDemoState, loginGreetingFor, recordLoginVisit, releaseExpiredPromise, resolveDemoState, serializeDemoState } from '../src/features/home/demo-state'
 import { craftDiscount } from '../src/features/home/profile-discount-crafting'
 
 const profile = JSON.parse(readFileSync(new URL('../../recsys/contract/examples/profile-empty.json', import.meta.url), 'utf8'))
@@ -96,4 +96,18 @@ test('new coupon pays actual percent and never more than its own 100 ₽ maximum
   const crafted = applyCraft(state, craftDiscount(ids, now), now)
   expect(applyRedemption(crafted, 50_000, now).budget.coupon_settled_kopecks).toBe(4000)
   expect(applyRedemption(crafted, 200_000, now).budget.coupon_settled_kopecks).toBe(10_000)
+})
+
+test('the login window opens only on a newly counted day', () => {
+  const start = fresh()
+  const first = recordLoginVisit(start, now)
+  expect(loginGreetingFor(start, first)).toEqual({ days: 1, ready: false })
+  expect(loginGreetingFor(first, recordLoginVisit(first, now + 60_000))).toBeNull()
+  expect(loginGreetingFor(first, addChestItem(first, 'club-toaster', now))).toBeNull()
+  const second = recordLoginVisit(first, now + day)
+  const third = recordLoginVisit(second, now + 2 * day)
+  expect(loginGreetingFor(second, third)).toEqual({ days: 3, ready: true })
+  const claimed = addChestItem(third, 'club-toaster', now + 2 * day)
+  expect(loginGreetingFor(third, claimed)).toBeNull()
+  expect(loginGreetingFor(claimed, recordLoginVisit(claimed, now + 3 * day))).toEqual({ days: 1, ready: false })
 })

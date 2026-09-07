@@ -7,6 +7,7 @@ import {
   openTab,
   putItemIntoDiscountSlot,
   standLog,
+  dismissLoginDay,
   switchProfile,
 } from './stand'
 
@@ -22,6 +23,7 @@ async function readActiveState(page: import('@playwright/test').Page) {
 async function openProfile(page: import('@playwright/test').Page) {
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль' }).click()
+  await dismissLoginDay(page)
   await expect(page.getByRole('heading', { level: 2, name: 'Персональный челлендж' })).toBeVisible()
   await expect(page.getByText('Одно задание по вашим покупкам. Выполните его за обычный поход в магазин.')).toHaveCount(0)
   await expect(page.getByText('Подобрали особое задание на основе ваших прошлых покупок.')).toBeVisible()
@@ -114,6 +116,7 @@ test('keeps the issued item and the fulfilled promise after a reload', async ({ 
 
   await page.reload()
   await page.getByRole('button', { name: 'Профиль' }).click()
+  await dismissLoginDay(page)
 
   await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
   await openTab(page, 'Коллекция')

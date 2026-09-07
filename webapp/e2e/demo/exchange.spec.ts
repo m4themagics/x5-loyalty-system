@@ -1,12 +1,13 @@
 import { expect, test } from '@playwright/test'
 
-import { DEMO_PROFILES, openTab, switchProfile } from './stand'
+import { DEMO_PROFILES, openTab, switchProfile, dismissLoginDay } from './stand'
 
 const storageKey = 'pyaterochka_demo_challenge_state'
 
 async function start(page: import('@playwright/test').Page) {
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await dismissLoginDay(page)
   await switchProfile(page, DEMO_PROFILES.anya)
   await openTab(page, 'Коллекция')
 }
@@ -50,6 +51,7 @@ test('reserves both items, restores the offer and exchanges atomically', async (
 
   await page.reload()
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await dismissLoginDay(page)
   await switchProfile(page, DEMO_PROFILES.boris)
   await openTab(page, 'Коллекция')
   const receiverTrade = await openTrade(page)

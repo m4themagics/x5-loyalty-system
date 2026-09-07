@@ -1,6 +1,6 @@
 import { expect, test, type Route } from '@playwright/test'
 
-import { openTab } from './stand'
+import { openTab, dismissLoginDay } from './stand'
 
 async function sendTitle(route: Route, title: string) {
   const request = route.request().postDataJSON()
@@ -28,6 +28,7 @@ test('shows your title before slow friends and keeps the ranking scores visible'
   try {
     await page.goto('/')
     await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+    await dismissLoginDay(page)
     await openTab(page, 'Друзья')
 
     await expect(page.locator('.demo-title-value')).toHaveText('Кухонный энтузиаст')
@@ -50,6 +51,7 @@ test('failed titles leave the collection usable and can be retried', async ({ pa
   await page.route('**/api/demo/title', (route) => route.fulfill({ status: 503, json: {} }))
   await page.goto('/')
   await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await dismissLoginDay(page)
   await openTab(page, 'Друзья')
 
   await expect(page.locator('.demo-title-value')).toHaveText('Ваша коллекция')
