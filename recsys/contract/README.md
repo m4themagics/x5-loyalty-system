@@ -48,7 +48,7 @@
 | Контракт (координатор) | `packages/contracts/src/demo-poc*.ts`, `recsys/contract/**`, `webapp/src/features/home/demo-game-snapshot.ts`, `webapp/scripts/build-demo-contract-examples.ts` | — |
 | Мария: движок, экономика, LLM | `recsys/engine/**`, `recsys/llm/**` | `webapp/**`, `recsys/eval/**` |
 | Григорий: интеграция с игрой | `webapp/**` | `recsys/**`, существующие игровые правила |
-| Артемий: независимая проверка | `recsys/eval/**`, позже `docs/presentation/**` | `recsys/engine/**`, `webapp/**` |
+| Артемий: независимая проверка | `recsys/eval/**` | `recsys/engine/**`, `webapp/**` |
 
 Каталог предметов и формула скидки живут только в `webapp/src/features/home`. Движок получает
 снимок (`game`) и рассчитанные признаки (`game_features`) и не хранит второй каталог.

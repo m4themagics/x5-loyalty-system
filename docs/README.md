@@ -12,15 +12,6 @@
 | [poc-status.md](project/poc-status.md) | Что реализовано, а что осталось гипотезой |
 | [context-pack.md](project/context-pack.md) | Рабочий контекст проекта |
 
-## Демонстрация
-
-| Документ | О чём |
-| --- | --- |
-| [demo-runbook.md](project/demo-runbook.md) | Порядок показа |
-| [demo-qa.md](project/demo-qa.md) | Ожидаемые вопросы и ответы |
-| [technical-speech.md](project/technical-speech.md) | Техническая часть защиты |
-| [presentation/](presentation/) | Итоговые материалы сдачи |
-
 ## Движок решений
 
 Контракты, границы и результаты независимой оценки описаны отдельно:

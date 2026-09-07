@@ -47,4 +47,4 @@ bun run --cwd webapp e2e:demo
 - локальный Python вызывается фиксированным Vite middleware через contract v2;
 - learned RecSys оценивается offline и не обслуживает пользовательские запросы.
 
-Общее описание и актуальный маршрут демонстрации: [README](../README.md) и [demo-runbook](../docs/project/demo-runbook.md).
+Общее описание и маршрут демонстрации: [README](../README.md).
