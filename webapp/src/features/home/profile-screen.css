@@ -15,42 +15,45 @@
   background: linear-gradient(180deg, #eefaff 0%, #fff 54%);
 }
 
-/* Раньше здесь был декоративный кружок в фоне, который читался как пустой аватар. */
+/*
+ * Раньше здесь был декоративный кружок в фоне, который читался как пустой аватар.
+ * Строка стоит в потоке под заголовком и не заезжает ни на маскота, ни на кнопку обмена.
+ */
 .profile-identity {
-  position: absolute;
+  position: relative;
   z-index: 2;
-  top: 58px;
-  left: 16px;
-  display: grid;
-  width: 108px;
-  justify-items: center;
-  gap: 4px;
+  display: flex;
+  max-width: 240px;
+  align-items: center;
+  justify-self: start;
+  gap: 8px;
+  padding: 4px 14px 4px 4px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 72%);
+  box-shadow: 0 2px 8px rgb(30 90 110 / 10%);
 }
 
 .profile-avatar[data-slot='typography'] {
   display: grid;
-  width: 56px;
-  height: 56px;
+  width: 32px;
+  height: 32px;
+  flex: none;
   place-items: center;
-  border: 2px solid #fff;
   border-radius: 50%;
   background: #b9e8f5;
   color: #17607a;
   font-family: 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
-  font-size: 24px;
+  font-size: 15px;
   line-height: 1;
   font-weight: 900;
-  box-shadow: 0 4px 10px rgb(30 90 110 / 16%);
 }
 
 .profile-identity-name[data-slot='typography'] {
+  overflow: hidden;
   color: #4a5349;
   line-height: 1.15;
-  text-align: center;
-  /* Перенос только по пробелам: «Показательны/й профиль» читался как опечатка. */
-  word-break: normal;
-  overflow-wrap: normal;
-  hyphens: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .profile-hero::after {
