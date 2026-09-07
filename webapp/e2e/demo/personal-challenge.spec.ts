@@ -90,7 +90,7 @@ test('computes a challenge from purchase history and issues both rewards once', 
   expect(afterGrant.profile.outstanding_promise.fulfilled).toBe(true)
   expect(afterGrant.budget.coupon_settled_kopecks).toBe(0)
   // 25 ₽ за начатую коробку + 25 ₽ за выданный предмет задания.
-  expect(afterGrant.budget.coupon_reserved_kopecks).toBe(5000)
+  expect(afterGrant.budget.coupon_reserved_kopecks).toBe(500)
 
   await openStand(page)
   const repeatedRequest = page.waitForRequest((request) => request.url().endsWith('/api/demo/event'))

@@ -22,12 +22,12 @@
   "start_empty_inventory": false,
   "missing_history_share": 0.1,
   "budget": {
-    "coupon_fund_kopecks": 10000000,
+    "coupon_fund_kopecks": 1000000,
     "coupon_settled_kopecks": 0,
     "coupon_reserved_kopecks": 0,
     "physical_fund_kopecks": 2500000,
     "physical_settled_kopecks": 0,
     "physical_reserved_kopecks": 0
   },
-  "initial_state_note": "Смесь пустого и подготовленного инвентаря из 40 синтетических шаблонов; каждая стартовая копия резервируется по 25 ₽. Товар оплачивается полностью при выдаче; остальные три копии не предполагаются автоматически."
+  "initial_state_note": "Смесь пустого и подготовленного инвентаря из 40 синтетических шаблонов; каждая стартовая копия резервируется по 2,50 ₽. Товар оплачивается полностью при выдаче; остальные три копии не предполагаются автоматически."
 }

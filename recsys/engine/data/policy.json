@@ -19,8 +19,8 @@
   ],
   "challenge_window_days": 7,
   "challenge_quantity": 1,
-  "instance_reserve_kopecks": 2500,
-  "coupon_max_kopecks": 10000,
+  "instance_reserve_kopecks": 250,
+  "coupon_max_kopecks": 1000,
   "min_expected_increment_kopecks": 100,
   "expected_incremental_margin_default_kopecks": 3500,
   "expected_incremental_margin_by_category": {

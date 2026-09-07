@@ -34,7 +34,7 @@
       }
     },
     "reservation": {
-      "coupon_reserve_kopecks": 2500,
+      "coupon_reserve_kopecks": 250,
       "physical_reserve_kopecks": 2500
     },
     "economics": {
@@ -44,13 +44,13 @@
       "campaign_id": "camp_058",
       "bid_per_qualified_event_kopecks": 1800,
       "subsidy_kopecks": 2500,
-      "uncovered_reward_cost_kopecks": 2500,
+      "uncovered_reward_cost_kopecks": 250,
       "expected_incremental_margin_kopecks": 4500,
       "auction_type": "quality_adjusted_first_price_cpa",
       "quality_score": 0.759,
       "predicted_billable_probability": 0.82,
       "pacing_multiplier": 1.5,
-      "auction_score_kopecks": 3680,
+      "auction_score_kopecks": 5930,
       "campaign_reserve_kopecks": 4300,
       "auction_candidate_count": 2,
       "auction_eligible_count": 2,
@@ -98,7 +98,7 @@
         ]
       }
     ],
-    "coupon_available_kopecks": 997500,
+    "coupon_available_kopecks": 999750,
     "physical_available_kopecks": 2497500,
     "llm": {
       "source": "fallback",

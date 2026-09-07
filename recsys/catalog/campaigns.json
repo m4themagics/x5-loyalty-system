@@ -1,166 +1,198 @@
 {
-  "notes": "Синтетические рекламодатели и кампании. Сгенерированы LLM по brand brief, проверены критиком. Ни один бренд не является реальным партнёром X5. Темп расходования (pacing) не задаётся в каталоге: движок выводит его из фактического расхода по флайту.",
+  "notes": "Синтетические рекламодатели и кампании. Сгенерированы LLM по brand brief, проверены критиком. Ни один бренд не является реальным партнёром X5.",
   "contribution_margin_rub": 120.0,
   "incrementality_floor": 0.04,
   "min_quality_bps": 4500,
   "advertisers": [
-    { "advertiser_id": "brand_07", "name": "Кофейный бренд", "category": "coffee" },
-    { "advertiser_id": "brand_12", "name": "Молочный бренд", "category": "dairy" },
-    { "advertiser_id": "brand_19", "name": "Детское питание", "category": "baby" },
-    { "advertiser_id": "brand_21", "name": "Бренд быстрых завтраков", "category": "dairy" },
-    { "advertiser_id": "brand_22", "name": "Альтернативный кофейный бренд", "category": "coffee" },
-    { "advertiser_id": "brand_31", "name": "Хлебный бренд", "category": "bakery" },
-    { "advertiser_id": "brand_33", "name": "Бренд полезного перекуса", "category": "produce" },
-    { "advertiser_id": "brand_35", "name": "Фермерский бренд", "category": "produce" },
-    { "advertiser_id": "brand_37", "name": "Бренд заморозки", "category": "frozen" },
-    { "advertiser_id": "brand_39", "name": "Бренд готовых блюд", "category": "ready_meal" },
-    { "advertiser_id": "brand_41", "name": "Мясной бренд", "category": "meat_fish" },
-    { "advertiser_id": "brand_43", "name": "Бренд напитков", "category": "drinks" },
-    { "advertiser_id": "brand_45", "name": "Бакалейный бренд", "category": "grocery" }
+    {
+      "advertiser_id": "brand_07",
+      "name": "Кофейный бренд",
+      "category": "coffee"
+    },
+    {
+      "advertiser_id": "brand_12",
+      "name": "Молочный бренд",
+      "category": "dairy"
+    },
+    {
+      "advertiser_id": "brand_19",
+      "name": "Детское питание",
+      "category": "baby"
+    },
+    {
+      "advertiser_id": "brand_21",
+      "name": "Бренд быстрых завтраков",
+      "category": "dairy"
+    },
+    {
+      "advertiser_id": "brand_22",
+      "name": "Альтернативный кофейный бренд",
+      "category": "coffee"
+    }
   ],
   "campaigns": [
     {
-      "campaign_id": "camp_042", "advertiser_id": "brand_07", "objective": "qualified_product_trial",
-      "bid_per_qualified_visit": 32.0, "total_budget": 150000.0, "remaining_budget": 82400.0,
-      "quality_score": 0.86, "uplift": 0.075, "p_billable": 0.72,
-      "flight_start": "2026-09-05", "flight_end": "2026-09-20", "frequency_cap_14d": 2,
-      "eligible_categories": ["coffee"], "reward_sku_id": "sku_318", "reward_cost": 18.0,
-      "mechanics_allowed": ["personal_finish", "family_relay"],
+      "campaign_id": "camp_042",
+      "advertiser_id": "brand_07",
+      "objective": "qualified_product_trial",
+      "bid_per_qualified_visit": 32.0,
+      "total_budget": 150000.0,
+      "remaining_budget": 82400.0,
+      "quality_score": 0.86,
+      "uplift": 0.075,
+      "p_billable": 0.72,
+      "flight_start": "2026-09-05",
+      "flight_end": "2026-09-20",
+      "frequency_cap_14d": 2,
+      "eligible_categories": [
+        "coffee"
+      ],
+      "reward_sku_id": "sku_318",
+      "reward_cost": 18.0,
+      "mechanics_allowed": [
+        "personal_finish",
+        "family_relay"
+      ],
       "creatives": [
-        { "creative_id": "cr_042_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Кофейный чекпоинт", "next_step": "один визит в течение пяти дней" },
-        { "creative_id": "cr_042_b", "mechanic_family": "family_relay", "behavioral_lever": "reciprocity", "title": "Передайте кофейный маршрут", "next_step": "подтверждённая покупка близкого" }
+        {
+          "creative_id": "cr_042_a",
+          "mechanic_family": "personal_finish",
+          "behavioral_lever": "completion",
+          "title": "Кофейный чекпоинт",
+          "next_step": "один визит в течение пяти дней"
+        },
+        {
+          "creative_id": "cr_042_b",
+          "mechanic_family": "family_relay",
+          "behavioral_lever": "reciprocity",
+          "title": "Передайте кофейный маршрут",
+          "next_step": "подтверждённая покупка близкого"
+        }
       ]
     },
     {
-      "campaign_id": "camp_067", "advertiser_id": "brand_22", "objective": "qualified_product_trial",
-      "bid_per_qualified_visit": 45.0, "total_budget": 80000.0, "remaining_budget": 64000.0,
-      "quality_score": 0.48, "uplift": 0.045, "p_billable": 0.45,
-      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 2,
-      "eligible_categories": ["coffee"], "reward_sku_id": null, "reward_cost": 0.0,
-      "mechanics_allowed": ["personal_finish"],
+      "campaign_id": "camp_067",
+      "advertiser_id": "brand_22",
+      "objective": "qualified_product_trial",
+      "bid_per_qualified_visit": 45.0,
+      "total_budget": 80000.0,
+      "remaining_budget": 64000.0,
+      "quality_score": 0.48,
+      "uplift": 0.045,
+      "p_billable": 0.45,
+      "flight_start": "2026-09-01",
+      "flight_end": "2026-09-30",
+      "frequency_cap_14d": 2,
+      "eligible_categories": [
+        "coffee"
+      ],
+      "reward_sku_id": null,
+      "reward_cost": 0.0,
+      "mechanics_allowed": [
+        "personal_finish"
+      ],
       "creatives": [
-        { "creative_id": "cr_067_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Кофейный маршрут", "next_step": "один визит в течение семи дней" }
+        {
+          "creative_id": "cr_067_a",
+          "mechanic_family": "personal_finish",
+          "behavioral_lever": "completion",
+          "title": "Кофейный маршрут",
+          "next_step": "один визит в течение семи дней"
+        }
       ]
     },
     {
-      "campaign_id": "camp_058", "advertiser_id": "brand_12", "objective": "category_reactivation",
-      "bid_per_qualified_visit": 18.0, "total_budget": 90000.0, "remaining_budget": 71200.0,
-      "quality_score": 0.92, "uplift": 0.065, "p_billable": 0.82,
-      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 3,
-      "eligible_categories": ["dairy", "breakfast"], "reward_sku_id": "gift-milk-500", "reward_cost": 25.0,
-      "mechanics_allowed": ["store_coop", "personal_finish"],
+      "campaign_id": "camp_058",
+      "advertiser_id": "brand_12",
+      "objective": "category_reactivation",
+      "bid_per_qualified_visit": 18.0,
+      "total_budget": 90000.0,
+      "remaining_budget": 71200.0,
+      "quality_score": 0.92,
+      "uplift": 0.065,
+      "p_billable": 0.82,
+      "flight_start": "2026-09-01",
+      "flight_end": "2026-09-30",
+      "frequency_cap_14d": 3,
+      "eligible_categories": [
+        "dairy"
+      ],
+      "reward_sku_id": "gift-milk-500",
+      "reward_cost": 25.0,
+      "mechanics_allowed": [
+        "store_coop",
+        "personal_finish"
+      ],
       "creatives": [
-        { "creative_id": "cr_058_a", "mechanic_family": "store_coop", "behavioral_lever": "collective_progress", "title": "Чекпоинт своей Пятёрочки", "next_step": "визит в течение семи дней" }
+        {
+          "creative_id": "cr_058_a",
+          "mechanic_family": "store_coop",
+          "behavioral_lever": "collective_progress",
+          "title": "Чекпоинт своей Пятёрочки",
+          "next_step": "визит в течение семи дней"
+        }
       ]
     },
     {
-      "campaign_id": "camp_063", "advertiser_id": "brand_21", "objective": "qualified_product_trial",
-      "bid_per_qualified_visit": 32.0, "total_budget": 70000.0, "remaining_budget": 50800.0,
-      "quality_score": 0.56, "uplift": 0.05, "p_billable": 0.55,
-      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 2,
-      "eligible_categories": ["dairy", "breakfast", "bakery"], "reward_sku_id": null, "reward_cost": 0.0,
-      "mechanics_allowed": ["personal_finish"],
+      "campaign_id": "camp_063",
+      "advertiser_id": "brand_21",
+      "objective": "qualified_product_trial",
+      "bid_per_qualified_visit": 32.0,
+      "total_budget": 70000.0,
+      "remaining_budget": 50800.0,
+      "quality_score": 0.56,
+      "uplift": 0.05,
+      "p_billable": 0.55,
+      "flight_start": "2026-09-01",
+      "flight_end": "2026-09-30",
+      "frequency_cap_14d": 2,
+      "eligible_categories": [
+        "dairy"
+      ],
+      "reward_sku_id": null,
+      "reward_cost": 0.0,
+      "mechanics_allowed": [
+        "personal_finish"
+      ],
       "creatives": [
-        { "creative_id": "cr_063_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Быстрый завтрак", "next_step": "один визит в течение семи дней" }
+        {
+          "creative_id": "cr_063_a",
+          "mechanic_family": "personal_finish",
+          "behavioral_lever": "completion",
+          "title": "Быстрый завтрак",
+          "next_step": "один визит в течение семи дней"
+        }
       ]
     },
     {
-      "campaign_id": "camp_071", "advertiser_id": "brand_19", "objective": "repeat_purchase",
-      "bid_per_qualified_visit": 36.0, "total_budget": 120000.0, "remaining_budget": 400.0,
-      "quality_score": 0.82, "uplift": 0.055, "p_billable": 0.75,
-      "flight_start": "2026-09-03", "flight_end": "2026-09-17", "frequency_cap_14d": 2,
-      "eligible_categories": ["baby"], "reward_sku_id": "sku_204", "reward_cost": 21.0,
-      "mechanics_allowed": ["personal_finish"],
+      "campaign_id": "camp_071",
+      "advertiser_id": "brand_19",
+      "objective": "repeat_purchase",
+      "bid_per_qualified_visit": 36.0,
+      "total_budget": 120000.0,
+      "remaining_budget": 400.0,
+      "quality_score": 0.82,
+      "uplift": 0.055,
+      "p_billable": 0.75,
+      "flight_start": "2026-09-03",
+      "flight_end": "2026-09-17",
+      "frequency_cap_14d": 2,
+      "eligible_categories": [
+        "baby"
+      ],
+      "reward_sku_id": "sku_204",
+      "reward_cost": 21.0,
+      "mechanics_allowed": [
+        "personal_finish"
+      ],
       "creatives": [
-        { "creative_id": "cr_071_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Детский чекпоинт", "next_step": "один визит в течение шести дней" }
-      ]
-    },
-    {
-      "campaign_id": "camp_080", "advertiser_id": "brand_31", "objective": "qualified_product_trial",
-      "bid_per_qualified_visit": 22.0, "total_budget": 60000.0, "remaining_budget": 47500.0,
-      "quality_score": 0.88, "uplift": 0.062, "p_billable": 0.78,
-      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 2,
-      "eligible_categories": ["bakery", "breakfast"], "reward_sku_id": "gift-bread-pack", "reward_cost": 19.0,
-      "mechanics_allowed": ["personal_finish"],
-      "creatives": [
-        { "creative_id": "cr_080_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Хлебный чекпоинт", "next_step": "один визит в течение семи дней" }
-      ]
-    },
-    {
-      "campaign_id": "camp_084", "advertiser_id": "brand_33", "objective": "category_reactivation",
-      "bid_per_qualified_visit": 26.0, "total_budget": 85000.0, "remaining_budget": 68300.0,
-      "quality_score": 0.79, "uplift": 0.058, "p_billable": 0.7,
-      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 2,
-      "eligible_categories": ["produce", "grocery", "drinks"], "reward_sku_id": "gift-nuts-mini", "reward_cost": 24.0,
-      "mechanics_allowed": ["personal_finish"],
-      "creatives": [
-        { "creative_id": "cr_084_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Полезный перекус", "next_step": "один визит в течение семи дней" }
-      ]
-    },
-    {
-      "campaign_id": "camp_088", "advertiser_id": "brand_35", "objective": "qualified_product_trial",
-      "bid_per_qualified_visit": 30.0, "total_budget": 95000.0, "remaining_budget": 74100.0,
-      "quality_score": 0.71, "uplift": 0.052, "p_billable": 0.66,
-      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 2,
-      "eligible_categories": ["produce", "meat_fish"], "reward_sku_id": null, "reward_cost": 0.0,
-      "mechanics_allowed": ["personal_finish"],
-      "creatives": [
-        { "creative_id": "cr_088_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Фермерский чекпоинт", "next_step": "один визит в течение семи дней" }
-      ]
-    },
-    {
-      "campaign_id": "camp_092", "advertiser_id": "brand_37", "objective": "qualified_product_trial",
-      "bid_per_qualified_visit": 34.0, "total_budget": 110000.0, "remaining_budget": 88600.0,
-      "quality_score": 0.83, "uplift": 0.068, "p_billable": 0.74,
-      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 2,
-      "eligible_categories": ["frozen", "ready_meal"], "reward_sku_id": "gift-frozen-mix", "reward_cost": 27.0,
-      "mechanics_allowed": ["personal_finish"],
-      "creatives": [
-        { "creative_id": "cr_092_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Морозный чекпоинт", "next_step": "один визит в течение семи дней" }
-      ]
-    },
-    {
-      "campaign_id": "camp_096", "advertiser_id": "brand_39", "objective": "repeat_purchase",
-      "bid_per_qualified_visit": 28.0, "total_budget": 75000.0, "remaining_budget": 51900.0,
-      "quality_score": 0.64, "uplift": 0.047, "p_billable": 0.6,
-      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 2,
-      "eligible_categories": ["ready_meal", "frozen", "grocery"], "reward_sku_id": null, "reward_cost": 0.0,
-      "mechanics_allowed": ["personal_finish"],
-      "creatives": [
-        { "creative_id": "cr_096_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Готовый ужин", "next_step": "один визит в течение семи дней" }
-      ]
-    },
-    {
-      "campaign_id": "camp_100", "advertiser_id": "brand_41", "objective": "qualified_product_trial",
-      "bid_per_qualified_visit": 40.0, "total_budget": 130000.0, "remaining_budget": 96400.0,
-      "quality_score": 0.75, "uplift": 0.061, "p_billable": 0.69,
-      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 2,
-      "eligible_categories": ["meat_fish", "ready_meal"], "reward_sku_id": "gift-meat-snack", "reward_cost": 29.0,
-      "mechanics_allowed": ["personal_finish"],
-      "creatives": [
-        { "creative_id": "cr_100_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Мясной чекпоинт", "next_step": "один визит в течение семи дней" }
-      ]
-    },
-    {
-      "campaign_id": "camp_104", "advertiser_id": "brand_43", "objective": "category_reactivation",
-      "bid_per_qualified_visit": 24.0, "total_budget": 70000.0, "remaining_budget": 58200.0,
-      "quality_score": 0.81, "uplift": 0.055, "p_billable": 0.72,
-      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 2,
-      "eligible_categories": ["drinks", "grocery", "frozen"], "reward_sku_id": "gift-drink-mini", "reward_cost": 20.0,
-      "mechanics_allowed": ["personal_finish"],
-      "creatives": [
-        { "creative_id": "cr_104_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Напиток дня", "next_step": "один визит в течение семи дней" }
-      ]
-    },
-    {
-      "campaign_id": "camp_108", "advertiser_id": "brand_45", "objective": "qualified_product_trial",
-      "bid_per_qualified_visit": 20.0, "total_budget": 65000.0, "remaining_budget": 52700.0,
-      "quality_score": 0.86, "uplift": 0.05, "p_billable": 0.76,
-      "flight_start": "2026-09-01", "flight_end": "2026-09-30", "frequency_cap_14d": 2,
-      "eligible_categories": ["grocery", "bakery"], "reward_sku_id": "gift-grocery-set", "reward_cost": 21.0,
-      "mechanics_allowed": ["personal_finish"],
-      "creatives": [
-        { "creative_id": "cr_108_a", "mechanic_family": "personal_finish", "behavioral_lever": "completion", "title": "Бакалейный чекпоинт", "next_step": "один визит в течение семи дней" }
+        {
+          "creative_id": "cr_071_a",
+          "mechanic_family": "personal_finish",
+          "behavioral_lever": "completion",
+          "title": "Детский чекпоинт",
+          "next_step": "один визит в течение шести дней"
+        }
       ]
     }
   ]

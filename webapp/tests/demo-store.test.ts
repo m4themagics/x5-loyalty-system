@@ -127,14 +127,14 @@ describe('живой Ads-журнал', () => {
 })
 
 describe('реферальное начисление', () => {
-  test('передаёт обычный предмет пригласившему один раз и резервирует 2500 копеек', () => {
+  test('передаёт обычный предмет пригласившему один раз и резервирует 250 копеек', () => {
     const { store, event, receipt } = referralScenario()
     const before = store.profiles[prepared.profile_id]
     const first = applyReferralReward(store, profile.profile_id, event, receipt, nowMs)
     expect(first.reason).toBe('referral_reward_issued')
     expect(first.store.referral_awards).toHaveLength(1)
     expect(first.store.profiles[prepared.profile_id].profile.inventory.find((entry) => entry.item_id === 'club-toaster')?.quantity).toBe(2)
-    expect(first.store.profiles[prepared.profile_id].budget.coupon_reserved_kopecks - before.budget.coupon_reserved_kopecks).toBe(2500)
+    expect(first.store.profiles[prepared.profile_id].budget.coupon_reserved_kopecks - before.budget.coupon_reserved_kopecks).toBe(250)
     expect(first.store.profiles[profile.profile_id].profile.referral.inviter_rewards_in_window).toBe(1)
     const replay = applyReferralReward(first.store, profile.profile_id, event, receipt, nowMs + 1)
     expect(replay.reason).toBe('referral_already_issued')

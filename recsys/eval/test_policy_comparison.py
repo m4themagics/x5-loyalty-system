@@ -105,13 +105,15 @@ class PolicyComparisonTest(unittest.TestCase):
         self.assertGreater(broad["offers"], sponsored["offers"])
         self.assertGreater(sponsored["refusal_reasons"].get("funding_gate", 0), 0)
 
-    def test_full_catalog_funds_an_advertiser_in_every_game_category(self):
-        """Обратная сторона: на полном каталоге гейт финансирования не должен быть узким местом."""
+    def test_advertiser_coverage_is_a_declared_assumption(self):
+        """Каталог кампаний покрывает не весь ассортимент, поэтому гейт финансирования ограничивает охват."""
         value = scenario()
         sponsored = simulate.run_scenario(value, policy_name="sponsored_onboarding")
+        broad = simulate.run_scenario(value, policy_name="personalized_broad")
 
-        self.assertEqual(sponsored["refusal_reasons"].get("ads_no_eligible_campaign", 0), 0)
-        self.assertEqual(sponsored["refusal_reasons"].get("funding_gate", 0), 0)
+        self.assertGreater(sponsored["refusal_reasons"].get("ads_no_eligible_campaign", 0), 0)
+        self.assertLess(sponsored["served_users"], value["users"] // 2)
+        self.assertGreater(broad["served_users"], sponsored["served_users"])
 
     def test_evaluation_funding_override_does_not_change_runtime_policy(self):
         self.assertEqual(load_policy()["first_cycle_funding_policy"], "advertiser_only")
@@ -162,7 +164,7 @@ class PolicyComparisonTest(unittest.TestCase):
         value = scenario()
         value["budget"]["coupon_reserved_kopecks"] = 12000
         result = simulate.run_scenario(value, policy_name="sponsored_onboarding")
-        opening = 12000 + result["initial_item_instances"] * 2500
+        opening = 12000 + result["initial_item_instances"] * 250
         ending = result["final_budget"]["coupon_reserved_kopecks"]
         self.assertEqual(result["opening_coupon_liability_kopecks"], opening)
         self.assertEqual(result["ending_coupon_liability_kopecks"], ending)

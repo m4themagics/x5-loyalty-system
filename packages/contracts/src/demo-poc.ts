@@ -15,8 +15,8 @@ import { z } from 'zod'
 export const DEMO_CONTRACT_VERSION = 2
 
 export const DEMO_CRAFT_SIZE = 4
-export const DEMO_COUPON_MAX_KOPECKS = 10_000
-export const DEMO_INSTANCE_RESERVE_KOPECKS = 2_500
+export const DEMO_COUPON_MAX_KOPECKS = 1_000
+export const DEMO_INSTANCE_RESERVE_KOPECKS = 250
 export const DEMO_QUALIFICATION_WINDOW_DAYS = 7
 export const DEMO_AVATAR_MAX_LEVEL = 7
 export const DEMO_RANKING_WINDOW_DAYS = 28
@@ -160,8 +160,7 @@ export const demoActiveCouponSchema = z
     coupon_id: identifierSchema,
     recipe_id: identifierSchema.nullable(),
     percent: z.number().int().positive().max(18),
-    // Ранее выданные купоны сохраняют свой максимум при обновлении демо.
-    max_kopecks: z.union([z.literal(1_000), z.literal(DEMO_COUPON_MAX_KOPECKS)]),
+    max_kopecks: z.literal(DEMO_COUPON_MAX_KOPECKS),
     redeemed_kopecks: kopecksSchema.nullable(),
     created_at_ms: timestampSchema,
   })
