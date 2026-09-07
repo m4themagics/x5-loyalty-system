@@ -16,12 +16,17 @@ from . import ollama, yandexgpt
 
 SYSTEM_PROMPT = (
     "Ты придумываешь короткий титул игрока для программы лояльности «X5 Чекпоинт». "
-    "Титул описывает собранную коллекцию продуктовых предметов: не более трёх слов, "
-    "без цифр, без денег, без скидок и без обещаний. "
+    "Титул — это звание, которое обобщает собранную коллекцию: «Хлебный барон», "
+    "«Кофейный алхимик», «Король завтрака». "
+    "Запрещено перечислять предметы или категории: «Тостер, кувшин, завтрак» — "
+    "это список, а не титул. Не более трёх слов, без запятых, без цифр, без денег, "
+    "без скидок и без обещаний. "
     "Ответь строго одним JSON-объектом с единственным полем title, без markdown."
 )
 
 MAX_TITLE_LENGTH = 28
+WORD_PATTERN = re.compile(r"[\w-]+", re.UNICODE)
+ENUMERATION_PATTERN = re.compile(r"[,;]|\s/\s")
 FORBIDDEN_PATTERN = re.compile(
     r"\d|₽|руб|скидк|процент|%|бесплатн|подар|выигр|приз|гарант|кэшбэк|кешбэк",
     re.IGNORECASE,
@@ -54,15 +59,15 @@ def build_title(profile: dict[str, Any], game: dict[str, Any]) -> tuple[dict[str
     if not isinstance(draft, dict) or set(draft) != {"title"}:
         return {**template, "source": "fallback", "violations": ["unexpected_title_field"]}, "llm_contract_violation"
 
-    violations = check(draft.get("title"))
+    violations = check(draft.get("title"), facts)
     if violations:
         return {**template, "source": "fallback", "violations": violations}, "llm_contract_violation"
 
     return {**template, "title": draft["title"].strip(), "source": "llm", "violations": []}, None
 
 
-def check(title: Any) -> list[str]:
-    """Титул описывает коллекцию и ничего не обещает."""
+def check(title: Any, facts: dict[str, Any] | None = None) -> list[str]:
+    """Титул описывает коллекцию, ничего не обещает и не пересказывает её состав."""
     if not isinstance(title, str) or not title.strip():
         return ["title_empty"]
 
@@ -74,7 +79,28 @@ def check(title: Any) -> list[str]:
         violations.append("title_too_many_words")
     if FORBIDDEN_PATTERN.search(value):
         violations.append("title_mentions_money_or_promise")
+    if ENUMERATION_PATTERN.search(value):
+        violations.append("title_is_enumeration")
+    if facts is not None and _repeats_collection(value, facts):
+        violations.append("title_repeats_collection")
     return violations
+
+
+def _repeats_collection(value: str, facts: dict[str, Any]) -> bool:
+    """
+    Модель охотно отвечает списком собранного: «Тостер, кувшин, завтрак». Формально это
+    три слова без денег, поэтому прежние правила такой ответ пропускали. Титул считается
+    пересказом, если хотя бы два его слова взяты из названий предметов или категорий.
+    """
+    source = " ".join(facts.get("item_names", []) + facts.get("top_categories", []))
+    known = {_stem(word) for word in WORD_PATTERN.findall(source.lower()) if len(word) > 3}
+    used = [_stem(word) for word in WORD_PATTERN.findall(value.lower()) if len(word) > 3]
+    return sum(stem in known for stem in used) >= 2
+
+
+def _stem(word: str) -> str:
+    """Грубая нормализация окончаний: «кувшин» и «кувшины» — одно слово."""
+    return word[:-2] if len(word) > 6 else word[:-1] if len(word) > 4 else word
 
 
 def collect_facts(profile: dict[str, Any], game: dict[str, Any]) -> dict[str, Any]:

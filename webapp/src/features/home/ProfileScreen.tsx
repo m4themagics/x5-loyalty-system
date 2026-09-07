@@ -270,6 +270,7 @@ export function ProfileScreen() {
   return (
     <main className="profile-screen" aria-label="Профиль">
       <ProfileHeader
+        profileLabel={demoState?.profile.label ?? 'Профиль'}
         level={level}
         savingsKopecks={savings}
         activeDiscount={activeDiscount}

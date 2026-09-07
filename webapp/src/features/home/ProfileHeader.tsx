@@ -1,6 +1,6 @@
 import { Typography } from '@/components/typography'
 
-import { formatRubles } from './demo-format'
+import { formatRubles, profileInitial, shortProfileName } from './demo-format'
 import { type CharacterMood, ProfileCharacter } from './ProfileCharacter'
 import { ActiveDiscountBadge } from './ProfileDiscount'
 import type { CraftedDiscount } from './profile-discount-crafting'
@@ -13,6 +13,7 @@ const AVATAR_MAX_LEVEL = 7
  * Она не меняется при переключении вкладок, поэтому уровень и экономия всегда на виду.
  */
 export function ProfileHeader({
+  profileLabel,
   level,
   savingsKopecks,
   activeDiscount,
@@ -21,6 +22,7 @@ export function ProfileHeader({
   onOpenDiscount,
   onOpenTrade,
 }: {
+  profileLabel: string
   level: number
   savingsKopecks: number
   activeDiscount: CraftedDiscount | null
@@ -34,6 +36,14 @@ export function ProfileHeader({
       <Typography as="h1" variant="h1" className="profile-title">
         Профиль
       </Typography>
+      <div className="profile-identity">
+        <Typography as="span" variant="body" className="profile-avatar" aria-hidden="true">
+          {profileInitial(profileLabel)}
+        </Typography>
+        <Typography as="span" variant="bodyXs" className="profile-identity-name">
+          {shortProfileName(profileLabel)}
+        </Typography>
+      </div>
       <ProfileCharacter mood={characterMood} wornItemIds={wornItemIds} />
       <button
         aria-label="Открыть обмен предметами"

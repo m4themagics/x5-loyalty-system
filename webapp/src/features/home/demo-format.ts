@@ -32,3 +32,18 @@ export function formatDaysLeft(days: number): string {
 export function formatFailure(failure: DemoApiFailure): string {
   return `Задание временно недоступно (${failure.code}).`
 }
+
+/**
+ * Короткое имя синтетического профиля для шапки. Полная метка объясняет назначение профиля
+ * («Показательный профиль: три предмета набора и дубликат для обмена») и в круг не помещается,
+ * поэтому берётся её начало до первого пояснения.
+ */
+export function shortProfileName(label: string): string {
+  const head = label.split(/[:,(]/)[0].trim()
+  return head.length === 0 ? 'Профиль' : head
+}
+
+/** Плейсхолдер аватара: первая буква имени, пока настоящей фотографии нет. */
+export function profileInitial(label: string): string {
+  return shortProfileName(label).charAt(0).toUpperCase()
+}

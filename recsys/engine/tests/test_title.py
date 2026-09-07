@@ -32,6 +32,18 @@ class TitleValidatorTest(unittest.TestCase):
     def test_empty_title_is_rejected(self) -> None:
         self.assertEqual(check("   "), ["title_empty"])
 
+    def test_rejects_a_list_of_items_instead_of_a_title(self) -> None:
+        facts = {"item_names": ["Клубный тостер", "Молочный кувшин", "Сковорода завтрака"],
+                 "top_categories": ["Хлеб и выпечка"]}
+        self.assertIn("title_is_enumeration", check("Тостер, кувшин, завтрак", facts))
+        self.assertIn("title_repeats_collection", check("Тостер кувшин завтрак", facts))
+
+    def test_a_real_title_over_the_same_collection_passes(self) -> None:
+        facts = {"item_names": ["Клубный тостер", "Молочный кувшин", "Сковорода завтрака"],
+                 "top_categories": ["Хлеб и выпечка"]}
+        self.assertEqual(check("Хлебный барон", facts), [])
+        self.assertEqual(check("Король завтрака", facts), [])
+
 
 class TitleTemplateTest(unittest.TestCase):
     def test_completed_set_wins_over_categories(self) -> None:

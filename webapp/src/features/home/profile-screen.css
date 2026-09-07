@@ -12,9 +12,45 @@
   gap: 12px;
   padding: 62px 16px 14px;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 18% 30%, rgb(185 232 245 / 85%) 0 28px, transparent 29px),
-    linear-gradient(180deg, #eefaff 0%, #fff 54%);
+  background: linear-gradient(180deg, #eefaff 0%, #fff 54%);
+}
+
+/* Раньше здесь был декоративный кружок в фоне, который читался как пустой аватар. */
+.profile-identity {
+  position: absolute;
+  z-index: 2;
+  top: 58px;
+  left: 16px;
+  display: grid;
+  width: 108px;
+  justify-items: center;
+  gap: 4px;
+}
+
+.profile-avatar[data-slot='typography'] {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #b9e8f5;
+  color: #17607a;
+  font-family: 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 900;
+  box-shadow: 0 4px 10px rgb(30 90 110 / 16%);
+}
+
+.profile-identity-name[data-slot='typography'] {
+  color: #4a5349;
+  line-height: 1.15;
+  text-align: center;
+  /* Перенос только по пробелам: «Показательны/й профиль» читался как опечатка. */
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
 }
 
 .profile-hero::after {
