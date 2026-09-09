@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 import { expect, test, type Page } from '@playwright/test'
@@ -11,6 +11,8 @@ import { dismissLoginDay, openTab, prepareLoginBox, putItemIntoDiscountSlot } fr
  * from lagging behind the code.
  */
 const raw = fileURLToPath(new URL('../../e2e/.artifacts/docs-shots/raw/', import.meta.url))
+const demoStateKey = 'pyaterochka_demo_challenge_state'
+const activeDiscountStorageKey = 'pyaterochka_profile_active_discount'
 mkdirSync(raw, { recursive: true })
 
 const shot = (page: Page, name: string) =>
@@ -21,6 +23,39 @@ async function openProfile(page: Page) {
   await page.getByRole('button', { name: 'Profile', exact: true }).click()
   await dismissLoginDay(page)
   await expect(page.getByRole('heading', { level: 1, name: 'Profile' })).toBeVisible()
+}
+
+/** Documentation-only setup: give the active synthetic profile exactly the items being shown. */
+async function seedInventory(page: Page, itemIds: readonly string[]) {
+  await page.evaluate(({ storageKey, discountKey, ids }) => {
+    const browser = globalThis as unknown as {
+      localStorage: {
+        getItem: (key: string) => string | null
+        removeItem: (key: string) => void
+        setItem: (key: string, value: string) => void
+      }
+    }
+    const rawStore = browser.localStorage.getItem(storageKey)
+    if (rawStore === null) throw new Error('Demo store is not initialized')
+    const store = JSON.parse(rawStore) as {
+      active_profile_id: string
+      profiles: Record<string, {
+        profile: {
+          active_coupon: unknown
+          inventory: { item_id: string; quantity: number }[]
+        }
+      }>
+    }
+    const quantities = new Map<string, number>()
+    ids.forEach((id) => quantities.set(id, (quantities.get(id) ?? 0) + 1))
+    store.profiles[store.active_profile_id].profile.inventory = [...quantities]
+      .map(([item_id, quantity]) => ({ item_id, quantity }))
+    store.profiles[store.active_profile_id].profile.active_coupon = null
+    browser.localStorage.setItem(storageKey, JSON.stringify(store))
+    browser.localStorage.removeItem(discountKey)
+  }, { storageKey: demoStateKey, discountKey: activeDiscountStorageKey, ids: itemIds })
+  await page.reload()
+  await openProfile(page)
 }
 
 /**
@@ -97,25 +132,73 @@ test('captures opening the box', async ({ page }) => {
   await shot(page, 'mascot')
 })
 
-test('captures crafting a discount', async ({ page }) => {
+test('captures dressing the mascot', async ({ page }) => {
   await openProfile(page)
+  await seedInventory(page, ['baker-apron', 'chef-knife'])
   await openTab(page, 'Collection')
-  await expect(page.getByRole('button', { name: 'Empty discount slot 1' })).toBeVisible()
-  await page.waitForTimeout(400)
+
+  await record(page, 'outfit', async () => {
+    for (const itemName of ["Baker's Apron", "Chef's Knife"]) {
+      const item = page.getByRole('button', { name: new RegExp(`^${itemName}, `) })
+      await item.scrollIntoViewIfNeeded()
+      await page.waitForTimeout(500)
+      await item.click()
+      const dialog = page.getByRole('dialog', { name: `Item "${itemName}"` })
+      await expect(dialog).toBeVisible()
+      await page.waitForTimeout(700)
+      await dialog.getByRole('button', { name: 'Wear', exact: true }).click()
+      await page.evaluate(() => {
+        const browser = globalThis as unknown as {
+          scrollTo: (options: { top: number; behavior: 'smooth' }) => void
+        }
+        browser.scrollTo({ top: 0, behavior: 'smooth' })
+      })
+      await expect(page.locator('.profile-character[data-dressed="true"]')).toBeVisible()
+      await page.waitForTimeout(1_100)
+    }
+    await shot(page, 'outfit')
+  })
+})
+
+test('captures multiple user-chosen discount recipes', async ({ page }) => {
+  await openProfile(page)
+  const recipes = [
+    {
+      title: 'Good Morning',
+      items: ['Clubhouse Toaster', 'Milk Pitcher', 'Travel Mug', 'Breakfast Pan'],
+      itemIds: ['club-toaster', 'milk-pitcher', 'travel-mug', 'breakfast-pan'],
+    },
+    {
+      title: 'Asian Dinner',
+      items: ['Sushi Kit', 'Dragon Wok', 'Royal Cauldron', "Chef's Knife"],
+      itemIds: ['sushi-kit', 'dragon-wok', 'royal-cauldron', 'chef-knife'],
+    },
+    {
+      title: 'Sweet Break',
+      items: ["Baker's Apron", 'Barista Machine', 'Crystal Ice Cream Maker', 'Fruit Basket'],
+      itemIds: ['baker-apron', 'barista-machine', 'crystal-icecream-maker', 'fruit-basket'],
+    },
+  ] as const
 
   await record(page, 'craft', async () => {
-    const items = ['Clubhouse Toaster', 'Clubhouse Toaster', 'Milk Pitcher', 'Breakfast Pan']
-    for (const [index, itemName] of items.entries()) {
-      await putItemIntoDiscountSlot(page, itemName, index + 1)
-      await page.waitForTimeout(200)
+    for (const [recipeIndex, recipe] of recipes.entries()) {
+      await seedInventory(page, recipe.itemIds)
+      await openTab(page, 'Collection')
+      await expect(page.getByRole('button', { name: 'Empty discount slot 1' })).toBeVisible()
+      for (const [index, itemName] of recipe.items.entries()) {
+        await putItemIntoDiscountSlot(page, itemName, index + 1)
+        await page.waitForTimeout(140)
+      }
+      await expect(page.getByText(recipe.title, { exact: true })).toBeVisible()
+      await page.waitForTimeout(650)
+      if (recipeIndex === 0) await shot(page, 'collection')
+      await page.getByRole('button', { name: /^Create a \d+% discount$/ }).click()
+      const discount = page.getByRole('dialog', { name: 'Crafted discount' })
+      await expect(discount).toBeVisible()
+      await expect(discount.getByText(recipe.title, { exact: true })).toBeVisible()
+      await page.waitForTimeout(1_050)
+      if (recipeIndex === 0) await shot(page, 'discount')
     }
-    await page.waitForTimeout(600)
-    // Four filled slots: the state before spending, which is what the documentation shows.
-    await shot(page, 'collection')
-    await page.getByRole('button', { name: /^Create a \d+% discount$/ }).click()
-    await expect(page.getByRole('dialog', { name: 'Crafted discount' })).toBeVisible()
-    await page.waitForTimeout(1_400)
-    await shot(page, 'discount')
   })
 })
 
@@ -124,6 +207,7 @@ type Frame = { data: Buffer; ts: number }
 /** Records the screen through CDP: Playwright video is too soft an image for a GIF. */
 async function record(page: Page, name: string, run: () => Promise<void>) {
   const target = `${raw}frames-${name}/`
+  rmSync(target, { recursive: true, force: true })
   mkdirSync(target, { recursive: true })
   const client = await page.context().newCDPSession(page)
   const frames: Frame[] = []

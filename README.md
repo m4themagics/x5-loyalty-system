@@ -28,13 +28,19 @@ A playable retail loyalty system that turns purchase history into one funded, pe
 
 <div align="center">
 
-| Open a reward box | Craft a discount |
-| :---: | :---: |
-| <img src="docs/assets/screenshots/box.gif" width="280" alt="Shaking the reward box and revealing an item" /> | <img src="docs/assets/screenshots/craft.gif" width="280" alt="Combining four items into a discount" /> |
+| Open a reward box | Style your mascot | Build different discounts |
+| :---: | :---: | :---: |
+| <img src="docs/assets/screenshots/box.gif" width="250" alt="Shaking the reward box and revealing an item" /> | <img src="docs/assets/screenshots/outfit.gif" width="250" alt="Equipping the mascot with a baker's apron and chef's knife" /> | <img src="docs/assets/screenshots/craft.gif" width="250" alt="Choosing items to craft several themed discounts" /> |
 
-**Reward box → digital item → collection → combine four items → discount**
+**Collect items → choose what to wear → combine any four items → craft a personal discount**
 
 </div>
+
+This is not a single fixed recipe. The player chooses any four owned item instances: **seven
+themed recipes** create discounts for different shopping categories and add a synergy bonus,
+while a mixed combination still creates a discount based on its strongest item. The Baker's
+Apron and Chef's Knife can also be equipped on the mascot without spending them or increasing
+the discount value.
 
 ## Problem
 
@@ -107,6 +113,11 @@ The demo interface, captions, and maintained technical documentation are in Engl
 | :---: | :---: | :---: |
 | <img src="docs/assets/screenshots/collection.webp" width="240" alt="Item collection and four crafting slots" /> | <img src="docs/assets/screenshots/friends.webp" width="240" alt="Collection titles and friends' progress" /> | <img src="docs/assets/screenshots/discount.webp" width="240" alt="Crafted discount and demonstration barcode" /> |
 | 24 items, three rarities, seven recipes | Rank by collected sets and items | 5–17% discount and demo EAN-13 barcode |
+
+| Mascot outfit | Retailer evaluation | Reward reaction |
+| :---: | :---: | :---: |
+| <img src="docs/assets/screenshots/outfit.webp" width="240" alt="Mascot wearing the baker's apron and chef's knife" /> | <img src="docs/assets/screenshots/x5-panel.webp" width="240" alt="Retailer evaluation panel" /> | <img src="docs/assets/screenshots/mascot.webp" width="240" alt="Mascot celebrating a collected reward" /> |
+| Wear collected cosmetics without spending them | Decision, auction, funding, and synthetic evidence | Visible feedback after collection and crafting |
 
 </div>
 
