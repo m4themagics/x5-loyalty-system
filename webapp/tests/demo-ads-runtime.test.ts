@@ -98,10 +98,10 @@ function runEngine<T>(command: 'decision' | 'event', payload: object): T {
 }
 
 /**
- * Состояние Ads из каталога. `exhausted` обнуляет бюджеты всех кампаний: это единственный
- * честный способ получить «нет рекламного финансирования» теперь, когда каталог покрывает
- * все игровые категории. Раньше для этого брали категорию без кампаний, но такое условие
- * проверяло полноту каталога, а не правило финансирования.
+ * Ads state from the catalog. `exhausted` zeroes every campaign budget: that is the only honest
+ * way to reach "no advertiser funding" now that the catalog covers every game category. This used
+ * to be done with a category that had no campaigns, but such a condition tested catalog
+ * completeness rather than the funding rule.
  */
 function adsState(options: { exhausted?: boolean } = {}): RuntimeAds {
   const catalog = readJson<{ campaigns: Array<{
@@ -147,7 +147,7 @@ test('the first physical promise is published only with advertiser funding', () 
     returned: false,
     lines: [{
       sku_id: 'sku-apple-1kg',
-      category: 'Фрукты',
+      category: 'Fruit',
       quantity: 1,
       paid: true,
       amount_kopecks: 8_900,

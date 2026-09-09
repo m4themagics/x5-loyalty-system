@@ -10,12 +10,12 @@ const POSE_SRC = {
 } as const
 
 /**
- * Косметика: каждая комбинация нарисована целой фигурой, а не накладкой поверх персонажа.
- * Так предмет всегда сидит правильно и рука держит его как надо — накладки давали
- * вторую лапу и обрывки контура.
+ * Cosmetics: every combination is drawn as a complete figure rather than an overlay on the
+ * character. That way an item always sits correctly and the hand holds it properly — overlays
+ * produced a second paw and broken outlines.
  *
- * Порядок важен: сначала самый полный набор. Одежда ничего не добавляет к скидке,
- * это видимый статус, а не награда.
+ * Order matters: the fullest outfit comes first. Clothing adds nothing to the discount; it is
+ * visible status, not a reward.
  */
 const OUTFITS = [
   {
@@ -40,8 +40,8 @@ const BLINK_PAUSE_MAX_MS = 6_400
 const BLINK_HOLD_MS = 150
 
 /**
- * У каждой одежды свои кадры покоя и радости. Раздевать персонажа ради позы нельзя:
- * это выглядит как сбой. Отдельного кадра удивления в одежде нет — там остаётся спокойный.
+ * Every outfit has its own idle and happy frames. Undressing the character to reach a pose is
+ * not allowed: it looks like a glitch. There is no surprised frame for outfits, so idle stays.
  */
 function findOutfit(wornItemIds: readonly string[]) {
   const worn = new Set(wornItemIds)
@@ -49,8 +49,8 @@ function findOutfit(wornItemIds: readonly string[]) {
 }
 
 /**
- * Маскот в шапке профиля. Поза отражает то, что сейчас происходит с наградой, а моргание
- * работает только в спокойном состоянии без одежды: моргающего кадра в одежде нет.
+ * The mascot in the profile header. The pose reflects what is happening with the reward, and
+ * blinking only runs in the plain idle state: there is no blinking frame for outfits.
  */
 export function ProfileCharacter({
   mood,
@@ -81,7 +81,7 @@ export function ProfileCharacter({
     }
 
     timer = window.setTimeout(closeEyes, pause())
-    // Уходя из спокойной позы, гасим незакрытое моргание, чтобы оно не всплыло при возврате.
+    // Leaving the idle pose clears a pending blink so it does not resurface on return.
     return () => {
       window.clearTimeout(timer)
       setIsBlinking(false)
@@ -94,7 +94,7 @@ export function ProfileCharacter({
 
   return (
     <div className="profile-character" data-mood={mood} data-dressed={outfit !== null}>
-      <img alt="Игровой персонаж профиля" className="profile-character-pose" src={src} />
+      <img alt="Profile game character" className="profile-character-pose" src={src} />
     </div>
   )
 }

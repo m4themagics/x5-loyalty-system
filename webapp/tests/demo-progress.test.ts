@@ -45,12 +45,12 @@ const referralBase: DemoProfileSnapshot['referral'] = {
   inviter_rewards_in_window: 0,
 }
 
-describe('снимок игры для движка', () => {
-  test('совпадает с зафиксированным эталоном', () => {
+describe('game snapshot for the engine', () => {
+  test('matches the frozen reference', () => {
     expect(buildDemoGameSnapshot()).toEqual(challenge)
   })
 
-  test('признаки подготовленного профиля показывают три совпадения «Доброго утра»', () => {
+  test('the seeded profile features show three "Good Morning" matches', () => {
     const features = buildDemoGameFeatures(fromDemoInventory(seeded.inventory))
     const breakfast = features.recipe_progress.find((progress) => progress.recipe_id === 'breakfast')
     expect(breakfast?.matched_count).toBe(3)
@@ -60,18 +60,18 @@ describe('снимок игры для движка', () => {
   })
 })
 
-describe('аватар и рейтинг', () => {
-  test('уровень считает только различные рецепты и не превышает семь', () => {
+describe('avatar and ranking', () => {
+  test('the level counts distinct recipes only and never exceeds seven', () => {
     expect(avatarLevel([])).toBe(0)
     expect(avatarLevel(['breakfast', 'breakfast'])).toBe(1)
     expect(avatarLevel(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])).toBe(7)
   })
 
-  test('равный прогресс делит одно место, технический ID задаёт только порядок', () => {
+  test('equal progress shares one rank, the technical ID only fixes the order', () => {
     const ranked = rankFriendsByProgress([
-      { profile_id: 'b', alias: 'Б', recipes_completed: 1, items_collected: 4 },
-      { profile_id: 'a', alias: 'А', recipes_completed: 1, items_collected: 4 },
-      { profile_id: 'c', alias: 'В', recipes_completed: 2, items_collected: 1 },
+      { profile_id: 'b', alias: 'B', recipes_completed: 1, items_collected: 4 },
+      { profile_id: 'a', alias: 'A', recipes_completed: 1, items_collected: 4 },
+      { profile_id: 'c', alias: 'C', recipes_completed: 2, items_collected: 1 },
     ])
     expect(ranked.map((entry) => [entry.profile_id, entry.rank])).toEqual([
       ['c', 1],
@@ -80,59 +80,59 @@ describe('аватар и рейтинг', () => {
     ])
   })
 
-  test('деньги в рейтинг не попадают: больше предметов при равных наборах — выше место', () => {
+  test('money never enters the ranking: more items at equal sets means a higher rank', () => {
     const ranked = rankFriendsByProgress([
-      { profile_id: 'a', alias: 'А', recipes_completed: 1, items_collected: 2 },
-      { profile_id: 'b', alias: 'Б', recipes_completed: 1, items_collected: 6 },
+      { profile_id: 'a', alias: 'A', recipes_completed: 1, items_collected: 2 },
+      { profile_id: 'b', alias: 'B', recipes_completed: 1, items_collected: 6 },
     ])
     expect(ranked.map((entry) => entry.profile_id)).toEqual(['b', 'a'])
   })
 })
 
-describe('реферальный расчёт', () => {
-  test('первая подходящая покупка в окне даёт одну награду', () => {
+describe('referral calculation', () => {
+  test('the first qualifying purchase inside the window gives one reward', () => {
     expect(referralOutcome(referralBase, 'invited-1', NOW_MS).eligible).toBe(true)
   })
 
-  test('самоприглашение исключено', () => {
+  test('self-invitation is excluded', () => {
     const referral = { ...referralBase, invited_by_profile_id: 'invited-1' }
     expect(referralOutcome(referral, 'invited-1', NOW_MS).reason).toBe('referral_self_invite')
   })
 
-  test('регистрация без квалифицирующей покупки не начисляет', () => {
+  test('a signup without a qualifying purchase grants nothing', () => {
     expect(referralOutcome(referralBase, 'invited-1', null).reason)
       .toBe('referral_no_qualifying_purchase')
   })
 
-  test('прежний покупатель не является новым участником', () => {
+  test('an existing customer is not a new member', () => {
     const referral = { ...referralBase, had_confirmed_purchase_before_invite: true }
     expect(referralOutcome(referral, 'invited-1', NOW_MS).reason).toBe('referral_existing_customer')
   })
 
-  test('покупка после семи дней не закрывает окно', () => {
+  test('a purchase after seven days does not close the window', () => {
     const late = referralBase.invited_at_ms! + 8 * DAY_MS
     expect(referralOutcome(referralBase, 'invited-1', late).reason).toBe('referral_window_expired')
   })
 
-  test('повторное начисление пригласившему за окно запрещено', () => {
+  test('a second grant to the inviter inside one window is forbidden', () => {
     const referral = { ...referralBase, inviter_rewards_in_window: 1 }
     expect(referralOutcome(referral, 'invited-1', NOW_MS).reason).toBe('referral_cap_reached')
   })
 
-  test('квалифицирующей считается только выданная награда', () => {
+  test('only an issued reward counts as qualifying', () => {
     expect(firstQualifyingPurchaseMs({ ...seeded, issued_rewards: [] })).toBeNull()
     expect(firstQualifyingPurchaseMs(seeded)).toBe(1_786_000_000_000)
   })
 })
 
-describe('тестовые чеки', () => {
+describe('test receipts', () => {
   const target = {
     challenge_id: 'chl_test',
     challenge_version: 1,
-    title: 'Тест',
+    title: 'Test',
     recipe_goal_id: 'breakfast',
     target: {
-      category: 'Молочные продукты',
+      category: 'Dairy',
       sku_ids: ['sku-milk-1l'],
       quantity: 1,
       paid_only: true as const,
@@ -153,54 +153,54 @@ describe('тестовые чеки', () => {
     },
   }
 
-  test('подходящий чек содержит оплаченную и бесплатную строку', () => {
+  test('a qualifying receipt holds a paid line and a free line', () => {
     const receipt = buildDemoReceipt('qualifying', target, NOW_MS, 'rcp-1')
     expect(receipt.lines.filter((line) => line.paid)).toHaveLength(1)
     expect(receipt.lines.some((line) => !line.paid)).toBe(true)
   })
 
-  test('чек с одной бесплатной строкой не содержит оплаченных', () => {
+  test('a receipt with one free line holds no paid lines', () => {
     const receipt = buildDemoReceipt('free_line', target, NOW_MS, 'rcp-2')
     expect(receipt.lines.every((line) => !line.paid)).toBe(true)
   })
 
-  test('поздний чек оформлен после срока задания', () => {
+  test('a late receipt is issued after the challenge deadline', () => {
     const receipt = buildDemoReceipt('late', target, NOW_MS, 'rcp-3')
     expect(receipt.purchased_at_ms).toBeGreaterThan(target.target.deadline_ms)
   })
 
-  test('чек с возвратом помечен возвратом', () => {
+  test('a returned receipt is marked as returned', () => {
     expect(buildDemoReceipt('returned', target, NOW_MS, 'rcp-4').returned).toBe(true)
   })
 })
 
-describe('ближайший набор', () => {
+describe('closest set', () => {
   const recipes = [
-    { id: 'breakfast', title: 'Доброе утро', itemIds: ['club-toaster', 'milk-pitcher', 'travel-mug', 'breakfast-pan'] },
-    { id: 'fresh', title: 'Свежий выбор', itemIds: ['fruit-basket', 'vegetable-crate', 'power-blender', 'freshness-dome'] },
+    { id: 'breakfast', title: 'Good Morning', itemIds: ['club-toaster', 'milk-pitcher', 'travel-mug', 'breakfast-pan'] },
+    { id: 'fresh', title: 'Fresh Pick', itemIds: ['fruit-basket', 'vegetable-crate', 'power-blender', 'freshness-dome'] },
   ]
 
-  test('выбирает набор с наибольшим числом собранных предметов', () => {
+  test('picks the set with the most collected items', () => {
     const closest = closestRecipe(
       [{ item_id: 'club-toaster', quantity: 2 }, { item_id: 'milk-pitcher', quantity: 1 }, { item_id: 'fruit-basket', quantity: 1 }],
       recipes,
       4,
     )
-    expect(closest).toEqual({ recipe_id: 'breakfast', title: 'Доброе утро', owned: 2, required: 4 })
+    expect(closest).toEqual({ recipe_id: 'breakfast', title: 'Good Morning', owned: 2, required: 4 })
   })
 
-  test('дубликаты не считаются вторым предметом набора', () => {
+  test('duplicates do not count as a second item of the set', () => {
     const closest = closestRecipe([{ item_id: 'club-toaster', quantity: 5 }], recipes, 4)
     expect(closest?.owned).toBe(1)
   })
 
-  test('пустая коллекция не имеет ближайшего набора', () => {
+  test('an empty collection has no closest set', () => {
     expect(closestRecipe([], recipes, 4)).toBeNull()
   })
 })
 
-describe('награда пригласившему', () => {
-  // Экран показывает результат тому, кто позвал: оцениваем приглашённого, а не сам профиль.
+describe('reward for the inviter', () => {
+  // The screen shows the result to the inviter: we evaluate the invitee, not the profile itself.
   const invitee = (
     over: Partial<DemoProfileSnapshot['referral']>,
     issuedAtMs: number | null,
@@ -218,23 +218,23 @@ describe('награда пригласившему', () => {
     referral: { ...referralBase, invited_by_profile_id: null, invited_at_ms: null },
   }
 
-  test('без приглашённых профилей награда не положена', () => {
+  test('with no invited profiles no reward is due', () => {
     expect(inviterReferralOutcome([noInvites], 'inviter').reason).toBe('referral_not_invited')
   })
 
-  test('приглашённый без покупки оставляет награду в ожидании', () => {
+  test('an invitee without a purchase leaves the reward pending', () => {
     const outcome = inviterReferralOutcome([invitee({}, null)], 'inviter')
     expect(outcome.eligible).toBe(false)
     expect(outcome.reason).toBe('referral_no_qualifying_purchase')
   })
 
-  test('квалифицирующая покупка приглашённого начисляет награду позвавшему', () => {
+  test('a qualifying purchase by the invitee grants the reward to the inviter', () => {
     const outcome = inviterReferralOutcome([invitee({}, NOW_MS - DAY_MS)], 'inviter')
     expect(outcome.eligible).toBe(true)
     expect(outcome.reason).toBe('referral_reward_due')
   })
 
-  test('чужого приглашённого не засчитываем', () => {
+  test("someone else's invitee does not count", () => {
     expect(inviterReferralOutcome([invitee({ invited_by_profile_id: 'someone-else' }, NOW_MS - DAY_MS)], 'inviter').reason)
       .toBe('referral_not_invited')
   })

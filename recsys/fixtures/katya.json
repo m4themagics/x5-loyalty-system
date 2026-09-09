@@ -1,7 +1,7 @@
 {
   "profile": {
     "customer_id": "u_2087",
-    "display_name": "Катя",
+    "display_name": "Katya",
     "cadence_weeks": 1.2,
     "categories": [
       "dairy",
@@ -81,11 +81,11 @@
   },
   "creative_copy": {
     "decision_id": "dec_2087",
-    "title": "Чекпоинт своей Пятёрочки",
-    "body": "Один визит за семь дней продвинет выбранную цель магазина.",
-    "progress": "Сезон 68 процентов",
-    "cta": "Внести вклад",
-    "sponsored_label": "При поддержке бренда"
+    "title": "Your own Pyaterochka checkpoint",
+    "body": "One visit within seven days advances the chosen store goal.",
+    "progress": "Season 68 percent",
+    "cta": "Contribute",
+    "sponsored_label": "Supported by the brand"
   },
   "route_state": {
     "route_id": "r_2087",

@@ -17,8 +17,8 @@ test('four matching items create a themed discount with a synergy bonus', () => 
   ])
 
   expect(preview).toMatchObject({
-    title: 'Свежий выбор',
-    category: 'Овощи, фрукты и полезные продукты',
+    title: 'Fresh Pick',
+    category: 'Vegetables, fruit and healthy food',
     rarity: 'epic',
     rarityScore: 7,
     synergyBonus: 3,
@@ -35,7 +35,7 @@ test('duplicate items can fill slots but do not fake a recipe synergy', () => {
   ])
 
   expect(preview).toMatchObject({
-    title: 'Скидка на фрукты',
+    title: 'Discount on fruit',
     synergyBonus: 0,
     percent: 5,
   })
@@ -44,7 +44,7 @@ test('duplicate items can fill slots but do not fake a recipe synergy', () => {
 test('crafting guidance names the nearest recipe and useful next items', () => {
   const guidance = getCraftingGuidance(['club-toaster', 'milk-pitcher'])
 
-  expect(guidance.title).toBe('Ближе всего: «Доброе утро»')
+  expect(guidance.title).toBe('Closest set: "Good Morning"')
   expect(guidance.suggestedItemIds).toContain('travel-mug')
   expect(guidance.matchedCount).toBe(2)
 })

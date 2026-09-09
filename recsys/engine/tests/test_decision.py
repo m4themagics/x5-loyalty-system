@@ -1,4 +1,4 @@
-"""Проверки выбора задания: разные истории дают разные решения, отказы объяснимы."""
+"""Challenge-selection checks: different histories give different decisions, refusals explain themselves."""
 import copy
 import json
 import pathlib
@@ -155,7 +155,7 @@ class DecisionTest(unittest.TestCase):
     def test_unknown_categories_only_refuse_because_exploration_is_disabled(self) -> None:
         request = copy.deepcopy(self.empty)
         request["profile"]["receipts"] = [
-            receipt("r1", request["now_ms"] - 2 * DAY_MS, "Бытовая химия")
+            receipt("r1", request["now_ms"] - 2 * DAY_MS, "Household chemicals")
         ]
         response = handle_decision(request)
         self.assertEqual(response["status"], "no_action")
@@ -165,7 +165,7 @@ class DecisionTest(unittest.TestCase):
     def test_category_without_a_gift_sku_is_rejected_for_the_first_cycle(self) -> None:
         request = copy.deepcopy(self.empty)
         request["profile"]["receipts"] = [
-            receipt("r1", request["now_ms"] - 2 * DAY_MS, "Готовая еда")
+            receipt("r1", request["now_ms"] - 2 * DAY_MS, "Ready Meals")
         ]
         response = handle_decision(request)
         self.assertEqual(response["status"], "no_action")
@@ -225,8 +225,8 @@ class DecisionTest(unittest.TestCase):
         now_ms = self.empty["now_ms"]
         history = PurchaseHistory(
             [
-                receipt("r1", now_ms - DAY_MS, "Молочные продукты"),
-                receipt("r2", now_ms - DAY_MS + 3_600_000, "Молочные продукты"),
+                receipt("r1", now_ms - DAY_MS, "Dairy"),
+                receipt("r2", now_ms - DAY_MS + 3_600_000, "Dairy"),
             ],
             now_ms,
             90,
@@ -237,7 +237,7 @@ class DecisionTest(unittest.TestCase):
     def test_unpaid_lines_never_create_a_purchase_day(self) -> None:
         now_ms = self.empty["now_ms"]
         history = PurchaseHistory(
-            [receipt("r1", now_ms - DAY_MS, "Молочные продукты", paid=False)], now_ms, 90
+            [receipt("r1", now_ms - DAY_MS, "Dairy", paid=False)], now_ms, 90
         )
         self.assertEqual(history.purchase_day_count, 0)
 

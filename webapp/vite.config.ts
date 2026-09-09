@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// Обработчик с runtime-контрактами загружается самим Vite только при запуске dev-сервера.
+// The handler with runtime contracts is loaded by Vite itself only when the dev server starts.
 import { demoApiPlugin } from './demo-api/plugin.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))

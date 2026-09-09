@@ -256,18 +256,20 @@ reported as a success. Strict JSON Schema constrains fields and allowed options,
 not force factually correct answers. Comprehension of three card facts is scored separately
 from subjective willingness to try the product.
 
-The first live run, saved in
-[`results/persona-ux-initial.json`](results/persona-ux-initial.json), produced 15 valid JSON
-responses with incorrect comprehension of the core rules. In the second attempt, with
-separated instructions, Qwen confused field names; see
-[`results/persona-ux-separated-prompt.json`](results/persona-ux-separated-prompt.json).
-The latest saved attempt, [`results/persona-ux.json`](results/persona-ux.json), contains
-**15/15** valid responses. Each of the three facts is correct in **15/15** responses,
-for **45/45** correct facts. However, all 15 intent responses are `try`, including skeptical
-personas. This is a limitation of subjective roleplay with a small model, not evidence of
-broad interest. Valid JSON and “I would try it” responses do not establish real interface
-comprehension or conversion. This is a model-based check of copy and protocol; the number
-of real participants is **0**.
+The reports were re-recorded against the English product copy instead of translating model
+responses after the fact. The initial-copy run in
+[`results/persona-ux-initial.json`](results/persona-ux-initial.json) produced **15/15** valid
+responses with all three facts correct. The no-schema variant in
+[`results/persona-ux-separated-prompt.json`](results/persona-ux-separated-prompt.json) remained
+invalid because Qwen confused field names. The latest structured-output run,
+[`results/persona-ux.json`](results/persona-ux.json), also contains **15/15** valid responses,
+with **45/45** facts correct. This English rerun does not preserve the earlier Russian-copy
+ablation and is not evidence that one language is clearer than another.
+
+All 15 intent responses are `try`, including skeptical personas. This is a limitation of
+subjective roleplay with a small model, not evidence of broad interest. Valid JSON and
+“I would try it” responses do not establish real interface comprehension or conversion.
+This is a model-based check of copy and protocol; the number of real participants is **0**.
 
 [human-protocol.md](human-protocol.md) describes a planned protocol for 5–7 user sessions;
 no observations have been collected. Agent annotations and scenario results remain

@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-28",
-  "label": "Оценочный синтетический профиль 28",
+  "label": "Evaluation synthetic profile 28",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Полезные напитки",
+          "category": "Healthy Drinks",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 10700
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Хлеб, сыр и колбасы",
+          "category": "Bread, Cheese & Deli",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 10700

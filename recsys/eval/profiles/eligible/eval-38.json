@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-38",
-  "label": "Оценочный синтетический профиль 38",
+  "label": "Evaluation synthetic profile 38",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Полезные напитки",
+          "category": "Healthy Drinks",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11700
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Яйца и завтраки",
+          "category": "Eggs & Breakfast",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11700
@@ -42,7 +42,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-2",
-          "category": "Бакалея и консервы",
+          "category": "Groceries & Canned Food",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11700

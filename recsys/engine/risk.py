@@ -1,8 +1,8 @@
-"""Простой объяснимый скоринг риска для синтетических чеков PoC.
+"""Simple explainable risk scoring for the synthetic PoC receipts.
 
-Признаки складываются: общий телефон, устройство или домохозяйство сами по себе не блокируют
-легитимную семью. Порог выбирается по ожидаемому предотвращённому ущербу и стоимости ошибочного
-отказа и задаётся в политике до выдачи, а не подбирается под результат.
+Signals add up: a shared phone, device or household does not block a legitimate family on its
+own. The threshold is chosen from expected prevented loss and the cost of a false block, and it
+is set in the policy before issuing rather than tuned to the result.
 """
 from typing import Any, NamedTuple
 
@@ -19,10 +19,10 @@ class RiskAssessment(NamedTuple):
 
 
 def assess_promise(profile: dict[str, Any]) -> RiskAssessment:
-    """Блокирует явный самореферал до публикации нового обещания.
+    """Blocks an obvious self-referral before a new promise is published.
 
-    Остальные признаки требуют контекста события и оцениваются после чека. Общий девайс или
-    домохозяйство здесь не являются самостоятельным основанием для отказа.
+    The remaining signals need event context and are evaluated after the receipt. A shared device
+    or household is not a standalone reason for refusal here.
     """
     if profile["referral"]["invited_by_profile_id"] == profile["profile_id"]:
         return RiskAssessment("reject", 1.0, ["self_referral"])

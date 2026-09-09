@@ -2,15 +2,15 @@ import { expect, test } from 'bun:test'
 import { profileInitial, shortProfileName } from '../src/features/home/demo-format'
 
 test('the header name drops the explanation that follows the profile kind', () => {
-  expect(shortProfileName('Показательный профиль: три предмета набора и дубликат для обмена'))
-    .toBe('Показательный профиль')
-  expect(shortProfileName('Новый участник, пустой инвентарь (синтетический профиль)'))
-    .toBe('Новый участник')
-  expect(shortProfileName('Аня')).toBe('Аня')
+  expect(shortProfileName('Showcase profile: three items of a set and a duplicate to trade'))
+    .toBe('Showcase profile')
+  expect(shortProfileName('New member, empty inventory (synthetic profile)'))
+    .toBe('New member')
+  expect(shortProfileName('Anna')).toBe('Anna')
 })
 
 test('an empty or punctuation-only label still yields a name and an initial', () => {
-  expect(shortProfileName(': пусто')).toBe('Профиль')
-  expect(profileInitial(': пусто')).toBe('П')
-  expect(profileInitial('Борис')).toBe('Б')
+  expect(shortProfileName(': empty')).toBe('Profile')
+  expect(profileInitial(': empty')).toBe('P')
+  expect(profileInitial('Boris')).toBe('B')
 })

@@ -1,15 +1,16 @@
 import { z } from 'zod'
 
 /**
- * Контракт локального PoC «X5 Чекпоинт»: история покупок -> вычисленное задание -> карточка ->
- * тестовый чек -> обещанные награды -> существующий крафт.
+ * Contract of the local "X5 Checkpoint" PoC: purchase history -> computed challenge -> card ->
+ * test receipt -> promised rewards -> existing crafting.
  *
- * Границы: контракт описывает демонстрационный обмен между webapp (Vite middleware) и движком
- * `recsys/engine` на Python. Он не является серверным реестром прав. Поля в snake_case, потому
- * что вторая сторона — Python и существующий `recsys/schema/action.schema.json`.
+ * Boundaries: the contract describes the demonstration exchange between the webapp (Vite
+ * middleware) and the Python `recsys/engine`. It is not a server-side entitlement ledger. Fields
+ * are snake_case because the other side is Python and the existing
+ * `recsys/schema/action.schema.json`.
  *
- * Деньги — целые копейки. Контракт v2 также переносит локальный снимок рекламных бюджетов,
- * показов и CPA-списаний. Это демонстрационный журнал, а не промышленный биллинг.
+ * Money is integer kopecks. Contract v2 also carries a local snapshot of ad budgets, exposures
+ * and CPA charges. That is a demonstration log, not production billing.
  */
 
 export const DEMO_CONTRACT_VERSION = 2
@@ -22,8 +23,8 @@ export const DEMO_AVATAR_MAX_LEVEL = 7
 export const DEMO_RANKING_WINDOW_DAYS = 28
 
 /**
- * Общий словарь причин. Значение хранится строкой: движок может добавить свою причину,
- * не ломая клиент. Список фиксирует общие формулировки, а не закрытое множество.
+ * Shared vocabulary of reasons. The value is stored as a string: the engine can add its own
+ * reason without breaking the client. The list fixes the shared wording, not a closed set.
  */
 export const DEMO_REASON_CODES = [
   'offer_published',
@@ -66,7 +67,7 @@ const timestampSchema = z.number().int().nonnegative()
 
 export const demoItemRaritySchema = z.enum(['common', 'epic', 'legendary'])
 
-/** Снимок каталога из `webapp/src/features/home`. Python не хранит второй каталог. */
+/** Catalog snapshot from `webapp/src/features/home`. Python keeps no second catalog. */
 export const demoGameItemSchema = z
   .object({
     id: identifierSchema,
@@ -94,8 +95,9 @@ export const demoGameSnapshotSchema = z
   .strict()
 
 /**
- * Игровые признаки считает middleware по тем же TypeScript-модулям. Копия формулы скидки
- * в Python запрещена: движок выбирает задание и предмет, процент считает игра.
+ * The middleware computes game features from the same TypeScript modules. A copy of the discount
+ * formula in Python is forbidden: the engine picks the challenge and the item, the game computes
+ * the percentage.
  */
 export const demoRecipeProgressSchema = z
   .object({
@@ -166,7 +168,7 @@ export const demoActiveCouponSchema = z
   })
   .strict()
 
-/** Задание, уже показанное пользователю. `no_action` его не отменяет. */
+/** A challenge already shown to the user. `no_action` does not cancel it. */
 export const demoOutstandingPromiseSchema = z
   .object({
     challenge_id: identifierSchema,
@@ -195,7 +197,7 @@ export const demoReferralSchema = z
   })
   .strict()
 
-/** Признаки, по которым считается риск. Общий телефон или устройство сами по себе не блокируют. */
+/** Signals the risk score is built from. A shared phone or device alone never blocks. */
 export const demoRiskSignalsSchema = z
   .object({
     device_id: identifierSchema,
@@ -252,7 +254,7 @@ export const demoAdsBillingSchema = z
   })
   .strict()
 
-/** Глобальный для локальной вкладки журнал Ads: бюджеты общие для всех демопрофилей. */
+/** Ads log global to the local tab: budgets are shared by every demo profile. */
 export const demoAdsStateSchema = z
   .object({
     campaigns: z.array(demoAdsCampaignStateSchema),
@@ -262,8 +264,8 @@ export const demoAdsStateSchema = z
   .strict()
 
 /**
- * Единый версионированный снимок: он же хранится в браузере, он же уходит в движок.
- * `synthetic` обязателен и всегда true — данные демонстрационные.
+ * A single versioned snapshot: the same one is stored in the browser and sent to the engine.
+ * `synthetic` is required and always true — the data is demonstrational.
  */
 export const demoProfileSnapshotSchema = z
   .object({
@@ -283,7 +285,7 @@ export const demoProfileSnapshotSchema = z
   })
   .strict()
 
-/** Стартовые синтетические профили и фонд, которые демонстрационный сервер отдаёт клиенту. */
+/** Initial synthetic profiles and fund that the demo server hands to the client. */
 export const demoSeedProfilesResponseSchema = z
   .object({
     contract_version: z.literal(DEMO_CONTRACT_VERSION),
@@ -337,7 +339,7 @@ export const demoRewardPackageSchema = z
   })
   .strict()
 
-/** Полный максимум обязательства резервируется до показа обещания. */
+/** The full maximum liability is reserved before a promise is shown. */
 export const demoReservationSchema = z
   .object({
     coupon_reserve_kopecks: kopecksSchema,
@@ -452,8 +454,8 @@ export const demoDecisionResponseSchema = demoResponseEnvelopeSchema
   )
 
 /**
- * Титул коллекции. Модель описывает только то, что уже собрано: никаких сумм, скидок и обещаний.
- * Нарушение контракта заменяется детерминированным шаблоном с `source: "fallback"`.
+ * Collection title. The model describes only what has been collected: no amounts, discounts or
+ * promises. A contract violation is replaced by a deterministic template with `source: "fallback"`.
  */
 export const demoTitleRequestSchema = demoRequestEnvelopeSchema
   .extend({

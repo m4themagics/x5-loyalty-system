@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-24",
-  "label": "Оценочный синтетический профиль 24",
+  "label": "Evaluation synthetic profile 24",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Рыба и азиатская кухня",
+          "category": "Fish & Asian Cuisine",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 10300

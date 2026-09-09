@@ -1,8 +1,8 @@
-"""Карточка задания: генерация текста поверх уже утверждённого решения.
+"""Challenge card: text generated on top of an already approved decision.
 
-Модель получает только утверждённые условия. Любая ошибка, таймаут, невалидный JSON,
-отсутствие ключа или нарушение контракта дают корректный детерминированный шаблон
-с источником `fallback`. Живая генерация без доступа к API не считается проверенной.
+The model receives only approved terms. Any error, timeout, invalid JSON, missing key or
+contract violation yields a correct deterministic template with source `fallback`. Live
+generation without API access does not count as verified.
 """
 from __future__ import annotations
 
@@ -15,9 +15,10 @@ from . import ollama, yandexgpt
 from .validate import check
 
 SYSTEM_PROMPT = (
-    "Ты пишешь короткий живой заголовок карточки задания для программы лояльности "
-    "«X5 Чекпоинт». Фактический текст условий и награды добавит система. "
-    "Ответь строго одним JSON-объектом с единственным полем headline, без markdown и пояснений."
+    "You write a short, lively headline for a challenge card in the \"X5 Checkpoint\" loyalty "
+    "programme. The factual terms and reward text are added by the system. "
+    "Answer with exactly one JSON object holding a single field headline, without markdown or "
+    "explanations."
 )
 
 
@@ -97,28 +98,28 @@ def _facts(challenge: dict[str, Any], candidate: Any) -> dict[str, Any]:
 
 
 def _template_card(challenge: dict[str, Any], facts: dict[str, Any]) -> dict[str, Any]:
-    reward = f"Предмет «{facts['item_name']}»"
+    reward = f"The \"{facts['item_name']}\" item"
     if facts["physical_name"]:
-        reward += f" и бесплатный товар: {facts['physical_name']}"
+        reward += f" plus a free product: {facts['physical_name']}"
 
-    target_names = " или ".join(f"«{name}»" for name in facts["target_sku_names"])
+    target_names = " or ".join(f'"{name}"' for name in facts["target_sku_names"])
     target = (
         target_names
         if len(facts["target_sku_names"]) == 1
-        else f"один из товаров: {target_names}"
+        else f"one of these products: {target_names}"
     )
     body = (
-        f"До {facts['deadline_date']} купите {target} — получите предмет "
-        f"«{facts['item_name']}» для рецепта «{facts['recipe_title']}»."
+        f"Buy {target} before {facts['deadline_date']} and receive the "
+        f"\"{facts['item_name']}\" item for the \"{facts['recipe_title']}\" recipe."
     )
 
     return {
         "headline": _clip(challenge["title"], 60),
         "body": _clip(body, 220),
         "reward_line": _clip(reward, 120),
-        "deadline_line": f"Срок: до {facts['deadline_date']}",
+        "deadline_line": f"Deadline: {facts['deadline_date']}",
         "sponsor_line": (
-            _clip(f"При поддержке бренда: {facts['sponsor_name'] or 'партнёр'}", 120)
+            _clip(f"Supported by the brand: {facts['sponsor_name'] or 'partner'}", 120)
             if facts["sponsored"]
             else None
         ),
@@ -127,9 +128,9 @@ def _template_card(challenge: dict[str, Any], facts: dict[str, Any]) -> dict[str
 
 def _user_prompt(facts: dict[str, Any], template: dict[str, Any]) -> str:
     return (
-        f"Придумай один заголовок до 60 символов. Обязательно дословно включи название "
-        f"«{facts['item_name']}». Можно обыграть рецепт «{facts['recipe_title']}». "
-        "Не упоминай цену, срочность или гарантии. Пример формата ответа: "
+        f"Write one headline of at most 60 characters. It must include the name "
+        f"\"{facts['item_name']}\" verbatim. You may play on the \"{facts['recipe_title']}\" recipe. "
+        "Do not mention price, urgency or guarantees. Example response format: "
         f"{json.dumps({'headline': facts['item_name']}, ensure_ascii=False)}"
     )
 

@@ -6,11 +6,11 @@ import {
 } from '@pyaterochka-game-demo/contracts'
 
 /**
- * Аватар, добровольный рейтинг и реферальный расчёт на явно синтетических событиях.
+ * Avatar, opt-in ranking and referral calculation over explicitly synthetic events.
  *
- * Уровень аватара — число различных завершённых рецептов, а не сумма чека. Рейтинг показывает
- * подтверждённую погашенную экономию, место не увеличивает награду. Повтор не накручивает ни то,
- * ни другое.
+ * Avatar level is the number of distinct completed recipes, not the receipt total. The ranking
+ * shows confirmed redeemed savings, and rank never increases a reward. Repetition inflates
+ * neither of them.
  */
 
 export const DEMO_REFERRAL_WINDOW_DAYS = 7
@@ -50,8 +50,8 @@ export function redeemedSavingsRubles(profile: DemoProfileSnapshot): number {
 export const rankingWindowDays = DEMO_RANKING_WINDOW_DAYS
 
 /**
- * Дружеский рейтинг: сравниваются собранные наборы, а не потраченные или сэкономленные деньги.
- * Одинаковый прогресс делит одно место, технический ID задаёт только порядок вывода.
+ * Friend ranking: it compares collected sets, not money spent or saved.
+ * Equal progress shares one rank; the technical ID only fixes the output order.
  */
 export function rankFriendsByProgress(friends: readonly FriendProgress[]): FriendRank[] {
   const ordered = [...friends].sort((left, right) =>
@@ -73,9 +73,9 @@ export function rankFriendsByProgress(friends: readonly FriendProgress[]): Frien
 }
 
 /**
- * Демонстрационные условия реферала: у приглашённого нет прежних подтверждённых покупок,
- * первая подходящая покупка совершена в течение семи дней после приглашения, и пригласивший
- * получает не больше одной награды за окно. Самоприглашение исключено.
+ * Demo referral terms: the invitee has no prior confirmed purchases, the first qualifying
+ * purchase happens within seven days of the invitation, and the inviter receives at most one
+ * reward per window. Self-invitation is excluded.
  */
 export function referralOutcome(
   referral: DemoReferral,
@@ -107,8 +107,8 @@ export function referralOutcome(
 }
 
 /**
- * Награда тому, кто позвал. Реферальная запись хранится у приглашённого, а экран показывает
- * результат пригласившему, поэтому ищем его приглашённого и оцениваем именно того.
+ * The reward goes to the inviter. The referral record lives on the invitee while the screen
+ * speaks to the inviter, so we look up their invitee and evaluate that profile.
  */
 export function inviterReferralOutcome(
   profiles: readonly DemoProfileSnapshot[],
@@ -121,13 +121,13 @@ export function inviterReferralOutcome(
   return referralOutcome(invitee.referral, invitee.profile_id, firstQualifyingPurchaseMs(invitee))
 }
 
-/** Первая покупка, закрывшая обещание: только выданные награды, а не любой чек. */
+/** The first purchase that closed a promise: issued rewards only, not any receipt. */
 export function firstQualifyingPurchaseMs(profile: DemoProfileSnapshot): number | null {
   const issued = profile.issued_rewards.map((reward) => reward.issued_at_ms)
   return issued.length === 0 ? null : Math.min(...issued)
 }
 
-/** Ближайший к завершению набор: сколько разных предметов рецепта уже собрано. */
+/** The set closest to completion: how many distinct recipe items are already collected. */
 export type ClosestRecipe = {
   recipe_id: string
   title: string

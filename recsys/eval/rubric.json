@@ -1,8 +1,8 @@
 {
-  "notes": "Независимая разметка. Приемлемым считается любое задание, категория которого есть в истории покупок профиля и предмет которого недостающий в каком-либо рецепте. Рубрика допускает множество решений и не повторяет порядок ранжирования движка. Допустимые профили оцениваются в цифровом цикле после onboarding: так прогон измеряет релевантность RecSys отдельно от охвата Ads первого физического подарка.",
+  "notes": "Independent labelling. Any challenge counts as acceptable when its category appears in the profile's purchase history and its item is missing from some recipe. The rubric admits many decisions and does not repeat the engine's ranking order. Eligible profiles are evaluated in the digital cycle after onboarding, so the run measures RecSys relevance separately from Ads coverage of the first physical gift.",
   "label_status": "agent_draft",
   "labelled_on": "2026-09-05",
-  "expert_confirmation": "не проводилась",
+  "expert_confirmation": "not performed",
   "threshold": {
     "eligible_profiles": 40,
     "minimum_hits": 28
@@ -11,8 +11,8 @@
     {
       "profile_id": "eval-01",
       "familiar_categories": [
-        "Холодные напитки и мороженое",
-        "Мороженое и десерты"
+        "Cold Drinks & Ice Cream",
+        "Ice Cream & Desserts"
       ],
       "acceptable_item_ids": [
         "crystal-icecream-maker",
@@ -33,16 +33,16 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-02",
       "familiar_categories": [
-        "Замороженные продукты",
-        "Холодные напитки и мороженое",
-        "Хлеб и выпечка"
+        "Frozen Food",
+        "Cold Drinks & Ice Cream",
+        "Bread & Bakery"
       ],
       "acceptable_item_ids": [
         "club-toaster",
@@ -64,14 +64,14 @@
         "master-grill"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-03",
       "familiar_categories": [
-        "Овощи и зелень"
+        "Vegetables & Herbs"
       ],
       "acceptable_item_ids": [
         "vegetable-crate"
@@ -91,15 +91,15 @@
         "legendary-sandwich-press"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-04",
       "familiar_categories": [
-        "Фрукты",
-        "Кофе и десерты"
+        "Fruit",
+        "Coffee & Desserts"
       ],
       "acceptable_item_ids": [
         "barista-machine",
@@ -120,16 +120,16 @@
         "master-grill"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-05",
       "familiar_categories": [
-        "Молочные продукты",
-        "Всё для выпечки",
-        "Мясо и колбасы"
+        "Dairy",
+        "Baking Supplies",
+        "Meat & Sausages"
       ],
       "acceptable_item_ids": [
         "baker-apron",
@@ -150,14 +150,14 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-06",
       "familiar_categories": [
-        "Лапша и азиатская кухня"
+        "Noodles & Asian Cuisine"
       ],
       "acceptable_item_ids": [
         "dragon-wok"
@@ -177,15 +177,15 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-07",
       "familiar_categories": [
-        "Кофе и чай",
-        "Всё для выпечки"
+        "Coffee & Tea",
+        "Baking Supplies"
       ],
       "acceptable_item_ids": [
         "baker-apron",
@@ -206,16 +206,16 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-08",
       "familiar_categories": [
-        "Холодные напитки и мороженое",
-        "Молочные продукты",
-        "Всё для выпечки"
+        "Cold Drinks & Ice Cream",
+        "Dairy",
+        "Baking Supplies"
       ],
       "acceptable_item_ids": [
         "baker-apron",
@@ -237,14 +237,14 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-09",
       "familiar_categories": [
-        "Бакалея и консервы"
+        "Groceries & Canned Food"
       ],
       "acceptable_item_ids": [
         "treasure-pantry"
@@ -264,15 +264,15 @@
         "legendary-sandwich-press"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-10",
       "familiar_categories": [
-        "Лапша и азиатская кухня",
-        "Холодные напитки и мороженое"
+        "Noodles & Asian Cuisine",
+        "Cold Drinks & Ice Cream"
       ],
       "acceptable_item_ids": [
         "picnic-cooler"
@@ -292,16 +292,16 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-11",
       "familiar_categories": [
-        "Холодные напитки и мороженое",
-        "Крупы, супы и соусы",
-        "Лапша и азиатская кухня"
+        "Cold Drinks & Ice Cream",
+        "Grains, Soups & Sauces",
+        "Noodles & Asian Cuisine"
       ],
       "acceptable_item_ids": [
         "dragon-wok",
@@ -323,14 +323,14 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-12",
       "familiar_categories": [
-        "Овощи и зелень"
+        "Vegetables & Herbs"
       ],
       "acceptable_item_ids": [
         "vegetable-crate"
@@ -350,15 +350,15 @@
         "legendary-sandwich-press"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-13",
       "familiar_categories": [
-        "Холодные напитки и мороженое",
-        "Всё для выпечки"
+        "Cold Drinks & Ice Cream",
+        "Baking Supplies"
       ],
       "acceptable_item_ids": [
         "baker-apron",
@@ -379,16 +379,16 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-14",
       "familiar_categories": [
-        "Кофе и десерты",
-        "Полезные напитки",
-        "Всё для выпечки"
+        "Coffee & Desserts",
+        "Healthy Drinks",
+        "Baking Supplies"
       ],
       "acceptable_item_ids": [
         "baker-apron",
@@ -410,14 +410,14 @@
         "master-grill"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-15",
       "familiar_categories": [
-        "Мясо и колбасы"
+        "Meat & Sausages"
       ],
       "acceptable_item_ids": [
         "master-grill"
@@ -437,15 +437,15 @@
         "legendary-sandwich-press"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-16",
       "familiar_categories": [
-        "Кофе и десерты",
-        "Рыба и азиатская кухня"
+        "Coffee & Desserts",
+        "Fish & Asian Cuisine"
       ],
       "acceptable_item_ids": [
         "barista-machine",
@@ -466,16 +466,16 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-17",
       "familiar_categories": [
-        "Холодные напитки и мороженое",
-        "Бакалея и консервы",
-        "Всё для выпечки"
+        "Cold Drinks & Ice Cream",
+        "Groceries & Canned Food",
+        "Baking Supplies"
       ],
       "acceptable_item_ids": [
         "baker-apron",
@@ -497,14 +497,14 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-18",
       "familiar_categories": [
-        "Всё для выпечки"
+        "Baking Supplies"
       ],
       "acceptable_item_ids": [
         "baker-apron"
@@ -524,15 +524,15 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-19",
       "familiar_categories": [
-        "Хлеб и выпечка",
-        "Полезные напитки"
+        "Bread & Bakery",
+        "Healthy Drinks"
       ],
       "acceptable_item_ids": [
         "club-toaster",
@@ -553,16 +553,16 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-20",
       "familiar_categories": [
-        "Кофе и десерты",
-        "Всё для выпечки",
-        "Крупы, супы и соусы"
+        "Coffee & Desserts",
+        "Baking Supplies",
+        "Grains, Soups & Sauces"
       ],
       "acceptable_item_ids": [
         "baker-apron",
@@ -583,14 +583,14 @@
         "master-grill"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-21",
       "familiar_categories": [
-        "Хлеб и выпечка"
+        "Bread & Bakery"
       ],
       "acceptable_item_ids": [
         "club-toaster"
@@ -610,15 +610,15 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-22",
       "familiar_categories": [
-        "Лапша и азиатская кухня",
-        "Холодные напитки и мороженое"
+        "Noodles & Asian Cuisine",
+        "Cold Drinks & Ice Cream"
       ],
       "acceptable_item_ids": [
         "dragon-wok",
@@ -639,16 +639,16 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-23",
       "familiar_categories": [
-        "Хлеб, сыр и колбасы",
-        "Замороженные продукты",
-        "Мороженое и десерты"
+        "Bread, Cheese & Deli",
+        "Frozen Food",
+        "Ice Cream & Desserts"
       ],
       "acceptable_item_ids": [
         "crystal-icecream-maker",
@@ -670,14 +670,14 @@
         "milk-pitcher"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-24",
       "familiar_categories": [
-        "Рыба и азиатская кухня"
+        "Fish & Asian Cuisine"
       ],
       "acceptable_item_ids": [
         "sushi-kit"
@@ -697,15 +697,15 @@
         "legendary-sandwich-press"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-25",
       "familiar_categories": [
-        "Хлеб, сыр и колбасы",
-        "Лапша и азиатская кухня"
+        "Bread, Cheese & Deli",
+        "Noodles & Asian Cuisine"
       ],
       "acceptable_item_ids": [
         "dragon-wok"
@@ -725,16 +725,16 @@
         "master-grill"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-26",
       "familiar_categories": [
-        "Хлеб и выпечка",
-        "Замороженные продукты",
-        "Всё для выпечки"
+        "Bread & Bakery",
+        "Frozen Food",
+        "Baking Supplies"
       ],
       "acceptable_item_ids": [
         "baker-apron",
@@ -756,14 +756,14 @@
         "milk-pitcher"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-27",
       "familiar_categories": [
-        "Молочные продукты"
+        "Dairy"
       ],
       "acceptable_item_ids": [
         "milk-pitcher"
@@ -783,15 +783,15 @@
         "legendary-sandwich-press"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-28",
       "familiar_categories": [
-        "Полезные напитки",
-        "Хлеб, сыр и колбасы"
+        "Healthy Drinks",
+        "Bread, Cheese & Deli"
       ],
       "acceptable_item_ids": [
         "legendary-sandwich-press",
@@ -812,16 +812,16 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-29",
       "familiar_categories": [
-        "Овощи и зелень",
-        "Яйца и завтраки",
-        "Хлеб и выпечка"
+        "Vegetables & Herbs",
+        "Eggs & Breakfast",
+        "Bread & Bakery"
       ],
       "acceptable_item_ids": [
         "breakfast-pan",
@@ -843,14 +843,14 @@
         "master-grill"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-30",
       "familiar_categories": [
-        "Полезные напитки"
+        "Healthy Drinks"
       ],
       "acceptable_item_ids": [
         "power-blender"
@@ -870,15 +870,15 @@
         "legendary-sandwich-press"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-31",
       "familiar_categories": [
-        "Всё для выпечки",
-        "Крупы, супы и соусы"
+        "Baking Supplies",
+        "Grains, Soups & Sauces"
       ],
       "acceptable_item_ids": [
         "baker-apron",
@@ -899,16 +899,16 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-32",
       "familiar_categories": [
-        "Кофе и десерты",
-        "Мороженое и десерты",
-        "Хлеб и выпечка"
+        "Coffee & Desserts",
+        "Ice Cream & Desserts",
+        "Bread & Bakery"
       ],
       "acceptable_item_ids": [
         "barista-machine",
@@ -930,14 +930,14 @@
         "milk-pitcher"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-33",
       "familiar_categories": [
-        "Лапша и азиатская кухня"
+        "Noodles & Asian Cuisine"
       ],
       "acceptable_item_ids": [
         "dragon-wok"
@@ -957,15 +957,15 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-34",
       "familiar_categories": [
-        "Хлеб и выпечка",
-        "Яйца и завтраки"
+        "Bread & Bakery",
+        "Eggs & Breakfast"
       ],
       "acceptable_item_ids": [
         "breakfast-pan",
@@ -986,16 +986,16 @@
         "master-grill"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-35",
       "familiar_categories": [
-        "Мороженое и десерты",
-        "Фрукты",
-        "Крупы, супы и соусы"
+        "Ice Cream & Desserts",
+        "Fruit",
+        "Grains, Soups & Sauces"
       ],
       "acceptable_item_ids": [
         "fruit-basket",
@@ -1016,14 +1016,14 @@
         "master-grill"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-36",
       "familiar_categories": [
-        "Фрукты"
+        "Fruit"
       ],
       "acceptable_item_ids": [
         "fruit-basket"
@@ -1043,15 +1043,15 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-37",
       "familiar_categories": [
-        "Снеки и орехи",
-        "Фрукты"
+        "Snacks & Nuts",
+        "Fruit"
       ],
       "acceptable_item_ids": [
         "fruit-basket",
@@ -1072,16 +1072,16 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-38",
       "familiar_categories": [
-        "Полезные напитки",
-        "Яйца и завтраки",
-        "Бакалея и консервы"
+        "Healthy Drinks",
+        "Eggs & Breakfast",
+        "Groceries & Canned Food"
       ],
       "acceptable_item_ids": [
         "breakfast-pan",
@@ -1103,14 +1103,14 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-39",
       "familiar_categories": [
-        "Замороженные продукты"
+        "Frozen Food"
       ],
       "acceptable_item_ids": [
         "freezer-chest"
@@ -1130,15 +1130,15 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
     {
       "profile_id": "eval-40",
       "familiar_categories": [
-        "Бакалея и консервы",
-        "Хлеб, сыр и колбасы"
+        "Groceries & Canned Food",
+        "Bread, Cheese & Deli"
       ],
       "acceptable_item_ids": [
         "legendary-sandwich-press"
@@ -1158,7 +1158,7 @@
         "magic-fridge"
       ],
       "expected_status": "offer",
-      "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+      "rationale": "The category is in the history and the item is missing from a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     }
@@ -1170,7 +1170,7 @@
       "expected_reason_codes": [
         "no_purchase_history"
       ],
-      "rationale": "История покупок пуста.",
+      "rationale": "The purchase history is empty.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
@@ -1180,7 +1180,7 @@
       "expected_reason_codes": [
         "no_purchase_history"
       ],
-      "rationale": "Бесплатные строки не создают покупочный день.",
+      "rationale": "Free lines do not create a purchase day.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
@@ -1190,7 +1190,7 @@
       "expected_reason_codes": [
         "category_not_in_history"
       ],
-      "rationale": "Ни одна купленная категория не связана с предметом рецепта.",
+      "rationale": "No purchased category maps to an item in a recipe.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
@@ -1200,7 +1200,7 @@
       "expected_reason_codes": [
         "sku_out_of_stock"
       ],
-      "rationale": "Для категории нет подарочного SKU с остатком.",
+      "rationale": "The category has no gift SKU in stock.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
@@ -1210,7 +1210,7 @@
       "expected_reason_codes": [
         "promise_already_outstanding"
       ],
-      "rationale": "Новое обещание не показывается поверх действующего.",
+      "rationale": "A new promise is not shown on top of an active one.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
@@ -1220,7 +1220,7 @@
       "expected_reason_codes": [
         "no_purchase_history"
       ],
-      "rationale": "Покупки за пределами окна истории не считаются знакомой категорией.",
+      "rationale": "Purchases outside the history window do not make a category familiar.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
@@ -1230,7 +1230,7 @@
       "expected_reason_codes": [
         "no_purchase_history"
       ],
-      "rationale": "Возвращённый чек не создаёт покупочный день.",
+      "rationale": "A returned receipt does not create a purchase day.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     },
@@ -1240,7 +1240,7 @@
       "expected_reason_codes": [
         "sku_out_of_stock"
       ],
-      "rationale": "Для категории нет обеспеченного товара; предмет один и без подарка.",
+      "rationale": "The category has no funded product; the single item comes without a gift.",
       "label_status": "agent_draft",
       "labelled_on": "2026-09-05"
     }

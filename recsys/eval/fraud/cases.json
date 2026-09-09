@@ -1,6 +1,6 @@
 {
   "notes": "Calibration keeps the original scenarios. Final is a separately authored challenge set with new feature combinations, legitimate ambiguous cases and concealed abuse. It is not a random population holdout; labels remain agent_draft.",
-  "threshold_source": "recsys/engine/data/policy.json, раздел risk",
+  "threshold_source": "recsys/engine/data/policy.json, risk section",
   "threshold_fixed_before_final_scoring": true,
   "label_status": "agent_draft",
   "labelled_on": "2026-09-05",
@@ -9,7 +9,7 @@
       "case_id": "legit_regular-001",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Постоянный покупатель, один чек, история подтверждена",
+      "description": "Regular customer, one receipt, confirmed history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-legit-1",
@@ -24,7 +24,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -39,7 +39,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -78,7 +78,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -90,7 +90,7 @@
       "case_id": "legit_regular-002",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Постоянный покупатель, один чек, история подтверждена",
+      "description": "Regular customer, one receipt, confirmed history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-legit-2",
@@ -105,7 +105,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -120,7 +120,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -159,7 +159,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -171,7 +171,7 @@
       "case_id": "legit_regular-003",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Постоянный покупатель, один чек, история подтверждена",
+      "description": "Regular customer, one receipt, confirmed history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-legit-3",
@@ -186,7 +186,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -201,7 +201,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -240,7 +240,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -252,7 +252,7 @@
       "case_id": "legit_regular-004",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Постоянный покупатель, один чек, история подтверждена",
+      "description": "Regular customer, one receipt, confirmed history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-legit-4",
@@ -267,7 +267,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -282,7 +282,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -321,7 +321,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -333,7 +333,7 @@
       "case_id": "legit_family-005",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Легитимная семья с общим устройством и разными покупками",
+      "description": "Legitimate family sharing a device with different purchases",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-family-5",
@@ -348,7 +348,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -363,7 +363,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -402,7 +402,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -414,7 +414,7 @@
       "case_id": "legit_family-006",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Легитимная семья с общим устройством и разными покупками",
+      "description": "Legitimate family sharing a device with different purchases",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-family-6",
@@ -429,7 +429,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -444,7 +444,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -483,7 +483,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -495,7 +495,7 @@
       "case_id": "legit_family-007",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Легитимная семья с общим устройством и разными покупками",
+      "description": "Legitimate family sharing a device with different purchases",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-family-7",
@@ -510,7 +510,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -525,7 +525,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -564,7 +564,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -576,7 +576,7 @@
       "case_id": "legit_family-008",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Легитимная семья с общим устройством и разными покупками",
+      "description": "Legitimate family sharing a device with different purchases",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-family-8",
@@ -591,7 +591,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -606,7 +606,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -645,7 +645,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -657,7 +657,7 @@
       "case_id": "legit_family_split-009",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Семья, два чека в один день: касса и доставка",
+      "description": "Family, two receipts on one day: till and delivery",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-split-9",
@@ -672,7 +672,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -687,7 +687,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -726,7 +726,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -738,7 +738,7 @@
       "case_id": "legit_family_split-010",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Семья, два чека в один день: касса и доставка",
+      "description": "Family, two receipts on one day: till and delivery",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-split-10",
@@ -753,7 +753,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -768,7 +768,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -807,7 +807,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -819,7 +819,7 @@
       "case_id": "legit_family_split-011",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Семья, два чека в один день: касса и доставка",
+      "description": "Family, two receipts on one day: till and delivery",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-split-11",
@@ -834,7 +834,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -849,7 +849,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -888,7 +888,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -900,7 +900,7 @@
       "case_id": "legit_family_split-012",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Семья, два чека в один день: касса и доставка",
+      "description": "Family, two receipts on one day: till and delivery",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-split-12",
@@ -915,7 +915,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -930,7 +930,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -969,7 +969,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -981,7 +981,7 @@
       "case_id": "legit_return-013",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Честный возврат части покупки",
+      "description": "Honest partial return of a purchase",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-return-13",
@@ -996,7 +996,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -1035,7 +1035,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1047,7 +1047,7 @@
       "case_id": "legit_return-014",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Честный возврат части покупки",
+      "description": "Honest partial return of a purchase",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-return-14",
@@ -1062,7 +1062,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -1101,7 +1101,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1113,7 +1113,7 @@
       "case_id": "legit_return-015",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Честный возврат части покупки",
+      "description": "Honest partial return of a purchase",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-return-15",
@@ -1128,7 +1128,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -1167,7 +1167,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1179,7 +1179,7 @@
       "case_id": "legit_return-016",
       "split": "calibration",
       "label": "legitimate",
-      "description": "Честный возврат части покупки",
+      "description": "Honest partial return of a purchase",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-return-16",
@@ -1194,7 +1194,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -1233,7 +1233,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1245,7 +1245,7 @@
       "case_id": "abuse_self_referral_new-017",
       "split": "calibration",
       "label": "abuse",
-      "description": "Саморефералка с нового аккаунта без истории",
+      "description": "Self-referral from a new account without history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-self-17",
@@ -1283,7 +1283,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1295,7 +1295,7 @@
       "case_id": "abuse_self_referral_new-018",
       "split": "calibration",
       "label": "abuse",
-      "description": "Саморефералка с нового аккаунта без истории",
+      "description": "Self-referral from a new account without history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-self-18",
@@ -1333,7 +1333,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1345,7 +1345,7 @@
       "case_id": "abuse_self_referral_new-019",
       "split": "calibration",
       "label": "abuse",
-      "description": "Саморефералка с нового аккаунта без истории",
+      "description": "Self-referral from a new account without history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-self-19",
@@ -1383,7 +1383,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1395,7 +1395,7 @@
       "case_id": "abuse_self_referral_new-020",
       "split": "calibration",
       "label": "abuse",
-      "description": "Саморефералка с нового аккаунта без истории",
+      "description": "Self-referral from a new account without history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-self-20",
@@ -1433,7 +1433,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1445,7 +1445,7 @@
       "case_id": "abuse_multiaccount-021",
       "split": "calibration",
       "label": "abuse",
-      "description": "Серия новых аккаунтов на одном устройстве без истории",
+      "description": "A series of new accounts on one device without history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-multi-21",
@@ -1483,7 +1483,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1495,7 +1495,7 @@
       "case_id": "abuse_multiaccount-022",
       "split": "calibration",
       "label": "abuse",
-      "description": "Серия новых аккаунтов на одном устройстве без истории",
+      "description": "A series of new accounts on one device without history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-multi-22",
@@ -1533,7 +1533,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1545,7 +1545,7 @@
       "case_id": "abuse_multiaccount-023",
       "split": "calibration",
       "label": "abuse",
-      "description": "Серия новых аккаунтов на одном устройстве без истории",
+      "description": "A series of new accounts on one device without history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-multi-23",
@@ -1583,7 +1583,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1595,7 +1595,7 @@
       "case_id": "abuse_multiaccount-024",
       "split": "calibration",
       "label": "abuse",
-      "description": "Серия новых аккаунтов на одном устройстве без истории",
+      "description": "A series of new accounts on one device without history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-multi-24",
@@ -1633,7 +1633,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1645,7 +1645,7 @@
       "case_id": "abuse_return_after_reward-025",
       "split": "calibration",
       "label": "abuse",
-      "description": "Возврат сразу после награды на аккаунте без истории",
+      "description": "Return right after the reward on an account without history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-refund-25",
@@ -1683,7 +1683,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1695,7 +1695,7 @@
       "case_id": "abuse_return_after_reward-026",
       "split": "calibration",
       "label": "abuse",
-      "description": "Возврат сразу после награды на аккаунте без истории",
+      "description": "Return right after the reward on an account without history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-refund-26",
@@ -1733,7 +1733,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1745,7 +1745,7 @@
       "case_id": "abuse_return_after_reward-027",
       "split": "calibration",
       "label": "abuse",
-      "description": "Возврат сразу после награды на аккаунте без истории",
+      "description": "Return right after the reward on an account without history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-refund-27",
@@ -1783,7 +1783,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1795,7 +1795,7 @@
       "case_id": "abuse_return_after_reward-028",
       "split": "calibration",
       "label": "abuse",
-      "description": "Возврат сразу после награды на аккаунте без истории",
+      "description": "Return right after the reward on an account without history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-refund-28",
@@ -1833,7 +1833,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1845,7 +1845,7 @@
       "case_id": "abuse_split_farm-029",
       "split": "calibration",
       "label": "abuse",
-      "description": "Дробление корзины на новом аккаунте ради лишних дней",
+      "description": "Basket splitting on a new account to gain extra days",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-farm-29",
@@ -1860,7 +1860,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -1875,7 +1875,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -1914,7 +1914,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -1926,7 +1926,7 @@
       "case_id": "abuse_split_farm-030",
       "split": "calibration",
       "label": "abuse",
-      "description": "Дробление корзины на новом аккаунте ради лишних дней",
+      "description": "Basket splitting on a new account to gain extra days",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-farm-30",
@@ -1941,7 +1941,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -1956,7 +1956,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -1995,7 +1995,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2007,7 +2007,7 @@
       "case_id": "abuse_split_farm-031",
       "split": "calibration",
       "label": "abuse",
-      "description": "Дробление корзины на новом аккаунте ради лишних дней",
+      "description": "Basket splitting on a new account to gain extra days",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-farm-31",
@@ -2022,7 +2022,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2037,7 +2037,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2076,7 +2076,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2088,7 +2088,7 @@
       "case_id": "abuse_split_farm-032",
       "split": "calibration",
       "label": "abuse",
-      "description": "Дробление корзины на новом аккаунте ради лишних дней",
+      "description": "Basket splitting on a new account to gain extra days",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-farm-32",
@@ -2103,7 +2103,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2118,7 +2118,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2157,7 +2157,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2169,7 +2169,7 @@
       "case_id": "abuse_self_referral_aged-033",
       "split": "calibration",
       "label": "abuse",
-      "description": "Саморефералка со зрелого аккаунта с историей",
+      "description": "Self-referral from a mature account with history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-selfaged-33",
@@ -2184,7 +2184,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2223,7 +2223,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2235,7 +2235,7 @@
       "case_id": "abuse_self_referral_aged-034",
       "split": "calibration",
       "label": "abuse",
-      "description": "Саморефералка со зрелого аккаунта с историей",
+      "description": "Self-referral from a mature account with history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-selfaged-34",
@@ -2250,7 +2250,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2289,7 +2289,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2301,7 +2301,7 @@
       "case_id": "abuse_self_referral_aged-035",
       "split": "calibration",
       "label": "abuse",
-      "description": "Саморефералка со зрелого аккаунта с историей",
+      "description": "Self-referral from a mature account with history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-selfaged-35",
@@ -2316,7 +2316,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2355,7 +2355,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2367,7 +2367,7 @@
       "case_id": "abuse_self_referral_aged-036",
       "split": "calibration",
       "label": "abuse",
-      "description": "Саморефералка со зрелого аккаунта с историей",
+      "description": "Self-referral from a mature account with history",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "p-selfaged-36",
@@ -2382,7 +2382,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2421,7 +2421,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2433,11 +2433,11 @@
       "case_id": "final-family_imported_history",
       "split": "final",
       "label": "legitimate",
-      "description": "Новый участник семьи перенёс подтверждённую историю; обычная покупка",
+      "description": "A new family member carried over confirmed history; an ordinary purchase",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "final-person-0",
-        "label": "Синтетический трудный случай",
+        "label": "Synthetic hard case",
         "synthetic": true,
         "receipts": [
           {
@@ -2448,7 +2448,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2463,7 +2463,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2502,7 +2502,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2514,11 +2514,11 @@
       "case_id": "final-first_purchase",
       "split": "final",
       "label": "legitimate",
-      "description": "Честный новый аккаунт совершает первую покупку без приглашения",
+      "description": "An honest new account makes its first purchase without an invitation",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "final-person-1",
-        "label": "Синтетический трудный случай",
+        "label": "Synthetic hard case",
         "synthetic": true,
         "receipts": [],
         "inventory": [],
@@ -2552,7 +2552,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2564,11 +2564,11 @@
       "case_id": "final-mature_split",
       "split": "final",
       "label": "legitimate",
-      "description": "Постоянный покупатель сделал два чека: забытый товар и основная корзина",
+      "description": "A regular customer made two receipts: a forgotten item and the main basket",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "final-person-2",
-        "label": "Синтетический трудный случай",
+        "label": "Synthetic hard case",
         "synthetic": true,
         "receipts": [
           {
@@ -2579,7 +2579,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2594,7 +2594,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2609,7 +2609,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2624,7 +2624,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2663,7 +2663,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2675,11 +2675,11 @@
       "case_id": "final-family_return",
       "split": "final",
       "label": "legitimate",
-      "description": "Постоянный участник семьи законно возвращает часть покупки",
+      "description": "A long-standing family member legitimately returns part of a purchase",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "final-person-3",
-        "label": "Синтетический трудный случай",
+        "label": "Synthetic hard case",
         "synthetic": true,
         "receipts": [
           {
@@ -2690,7 +2690,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2705,7 +2705,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2744,7 +2744,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2756,11 +2756,11 @@
       "case_id": "final-new_family_return",
       "split": "final",
       "label": "legitimate",
-      "description": "Новый аккаунт с перенесённой историей и общим устройством законно возвращает товар",
+      "description": "A new account with carried-over history and a shared device legitimately returns a product",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "final-person-4",
-        "label": "Синтетический трудный случай",
+        "label": "Synthetic hard case",
         "synthetic": true,
         "receipts": [
           {
@@ -2771,7 +2771,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2786,7 +2786,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2825,7 +2825,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2837,11 +2837,11 @@
       "case_id": "final-new_known_split",
       "split": "final",
       "label": "legitimate",
-      "description": "Новый аккаунт с историей разделил покупку на две кассы по бытовой причине",
+      "description": "An account with history split a purchase across two tills for an everyday reason",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "final-person-5",
-        "label": "Синтетический трудный случай",
+        "label": "Synthetic hard case",
         "synthetic": true,
         "receipts": [
           {
@@ -2852,7 +2852,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2867,7 +2867,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2882,7 +2882,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2897,7 +2897,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2936,7 +2936,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -2948,11 +2948,11 @@
       "case_id": "final-self_family",
       "split": "final",
       "label": "abuse",
-      "description": "Старый аккаунт пытается получить награду за приглашение самого себя в общем домохозяйстве",
+      "description": "An old account tries to claim a referral reward for inviting itself within a shared household",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "final-person-6",
-        "label": "Синтетический трудный случай",
+        "label": "Synthetic hard case",
         "synthetic": true,
         "receipts": [
           {
@@ -2963,7 +2963,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -2978,7 +2978,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -3017,7 +3017,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -3029,11 +3029,11 @@
       "case_id": "final-self_return",
       "split": "final",
       "label": "abuse",
-      "description": "Самореферал возвращает квалифицирующую покупку после попытки получить награду",
+      "description": "A self-referrer returns the qualifying purchase after trying to claim the reward",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "final-person-7",
-        "label": "Синтетический трудный случай",
+        "label": "Synthetic hard case",
         "synthetic": true,
         "receipts": [
           {
@@ -3044,7 +3044,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -3059,7 +3059,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -3098,7 +3098,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -3110,11 +3110,11 @@
       "case_id": "final-self_new_known",
       "split": "final",
       "label": "abuse",
-      "description": "Новый аккаунт с историей назначил себя пригласившим ради второй награды",
+      "description": "An account with history named itself the inviter to get a second reward",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "final-person-8",
-        "label": "Синтетический трудный случай",
+        "label": "Synthetic hard case",
         "synthetic": true,
         "receipts": [
           {
@@ -3125,7 +3125,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -3140,7 +3140,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -3179,7 +3179,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -3191,11 +3191,11 @@
       "case_id": "final-self_split_mature",
       "split": "final",
       "label": "abuse",
-      "description": "Старый аккаунт дробит корзину и указывает себя пригласившим ради лишних наград",
+      "description": "An old account splits the basket and names itself the inviter for extra rewards",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "final-person-9",
-        "label": "Синтетический трудный случай",
+        "label": "Synthetic hard case",
         "synthetic": true,
         "receipts": [
           {
@@ -3206,7 +3206,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -3221,7 +3221,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -3236,7 +3236,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -3251,7 +3251,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -3290,7 +3290,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -3302,11 +3302,11 @@
       "case_id": "final-new_ring_no_device_link",
       "split": "final",
       "label": "abuse",
-      "description": "Участник фермы аккаунтов скрывает связь устройств; серия аккаунтов известна только разметчику",
+      "description": "An account-farm member hides the device link; the series is known only to the labeller",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "final-person-10",
-        "label": "Синтетический трудный случай",
+        "label": "Synthetic hard case",
         "synthetic": true,
         "receipts": [],
         "inventory": [],
@@ -3340,7 +3340,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -3352,11 +3352,11 @@
       "case_id": "final-concealed_mature_ring",
       "split": "final",
       "label": "abuse",
-      "description": "Участник реферального кольца со старым аккаунтом; графовая связь недоступна текущим признакам",
+      "description": "A referral-ring member on an old account; the graph link is invisible to the current features",
       "profile": {
         "snapshot_version": 1,
         "profile_id": "final-person-11",
-        "label": "Синтетический трудный случай",
+        "label": "Synthetic hard case",
         "synthetic": true,
         "receipts": [
           {
@@ -3367,7 +3367,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -3382,7 +3382,7 @@
             "lines": [
               {
                 "sku_id": "sku-milk-1l",
-                "category": "Молочные продукты",
+                "category": "Dairy",
                 "quantity": 1,
                 "paid": true,
                 "amount_kopecks": 8900
@@ -3421,7 +3421,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -3431,5 +3431,5 @@
     }
   ],
   "final_set_version": "challenge-combinations-2",
-  "expert_confirmation": "не проводилась"
+  "expert_confirmation": "not performed"
 }

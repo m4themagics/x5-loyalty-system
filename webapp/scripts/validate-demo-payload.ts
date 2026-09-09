@@ -1,7 +1,7 @@
 /**
- * Проверяет JSON локального PoC против общего Zod-контракта.
+ * Validates local PoC JSON against the shared Zod contract.
  * `bun webapp/scripts/validate-demo-payload.ts decision_response out.json`
- * Файл `-` читает stdin. Код возврата 0 — валидно, 1 — нарушение контракта.
+ * The file `-` reads stdin. Exit code 0 means valid, 1 means a contract violation.
  */
 import { readFileSync } from 'node:fs'
 
@@ -29,7 +29,7 @@ const [schemaName, filePath] = process.argv.slice(2)
 const schema = schemas[schemaName as keyof typeof schemas]
 
 if (schema === undefined || filePath === undefined) {
-  console.error(`использование: bun webapp/scripts/validate-demo-payload.ts <${Object.keys(schemas).join('|')}> <файл|->`)
+  console.error(`usage: bun webapp/scripts/validate-demo-payload.ts <${Object.keys(schemas).join('|')}> <file|->`)
   process.exit(2)
 }
 
@@ -37,9 +37,9 @@ const result = schema.safeParse(JSON.parse(readFileSync(filePath === '-' ? 0 : f
 
 if (!result.success) {
   for (const issue of result.error.issues) {
-    console.error(`${issue.path.join('.') || '<корень>'}: ${issue.message}`)
+    console.error(`${issue.path.join('.') || '<root>'}: ${issue.message}`)
   }
   process.exit(1)
 }
 
-console.log(`${schemaName}: валидно`)
+console.log(`${schemaName}: valid`)

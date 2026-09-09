@@ -92,7 +92,7 @@ The console and adversarial datasets use other structures. Current game screens 
 
 The complete flow is purchase history → computed challenge → live local Ads auction → validated
 card → synthetic receipt → one-time CPA billing and promised rewards → exchange → existing crafting.
-The “For X5” panel (`Для X5` in the Russian UI) displays the live local Ads ledger and compact
+The “For X5” panel displays the live local Ads ledger and compact
 views of reproducible evaluations. Accounting is demonstrational and runs in one browser tab;
 there is no server-owned entitlement ledger or real product fulfillment.
 

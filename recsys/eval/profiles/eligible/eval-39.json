@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-39",
-  "label": "Оценочный синтетический профиль 39",
+  "label": "Evaluation synthetic profile 39",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Замороженные продукты",
+          "category": "Frozen Food",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11800

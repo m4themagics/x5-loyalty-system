@@ -6,22 +6,22 @@
   "planned_personas": 15,
   "valid_responses": 15,
   "product_copy": {
-    "screen": "Собирай свою выгоду",
-    "Что сделать": "За семь дней оплатите один товар из указанной молочной категории.",
-    "Что получите": "После первого выполненного задания — бесплатный йогурт И цифровой молочный кувшин в коллекцию. Это первый из четырёх предметов.",
-    "После 4 предметов": "Потратьте четыре предмета на скидку. В целевой версии для обеспеченного рецепта можно вместо скидки выбрать указанный бесплатный товар. Предметы расходуются один раз; скидка и товар одновременно не выдаются.",
-    "Ограничения": "Бесплатный товар не положен за каждое задание. Сейчас это локальное демо с вымышленными покупками, реальное получение в магазине не подключено."
+    "screen": "Collect your savings",
+    "What to do": "Within seven days, pay for one product from the named dairy category.",
+    "What you get": "After the first completed challenge — a free yoghurt AND a digital Milk Pitcher for your collection. It is the first of four items.",
+    "After 4 items": "Spend four items on a discount. In the target version, a funded recipe lets you choose the named free product instead of the discount. Items are spent once; a discount and a product are never issued together.",
+    "Limits": "A free product is not due for every challenge. Right now this is a local demo with fictional purchases; real fulfilment in a store is not connected."
   },
-  "system_prompt": "Синтетический разбор текста, не интервью реального человека. Верни JSON\nровно с тремя ключами: persona_id, comprehension, subjective. Никакого Markdown.\n\nБлок comprehension: извлеки ТОЛЬКО фактические правила карточки, независимо от отношения\nперсоны. Это вопрос о том, что написано, а не что ты хочешь получить. Ровно три ключа:\nnext_step: paid_category_purchase = оплатить товар категории; open_box_no_purchase = открыть\nкоробку без покупки; get_immediate_coupon = сразу забрать скидку.\nfirst_reward: digital_and_physical = цифровой предмет И настоящий товар; physical_only =\nтолько настоящий товар; coupon_only = только скидка.\nfour_items: coupon_or_funded_product = потратить на скидку ИЛИ обеспеченный товар;\nfree_product_every_task = бесплатный товар за каждое задание;\nkeep_items_and_coupon = сохранить четыре предмета и получить скидку.\n\nБлок subjective: только здесь дай субъективную реакцию указанной персоны, не меняя факты.\nРовно четыре ключа: intent (try/maybe/skip); main_reason (по-русски, 1–400 символов);\nconfusion_points (массив 0–4 русских строк по 1–200 символов, только непонятные вопросы,\nпустой массив если всё ясно); suggested_copy (русская формулировка, 1–240 символов).\npersona_id должен точно совпадать со входом. Не изображай измеренные покупки или конверсию.",
+  "system_prompt": "A synthetic reading of a text, not an interview with a real person. Return JSON\nwith exactly three keys: persona_id, comprehension, subjective. No Markdown.\n\nThe comprehension block: extract ONLY the factual rules of the card, regardless of the persona's\nattitude. This asks what is written, not what you would like to get. Exactly three keys:\nnext_step: paid_category_purchase = pay for a product from the category; open_box_no_purchase =\nopen the box without a purchase; get_immediate_coupon = take the discount right away.\nfirst_reward: digital_and_physical = a digital item AND a real product; physical_only =\na real product only; coupon_only = a discount only.\nfour_items: coupon_or_funded_product = spend them on a discount OR a funded product;\nfree_product_every_task = a free product for every challenge;\nkeep_items_and_coupon = keep the four items and still get the discount.\n\nThe subjective block: only here give the stated persona's subjective reaction, without changing\nthe facts. Exactly four keys: intent (try/maybe/skip); main_reason (in English, 1-400 characters);\nconfusion_points (array of 0-4 English strings of 1-200 characters, only genuinely unclear\nquestions, an empty array when everything is clear); suggested_copy (an English wording,\n1-240 characters).\npersona_id must match the input exactly. Do not pretend to have measured purchases or conversion.",
   "personas": [
     {
       "persona": {
         "persona_id": "youth_interested",
         "segment_id": "youth",
-        "segment_label": "Молодёжь",
+        "segment_label": "Young adults",
         "attitude": "interested",
-        "attitude_label": "Заинтересованные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Interested",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "youth_interested",
@@ -32,17 +32,17 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Можно получить бесплатный йогурт и цифровой кувшин, что особенно интересно для молодёжи.",
+          "main_reason": "Interested in collecting savings and getting a free yogurt and digital item.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание — это важно для понимания условий.",
-            "Скидка и товар одновременно не выдаются — нужно быть внимательным.",
-            "Локальное демо с вымышленными покупками — важно понять, что это не реальное получение."
+            "What counts as a 'challenge'?",
+            "Are the items available for all challenges?",
+            "Is the discount available for all four items?"
           ],
-          "suggested_copy": "Собирай выгоду за семь дней! Получи бесплатный йогурт и цифровой кувшин — первые из четырёх предметов. Потрать на скидку или выбери бесплатный товар."
+          "suggested_copy": "Collect your savings with a free yogurt and digital item. Get a discount on four items or choose a free product instead."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 3958,
+      "latency_ms": 4404,
       "error": null,
       "status": "valid"
     },
@@ -50,10 +50,10 @@
       "persona": {
         "persona_id": "youth_neutral",
         "segment_id": "youth",
-        "segment_label": "Молодёжь",
+        "segment_label": "Young adults",
         "attitude": "neutral",
-        "attitude_label": "Нейтральные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Neutral",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "youth_neutral",
@@ -64,17 +64,15 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Можно получить бесплатный йогурт и цифровой кувшин, что особенно интересно для молодёжи.",
+          "main_reason": "I want to collect my savings by completing a challenge and getting a free product and a digital item.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание — это важно для понимания условий.",
-            "Реальное получение в магазине не подключено, но демо доступен.",
-            "Скидка и товар одновременно не выдаются, но можно выбрать бесплатный товар вместо скидки."
+            "Is the free product always available?"
           ],
-          "suggested_copy": "Собирай выгоду за семь дней — получи бесплатный йогурт и цифровой кувшин. Получи скидку на четыре предмета."
+          "suggested_copy": "Complete the challenge to get a free yoghurt and a digital Milk Pitcher. You can spend all four items on a discount or choose a free product instead."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 3688,
+      "latency_ms": 1936,
       "error": null,
       "status": "valid"
     },
@@ -82,10 +80,10 @@
       "persona": {
         "persona_id": "youth_skeptical",
         "segment_id": "youth",
-        "segment_label": "Молодёжь",
+        "segment_label": "Young adults",
         "attitude": "skeptical",
-        "attitude_label": "Скептичные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Sceptical",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "youth_skeptical",
@@ -96,18 +94,15 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Проверю, не будет ли это манипуляцией с бесплатными продуктами и скидками.",
+          "main_reason": "I am interested in trying the free yoghurt and digital Milk Pitcher as a first step.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание — это не то, что я ожидал.",
-            "Скидка и товар одновременно не выдаются — это не то, что я ожидал.",
-            "Локальное демо с вымышленными покупками — это не то, что я ожидал.",
-            "В целевой версии для обеспеченного рецепта можно вместо скидки выбрать бесплатный товар — это не то, что я ожидал."
+            "Is the discount available for the free product?"
           ],
-          "suggested_copy": "Проверьте, не будет ли это манипуляцией с бесплатными продуктами и скидками."
+          "suggested_copy": "Explore the first reward: free yoghurt and a digital Milk Pitcher. Try it now!"
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 4221,
+      "latency_ms": 1904,
       "error": null,
       "status": "valid"
     },
@@ -115,10 +110,10 @@
       "persona": {
         "persona_id": "harmful_habits_interested",
         "segment_id": "harmful_habits",
-        "segment_label": "Взрослые с вредными привычками",
+        "segment_label": "Adults with harmful habits",
         "attitude": "interested",
-        "attitude_label": "Заинтересованные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Interested",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "harmful_habits_interested",
@@ -129,17 +124,15 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Хочу собирать выгоды и получить бесплатный йогурт и цифровой кувшин.",
+          "main_reason": "Interested in obtaining a free yoghurt and a digital Milk Pitcher as part of a challenge.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание.",
-            "Реальное получение в магазине не подключено.",
-            "Скидка и товар одновременно не выдаются."
+            "What happens if I don't complete the challenge?"
           ],
-          "suggested_copy": "Собирай свою выгоду: получай бесплатный йогурт и цифровой кувшин за семь дней. Всё в рамках демонстрации."
+          "suggested_copy": "Get a free yoghurt and a digital Milk Pitcher today. Complete the challenge to unlock more rewards."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 3268,
+      "latency_ms": 1956,
       "error": null,
       "status": "valid"
     },
@@ -147,10 +140,10 @@
       "persona": {
         "persona_id": "harmful_habits_neutral",
         "segment_id": "harmful_habits",
-        "segment_label": "Взрослые с вредными привычками",
+        "segment_label": "Adults with harmful habits",
         "attitude": "neutral",
-        "attitude_label": "Нейтральные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Neutral",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "harmful_habits_neutral",
@@ -161,17 +154,13 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Можно собрать бесплатный йогурт и цифровой кувшин, что интересно для людей с вредными привычками.",
-          "confusion_points": [
-            "Бесплатный товар не положен за каждое задание — это не все задания.",
-            "Скидка и товар одновременно не выдаются — нужно собирать все четыре предмета.",
-            "Локальное демо с вымышленными покупками — реальное получение не подключено."
-          ],
-          "suggested_copy": "Собирай выгоду: бесплатный йогурт и цифровой кувшин за семь дней, скидка на четыре предмета."
+          "main_reason": "I want to collect my savings by completing a challenge and getting a free product and a digital item.",
+          "confusion_points": [],
+          "suggested_copy": "Complete the challenge to get a free yoghurt and a digital Milk Pitcher. Spend all four items on a discount or choose a free product instead."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 3732,
+      "latency_ms": 1921,
       "error": null,
       "status": "valid"
     },
@@ -179,10 +168,10 @@
       "persona": {
         "persona_id": "harmful_habits_skeptical",
         "segment_id": "harmful_habits",
-        "segment_label": "Взрослые с вредными привычками",
+        "segment_label": "Adults with harmful habits",
         "attitude": "skeptical",
-        "attitude_label": "Скептичные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Sceptical",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "harmful_habits_skeptical",
@@ -193,18 +182,15 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Проверю, не будет ли это предложение слишком сложным или неинтересным для скептической аудитории.",
+          "main_reason": "I am interested in trying the free yoghurt and digital Milk Pitcher as a first step.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание — это не то, что я ожидал.",
-            "Реальное получение в магазине не подключено — это не то, что я ожидал.",
-            "Скидка и товар одновременно не выдаются — это не то, что я ожидал.",
-            "В целевой версии для обеспеченного рецепта можно вместо скидки выбрать указанный бесплатный товар — это не то, что я ожидал."
+            "The description mentions a local demo with fictional purchases, but I want to know if it's real."
           ],
-          "suggested_copy": "Собирай свою выгоду, за семь дней оплатите один товар из молочной категории. Получите бесплатный йогурт и цифровой кувшин — это первый из четырёх предметов. Потратьте четыре предмета на скидку, в целевой версии можно выбрать бесплатный торт"
+          "suggested_copy": "Explore the first reward: free yoghurt and digital Milk Pitcher. Try it now and see if it fits your habits."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 5385,
+      "latency_ms": 2125,
       "error": null,
       "status": "valid"
     },
@@ -212,10 +198,10 @@
       "persona": {
         "persona_id": "parents_u3_interested",
         "segment_id": "parents_u3",
-        "segment_label": "Взрослые с детьми до 3 лет",
+        "segment_label": "Adults with children under 3",
         "attitude": "interested",
-        "attitude_label": "Заинтересованные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Interested",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "parents_u3_interested",
@@ -226,17 +212,15 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Хочу собрать четыре предмета и получить скидку",
+          "main_reason": "I want to collect my savings by getting a free yogurt and a digital Milk Pitcher.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание",
-            "Реальное получение в магазине не подключено",
-            "Скидка и товар одновременно не выдаются"
+            "Is the free product available every challenge?"
           ],
-          "suggested_copy": "Собирай свою выгоду: получай бесплатный йогурт и цифровой кувшин за семь дней, сохраняя четыре предмета и получая скидку."
+          "suggested_copy": "Get a free yogurt and a digital Milk Pitcher today and spend all four items on a discount."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 3587,
+      "latency_ms": 1920,
       "error": null,
       "status": "valid"
     },
@@ -244,10 +228,10 @@
       "persona": {
         "persona_id": "parents_u3_neutral",
         "segment_id": "parents_u3",
-        "segment_label": "Взрослые с детьми до 3 лет",
+        "segment_label": "Adults with children under 3",
         "attitude": "neutral",
-        "attitude_label": "Нейтральные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Neutral",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "parents_u3_neutral",
@@ -258,17 +242,15 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Можно получить бесплатный йогурт и цифровой кувшин после выполнения заданий.",
+          "main_reason": "I want to collect my savings by getting a free yoghurt and a digital Milk Pitcher.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание.",
-            "Скидка и товар одновременно не выдаются.",
-            "Реальное получение в магазине не подключено."
+            "Is the free product available for every challenge?"
           ],
-          "suggested_copy": "Собирай свою выгоду: получай бесплатный йогурт и цифровой кувшин за семь дней. Всего четыре предмета, скидка или бесплатный товар."
+          "suggested_copy": "Get a free yoghurt and a digital Milk Pitcher today and spend all four items on a discount."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 5242,
+      "latency_ms": 1853,
       "error": null,
       "status": "valid"
     },
@@ -276,10 +258,10 @@
       "persona": {
         "persona_id": "parents_u3_skeptical",
         "segment_id": "parents_u3",
-        "segment_label": "Взрослые с детьми до 3 лет",
+        "segment_label": "Adults with children under 3",
         "attitude": "skeptical",
-        "attitude_label": "Скептичные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Sceptical",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "parents_u3_skeptical",
@@ -290,18 +272,15 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Проверю, есть ли в этой карточке выгодные условия для родителей, которые хотят поддерживать дочь в развитии.",
+          "main_reason": "I want to try the free yoghurt and digital Milk Pitcher as a first step.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание — это не то, что я ожидал.",
-            "Скидка и товар одновременно не выдаются — это не то, что я ожидал.",
-            "Локальное демо с вымышленными покупками — это не то, что я ожидал.",
-            "В целевой версии для обеспеченного рецепта можно вместо скидки выбрать указанный бесплатный товар — это не то, что я ожидал."
+            "The discount is only available for the funded recipe, not for the free product."
           ],
-          "suggested_copy": "Проверьте, есть ли в этой карточке выгодные условия для родителей, которые хотят поддерживать дочь в развитии."
+          "suggested_copy": "Get the free yoghurt and digital Milk Pitcher first. You can later choose between a discount or a funded recipe."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 5026,
+      "latency_ms": 2003,
       "error": null,
       "status": "valid"
     },
@@ -309,10 +288,10 @@
       "persona": {
         "persona_id": "mature_interested",
         "segment_id": "mature",
-        "segment_label": "Зрелые",
+        "segment_label": "Mature",
         "attitude": "interested",
-        "attitude_label": "Заинтересованные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Interested",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "mature_interested",
@@ -323,18 +302,18 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Мне интересно собирать выгоды и проверить, как работает система сбора предметов и скидок.",
+          "main_reason": "I want to collect my savings by completing a challenge and getting a free product and a digital item.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание — это не то, что я ожидал.",
-            "Реальное получение в магазине не подключено — возможно, это демо.",
-            "Скидка и товар одновременно не выдаются — не уверен, что это так.",
-            "Предметы расходуются один раз — не понятно, что происходит с ними после получения."
+            "What happens if I don't complete the challenge?",
+            "Will the free product be available in real stores?",
+            "Can I choose between a discount and a product?",
+            "Are there limits on how often I can get a free product?"
           ],
-          "suggested_copy": "Попробуйте собирать выгоды, проверьте, как работает система сбора предметов и скидок."
+          "suggested_copy": "Complete the challenge to get a free product and a digital item. You can spend all four items on a discount or choose a free product instead."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 4242,
+      "latency_ms": 2690,
       "error": null,
       "status": "valid"
     },
@@ -342,10 +321,10 @@
       "persona": {
         "persona_id": "mature_neutral",
         "segment_id": "mature",
-        "segment_label": "Зрелые",
+        "segment_label": "Mature",
         "attitude": "neutral",
-        "attitude_label": "Нейтральные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Neutral",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "mature_neutral",
@@ -356,17 +335,15 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Можно собрать бесплатный йогурт и цифровой кувшин, что интересно для зрелого пользователя.",
+          "main_reason": "I want to collect my savings by completing a challenge and getting a free product and a digital item.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание — это не стандартная скидка.",
-            "В целевой версии можно выбрать бесплатный товар вместо скидки, но это демо.",
-            "Предметы расходуются один раз, но скидка и товар одновременно не выдаются."
+            "Is the free product always available?"
           ],
-          "suggested_copy": "Собирай выгоду за семь дней — получи бесплатный йогурт и цифровой кувшин. Вариант с скидкой доступен в версии для обеспеченного рецепта."
+          "suggested_copy": "Complete the challenge to get a free yoghurt and a digital Milk Pitcher. Spend all four items on a discount or choose a free product instead."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 3955,
+      "latency_ms": 1960,
       "error": null,
       "status": "valid"
     },
@@ -374,10 +351,10 @@
       "persona": {
         "persona_id": "mature_skeptical",
         "segment_id": "mature",
-        "segment_label": "Зрелые",
+        "segment_label": "Mature",
         "attitude": "skeptical",
-        "attitude_label": "Скептичные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Sceptical",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "mature_skeptical",
@@ -388,17 +365,15 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Проверить, будет ли выгодно собирать предметы и получить скидку, не покупая товары.",
+          "main_reason": "The offer provides a free product and a digital item, which aligns with my interest in acquiring new items.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание.",
-            "Реальное получение в магазине не подключено.",
-            "Скидка и товар одновременно не выдаются."
+            "The description mentions a local demo with fictional purchases; I want to know if real purchases are available later."
           ],
-          "suggested_copy": "Собирайте выгодные предметы и получайте скидку без покупок. Локальное демо, где бесплатный товар не даётся за задание."
+          "suggested_copy": "Get a free yoghurt and a digital Milk Pitcher. Try completing challenges to earn more items."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 4524,
+      "latency_ms": 1956,
       "error": null,
       "status": "valid"
     },
@@ -406,10 +381,10 @@
       "persona": {
         "persona_id": "senior_interested",
         "segment_id": "senior",
-        "segment_label": "Старшие",
+        "segment_label": "Seniors",
         "attitude": "interested",
-        "attitude_label": "Заинтересованные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Interested",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "senior_interested",
@@ -420,17 +395,15 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Хочу собрать бесплатный йогурт и цифровой кувшин за семь дней",
+          "main_reason": "Interested in collecting savings and getting a free yogurt and digital item.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание",
-            "Реальное получение в магазине не подключено",
-            "Скидка и товар одновременно не выдаются"
+            "What happens if I complete the challenge multiple times?"
           ],
-          "suggested_copy": "Собирай выгоду за семь дней — получи бесплатный йогурт и цифровой кувшин. Всего четыре предмета, скидка или товар."
+          "suggested_copy": "Collect your savings with a free yogurt and digital Milk Pitcher. Complete challenges to get more rewards."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 3239,
+      "latency_ms": 1767,
       "error": null,
       "status": "valid"
     },
@@ -438,10 +411,10 @@
       "persona": {
         "persona_id": "senior_neutral",
         "segment_id": "senior",
-        "segment_label": "Старшие",
+        "segment_label": "Seniors",
         "attitude": "neutral",
-        "attitude_label": "Нейтральные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Neutral",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "senior_neutral",
@@ -452,17 +425,15 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Могу собирать выгоду за семь дней, получая бесплатный йогурт и цифровой кувшин.",
+          "main_reason": "I want to collect savings by completing a challenge and getting a free product and a digital item.",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание.",
-            "Реальное получение в магазине не подключено.",
-            "Скидка и товар одновременно не выдаются."
+            "Is the free product always available?"
           ],
-          "suggested_copy": "Собирай свою выгоду: получай бесплатный йогурт и цифровой кувшин за семь дней. Всё в демо, в магазине не подключено."
+          "suggested_copy": "Complete a challenge to get a free product and a digital item. Spend all four items on a discount."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 3454,
+      "latency_ms": 2002,
       "error": null,
       "status": "valid"
     },
@@ -470,10 +441,10 @@
       "persona": {
         "persona_id": "senior_skeptical",
         "segment_id": "senior",
-        "segment_label": "Старшие",
+        "segment_label": "Seniors",
         "attitude": "skeptical",
-        "attitude_label": "Скептичные",
-        "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."
+        "attitude_label": "Sceptical",
+        "note": "A fictional adult user; harmful categories are never offered."
       },
       "response": {
         "persona_id": "senior_skeptical",
@@ -484,17 +455,15 @@
         },
         "subjective": {
           "intent": "try",
-          "main_reason": "Проверю, действительно ли есть возможность получить бесплатный йогурт и цифровой кувшин после выполнения заданий.",
+          "main_reason": "A free yoghurt and a digital Milk Pitcher for my collection",
           "confusion_points": [
-            "Бесплатный товар не положен за каждое задание — это важно для понимания условий.",
-            "Реальное получение в магазине не подключено, но демо-версия доступна.",
-            "Скидка и товар одновременно не выдаются, но можно выбрать бесплатный товар вместо скидки."
+            "Is the discount applicable to a funded product?"
           ],
-          "suggested_copy": "Попробуйте собирать выгоду за семь дней. Получите бесплатный йогурт и цифровой кувшин после выполнения заданий. Всё в демо-версии, но возможна реальная покупка."
+          "suggested_copy": "Get a free yoghurt and a digital Milk Pitcher today, and spend all four items on a discount."
         }
       },
       "model": "qwen3:1.7b",
-      "latency_ms": 4147,
+      "latency_ms": 1840,
       "error": null,
       "status": "valid"
     }

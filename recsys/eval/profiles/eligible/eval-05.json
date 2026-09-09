@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-05",
-  "label": "Оценочный синтетический профиль 05",
+  "label": "Evaluation synthetic profile 05",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Молочные продукты",
+          "category": "Dairy",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 8400
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Всё для выпечки",
+          "category": "Baking Supplies",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 8400
@@ -42,7 +42,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-2",
-          "category": "Мясо и колбасы",
+          "category": "Meat & Sausages",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 8400

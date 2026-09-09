@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-31",
-  "label": "Оценочный синтетический профиль 31",
+  "label": "Evaluation synthetic profile 31",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Всё для выпечки",
+          "category": "Baking Supplies",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11000
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Крупы, супы и соусы",
+          "category": "Grains, Soups & Sauces",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11000

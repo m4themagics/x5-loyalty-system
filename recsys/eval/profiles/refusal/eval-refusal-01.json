@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-refusal-01",
-  "label": "Отказ: покупок нет вовсе",
+  "label": "Refusal: no purchases at all",
   "synthetic": true,
   "receipts": [],
   "inventory": [],

@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-15",
-  "label": "Оценочный синтетический профиль 15",
+  "label": "Evaluation synthetic profile 15",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Мясо и колбасы",
+          "category": "Meat & Sausages",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 9400

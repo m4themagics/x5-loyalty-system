@@ -1,8 +1,8 @@
-"""Бюджет, полные максимальные резервы и синтетическая экономика кандидата.
+"""Budget, full maximum reserves and the synthetic economics of a candidate.
 
-Все суммы — целые копейки. Жёсткий доступный бюджет вычитает подтверждённые расходы и полные
-максимальные незакрытые обязательства, а не вероятностный прогноз. Прогноз дополнительной
-маржи остаётся синтетическим допущением и не является доказательством прибыльности.
+Every amount is integer kopecks. The hard available budget subtracts settled spend and the full
+maximum outstanding liabilities, not a probabilistic forecast. The incremental-margin forecast
+remains a synthetic assumption and is not proof of profitability.
 """
 from __future__ import annotations
 
@@ -197,7 +197,7 @@ def build_economics(
     sponsorship: Sponsorship,
     policy: dict[str, Any],
 ) -> dict[str, Any]:
-    """Субсидия учитывается один раз: она уменьшает непокрытую стоимость награды."""
+    """The subsidy counts once: it reduces the uncovered reward cost."""
     reward_cost = coupon_reserve + physical_reserve
     subsidy = min(sponsorship.subsidy_kopecks, reward_cost)
     return {
@@ -225,7 +225,7 @@ def build_economics(
 
 
 def expected_net_kopecks(economics: dict[str, Any]) -> int:
-    """Ожидаемая экономика кандидата. Положительный прогноз не является доказанной прибылью."""
+    """Expected economics of a candidate. A positive forecast is not proven profit."""
     if economics.get("auction_type") == "quality_adjusted_first_price_cpa":
         return int(economics["auction_score_kopecks"])
     return (

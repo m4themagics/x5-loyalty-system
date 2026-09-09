@@ -123,11 +123,11 @@ class LearnedRecSysTest(unittest.TestCase):
             )
 
     def test_runtime_rules_baseline_reproduces_the_shipped_ordering(self):
-        """Экономика в боевом rank_key недостижима: непрерывная affinity решает раньше.
+        """Economics is unreachable in the runtime rank_key: continuous affinity decides earlier.
 
-        Тест фиксирует это как свойство, а не как случайность: при равной affinity и
-        одинаковом рецепте выбор обязан уйти к большему ожидаемому нетто, но когда
-        affinity различается, она перевешивает экономику.
+        The test fixes this as a property rather than an accident: with equal affinity and the
+        same recipe the choice must go to the higher expected net, but when affinity differs it
+        outweighs economics.
         """
         def candidate(action_id, *, affinity, net_margin, eligible=True):
             action = next(row for row in learned_recsys.ACTION_CATALOG if row["action_id"] == action_id)
@@ -147,9 +147,9 @@ class LearnedRecSysTest(unittest.TestCase):
                 },
             }
 
-        # Более знакомая категория выигрывает, хотя её экономика заметно хуже.
-        # Маржа dairy подобрана так, чтобы кандидат проходил порог прироста и сравнение
-        # действительно доходило до экономики, а не обрывалось на допуске.
+        # The more familiar category wins even though its economics is clearly worse.
+        # The dairy margin is chosen so the candidate passes the increment threshold and the
+        # comparison really reaches economics instead of stopping at admission.
         candidates = [
             candidate("dairy", affinity=0.90, net_margin=5_000),
             candidate("coffee", affinity=0.20, net_margin=90_000),
@@ -159,12 +159,12 @@ class LearnedRecSysTest(unittest.TestCase):
         self.assertEqual(runtime["action_id"], "dairy")
         self.assertEqual(profit["action_id"], "coffee")
 
-        # Ни один кандидат не проходит порог ожидаемого прироста — обе политики молчат.
+        # No candidate passes the expected-increment threshold — both policies stay silent.
         starved = [candidate("dairy", affinity=0.9, net_margin=0)]
         self.assertIsNone(learned_recsys._rules_runtime_choice(starved)[0])
         self.assertIsNone(learned_recsys._rules_profit_ranked_choice(starved)[0])
 
-        # Недопустимый кандидат не выбирается ни при какой экономике.
+        # An ineligible candidate is never selected, whatever the economics.
         blocked = [candidate("coffee", affinity=0.9, net_margin=90_000, eligible=False)]
         self.assertIsNone(learned_recsys._rules_runtime_choice(blocked)[0])
         self.assertIsNone(learned_recsys._rules_profit_ranked_choice(blocked)[0])

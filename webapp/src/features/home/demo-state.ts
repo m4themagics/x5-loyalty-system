@@ -14,14 +14,14 @@ import { profileItems } from './profile-items'
 import { DEMO_AVATAR_MAX_LEVEL, DEMO_COUPON_MAX_KOPECKS, DEMO_INSTANCE_RESERVE_KOPECKS, DEMO_RANKING_WINDOW_DAYS } from '@pyaterochka-game-demo/contracts'
 
 /**
- * Демонстрационное состояние персонального сценария: один версионированный снимок в одной
- * вкладке браузера. Это не защищённый серверный реестр прав и не подтверждает выдачу товара.
+ * Demonstration state of the personal scenario: one versioned snapshot in one browser tab.
+ * This is not a protected server-side entitlement ledger and does not confirm fulfilment.
  *
- * `revision` растёт при каждом применении результата. Ответ, полученный для прошлой ревизии,
- * отбрасывается и не перезаписывает более новое состояние.
+ * `revision` grows every time a result is applied. A response produced for an older revision
+ * is discarded and never overwrites newer state.
  */
 
-// v2 сбрасывает старые снимки: их Ads-обещания нельзя списать безопасно.
+// v2 drops older snapshots: their Ads promises cannot be settled safely.
 export const DEMO_STATE_VERSION = 2
 
 export type DemoState = {
@@ -91,7 +91,7 @@ export function createDemoState(
   }
 }
 
-/** Освобождает резервы истёкшего невыполненного обещания. Заработанное не отменяется. */
+/** Releases the reserves of an expired unfulfilled promise. Earned rights are never revoked. */
 export function releaseExpiredPromise(state: DemoState, nowMs: number): DemoState {
   const promise = state.profile.outstanding_promise
   if (promise === null || promise.fulfilled || promise.deadline_ms >= nowMs) return state
@@ -232,7 +232,7 @@ export function applyEvent(
   }
 }
 
-/** Раскрытие анимацией только помечает результат показанным и ничего не начисляет. */
+/** The reveal animation only marks the result as shown; it grants nothing. */
 export function revealGrant(state: DemoState): DemoState {
   if (state.last_grant === null || state.last_grant.revealed) return state
   return { ...state, last_grant: { ...state.last_grant, revealed: true } }
@@ -277,14 +277,14 @@ export function applyCraft(
   }
 }
 
-/** Предмет из коробки попадает в тот же инвентарь, что и награда за задание. */
+/** A box item lands in the same inventory as a challenge reward. */
 /**
- * Демонстрационный режим: коробка открывается без набора дней входа.
- * Поставьте `false`, чтобы вернуть механику трёх разных дней и лимит четырёх коробок за 28 дней.
+ * Demonstration mode: the box opens without collecting login days.
+ * Set to `false` to restore three distinct days and the four-boxes-per-28-days cap.
  */
 export const DEMO_UNLIMITED_CHEST = true
 
-/** Хватает ли свободных денег фонда на резерв ещё одного экземпляра. */
+/** Whether the fund has enough free money to reserve another instance. */
 export function canReserveInstance(state: DemoState): boolean {
   const available = state.budget.coupon_fund_kopecks
     - state.budget.coupon_settled_kopecks - state.budget.coupon_reserved_kopecks
@@ -297,7 +297,7 @@ export function addChestItem(state: DemoState, itemId: string, nowMs: number = D
   if (!canReserveInstance(state)) return state
   const today = Math.max(loginDay(nowMs), state.login_box.last_day ?? 0)
 
-  // Резерв показанной коробки переходит предмету; без него удерживаются деньги под новый экземпляр.
+  // The shown box's reserve moves to the item; otherwise money is held for a new instance.
   return {
     ...state,
     revision: state.revision + 1,
@@ -315,12 +315,12 @@ export function addChestItem(state: DemoState, itemId: string, nowMs: number = D
   }
 }
 
-/** Календарные дни по Москве. Открытая фоновая вкладка не зарабатывает дни. */
+/** Moscow calendar days. A tab left open in the background earns no days. */
 export function loginDay(nowMs: number): number {
   return Math.floor((nowMs + 3 * 3_600_000) / 86_400_000)
 }
 
-/** Начатое обещание обеспечено полностью; пропуски дней не обнуляют прогресс. */
+/** A started promise is fully reserved; missed days do not reset progress. */
 export function recordLoginVisit(state: DemoState, nowMs: number): DemoState {
   const box = state.login_box
   const today = loginDay(nowMs)
@@ -344,15 +344,15 @@ export function recordLoginVisit(state: DemoState, nowMs: number): DemoState {
 export type LoginGreeting = { days: number; ready: boolean }
 
 /**
- * Окно входа показывается только когда засчитан новый день, а не на любое обновление
- * состояния: восстановление из хранилища и пересчёт накоплений не должны его открывать.
+ * The login dialog appears only when a new day is counted, not on every state update:
+ * restoring from storage and recomputing savings must not open it.
  */
 export function loginGreetingFor(previous: DemoState, next: DemoState): LoginGreeting | null {
   if (next.login_box.days <= previous.login_box.days) return null
   return { days: next.login_box.days, ready: next.login_box.days === 3 }
 }
 
-/** Демонстрационное погашение: экономия считается по фактически списанной сумме, не по номиналу. */
+/** Demo redemption: savings are counted from the amount actually deducted, not the face value. */
 export function applyRedemption(
   state: DemoState,
   basketKopecks: number,
@@ -386,7 +386,7 @@ export function applyRedemption(
   }, nowMs)
 }
 
-/** Окно (now - 28 суток, now]; старые погашения остаются в журнале, но выходят из рейтинга. */
+/** Window (now - 28 days, now]; older redemptions stay in the log but leave the ranking. */
 export function refreshDemoSavings(state: DemoState, nowMs: number): DemoState {
   const start = nowMs - DEMO_RANKING_WINDOW_DAYS * 86_400_000
   const saved = state.redemptions.reduce((total, event) => event.redeemed_at_ms > start && event.redeemed_at_ms <= nowMs
@@ -415,8 +415,8 @@ export function resolveDemoState(raw: string | null): DemoState | null {
     ) {
       return null
     }
-    // Старые экземпляры получают обеспечение нового потолка ровно один раз.
-    // Фонд не увеличиваем: при нехватке новые обещания блокируются, права сохраняются.
+    // Older instances are topped up to the new cap exactly once.
+    // The fund is not increased: if it runs short, new promises are blocked and rights are kept.
     const oldReserve = saved.item_reserve_kopecks ?? 250
     const delta = Math.max(0, DEMO_INSTANCE_RESERVE_KOPECKS - oldReserve)
     const count = saved.profile.inventory.reduce((total, entry) => total + entry.quantity, 0)
@@ -435,7 +435,7 @@ export function resolveDemoState(raw: string | null): DemoState | null {
   }
 }
 
-/** Предложенные для обмена копии остаются во владении, но недоступны для расходования. */
+/** Copies offered in a trade stay owned but become unavailable for spending. */
 export function availableDemoInventory(state: DemoState): DemoProfileSnapshot['inventory'] {
   return state.profile.inventory.flatMap((entry) => {
     const reserved = state.trade_reserved_items.find((item) => item.item_id === entry.item_id)?.quantity ?? 0

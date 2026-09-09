@@ -19,13 +19,13 @@ import { z } from 'zod'
 import { summarizeDemoEvaluation } from './evaluation'
 
 /**
- * Обработчик локального демонстрационного API.
+ * Handler of the local demo API.
  *
- * Этот модуль загружает сам Vite во время работы dev-сервера, а не загрузчик конфига: только так
- * workspace-пакет контрактов резолвится одинаково при `vite dev` и при `vite build`.
+ * Vite itself loads this module while the dev server runs, rather than the config loader: only
+ * that way does the workspace contracts package resolve identically for `vite dev` and `vite build`.
  *
- * Движок вызывается фиксированным argv без shell-интерполяции и обменивается версионированным
- * JSON через stdin/stdout. Ни один секрет LLM не покидает серверный процесс.
+ * The engine is invoked with a fixed argv without shell interpolation and exchanges versioned
+ * JSON over stdin/stdout. No LLM secret leaves the server process.
  */
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
@@ -58,7 +58,7 @@ export async function handleDemoRequest(
       const learned = JSON.parse(readFileSync(path.join(REPO_ROOT, 'recsys/eval/results/learned-recsys.json'), 'utf8'))
       sendJson(response, 200, summarizeDemoEvaluation(report, learned))
     } catch {
-      sendError(response, 'evaluation', 'engine_failed', 'Отчёт оценки отсутствует или не соответствует контракту. Повторите локальную оценку.')
+      sendError(response, 'evaluation', 'engine_failed', 'The evaluation report is missing or does not match the contract. Re-run the local evaluation.')
     }
     return
   }
@@ -79,7 +79,7 @@ export async function handleDemoRequest(
   }
 
   if (request.method !== 'POST') {
-    sendError(response, 'unknown', 'bad_request', 'ожидается POST')
+    sendError(response, 'unknown', 'bad_request', 'POST expected')
     return
   }
 
@@ -87,7 +87,7 @@ export async function handleDemoRequest(
   try {
     payload = JSON.parse(await readBody(request))
   } catch (error) {
-    sendError(response, 'unknown', 'bad_request', `тело запроса не является JSON: ${String(error)}`)
+    sendError(response, 'unknown', 'bad_request', `the request body is not JSON: ${String(error)}`)
     return
   }
 
@@ -103,7 +103,7 @@ export async function handleDemoRequest(
 
   const engine = await runEngine(engineCommand, JSON.stringify(parsedRequest.data))
   if (engine.timedOut) {
-    sendError(response, requestId, 'engine_timeout', `движок не ответил за ${ENGINE_TIMEOUT_MS} мс`)
+    sendError(response, requestId, 'engine_timeout', `the engine did not answer within ${ENGINE_TIMEOUT_MS} ms`)
     return
   }
   if (engine.spawnError !== null) {
@@ -119,7 +119,7 @@ export async function handleDemoRequest(
       response,
       requestId,
       engine.exitCode === 0 ? 'engine_invalid_output' : 'engine_failed',
-      engine.stderr.trim() === '' ? 'движок не вернул JSON' : conciseEngineError(engine.stderr),
+      engine.stderr.trim() === '' ? 'the engine returned no JSON' : conciseEngineError(engine.stderr),
     )
     return
   }
@@ -148,7 +148,7 @@ export async function handleDemoRequest(
 
 function conciseEngineError(stderr: string): string {
   const lines = stderr.split('\n').map((line) => line.trim()).filter(Boolean)
-  if (lines.length === 0) return 'движок завершился с ошибкой'
+  if (lines.length === 0) return 'the engine exited with an error'
   return lines.slice(-4).join(' \u00b7 ')
 }
 
@@ -185,7 +185,7 @@ function runEngine(command: 'decision' | 'event' | 'title', input: string): Prom
     child.stdout.on('data', (chunk: Buffer) => { stdout += chunk.toString('utf8') })
     child.stderr.on('data', (chunk: Buffer) => { stderr += chunk.toString('utf8') })
     child.on('error', (error) => {
-      finish({ stdout, stderr, exitCode: null, timedOut: false, spawnError: `не удалось запустить python3 ${ENGINE_ENTRY}: ${error.message}` })
+      finish({ stdout, stderr, exitCode: null, timedOut: false, spawnError: `failed to start python3 ${ENGINE_ENTRY}: ${error.message}` })
     })
     child.on('close', (code) => {
       finish({ stdout, stderr, exitCode: code, timedOut: false, spawnError: null })
@@ -215,7 +215,7 @@ function readBody(request: Connect.IncomingMessage): Promise<string> {
     request.on('data', (chunk: Buffer) => {
       body += chunk.toString('utf8')
       if (body.length > MAX_BODY_BYTES) {
-        reject(new Error('тело запроса слишком велико'))
+        reject(new Error('the request body is too large'))
         request.destroy()
       }
     })
@@ -235,7 +235,7 @@ function readRequestId(payload: unknown): string {
 function formatIssues(error: z.ZodError): string {
   return error.issues
     .slice(0, 5)
-    .map((issue) => `${issue.path.join('.') || '<корень>'}: ${issue.message}`)
+    .map((issue) => `${issue.path.join('.') || '<root>'}: ${issue.message}`)
     .join('; ')
 }
 

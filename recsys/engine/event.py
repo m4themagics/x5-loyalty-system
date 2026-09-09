@@ -1,7 +1,7 @@
-"""Квалификация синтетического чека и однократная выдача обещанного.
+"""Qualification of a synthetic receipt and one-time issuing of what was promised.
 
-Повтор легитимного запроса возвращает прежний результат и сам по себе не является
-мошенничеством. Бесплатные строки не закрывают задание.
+Repeating a legitimate request returns the previous result and is not fraud by itself.
+Free lines do not complete a challenge.
 """
 from __future__ import annotations
 
@@ -92,7 +92,7 @@ def handle_event(request: dict[str, Any]) -> dict[str, Any]:
 
 
 def _qualify(receipt: dict[str, Any], target: dict[str, Any]) -> list[str]:
-    """Пустой список — чек закрывает задание. Иначе список причин отказа."""
+    """An empty list means the receipt completes the challenge. Otherwise, refusal reasons."""
     sku_ids = set(target["sku_ids"])
     matching = [
         line
@@ -151,7 +151,7 @@ def _response(
 
 
 def _build_billing(request: dict[str, Any], event_id: str) -> dict[str, Any] | None:
-    """First-price CPA: оплата равна ставке и возникает только после allow+выдачи."""
+    """First-price CPA: the charge equals the bid and happens only after allow + issue."""
     economics = request["challenge"]["economics"]
     campaign_id = economics.get("campaign_id")
     advertiser_id = economics.get("advertiser_id")

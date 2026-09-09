@@ -24,7 +24,7 @@ type ReferralAward = {
   issued_at_ms: number
 }
 
-/** Один localStorage write сохраняет оба профиля при реферальном начислении. */
+/** One localStorage write saves both profiles when a referral reward is granted. */
 export type DemoStore = {
   store_version: 3
   store_revision: number
@@ -232,7 +232,7 @@ export function releaseExpiredDemoPromise(store: DemoStore, profileId: string, n
   return saved
 }
 
-/** Освобождает все истёкшие обещания, чтобы неактивный профиль не блокировал общий Ads-бюджет. */
+/** Releases every expired promise so an inactive profile does not block the shared Ads budget. */
 export function releaseExpiredDemoPromises(store: DemoStore, nowMs: number): DemoStore {
   return Object.keys(store.profiles).reduce(
     (current, profileId) => releaseExpiredDemoPromise(current, profileId, nowMs),
@@ -240,14 +240,14 @@ export function releaseExpiredDemoPromises(store: DemoStore, nowMs: number): Dem
   )
 }
 
-/** Возвращает весь сценарий к исходным профилям, бюджетам, Ads-показам и обменам. */
+/** Returns the whole scenario to its initial profiles, budgets, Ads exposures and trades. */
 export function resetDemoStore(
   profiles: DemoProfileSnapshot[],
   budget: DemoBudgetSnapshot,
   ads: DemoAdsState,
 ): DemoStore {
   const first = profiles[0]
-  if (first === undefined) throw new Error('Для сброса демо нужен хотя бы один профиль')
+  if (first === undefined) throw new Error('Resetting the demo needs at least one profile')
   return {
     store_version: 3,
     store_revision: 1,
@@ -281,7 +281,7 @@ function billingMatchesPromise(
     && billing.subsidy_kopecks === economics.subsidy_kopecks
 }
 
-/** Только результат разрешённого квалифицирующего события может выдать предмет пригласившему. */
+/** Only the result of an allowed qualifying event can grant an item to the inviter. */
 export function applyReferralReward(
   store: DemoStore,
   inviteeId: string,

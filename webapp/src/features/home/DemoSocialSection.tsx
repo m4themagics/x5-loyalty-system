@@ -28,8 +28,8 @@ type Participant = {
 }
 
 /**
- * Вкладка «Друзья»: титул коллекции, приглашение и сравнение с друзьями по собранному.
- * Деньги в сравнение не выносятся — соревноваться по тратам в магазине неэтично.
+ * The "Friends" tab: collection title, invitation and a comparison by what people collected.
+ * Money never enters the comparison — ranking people by store spending is not acceptable.
  */
 export function DemoSocialSection({
   state,
@@ -53,7 +53,7 @@ export function DemoSocialSection({
       .filter((entry) => entry.profile.profile_id.startsWith(DEMO_TRADE_FRIEND_PREFIX)
         && entry.profile.profile_id !== state.profile.profile_id)
       .map((entry) => toParticipant(entry.profile.profile_id, entry.profile.label, entry.profile)),
-    toParticipant(state.profile.profile_id, 'Вы', state.profile),
+    toParticipant(state.profile.profile_id, 'You', state.profile),
   ]
   const ranked = rankFriendsByProgress(participants)
   const sharedRanks = new Set(
@@ -64,10 +64,10 @@ export function DemoSocialSection({
     ...entry,
     ...(participants.find((participant) => participant.profile_id === entry.profile_id) as Participant),
     rank: entry.rank,
-    // Медаль достаётся только тому, кто стоит на месте один.
+    // A medal goes only to someone who holds a rank alone.
     medal: sharedRanks.has(entry.rank) ? null : MEDALS[entry.rank - 1] ?? null,
   }))
-  // Текст блока написан от лица позвавшего, поэтому оцениваем приглашённого этим профилем.
+  // The block speaks as the inviter, so the invitee is evaluated from this profile.
   const referral = inviterReferralOutcome(
     [state.profile, ...Object.values(store.profiles).map((entry) => entry.profile)],
     state.profile.profile_id,
@@ -77,21 +77,21 @@ export function DemoSocialSection({
     <>
       <section className="demo-title-card" aria-labelledby="collection-title">
         <Typography as="span" variant="bodyXs" className="demo-title-eyebrow">
-          Титул коллекции
+          Collection title
         </Typography>
         <Typography as="h2" variant="h2" className="demo-title-value" id="collection-title">
-          {title?.status === 'ready' ? title.title : title?.status === 'error' ? 'Ваша коллекция' : 'Подбираем титул…'}
+          {title?.status === 'ready' ? title.title : title?.status === 'error' ? 'Your collection' : 'Choosing a title…'}
         </Typography>
         <Typography as="span" variant="bodyXs" className="demo-title-subtitle">
           {title?.status === 'ready'
             ? title.subtitle
             : title?.status === 'error'
-              ? 'Титул пока недоступен'
-              : 'Смотрим, что вы уже собрали'}
+              ? 'The title is unavailable right now'
+              : 'Looking at what you have collected'}
         </Typography>
         {title?.status === 'error' ? (
           <button className="demo-title-retry" onClick={() => setTitleRetry((value) => value + 1)} type="button">
-            <Typography as="span" variant="controlXs">Обновить титул</Typography>
+            <Typography as="span" variant="controlXs">Refresh the title</Typography>
           </button>
         ) : null}
       </section>
@@ -99,10 +99,10 @@ export function DemoSocialSection({
       <section className="demo-progress" aria-labelledby="ranking-title">
         <div>
           <Typography as="h2" variant="h2" className="demo-block-title" id="ranking-title">
-            Прогресс друзей
+            Friends' progress
           </Typography>
           <Typography as="span" variant="bodyXs" className="demo-block-hint">
-            Место зависит только от собранных наборов и предметов.
+            Rank depends only on collected sets and items.
           </Typography>
         </div>
 
@@ -111,7 +111,7 @@ export function DemoSocialSection({
             const friendTitle = collectionTitleFor(titles, entry.profile)
             return (
               <li
-                className={`demo-friend ${entry.alias === 'Вы' ? 'demo-friend-you' : ''}`}
+                className={`demo-friend ${entry.alias === 'You' ? 'demo-friend-you' : ''}`}
                 key={entry.profile_id}
               >
                 <div className="demo-friend-head">
@@ -119,7 +119,7 @@ export function DemoSocialSection({
                     as="span"
                     variant="body"
                     className={`demo-friend-medal ${entry.medal === null ? 'demo-friend-place' : ''}`}
-                    aria-label={`Место ${entry.rank}`}
+                    aria-label={`Rank ${entry.rank}`}
                   >
                     {entry.medal ?? entry.rank}
                   </Typography>
@@ -140,7 +140,7 @@ export function DemoSocialSection({
 
                 {entry.itemIds.length === 0 ? (
                   <Typography as="span" variant="bodyXs" className="demo-friend-empty">
-                    Коллекция пока пуста
+                    The collection is empty
                   </Typography>
                 ) : (
                   <div className="demo-friend-items" aria-hidden="true">
@@ -158,12 +158,12 @@ export function DemoSocialSection({
                   </div>
                 )}
 
-                {entry.closest === null || entry.alias !== 'Вы' ? null : (
+                {entry.closest === null || entry.alias !== 'You' ? null : (
                   <div className="demo-friend-progress">
                     <Typography as="span" variant="bodyXs" className="demo-friend-goal">
                       {entry.closest.owned === entry.closest.required
-                        ? `Можно собрать «${entry.closest.title}»`
-                        : `До «${entry.closest.title}» — ещё ${entry.closest.required - entry.closest.owned}`}
+                        ? `Ready to craft "${entry.closest.title}"`
+                        : `${entry.closest.required - entry.closest.owned} more for "${entry.closest.title}"`}
                     </Typography>
                     <div className="demo-friend-track" aria-hidden="true">
                       {Array.from({ length: CRAFT_SIZE }).map((_unused, slot) => (
@@ -176,9 +176,9 @@ export function DemoSocialSection({
                   </div>
                 )}
 
-                {entry.alias === 'Вы' ? (
+                {entry.alias === 'You' ? (
                   <button className="demo-friend-collection" onClick={onOpenCollection} type="button">
-                    <Typography as="span" variant="controlXs">Открыть коллекцию</Typography>
+                    <Typography as="span" variant="controlXs">Open the collection</Typography>
                   </button>
                 ) : null}
               </li>
@@ -190,24 +190,24 @@ export function DemoSocialSection({
       <section className="demo-invite" aria-labelledby="invite-title">
         <div className="demo-invite-copy">
           <Typography as="h2" variant="h2" className="demo-block-title" id="invite-title">
-            Позовите друга
+            Invite a friend
           </Typography>
           <Typography as="p" variant="bodySm" className="demo-invite-text">
-            Когда приглашенный друг сделает первую покупку, вы получите предмет для своей коллекции.
+            When an invited friend makes their first purchase, you receive an item for your collection.
           </Typography>
         </div>
         <div className={`demo-invite-status ${referralIssued ? 'demo-invite-status-done' : ''}`}>
           <Typography as="span" variant="bodyXs">
             {referralIssued
-              ? 'Друг совершил покупку — предмет начислен.'
+              ? 'Your friend made a purchase — the item has been granted.'
               : referralReasonText(referral.reason)}
           </Typography>
         </div>
         <button className="demo-button demo-button-primary demo-button-block" type="button" disabled>
-          <Typography as="span" variant="control">Пригласить друга</Typography>
+          <Typography as="span" variant="control">Invite a friend</Typography>
         </button>
         <Typography as="span" variant="bodyXs" className="demo-block-hint">
-          В демонстрации приглашение не отправляется.
+          No invitation is actually sent in this demo.
         </Typography>
       </section>
     </>
@@ -227,26 +227,12 @@ function toParticipant(profileId: string, alias: string, profile: DemoState['pro
 }
 
 function formatSets(count: number): string {
-  if (count === 0) return 'наборов нет'
-  const tail = count % 100 >= 11 && count % 100 <= 14
-    ? 'наборов'
-    : count % 10 === 1
-      ? 'набор'
-      : count % 10 >= 2 && count % 10 <= 4
-        ? 'набора'
-        : 'наборов'
-  return `${count} ${tail}`
+  if (count === 0) return 'no sets'
+  return `${count} ${count === 1 ? 'set' : 'sets'}`
 }
 
 function formatItems(count: number): string {
-  const tail = count % 100 >= 11 && count % 100 <= 14
-    ? 'предметов'
-    : count % 10 === 1
-      ? 'предмет'
-      : count % 10 >= 2 && count % 10 <= 4
-        ? 'предмета'
-        : 'предметов'
-  return `${count} ${tail}`
+  return `${count} ${count === 1 ? 'item' : 'items'}`
 }
 
 function formatCollectionScore(sets: number, items: number): string {
@@ -254,8 +240,8 @@ function formatCollectionScore(sets: number, items: number): string {
 }
 
 /**
- * Титулы коллекций: по одному запросу на участника. Их пишет модель, а при недоступности
- * или нарушении контракта движок возвращает детерминированный шаблон.
+ * Collection titles: one request per participant. The model writes them; if it is unavailable
+ * or breaks the contract, the engine returns a deterministic template.
  */
 type CollectionTitleState = (
   | { status: 'error' }
@@ -296,7 +282,7 @@ function useCollectionTitles(profiles: readonly DemoState['profile'][], retry: n
       })()
     })
     return () => { cancelled = true }
-    // Состав коллекций полностью определяет титулы.
+    // The contents of the collections fully determine the titles.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, retry])
 
@@ -305,13 +291,13 @@ function useCollectionTitles(profiles: readonly DemoState['profile'][], retry: n
 
 function referralReasonText(reason: string): string {
   const messages: Record<string, string> = {
-    referral_reward_due: 'Условия приглашения выполнены — награда начислена.',
-    referral_not_invited: 'Вы пока никого не позвали.',
-    referral_self_invite: 'Приглашение самого себя не засчитывается.',
-    referral_existing_customer: 'У приглашённого уже были покупки, награда не начисляется.',
-    referral_no_qualifying_purchase: 'Друг принял приглашение — ждём его первую покупку.',
-    referral_window_expired: 'Друг купил позже семи дней после приглашения.',
-    referral_cap_reached: 'За эту неделю награда за приглашение уже получена.',
+    referral_reward_due: 'The invitation terms are met — the reward has been granted.',
+    referral_not_invited: 'You have not invited anyone yet.',
+    referral_self_invite: 'Inviting yourself does not count.',
+    referral_existing_customer: 'The invitee already had purchases, so no reward is granted.',
+    referral_no_qualifying_purchase: 'Your friend accepted the invitation — waiting for their first purchase.',
+    referral_window_expired: 'Your friend bought later than seven days after the invitation.',
+    referral_cap_reached: 'The invitation reward for this week has already been claimed.',
   }
   return messages[reason] ?? reason
 }

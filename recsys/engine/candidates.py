@@ -1,7 +1,7 @@
-"""Перебор пар «покупочное условие + полезный предмет», ограничения и ранжирование.
+"""Enumeration of "purchase condition + useful item" pairs, constraints and ranking.
 
-Каталог предметов и рецепты приходят в запросе снимком игры. Движок не хранит второй каталог
-и не считает процент скидки: это правило игры.
+The item catalog and the recipes arrive with the request as a game snapshot. The engine keeps no
+second catalog and does not compute the discount percentage: that is a game rule.
 """
 from __future__ import annotations
 
@@ -45,8 +45,8 @@ class Candidate(NamedTuple):
         return expected_net_kopecks(self.economics) if self.economics else 0
 
     def rank_key(self) -> tuple:
-        """Согласованный порядок: рецепт, знакомая категория, завершение, прирост,
-        выполнимость, экономика, стабильный ID."""
+        """Agreed order: recipe, familiar category, completion, progress,
+        feasibility, economics, stable ID."""
         recency = self.days_since_last if self.days_since_last is not None else 10_000
         return (
             not self.is_goal_recipe,
@@ -64,7 +64,7 @@ def select_goal_recipe(
     game_features: dict[str, Any],
     history: PurchaseHistory,
 ) -> str | None:
-    """Один выбранный рецепт: наибольший прогресс, затем знакомость недостающих категорий."""
+    """One selected recipe: the greatest progress, then familiarity of the missing categories."""
     categories = {item["id"]: item["category"] for item in game["items"]}
     ranked = []
     for progress in game_features["recipe_progress"]:
@@ -251,7 +251,7 @@ def _evaluate(
 
 
 def _eligible_target_skus(category: str, sku_catalog: dict[str, Any]) -> list[dict[str, Any]]:
-    """Список оплачиваемых SKU категории фиксируется до показа задания."""
+    """The list of paid SKUs for a category is fixed before the challenge is shown."""
     return sorted(
         (
             sku
@@ -265,7 +265,7 @@ def _eligible_target_skus(category: str, sku_catalog: dict[str, Any]) -> list[di
 
 
 def _pick_gift_sku(category: str, sku_catalog: dict[str, Any]) -> dict[str, Any] | None:
-    """Бесплатный товар — отдельный маленький формат с собственным остатком и себестоимостью."""
+    """A free product is a separate small format with its own stock and unit cost."""
     available = [
         sku
         for sku in sku_catalog.get("gift_skus", [])

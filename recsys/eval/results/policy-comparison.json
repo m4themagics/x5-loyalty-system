@@ -27,7 +27,7 @@
         "purchase_days": 1399,
         "baseline_purchase_days": 1378,
         "incremental_purchases": 21,
-        "name": "Положительный эффект",
+        "name": "Positive effect",
         "users": 1000,
         "served_users": 204,
         "policy": "sponsored_onboarding",
@@ -63,7 +63,7 @@
         "audience_breakdown": [
           {
             "audience_segment": "harmful_habits",
-            "label": "Взрослые с вредными привычками",
+            "label": "Adults with harmful habits",
             "users": 50,
             "offers": 58,
             "operations_kopecks": 6960,
@@ -81,7 +81,7 @@
           },
           {
             "audience_segment": "youth",
-            "label": "Молодёжь",
+            "label": "Young adults",
             "users": 370,
             "offers": 236,
             "operations_kopecks": 28320,
@@ -101,7 +101,7 @@
           },
           {
             "audience_segment": "mature",
-            "label": "Зрелые",
+            "label": "Mature",
             "users": 210,
             "offers": 148,
             "operations_kopecks": 17760,
@@ -120,7 +120,7 @@
           },
           {
             "audience_segment": "parents_u3",
-            "label": "Взрослые с детьми до 3 лет",
+            "label": "Adults with children under 3",
             "users": 260,
             "offers": 194,
             "operations_kopecks": 23280,
@@ -140,7 +140,7 @@
           },
           {
             "audience_segment": "senior",
-            "label": "Старшие",
+            "label": "Seniors",
             "users": 110,
             "offers": 68,
             "operations_kopecks": 8160,
@@ -161,7 +161,7 @@
         "engagement_breakdown": [
           {
             "engagement": "skeptical",
-            "label": "Скептичные",
+            "label": "Sceptical",
             "users": 429,
             "offers": 305,
             "operations_kopecks": 36600,
@@ -180,7 +180,7 @@
           },
           {
             "engagement": "neutral",
-            "label": "Нейтральные",
+            "label": "Neutral",
             "users": 392,
             "offers": 283,
             "operations_kopecks": 33960,
@@ -200,7 +200,7 @@
           },
           {
             "engagement": "interested",
-            "label": "Заинтересованные",
+            "label": "Interested",
             "users": 179,
             "offers": 116,
             "operations_kopecks": 13920,
@@ -243,7 +243,7 @@
         "purchase_days": 1417,
         "baseline_purchase_days": 1398,
         "incremental_purchases": 19,
-        "name": "Положительный эффект",
+        "name": "Positive effect",
         "users": 1000,
         "served_users": 202,
         "policy": "sponsored_onboarding",
@@ -279,7 +279,7 @@
         "audience_breakdown": [
           {
             "audience_segment": "youth",
-            "label": "Молодёжь",
+            "label": "Young adults",
             "users": 370,
             "offers": 269,
             "operations_kopecks": 32280,
@@ -299,7 +299,7 @@
           },
           {
             "audience_segment": "senior",
-            "label": "Старшие",
+            "label": "Seniors",
             "users": 110,
             "offers": 77,
             "operations_kopecks": 9240,
@@ -318,7 +318,7 @@
           },
           {
             "audience_segment": "mature",
-            "label": "Зрелые",
+            "label": "Mature",
             "users": 210,
             "offers": 127,
             "operations_kopecks": 15240,
@@ -337,7 +337,7 @@
           },
           {
             "audience_segment": "parents_u3",
-            "label": "Взрослые с детьми до 3 лет",
+            "label": "Adults with children under 3",
             "users": 260,
             "offers": 174,
             "operations_kopecks": 20880,
@@ -357,7 +357,7 @@
           },
           {
             "audience_segment": "harmful_habits",
-            "label": "Взрослые с вредными привычками",
+            "label": "Adults with harmful habits",
             "users": 50,
             "offers": 29,
             "operations_kopecks": 3480,
@@ -377,7 +377,7 @@
         "engagement_breakdown": [
           {
             "engagement": "neutral",
-            "label": "Нейтральные",
+            "label": "Neutral",
             "users": 392,
             "offers": 254,
             "operations_kopecks": 30480,
@@ -397,7 +397,7 @@
           },
           {
             "engagement": "skeptical",
-            "label": "Скептичные",
+            "label": "Sceptical",
             "users": 429,
             "offers": 298,
             "operations_kopecks": 35760,
@@ -416,7 +416,7 @@
           },
           {
             "engagement": "interested",
-            "label": "Заинтересованные",
+            "label": "Interested",
             "users": 179,
             "offers": 124,
             "operations_kopecks": 14880,
@@ -458,7 +458,7 @@
         "purchase_days": 1360,
         "baseline_purchase_days": 1338,
         "incremental_purchases": 22,
-        "name": "Положительный эффект",
+        "name": "Positive effect",
         "users": 1000,
         "served_users": 202,
         "policy": "sponsored_onboarding",
@@ -494,7 +494,7 @@
         "audience_breakdown": [
           {
             "audience_segment": "mature",
-            "label": "Зрелые",
+            "label": "Mature",
             "users": 210,
             "offers": 120,
             "operations_kopecks": 14400,
@@ -513,7 +513,7 @@
           },
           {
             "audience_segment": "parents_u3",
-            "label": "Взрослые с детьми до 3 лет",
+            "label": "Adults with children under 3",
             "users": 260,
             "offers": 174,
             "operations_kopecks": 20880,
@@ -533,7 +533,7 @@
           },
           {
             "audience_segment": "youth",
-            "label": "Молодёжь",
+            "label": "Young adults",
             "users": 370,
             "offers": 268,
             "operations_kopecks": 32160,
@@ -553,7 +553,7 @@
           },
           {
             "audience_segment": "harmful_habits",
-            "label": "Взрослые с вредными привычками",
+            "label": "Adults with harmful habits",
             "users": 50,
             "offers": 42,
             "operations_kopecks": 5040,
@@ -572,7 +572,7 @@
           },
           {
             "audience_segment": "senior",
-            "label": "Старшие",
+            "label": "Seniors",
             "users": 110,
             "offers": 82,
             "operations_kopecks": 9840,
@@ -593,7 +593,7 @@
         "engagement_breakdown": [
           {
             "engagement": "skeptical",
-            "label": "Скептичные",
+            "label": "Sceptical",
             "users": 429,
             "offers": 297,
             "operations_kopecks": 35640,
@@ -612,7 +612,7 @@
           },
           {
             "engagement": "interested",
-            "label": "Заинтересованные",
+            "label": "Interested",
             "users": 179,
             "offers": 102,
             "operations_kopecks": 12240,
@@ -631,7 +631,7 @@
           },
           {
             "engagement": "neutral",
-            "label": "Нейтральные",
+            "label": "Neutral",
             "users": 392,
             "offers": 287,
             "operations_kopecks": 34440,
@@ -674,7 +674,7 @@
         "purchase_days": 1408,
         "baseline_purchase_days": 1386,
         "incremental_purchases": 22,
-        "name": "Положительный эффект",
+        "name": "Positive effect",
         "users": 1000,
         "served_users": 205,
         "policy": "sponsored_onboarding",
@@ -710,7 +710,7 @@
         "audience_breakdown": [
           {
             "audience_segment": "parents_u3",
-            "label": "Взрослые с детьми до 3 лет",
+            "label": "Adults with children under 3",
             "users": 260,
             "offers": 183,
             "operations_kopecks": 21960,
@@ -730,7 +730,7 @@
           },
           {
             "audience_segment": "mature",
-            "label": "Зрелые",
+            "label": "Mature",
             "users": 210,
             "offers": 164,
             "operations_kopecks": 19680,
@@ -750,7 +750,7 @@
           },
           {
             "audience_segment": "youth",
-            "label": "Молодёжь",
+            "label": "Young adults",
             "users": 370,
             "offers": 242,
             "operations_kopecks": 29040,
@@ -770,7 +770,7 @@
           },
           {
             "audience_segment": "harmful_habits",
-            "label": "Взрослые с вредными привычками",
+            "label": "Adults with harmful habits",
             "users": 50,
             "offers": 47,
             "operations_kopecks": 5640,
@@ -789,7 +789,7 @@
           },
           {
             "audience_segment": "senior",
-            "label": "Старшие",
+            "label": "Seniors",
             "users": 110,
             "offers": 70,
             "operations_kopecks": 8400,
@@ -810,7 +810,7 @@
         "engagement_breakdown": [
           {
             "engagement": "skeptical",
-            "label": "Скептичные",
+            "label": "Sceptical",
             "users": 429,
             "offers": 319,
             "operations_kopecks": 38280,
@@ -830,7 +830,7 @@
           },
           {
             "engagement": "neutral",
-            "label": "Нейтральные",
+            "label": "Neutral",
             "users": 392,
             "offers": 269,
             "operations_kopecks": 32280,
@@ -850,7 +850,7 @@
           },
           {
             "engagement": "interested",
-            "label": "Заинтересованные",
+            "label": "Interested",
             "users": 179,
             "offers": 118,
             "operations_kopecks": 14160,
@@ -893,7 +893,7 @@
         "purchase_days": 1420,
         "baseline_purchase_days": 1401,
         "incremental_purchases": 19,
-        "name": "Положительный эффект",
+        "name": "Positive effect",
         "users": 1000,
         "served_users": 207,
         "policy": "sponsored_onboarding",
@@ -929,7 +929,7 @@
         "audience_breakdown": [
           {
             "audience_segment": "senior",
-            "label": "Старшие",
+            "label": "Seniors",
             "users": 110,
             "offers": 85,
             "operations_kopecks": 10200,
@@ -948,7 +948,7 @@
           },
           {
             "audience_segment": "parents_u3",
-            "label": "Взрослые с детьми до 3 лет",
+            "label": "Adults with children under 3",
             "users": 260,
             "offers": 175,
             "operations_kopecks": 21000,
@@ -968,7 +968,7 @@
           },
           {
             "audience_segment": "harmful_habits",
-            "label": "Взрослые с вредными привычками",
+            "label": "Adults with harmful habits",
             "users": 50,
             "offers": 48,
             "operations_kopecks": 5760,
@@ -987,7 +987,7 @@
           },
           {
             "audience_segment": "mature",
-            "label": "Зрелые",
+            "label": "Mature",
             "users": 210,
             "offers": 131,
             "operations_kopecks": 15720,
@@ -1005,7 +1005,7 @@
           },
           {
             "audience_segment": "youth",
-            "label": "Молодёжь",
+            "label": "Young adults",
             "users": 370,
             "offers": 255,
             "operations_kopecks": 30600,
@@ -1027,7 +1027,7 @@
         "engagement_breakdown": [
           {
             "engagement": "skeptical",
-            "label": "Скептичные",
+            "label": "Sceptical",
             "users": 429,
             "offers": 307,
             "operations_kopecks": 36840,
@@ -1046,7 +1046,7 @@
           },
           {
             "engagement": "neutral",
-            "label": "Нейтральные",
+            "label": "Neutral",
             "users": 392,
             "offers": 269,
             "operations_kopecks": 32280,
@@ -1065,7 +1065,7 @@
           },
           {
             "engagement": "interested",
-            "label": "Заинтересованные",
+            "label": "Interested",
             "users": 179,
             "offers": 118,
             "operations_kopecks": 14160,
@@ -1178,7 +1178,7 @@
           "purchase_days": 1477,
           "baseline_purchase_days": 1378,
           "incremental_purchases": 99,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 961,
           "policy": "personalized_broad",
@@ -1209,7 +1209,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 169,
               "operations_kopecks": 20280,
@@ -1228,7 +1228,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 1152,
               "operations_kopecks": 138240,
@@ -1248,7 +1248,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 672,
               "operations_kopecks": 80640,
@@ -1268,7 +1268,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 801,
               "operations_kopecks": 96120,
@@ -1288,7 +1288,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 325,
               "operations_kopecks": 39000,
@@ -1310,7 +1310,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 1357,
               "operations_kopecks": 162840,
@@ -1330,7 +1330,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 1200,
               "operations_kopecks": 144000,
@@ -1350,7 +1350,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 562,
               "operations_kopecks": 67440,
@@ -1393,7 +1393,7 @@
           "purchase_days": 1488,
           "baseline_purchase_days": 1398,
           "incremental_purchases": 90,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 972,
           "policy": "personalized_broad",
@@ -1424,7 +1424,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 1161,
               "operations_kopecks": 139320,
@@ -1444,7 +1444,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 350,
               "operations_kopecks": 42000,
@@ -1464,7 +1464,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 669,
               "operations_kopecks": 80280,
@@ -1484,7 +1484,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 804,
               "operations_kopecks": 96480,
@@ -1504,7 +1504,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 147,
               "operations_kopecks": 17640,
@@ -1525,7 +1525,7 @@
           "engagement_breakdown": [
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 1222,
               "operations_kopecks": 146640,
@@ -1545,7 +1545,7 @@
             },
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 1340,
               "operations_kopecks": 160800,
@@ -1565,7 +1565,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 569,
               "operations_kopecks": 68280,
@@ -1608,7 +1608,7 @@
           "purchase_days": 1455,
           "baseline_purchase_days": 1338,
           "incremental_purchases": 117,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 956,
           "policy": "personalized_broad",
@@ -1639,7 +1639,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 668,
               "operations_kopecks": 80160,
@@ -1659,7 +1659,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 826,
               "operations_kopecks": 99120,
@@ -1679,7 +1679,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 1151,
               "operations_kopecks": 138120,
@@ -1699,7 +1699,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 176,
               "operations_kopecks": 21120,
@@ -1719,7 +1719,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 335,
               "operations_kopecks": 40200,
@@ -1741,7 +1741,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 1358,
               "operations_kopecks": 162960,
@@ -1760,7 +1760,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 583,
               "operations_kopecks": 69960,
@@ -1780,7 +1780,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 1215,
               "operations_kopecks": 145800,
@@ -1823,7 +1823,7 @@
           "purchase_days": 1511,
           "baseline_purchase_days": 1386,
           "incremental_purchases": 125,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 962,
           "policy": "personalized_broad",
@@ -1854,7 +1854,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 788,
               "operations_kopecks": 94560,
@@ -1874,7 +1874,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 647,
               "operations_kopecks": 77640,
@@ -1894,7 +1894,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 1161,
               "operations_kopecks": 139320,
@@ -1914,7 +1914,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 168,
               "operations_kopecks": 20160,
@@ -1933,7 +1933,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 342,
               "operations_kopecks": 41040,
@@ -1955,7 +1955,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 1317,
               "operations_kopecks": 158040,
@@ -1975,7 +1975,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 1235,
               "operations_kopecks": 148200,
@@ -1995,7 +1995,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 554,
               "operations_kopecks": 66480,
@@ -2038,7 +2038,7 @@
           "purchase_days": 1515,
           "baseline_purchase_days": 1401,
           "incremental_purchases": 114,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 973,
           "policy": "personalized_broad",
@@ -2069,7 +2069,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 358,
               "operations_kopecks": 42960,
@@ -2089,7 +2089,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 797,
               "operations_kopecks": 95640,
@@ -2109,7 +2109,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 158,
               "operations_kopecks": 18960,
@@ -2128,7 +2128,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 672,
               "operations_kopecks": 80640,
@@ -2147,7 +2147,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 1154,
               "operations_kopecks": 138480,
@@ -2169,7 +2169,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 1392,
               "operations_kopecks": 167040,
@@ -2188,7 +2188,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 1215,
               "operations_kopecks": 145800,
@@ -2208,7 +2208,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 532,
               "operations_kopecks": 63840,
@@ -2320,7 +2320,7 @@
           "purchase_days": 1399,
           "baseline_purchase_days": 1378,
           "incremental_purchases": 21,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 204,
           "policy": "sponsored_onboarding",
@@ -2356,7 +2356,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 58,
               "operations_kopecks": 6960,
@@ -2374,7 +2374,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 236,
               "operations_kopecks": 28320,
@@ -2394,7 +2394,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 148,
               "operations_kopecks": 17760,
@@ -2413,7 +2413,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 194,
               "operations_kopecks": 23280,
@@ -2433,7 +2433,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 68,
               "operations_kopecks": 8160,
@@ -2454,7 +2454,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 305,
               "operations_kopecks": 36600,
@@ -2473,7 +2473,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 283,
               "operations_kopecks": 33960,
@@ -2493,7 +2493,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 116,
               "operations_kopecks": 13920,
@@ -2536,7 +2536,7 @@
           "purchase_days": 1417,
           "baseline_purchase_days": 1398,
           "incremental_purchases": 19,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 202,
           "policy": "sponsored_onboarding",
@@ -2572,7 +2572,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 269,
               "operations_kopecks": 32280,
@@ -2592,7 +2592,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 77,
               "operations_kopecks": 9240,
@@ -2611,7 +2611,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 127,
               "operations_kopecks": 15240,
@@ -2630,7 +2630,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 174,
               "operations_kopecks": 20880,
@@ -2650,7 +2650,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 29,
               "operations_kopecks": 3480,
@@ -2670,7 +2670,7 @@
           "engagement_breakdown": [
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 254,
               "operations_kopecks": 30480,
@@ -2690,7 +2690,7 @@
             },
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 298,
               "operations_kopecks": 35760,
@@ -2709,7 +2709,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 124,
               "operations_kopecks": 14880,
@@ -2751,7 +2751,7 @@
           "purchase_days": 1360,
           "baseline_purchase_days": 1338,
           "incremental_purchases": 22,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 202,
           "policy": "sponsored_onboarding",
@@ -2787,7 +2787,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 120,
               "operations_kopecks": 14400,
@@ -2806,7 +2806,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 174,
               "operations_kopecks": 20880,
@@ -2826,7 +2826,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 268,
               "operations_kopecks": 32160,
@@ -2846,7 +2846,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 42,
               "operations_kopecks": 5040,
@@ -2865,7 +2865,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 82,
               "operations_kopecks": 9840,
@@ -2886,7 +2886,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 297,
               "operations_kopecks": 35640,
@@ -2905,7 +2905,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 102,
               "operations_kopecks": 12240,
@@ -2924,7 +2924,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 287,
               "operations_kopecks": 34440,
@@ -2967,7 +2967,7 @@
           "purchase_days": 1408,
           "baseline_purchase_days": 1386,
           "incremental_purchases": 22,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 205,
           "policy": "sponsored_onboarding",
@@ -3003,7 +3003,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 183,
               "operations_kopecks": 21960,
@@ -3023,7 +3023,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 164,
               "operations_kopecks": 19680,
@@ -3043,7 +3043,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 242,
               "operations_kopecks": 29040,
@@ -3063,7 +3063,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 47,
               "operations_kopecks": 5640,
@@ -3082,7 +3082,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 70,
               "operations_kopecks": 8400,
@@ -3103,7 +3103,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 319,
               "operations_kopecks": 38280,
@@ -3123,7 +3123,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 269,
               "operations_kopecks": 32280,
@@ -3143,7 +3143,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 118,
               "operations_kopecks": 14160,
@@ -3186,7 +3186,7 @@
           "purchase_days": 1420,
           "baseline_purchase_days": 1401,
           "incremental_purchases": 19,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 207,
           "policy": "sponsored_onboarding",
@@ -3222,7 +3222,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 85,
               "operations_kopecks": 10200,
@@ -3241,7 +3241,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 175,
               "operations_kopecks": 21000,
@@ -3261,7 +3261,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 48,
               "operations_kopecks": 5760,
@@ -3280,7 +3280,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 131,
               "operations_kopecks": 15720,
@@ -3298,7 +3298,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 255,
               "operations_kopecks": 30600,
@@ -3320,7 +3320,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 307,
               "operations_kopecks": 36840,
@@ -3339,7 +3339,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 269,
               "operations_kopecks": 32280,
@@ -3358,7 +3358,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 118,
               "operations_kopecks": 14160,
@@ -3470,7 +3470,7 @@
           "purchase_days": 1384,
           "baseline_purchase_days": 1378,
           "incremental_purchases": 6,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 67,
           "policy": "fixed_dairy",
@@ -3500,7 +3500,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 11,
               "operations_kopecks": 1320,
@@ -3518,7 +3518,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 56,
               "operations_kopecks": 6720,
@@ -3538,7 +3538,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 41,
               "operations_kopecks": 4920,
@@ -3556,7 +3556,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 33,
               "operations_kopecks": 3960,
@@ -3574,7 +3574,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 21,
               "operations_kopecks": 2520,
@@ -3594,7 +3594,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 64,
               "operations_kopecks": 7680,
@@ -3612,7 +3612,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 75,
               "operations_kopecks": 9000,
@@ -3631,7 +3631,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 23,
               "operations_kopecks": 2760,
@@ -3673,7 +3673,7 @@
           "purchase_days": 1404,
           "baseline_purchase_days": 1398,
           "incremental_purchases": 6,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 70,
           "policy": "fixed_dairy",
@@ -3703,7 +3703,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 52,
               "operations_kopecks": 6240,
@@ -3722,7 +3722,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 23,
               "operations_kopecks": 2760,
@@ -3740,7 +3740,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 39,
               "operations_kopecks": 4680,
@@ -3758,7 +3758,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 59,
               "operations_kopecks": 7080,
@@ -3778,7 +3778,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 8,
               "operations_kopecks": 960,
@@ -3798,7 +3798,7 @@
           "engagement_breakdown": [
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 77,
               "operations_kopecks": 9240,
@@ -3817,7 +3817,7 @@
             },
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 87,
               "operations_kopecks": 10440,
@@ -3835,7 +3835,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 17,
               "operations_kopecks": 2040,
@@ -3877,7 +3877,7 @@
           "purchase_days": 1342,
           "baseline_purchase_days": 1338,
           "incremental_purchases": 4,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 66,
           "policy": "fixed_dairy",
@@ -3907,7 +3907,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 40,
               "operations_kopecks": 4800,
@@ -3925,7 +3925,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 41,
               "operations_kopecks": 4920,
@@ -3944,7 +3944,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 54,
               "operations_kopecks": 6480,
@@ -3963,7 +3963,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 10,
               "operations_kopecks": 1200,
@@ -3982,7 +3982,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 23,
               "operations_kopecks": 2760,
@@ -4002,7 +4002,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 70,
               "operations_kopecks": 8400,
@@ -4020,7 +4020,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 20,
               "operations_kopecks": 2400,
@@ -4039,7 +4039,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 78,
               "operations_kopecks": 9360,
@@ -4081,7 +4081,7 @@
           "purchase_days": 1388,
           "baseline_purchase_days": 1386,
           "incremental_purchases": 2,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 71,
           "policy": "fixed_dairy",
@@ -4111,7 +4111,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 38,
               "operations_kopecks": 4560,
@@ -4129,7 +4129,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 47,
               "operations_kopecks": 5640,
@@ -4149,7 +4149,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 52,
               "operations_kopecks": 6240,
@@ -4168,7 +4168,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 6,
               "operations_kopecks": 720,
@@ -4186,7 +4186,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 30,
               "operations_kopecks": 3600,
@@ -4206,7 +4206,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 87,
               "operations_kopecks": 10440,
@@ -4225,7 +4225,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 73,
               "operations_kopecks": 8760,
@@ -4244,7 +4244,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 13,
               "operations_kopecks": 1560,
@@ -4286,7 +4286,7 @@
           "purchase_days": 1406,
           "baseline_purchase_days": 1401,
           "incremental_purchases": 5,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 68,
           "policy": "fixed_dairy",
@@ -4316,7 +4316,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 13,
               "operations_kopecks": 1560,
@@ -4334,7 +4334,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 35,
               "operations_kopecks": 4200,
@@ -4353,7 +4353,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 10,
               "operations_kopecks": 1200,
@@ -4371,7 +4371,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 43,
               "operations_kopecks": 5160,
@@ -4389,7 +4389,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 73,
               "operations_kopecks": 8760,
@@ -4411,7 +4411,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 73,
               "operations_kopecks": 8760,
@@ -4430,7 +4430,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 62,
               "operations_kopecks": 7440,
@@ -4449,7 +4449,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 39,
               "operations_kopecks": 4680,
@@ -4560,7 +4560,7 @@
           "purchase_days": 1393,
           "baseline_purchase_days": 1378,
           "incremental_purchases": 15,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 204,
           "policy": "reward_only",
@@ -4596,7 +4596,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 58,
               "operations_kopecks": 6960,
@@ -4614,7 +4614,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 237,
               "operations_kopecks": 28440,
@@ -4634,7 +4634,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 148,
               "operations_kopecks": 17760,
@@ -4653,7 +4653,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 194,
               "operations_kopecks": 23280,
@@ -4673,7 +4673,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 68,
               "operations_kopecks": 8160,
@@ -4694,7 +4694,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 305,
               "operations_kopecks": 36600,
@@ -4713,7 +4713,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 285,
               "operations_kopecks": 34200,
@@ -4733,7 +4733,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 115,
               "operations_kopecks": 13800,
@@ -4776,7 +4776,7 @@
           "purchase_days": 1415,
           "baseline_purchase_days": 1398,
           "incremental_purchases": 17,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 202,
           "policy": "reward_only",
@@ -4812,7 +4812,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 270,
               "operations_kopecks": 32400,
@@ -4832,7 +4832,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 77,
               "operations_kopecks": 9240,
@@ -4851,7 +4851,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 127,
               "operations_kopecks": 15240,
@@ -4870,7 +4870,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 174,
               "operations_kopecks": 20880,
@@ -4890,7 +4890,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 29,
               "operations_kopecks": 3480,
@@ -4910,7 +4910,7 @@
           "engagement_breakdown": [
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 255,
               "operations_kopecks": 30600,
@@ -4930,7 +4930,7 @@
             },
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 298,
               "operations_kopecks": 35760,
@@ -4949,7 +4949,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 124,
               "operations_kopecks": 14880,
@@ -4991,7 +4991,7 @@
           "purchase_days": 1357,
           "baseline_purchase_days": 1338,
           "incremental_purchases": 19,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 202,
           "policy": "reward_only",
@@ -5027,7 +5027,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 120,
               "operations_kopecks": 14400,
@@ -5046,7 +5046,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 174,
               "operations_kopecks": 20880,
@@ -5066,7 +5066,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 268,
               "operations_kopecks": 32160,
@@ -5086,7 +5086,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 42,
               "operations_kopecks": 5040,
@@ -5105,7 +5105,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 83,
               "operations_kopecks": 9960,
@@ -5126,7 +5126,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 297,
               "operations_kopecks": 35640,
@@ -5145,7 +5145,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 102,
               "operations_kopecks": 12240,
@@ -5164,7 +5164,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 288,
               "operations_kopecks": 34560,
@@ -5207,7 +5207,7 @@
           "purchase_days": 1404,
           "baseline_purchase_days": 1386,
           "incremental_purchases": 18,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 205,
           "policy": "reward_only",
@@ -5243,7 +5243,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 183,
               "operations_kopecks": 21960,
@@ -5263,7 +5263,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 164,
               "operations_kopecks": 19680,
@@ -5283,7 +5283,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 242,
               "operations_kopecks": 29040,
@@ -5303,7 +5303,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 47,
               "operations_kopecks": 5640,
@@ -5322,7 +5322,7 @@
             },
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 70,
               "operations_kopecks": 8400,
@@ -5343,7 +5343,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 319,
               "operations_kopecks": 38280,
@@ -5363,7 +5363,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 269,
               "operations_kopecks": 32280,
@@ -5383,7 +5383,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 118,
               "operations_kopecks": 14160,
@@ -5426,7 +5426,7 @@
           "purchase_days": 1414,
           "baseline_purchase_days": 1401,
           "incremental_purchases": 13,
-          "name": "Положительный эффект",
+          "name": "Positive effect",
           "users": 1000,
           "served_users": 207,
           "policy": "reward_only",
@@ -5462,7 +5462,7 @@
           "audience_breakdown": [
             {
               "audience_segment": "senior",
-              "label": "Старшие",
+              "label": "Seniors",
               "users": 110,
               "offers": 86,
               "operations_kopecks": 10320,
@@ -5481,7 +5481,7 @@
             },
             {
               "audience_segment": "parents_u3",
-              "label": "Взрослые с детьми до 3 лет",
+              "label": "Adults with children under 3",
               "users": 260,
               "offers": 175,
               "operations_kopecks": 21000,
@@ -5501,7 +5501,7 @@
             },
             {
               "audience_segment": "harmful_habits",
-              "label": "Взрослые с вредными привычками",
+              "label": "Adults with harmful habits",
               "users": 50,
               "offers": 48,
               "operations_kopecks": 5760,
@@ -5520,7 +5520,7 @@
             },
             {
               "audience_segment": "mature",
-              "label": "Зрелые",
+              "label": "Mature",
               "users": 210,
               "offers": 131,
               "operations_kopecks": 15720,
@@ -5538,7 +5538,7 @@
             },
             {
               "audience_segment": "youth",
-              "label": "Молодёжь",
+              "label": "Young adults",
               "users": 370,
               "offers": 255,
               "operations_kopecks": 30600,
@@ -5560,7 +5560,7 @@
           "engagement_breakdown": [
             {
               "engagement": "skeptical",
-              "label": "Скептичные",
+              "label": "Sceptical",
               "users": 429,
               "offers": 307,
               "operations_kopecks": 36840,
@@ -5579,7 +5579,7 @@
             },
             {
               "engagement": "neutral",
-              "label": "Нейтральные",
+              "label": "Neutral",
               "users": 392,
               "offers": 271,
               "operations_kopecks": 32520,
@@ -5598,7 +5598,7 @@
             },
             {
               "engagement": "interested",
-              "label": "Заинтересованные",
+              "label": "Interested",
               "users": 179,
               "offers": 117,
               "operations_kopecks": 14040,
@@ -5701,7 +5701,7 @@
       "purchase_days": 1515,
       "baseline_purchase_days": 1401,
       "incremental_purchases": 114,
-      "name": "Положительный эффект",
+      "name": "Positive effect",
       "users": 1000,
       "served_users": 973,
       "policy": "personalized_broad",
@@ -5732,7 +5732,7 @@
       "audience_breakdown": [
         {
           "audience_segment": "senior",
-          "label": "Старшие",
+          "label": "Seniors",
           "users": 110,
           "offers": 358,
           "operations_kopecks": 42960,
@@ -5752,7 +5752,7 @@
         },
         {
           "audience_segment": "parents_u3",
-          "label": "Взрослые с детьми до 3 лет",
+          "label": "Adults with children under 3",
           "users": 260,
           "offers": 797,
           "operations_kopecks": 95640,
@@ -5772,7 +5772,7 @@
         },
         {
           "audience_segment": "harmful_habits",
-          "label": "Взрослые с вредными привычками",
+          "label": "Adults with harmful habits",
           "users": 50,
           "offers": 158,
           "operations_kopecks": 18960,
@@ -5791,7 +5791,7 @@
         },
         {
           "audience_segment": "mature",
-          "label": "Зрелые",
+          "label": "Mature",
           "users": 210,
           "offers": 672,
           "operations_kopecks": 80640,
@@ -5810,7 +5810,7 @@
         },
         {
           "audience_segment": "youth",
-          "label": "Молодёжь",
+          "label": "Young adults",
           "users": 370,
           "offers": 1154,
           "operations_kopecks": 138480,
@@ -5832,7 +5832,7 @@
       "engagement_breakdown": [
         {
           "engagement": "skeptical",
-          "label": "Скептичные",
+          "label": "Sceptical",
           "users": 429,
           "offers": 1392,
           "operations_kopecks": 167040,
@@ -5851,7 +5851,7 @@
         },
         {
           "engagement": "neutral",
-          "label": "Нейтральные",
+          "label": "Neutral",
           "users": 392,
           "offers": 1215,
           "operations_kopecks": 145800,
@@ -5871,7 +5871,7 @@
         },
         {
           "engagement": "interested",
-          "label": "Заинтересованные",
+          "label": "Interested",
           "users": 179,
           "offers": 532,
           "operations_kopecks": 63840,
@@ -5913,7 +5913,7 @@
       "purchase_days": 1401,
       "baseline_purchase_days": 1401,
       "incremental_purchases": 0,
-      "name": "Нулевой эффект",
+      "name": "Zero effect",
       "users": 1000,
       "served_users": 973,
       "policy": "personalized_broad",
@@ -5944,7 +5944,7 @@
       "audience_breakdown": [
         {
           "audience_segment": "senior",
-          "label": "Старшие",
+          "label": "Seniors",
           "users": 110,
           "offers": 364,
           "operations_kopecks": 43680,
@@ -5964,7 +5964,7 @@
         },
         {
           "audience_segment": "parents_u3",
-          "label": "Взрослые с детьми до 3 лет",
+          "label": "Adults with children under 3",
           "users": 260,
           "offers": 810,
           "operations_kopecks": 97200,
@@ -5984,7 +5984,7 @@
         },
         {
           "audience_segment": "harmful_habits",
-          "label": "Взрослые с вредными привычками",
+          "label": "Adults with harmful habits",
           "users": 50,
           "offers": 158,
           "operations_kopecks": 18960,
@@ -6003,7 +6003,7 @@
         },
         {
           "audience_segment": "mature",
-          "label": "Зрелые",
+          "label": "Mature",
           "users": 210,
           "offers": 680,
           "operations_kopecks": 81600,
@@ -6022,7 +6022,7 @@
         },
         {
           "audience_segment": "youth",
-          "label": "Молодёжь",
+          "label": "Young adults",
           "users": 370,
           "offers": 1182,
           "operations_kopecks": 141840,
@@ -6044,7 +6044,7 @@
       "engagement_breakdown": [
         {
           "engagement": "skeptical",
-          "label": "Скептичные",
+          "label": "Sceptical",
           "users": 429,
           "offers": 1397,
           "operations_kopecks": 167640,
@@ -6063,7 +6063,7 @@
         },
         {
           "engagement": "neutral",
-          "label": "Нейтральные",
+          "label": "Neutral",
           "users": 392,
           "offers": 1238,
           "operations_kopecks": 148560,
@@ -6083,7 +6083,7 @@
         },
         {
           "engagement": "interested",
-          "label": "Заинтересованные",
+          "label": "Interested",
           "users": 179,
           "offers": 559,
           "operations_kopecks": 67080,
@@ -6125,7 +6125,7 @@
       "purchase_days": 1362,
       "baseline_purchase_days": 1401,
       "incremental_purchases": -39,
-      "name": "Отрицательный эффект",
+      "name": "Negative effect",
       "users": 1000,
       "served_users": 973,
       "policy": "personalized_broad",
@@ -6156,7 +6156,7 @@
       "audience_breakdown": [
         {
           "audience_segment": "senior",
-          "label": "Старшие",
+          "label": "Seniors",
           "users": 110,
           "offers": 363,
           "operations_kopecks": 43560,
@@ -6176,7 +6176,7 @@
         },
         {
           "audience_segment": "parents_u3",
-          "label": "Взрослые с детьми до 3 лет",
+          "label": "Adults with children under 3",
           "users": 260,
           "offers": 814,
           "operations_kopecks": 97680,
@@ -6196,7 +6196,7 @@
         },
         {
           "audience_segment": "harmful_habits",
-          "label": "Взрослые с вредными привычками",
+          "label": "Adults with harmful habits",
           "users": 50,
           "offers": 158,
           "operations_kopecks": 18960,
@@ -6216,7 +6216,7 @@
         },
         {
           "audience_segment": "mature",
-          "label": "Зрелые",
+          "label": "Mature",
           "users": 210,
           "offers": 674,
           "operations_kopecks": 80880,
@@ -6236,7 +6236,7 @@
         },
         {
           "audience_segment": "youth",
-          "label": "Молодёжь",
+          "label": "Young adults",
           "users": 370,
           "offers": 1187,
           "operations_kopecks": 142440,
@@ -6258,7 +6258,7 @@
       "engagement_breakdown": [
         {
           "engagement": "skeptical",
-          "label": "Скептичные",
+          "label": "Sceptical",
           "users": 429,
           "offers": 1400,
           "operations_kopecks": 168000,
@@ -6277,7 +6277,7 @@
         },
         {
           "engagement": "neutral",
-          "label": "Нейтральные",
+          "label": "Neutral",
           "users": 392,
           "offers": 1236,
           "operations_kopecks": 148320,
@@ -6297,7 +6297,7 @@
         },
         {
           "engagement": "interested",
-          "label": "Заинтересованные",
+          "label": "Interested",
           "users": 179,
           "offers": 560,
           "operations_kopecks": 67200,

@@ -20,7 +20,7 @@ import {
 
 import { buildDemoGameFeatures, buildDemoGameSnapshot, fromDemoInventory } from './demo-game-snapshot'
 
-/** Клиент локального демонстрационного API. Ответ движка валидируется тем же контрактом. */
+/** Client of the local demo API. The engine response is validated by the same contract. */
 
 const TITLE_REQUEST_TIMEOUT_MS = 5_000
 
@@ -39,8 +39,8 @@ export async function fetchSeedProfiles(): Promise<DemoApiResult<DemoSeedProfile
 }
 
 /**
- * Статический хостинг не запускает локальный Python API. Этот синтетический профиль
- * сохраняет браузерный обмен доступным; решения и проверка чеков по-прежнему требуют API.
+ * Static hosting does not run the local Python API. This synthetic profile keeps the browser
+ * exchange usable; decisions and receipt checks still require the API.
  */
 export function createOfflineSeedProfiles(nowMs: number): DemoSeedProfilesResponse {
   const dayMs = 86_400_000
@@ -49,7 +49,7 @@ export function createOfflineSeedProfiles(nowMs: number): DemoSeedProfilesRespon
     profiles: [{
       snapshot_version: DEMO_CONTRACT_VERSION,
       profile_id: 'demo-offline',
-      label: 'Автономный демонстрационный профиль',
+      label: 'Offline demonstration profile',
       synthetic: true,
       receipts: [
         {
@@ -59,7 +59,7 @@ export function createOfflineSeedProfiles(nowMs: number): DemoSeedProfilesRespon
           returned: false,
           lines: [{
             sku_id: 'offline-milk',
-            category: 'Молочные продукты',
+            category: 'Dairy',
             quantity: 1,
             paid: true,
             amount_kopecks: 9_900,
@@ -72,7 +72,7 @@ export function createOfflineSeedProfiles(nowMs: number): DemoSeedProfilesRespon
           returned: false,
           lines: [{
             sku_id: 'offline-bread',
-            category: 'Хлеб и выпечка',
+            category: 'Bread & Bakery',
             quantity: 1,
             paid: true,
             amount_kopecks: 6_900,
@@ -119,8 +119,8 @@ export async function fetchDemoEvaluation(): Promise<DemoApiResult<DemoEvaluatio
 }
 
 /**
- * Титул коллекции. Модель описывает только собранные предметы; при любой ошибке
- * движок возвращает детерминированный шаблон с `source: "fallback"`.
+ * Collection title. The model describes only the collected items; on any error the engine
+ * returns a deterministic template with `source: "fallback"`.
  */
 export async function requestCollectionTitle(
   profile: DemoProfileSnapshot,
@@ -216,6 +216,6 @@ async function request<T>(
 
   return {
     ok: false,
-    error: { code: 'engine_invalid_output', message: 'ответ не соответствует контракту' },
+    error: { code: 'engine_invalid_output', message: 'the response does not match the contract' },
   }
 }

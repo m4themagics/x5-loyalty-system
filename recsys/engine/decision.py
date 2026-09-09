@@ -1,4 +1,4 @@
-"""Выбор одного следующего задания и сборка ответа `decision`."""
+"""Selection of one next challenge and assembly of the `decision` response."""
 from __future__ import annotations
 
 import hashlib
@@ -109,7 +109,7 @@ def _build_challenge(
     if grant_physical and candidate.gift_sku is not None:
         physical = {
             "sku_id": candidate.gift_sku["sku_id"],
-            "name": f"{candidate.gift_sku['name']} (синтетический SKU)",
+            "name": f"{candidate.gift_sku['name']} (synthetic SKU)",
             "unit_cost_kopecks": candidate.gift_sku["unit_cost_kopecks"],
             "stock_reserved": True,
         }
@@ -215,7 +215,7 @@ def _trace(candidates: list[Candidate]) -> list[dict[str, Any]]:
 
 
 def _score(candidate: Candidate) -> float:
-    """Читаемая для человека величина порядка. Ранжирование выполняет `rank_key`, не она."""
+    """A human-readable magnitude. Ranking is done by `rank_key`, not by this value."""
     recency = candidate.days_since_last
     recency_score = 0.0 if recency is None else max(0.0, 1.0 - recency / 30.0)
     return round(

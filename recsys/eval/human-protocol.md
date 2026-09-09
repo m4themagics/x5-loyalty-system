@@ -6,8 +6,8 @@ formation or profitability and does not replace an experiment.
 
 ## Before the session
 
-- Run locally with `bun run dev`; open “Profile” (`Профиль`), then “Challenges” (`Задания`).
-- Reset between participants: “Demo panel” (`Демо-стенд`) at the bottom → “Full demo reset” (`Полный сброс демо`).
+- Run locally with `bun run dev`; open “Profile”, then “Challenges”.
+- Reset between participants: “Demo panel” at the bottom → “Full demo reset”.
 - Tell participants in advance that the data is synthetic and no physical product will be delivered.
 - The facilitator gives no hints or explanation of the mechanics until the final questions.
 
@@ -16,14 +16,14 @@ Quoted Russian labels identify controls in the current demo UI.
 ## Participant tasks
 
 1. Open the profile and describe aloud what is being offered and what the reward is.
-2. Select “Show challenge” (`Показать задание`). Restate the condition: what to buy, by when,
+2. Select “Show challenge”. Restate the condition: what to buy, by when,
    and how many units.
-3. Submit the “Paid purchase in the required category” (`Оплаченная покупка нужной категории`)
+3. Submit the “Paid purchase in the required category”
    synthetic receipt and explain what happened.
 4. Find how many more items are needed to craft a discount.
 5. Switch to the seeded profile, craft a discount from four items, and explain what determines
    the percentage.
-6. Submit “Free line only” (`Только бесплатная строка`) and explain why the challenge did not complete.
+6. Submit “Free line only” and explain why the challenge did not complete.
 
 ## Facilitator observations
 

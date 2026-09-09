@@ -58,52 +58,52 @@ def summarize(rows):
 
 
 def formatted(value):
-    return "n/a (нет случаев)" if value is None else f"{value:.2f}"
+    return "n/a (no cases)" if value is None else f"{value:.2f}"
 
 
 def report(split, cases, policy):
     scored = score_cases(cases, policy)
     metrics = summarize(scored)
-    print(f"\n{split}: {len(cases)} случаев, abuse={metrics['abuse']}, legitimate={metrics['legitimate']}")
+    print(f"\n{split}: {len(cases)} cases, abuse={metrics['abuse']}, legitimate={metrics['legitimate']}")
     for action in ("reject", "hold", "review", "allow"):
         row = metrics[action]
         print(f"  {action}: {row['count']}; abuse={row['abuse']}, legitimate={row['legitimate']}; "
               f"precision={formatted(row['precision'])}, recall={formatted(row['recall'])}")
-    print(f"  семьи: {metrics['family_count']}; проверка/удержание/отказ: "
-          f"{metrics['family_intervention_count']}; из них hold/reject: {metrics['family_held_or_rejected']}")
-    print(f"  сценарная верхняя оценка потерь при неразрешённом review: "
-          f"{metrics['conservative_loss_kopecks'] / 100:.2f} ₽")
+    print(f"  families: {metrics['family_count']}; review/hold/reject: "
+          f"{metrics['family_intervention_count']}; of them hold/reject: {metrics['family_held_or_rejected']}")
+    print(f"  scenario upper bound on loss with unresolved review: "
+          f"RUB {metrics['conservative_loss_kopecks'] / 100:.2f}")
     for row in scored:
         if ((row["label"] == "abuse" and row["decision"] in {"allow", "review"}) or
                 (row["label"] == "legitimate" and row["decision"] in {"hold", "reject"})):
-            print(f"    спорный случай {row['case_id']}: {row['decision']} — {row['description']}")
+            print(f"    disputed case {row['case_id']}: {row['decision']} — {row['description']}")
     return scored
 
 
 def main():
     payload, policy = json.loads(CASES.read_text()), load_policy()
-    print(f"Антифрод: {payload['label_status']}; разметка человеком не подтверждена.")
+    print(f"Anti-fraud: {payload['label_status']}; the labelling is not human-confirmed.")
     calibration = [row for row in payload["cases"] if row["split"] == "calibration"]
     final = [row for row in payload["cases"] if row["split"] == "final"]
-    print("Пороги review/hold/reject: " + "/".join(str(policy["risk"][f"{action}_score"])
+    print("review/hold/reject thresholds: " + "/".join(str(policy["risk"][f"{action}_score"])
                                                   for action in ("review", "hold", "reject")))
-    print("Сравнение порогов только на calibration; production policy автоматически не меняется:")
+    print("Thresholds are compared on calibration only; the production policy is not changed automatically:")
     for name, thresholds in (("configured", None), ("strict", (.2, .4, .6)), ("lenient", (.5, .75, .95))):
         alternative = copy.deepcopy(policy)
         if thresholds:
             for action, threshold in zip(("review", "hold", "reject"), thresholds):
                 alternative["risk"][f"{action}_score"] = threshold
         metrics = summarize(score_cases(calibration, alternative))
-        print(f"  {name}: сценарные потери {metrics['conservative_loss_kopecks']/100:.2f} ₽; "
-              f"ошибки hold/reject={metrics['hold']['legitimate']+metrics['reject']['legitimate']}")
+        print(f"  {name}: scenario loss RUB {metrics['conservative_loss_kopecks']/100:.2f}; "
+              f"hold/reject errors={metrics['hold']['legitimate']+metrics['reject']['legitimate']}")
     before = report("calibration", calibration, policy)
     after = report("final challenge set", final, policy)
     old = {tuple(row["signals"]) for row in before}
     new = {tuple(row["signals"]) for row in after}
-    print(f"\nНовых сочетаний риск-признаков в final: {len(new-old)} из {len(new)}.")
-    print("Это ручные синтетические сценарии, не независимая случайная выборка покупателей. "
-          "Final содержит новые сочетания и известные трудные случаи; precision не переносится "
-          "на реальную долю фрода. Review не равен отклонению, hold не равен окончательному отказу.")
+    print(f"\nNew risk-signal combinations in final: {len(new-old)} of {len(new)}.")
+    print("These are hand-written synthetic scenarios, not an independent random sample of customers. "
+          "Final holds new combinations and known hard cases; precision does not transfer to a real "
+          "fraud rate. Review is not a rejection, and a hold is not a final refusal.")
     return 0
 
 

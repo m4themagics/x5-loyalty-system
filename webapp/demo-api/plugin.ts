@@ -3,11 +3,11 @@ import type { Connect, Plugin, ViteDevServer } from 'vite'
 const DEMO_CONTRACT_VERSION = 2
 
 /**
- * Подключает локальный демонстрационный API к dev-серверу.
+ * Mounts the local demo API on the dev server.
  *
- * Плагин намеренно ничего не импортирует, кроме типов Vite: обработчик и его контракты
- * загружаются модульным раннером Vite уже после старта сервера. Иначе загрузчик конфига тянул бы
- * workspace-пакет контрактов в Node и ломал `vite build`.
+ * The plugin deliberately imports nothing but Vite types: the handler and its contracts are
+ * loaded by Vite's module runner after the server starts. Otherwise the config loader would pull
+ * the workspace contracts package into Node and break `vite build`.
  */
 export function demoApiPlugin(): Plugin {
   return {
@@ -26,7 +26,7 @@ export function demoApiPlugin(): Plugin {
             request_id: 'unknown',
             error: {
               code: 'engine_failed',
-              message: `не удалось загрузить демонстрационный обработчик: ${String(error)}`.slice(0, 500),
+              message: `failed to load the demo handler: ${String(error)}`.slice(0, 500),
             },
           }))
         }

@@ -20,12 +20,12 @@ test('the demo chest opens without collecting login days and reserves each insta
   expect(first.login_box.days).toBe(1)
   expect(first.budget.coupon_reserved_kopecks).toBe(250)
 
-  // Первый предмет забирает уже удержанный резерв показанного счётчика.
+  // The first item takes the reserve already held by the shown counter.
   const claimed = addChestItem(first, 'club-toaster', now)
   expect(claimed.profile.inventory).toEqual([{ item_id: 'club-toaster', quantity: 1 }])
   expect(claimed.budget.coupon_reserved_kopecks).toBe(250)
 
-  // Дальше коробка не ждёт новых дней: каждый следующий предмет удерживает свои 2,50 ₽.
+  // After that the box waits for no new days: every next item holds its own RUB 2.50.
   const second = addChestItem(claimed, 'milk-pitcher', now)
   expect(second.budget.coupon_reserved_kopecks).toBe(500)
   const third = addChestItem(second, 'travel-mug', now)
@@ -42,7 +42,7 @@ test('the chest stops when the coupon fund can no longer cover a reserve', () =>
   expect(first.budget.coupon_reserved_kopecks).toBe(250)
   const second = addChestItem(first, 'milk-pitcher', now)
   expect(second.budget.coupon_reserved_kopecks).toBe(500)
-  // Свободных денег больше нет — выдача останавливается, а не уходит в минус.
+  // There is no free money left — issuing stops instead of going negative.
   expect(addChestItem(second, 'travel-mug', now)).toBe(second)
 })
 

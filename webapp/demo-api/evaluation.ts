@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { demoEvaluationResponseSchema } from '@pyaterochka-game-demo/contracts'
 
-// Минимальный вход: только поля, необходимые экрану. Остальные 6 000+ строк отчёта не передаются.
+// Minimal input: only the fields the screen needs. The other 6,000+ report lines are not sent.
 const policySchema = z.object({
   policy: z.string().min(1), seeds: z.array(z.number().int()).min(1), positive_net_seeds: z.number().int().nonnegative(),
   mean: z.object({ net_kopecks: z.number(), incremental_purchases: z.number(), conservative_net_after_outstanding_max_liability_kopecks: z.number() }),
@@ -56,12 +56,12 @@ export function summarizeDemoEvaluation(raw: unknown, learnedRaw: unknown) {
     },
     stability: [
       ...report.comparison.filter((policy) => policy.policy === 'personalized_broad').map((policy) => ({
-        label: 'Широкая выдача после обеспечения: среднее по seed', policy: policy.policy,
+        label: 'Broad delivery after reserves: mean across seeds', policy: policy.policy,
         net_kopecks: policy.mean.conservative_net_after_outstanding_max_liability_kopecks,
         coverage: policy.mean_coverage, incremental_purchase_days: policy.mean.incremental_purchases,
       })),
       ...report.stress_appendix.filter((world) => world.world !== 'positive').map((world) => ({
-        label: world.world === 'zero' ? 'Нулевой эффект' : 'Отрицательный эффект', policy: world.policy,
+        label: world.world === 'zero' ? 'Zero effect' : 'Negative effect', policy: world.policy,
         net_kopecks: world.net_kopecks, coverage: world.served_users / world.users, incremental_purchase_days: world.incremental_purchases,
       })),
     ],

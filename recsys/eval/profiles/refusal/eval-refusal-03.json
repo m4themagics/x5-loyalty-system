@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-refusal-03",
-  "label": "Отказ: покупки только вне игрового каталога",
+  "label": "Refusal: purchases outside the game catalog only",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-refusal",
-          "category": "Бытовая химия",
+          "category": "Household chemicals",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 6900

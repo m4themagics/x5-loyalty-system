@@ -48,35 +48,36 @@ RESPONSE_SCHEMA = {
         },
     },
 }
-SYSTEM_PROMPT = """Синтетический разбор текста, не интервью реального человека. Верни JSON
-ровно с тремя ключами: persona_id, comprehension, subjective. Никакого Markdown.
+SYSTEM_PROMPT = """A synthetic reading of a text, not an interview with a real person. Return JSON
+with exactly three keys: persona_id, comprehension, subjective. No Markdown.
 
-Блок comprehension: извлеки ТОЛЬКО фактические правила карточки, независимо от отношения
-персоны. Это вопрос о том, что написано, а не что ты хочешь получить. Ровно три ключа:
-next_step: paid_category_purchase = оплатить товар категории; open_box_no_purchase = открыть
-коробку без покупки; get_immediate_coupon = сразу забрать скидку.
-first_reward: digital_and_physical = цифровой предмет И настоящий товар; physical_only =
-только настоящий товар; coupon_only = только скидка.
-four_items: coupon_or_funded_product = потратить на скидку ИЛИ обеспеченный товар;
-free_product_every_task = бесплатный товар за каждое задание;
-keep_items_and_coupon = сохранить четыре предмета и получить скидку.
+The comprehension block: extract ONLY the factual rules of the card, regardless of the persona's
+attitude. This asks what is written, not what you would like to get. Exactly three keys:
+next_step: paid_category_purchase = pay for a product from the category; open_box_no_purchase =
+open the box without a purchase; get_immediate_coupon = take the discount right away.
+first_reward: digital_and_physical = a digital item AND a real product; physical_only =
+a real product only; coupon_only = a discount only.
+four_items: coupon_or_funded_product = spend them on a discount OR a funded product;
+free_product_every_task = a free product for every challenge;
+keep_items_and_coupon = keep the four items and still get the discount.
 
-Блок subjective: только здесь дай субъективную реакцию указанной персоны, не меняя факты.
-Ровно четыре ключа: intent (try/maybe/skip); main_reason (по-русски, 1–400 символов);
-confusion_points (массив 0–4 русских строк по 1–200 символов, только непонятные вопросы,
-пустой массив если всё ясно); suggested_copy (русская формулировка, 1–240 символов).
-persona_id должен точно совпадать со входом. Не изображай измеренные покупки или конверсию."""
+The subjective block: only here give the stated persona's subjective reaction, without changing
+the facts. Exactly four keys: intent (try/maybe/skip); main_reason (in English, 1-400 characters);
+confusion_points (array of 0-4 English strings of 1-200 characters, only genuinely unclear
+questions, an empty array when everything is clear); suggested_copy (an English wording,
+1-240 characters).
+persona_id must match the input exactly. Do not pretend to have measured purchases or conversion."""
 
 PRODUCT_COPY = {
-    "screen": "Собирай свою выгоду",
-    "Что сделать": "За семь дней оплатите один товар из указанной молочной категории.",
-    "Что получите": "После первого выполненного задания — бесплатный йогурт И цифровой "
-                    "молочный кувшин в коллекцию. Это первый из четырёх предметов.",
-    "После 4 предметов": "Потратьте четыре предмета на скидку. В целевой версии для обеспеченного "
-                         "рецепта можно вместо скидки выбрать указанный бесплатный товар. "
-                         "Предметы расходуются один раз; скидка и товар одновременно не выдаются.",
-    "Ограничения": "Бесплатный товар не положен за каждое задание. Сейчас это локальное демо "
-                    "с вымышленными покупками, реальное получение в магазине не подключено.",
+    "screen": "Collect your savings",
+    "What to do": "Within seven days, pay for one product from the named dairy category.",
+    "What you get": "After the first completed challenge — a free yoghurt AND a digital "
+                    "Milk Pitcher for your collection. It is the first of four items.",
+    "After 4 items": "Spend four items on a discount. In the target version, a funded recipe lets "
+                     "you choose the named free product instead of the discount. Items are spent "
+                     "once; a discount and a product are never issued together.",
+    "Limits": "A free product is not due for every challenge. Right now this is a local demo with "
+              "fictional purchases; real fulfilment in a store is not connected.",
 }
 
 
@@ -109,7 +110,7 @@ def build_personas():
     return [{"persona_id": f"{segment['id']}_{attitude}", "segment_id": segment["id"],
              "segment_label": segment["label"], "attitude": attitude,
              "attitude_label": config["engagement"][attitude]["label"],
-             "note": "Вымышленный совершеннолетний пользователь; опасные категории не предлагаются."}
+             "note": "A fictional adult user; harmful categories are never offered."}
             for segment in config["segments"]
             for attitude in ("interested", "neutral", "skeptical")]
 
@@ -200,8 +201,8 @@ def main(argv=None):
     parser.add_argument("--json-out", type=pathlib.Path)
     args = parser.parse_args(argv)
     report = run(args.live, progress=lambda line: print(line, flush=True))
-    print(f"Синтетические персоны: {report['status']}, валидных ответов "
-          f"{report['valid_responses']}/15; реальных участников: 0.")
+    print(f"Synthetic personas: {report['status']}, valid responses "
+          f"{report['valid_responses']}/15; real participants: 0.")
     if args.json_out:
         args.json_out.parent.mkdir(parents=True, exist_ok=True)
         args.json_out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

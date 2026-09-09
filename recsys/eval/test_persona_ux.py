@@ -11,9 +11,9 @@ from recsys.llm.ollama import LlmResult
 def answer(persona_id):
     return {"persona_id": persona_id, "comprehension": {"next_step": "paid_category_purchase",
             "first_reward": "digital_and_physical", "four_items": "coupon_or_funded_product",
-            }, "subjective": {"intent": "maybe", "main_reason": "Хочу понять ценность награды.",
-            "confusion_points": ["Не знаю доступность товара."],
-            "suggested_copy": "Покажите конкретный товар и условие покупки."}}
+            }, "subjective": {"intent": "maybe", "main_reason": "I want to understand the value of the reward.",
+            "confusion_points": ["I do not know whether the product is available."],
+            "suggested_copy": "Show the specific product and the purchase condition."}}
 
 
 class PersonaUxTest(unittest.TestCase):

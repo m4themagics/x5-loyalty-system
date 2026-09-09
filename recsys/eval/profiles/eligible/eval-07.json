@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-07",
-  "label": "Оценочный синтетический профиль 07",
+  "label": "Evaluation synthetic profile 07",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Кофе и чай",
+          "category": "Coffee & Tea",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 8600
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Всё для выпечки",
+          "category": "Baking Supplies",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 8600

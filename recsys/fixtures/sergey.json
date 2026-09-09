@@ -1,7 +1,7 @@
 {
   "profile": {
     "customer_id": "u_3311",
-    "display_name": "Сергей",
+    "display_name": "Sergey",
     "cadence_weeks": 0.8,
     "categories": [
       "coffee",
@@ -76,10 +76,10 @@
   },
   "creative_copy": {
     "decision_id": "dec_3311",
-    "title": "Ваш чекпоинт",
-    "body": "Один визит за семь дней завершит маршрут — без награды от бренда.",
-    "progress": "0 из 1 чекпоинта",
-    "cta": "Открыть"
+    "title": "Your checkpoint",
+    "body": "One visit within seven days completes the route — with no brand reward.",
+    "progress": "0 of 1 checkpoint",
+    "cta": "Open"
   },
   "route_state": {
     "route_id": "r_3311",
@@ -90,5 +90,5 @@
     "fading_phase": "none",
     "unlocks": []
   },
-  "demo_note": "Кампания brand_07 набирает наибольшую медийную ценность именно потому, что визит почти наверняка произойдёт: uplift 0.02 при пороге 0.04. Реклама отклонена, но пользователь не наказан отсутствием продукта — показан organic-маршрут."
+  "demo_note": "Campaign brand_07 scores the highest media value precisely because the visit is nearly certain: uplift 0.02 against a 0.04 threshold. The ad is rejected, but the user is not punished with an empty screen — an organic route is shown."
 }

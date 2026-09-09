@@ -18,10 +18,10 @@ const itemName = (id: string) => findItem(id)?.name ?? id
 const rarity = (id: string) => findItem(id)?.rarity
 
 const tradeStatusLabels = {
-  pending: 'Ожидает ответа',
-  accepted: 'Обмен завершён',
-  rejected: 'Обмен отклонён',
-  expired: 'Время истекло',
+  pending: 'Awaiting a reply',
+  accepted: 'Trade completed',
+  rejected: 'Trade declined',
+  expired: 'Offer expired',
 } as const
 
 export function DemoTradePanel({
@@ -107,7 +107,7 @@ export function DemoTradePanel({
 
   return (
     <section
-      aria-label="Обмен предметами"
+      aria-label="Item exchange"
       aria-modal="true"
       className="profile-trade-sheet"
       role="dialog"
@@ -115,16 +115,16 @@ export function DemoTradePanel({
       <header className="profile-trade-header">
         <div>
           <Typography as="span" variant="bodyXs" className="profile-trade-eyebrow">
-            Обмен 1 на 1
+            1-for-1 exchange
           </Typography>
           <Typography as="h2" variant="h2" className="profile-trade-title">
-            Обмен предметами
+            Item exchange
           </Typography>
         </div>
         <div className="profile-trade-header-actions">
           <button
             aria-expanded={isInfoOpen}
-            aria-label="Информация об обмене"
+            aria-label="Exchange information"
             className={`profile-trade-info-button${isInfoOpen ? ' profile-trade-info-button-active' : ''}`}
             onClick={() => setIsInfoOpen((isOpen) => !isOpen)}
             type="button"
@@ -132,7 +132,7 @@ export function DemoTradePanel({
             <Typography as="span" variant="body" aria-hidden="true">i</Typography>
           </button>
           <button
-            aria-label="Закрыть обмен"
+            aria-label="Close the exchange"
             className="profile-trade-close"
             onClick={onClose}
             type="button"
@@ -143,23 +143,23 @@ export function DemoTradePanel({
       </header>
 
       {isInfoOpen ? (
-        <aside className="profile-trade-info" aria-label="Правила обмена">
+        <aside className="profile-trade-info" aria-label="Exchange rules">
           <Typography as="strong" variant="bodySmMedium" className="profile-trade-info-title">
-            Как работает обмен
+            How the exchange works
           </Typography>
           <ul className="profile-trade-info-list">
-            <li><Typography as="span" variant="bodyXs">Можно выбрать любой доступный предмет из своей коллекции.</Typography></li>
-            <li><Typography as="span" variant="bodyXs">В ответ можно получить предмет только той же редкости.</Typography></li>
-            <li><Typography as="span" variant="bodyXs">Оба предмета резервируются и передаются только после подтверждения участников.</Typography></li>
-            <li><Typography as="span" variant="bodyXs">Предложение действует 24 часа. Доступно до трёх завершённых обменов за семь дней.</Typography></li>
-            <li><Typography as="span" variant="bodyXs">Для участия каждому нужно минимум два подтверждённых дня покупок.</Typography></li>
+            <li><Typography as="span" variant="bodyXs">You can offer any available item from your own collection.</Typography></li>
+            <li><Typography as="span" variant="bodyXs">In return you can only receive an item of the same rarity.</Typography></li>
+            <li><Typography as="span" variant="bodyXs">Both items are reserved and transferred only after both sides confirm.</Typography></li>
+            <li><Typography as="span" variant="bodyXs">An offer lasts 24 hours. Up to three completed trades per seven days.</Typography></li>
+            <li><Typography as="span" variant="bodyXs">Each participant needs at least two confirmed purchase days.</Typography></li>
           </ul>
           <div className="profile-trade-info-stats">
             <Typography as="span" variant="bodyXs">
-              Ваши покупочные дни: {confirmedTradePurchaseDays(actor.profile, nowMs)}
+              Your purchase days: {confirmedTradePurchaseDays(actor.profile, nowMs)}
             </Typography>
             <Typography as="span" variant="bodyXs">
-              Обмены за 7 дней: {completedTradesInWindow(store, store.active_profile_id, nowMs)} из 3
+              Trades in the last 7 days: {completedTradesInWindow(store, store.active_profile_id, nowMs)} of 3
             </Typography>
           </div>
         </aside>
@@ -168,11 +168,11 @@ export function DemoTradePanel({
       <div className="profile-trade-flow">
         <div className="profile-trade-side">
           <Typography as="span" variant="bodySmMedium" className="profile-trade-side-title">
-            Ваш предмет
+            Your item
           </Typography>
           <button
             aria-expanded={isPickerOpen}
-            aria-label={giveItem === null ? 'Добавить свой предмет для обмена' : `Изменить предмет: ${giveItem.name}`}
+            aria-label={giveItem === null ? 'Add your item to the trade' : `Change item: ${giveItem.name}`}
             className={`profile-trade-slot discount-slot${giveItem === null ? ' empty-slot profile-trade-slot-empty' : ` filled-slot item-rarity-${giveItem.rarity}`}`}
             disabled={isBusy || outgoing.length === 0}
             onClick={() => setIsPickerOpen((isOpen) => !isOpen)}
@@ -182,7 +182,7 @@ export function DemoTradePanel({
               <>
                 <Typography as="span" variant="body" className="profile-trade-plus" aria-hidden="true">+</Typography>
                 <Typography as="span" variant="bodyXs">
-                  {outgoing.length === 0 ? 'Нет доступных предметов' : 'Добавить предмет'}
+                  {outgoing.length === 0 ? 'No items available' : 'Add an item'}
                 </Typography>
               </>
             ) : (
@@ -194,12 +194,12 @@ export function DemoTradePanel({
           </button>
 
           {isPickerOpen ? (
-            <div className="profile-trade-picker" role="group" aria-label="Выберите свой предмет">
+            <div className="profile-trade-picker" role="group" aria-label="Choose your item">
               {outgoing.map((entry) => {
                 const item = findItem(entry.item_id)
                 return item === null ? null : (
                   <button
-                    aria-label={`Выбрать ${item.name} для обмена`}
+                    aria-label={`Offer ${item.name} for trade`}
                     className={`profile-trade-picker-item item-rarity-${item.rarity}`}
                     key={item.id}
                     onClick={() => chooseOfferedItem(item.id)}
@@ -216,7 +216,7 @@ export function DemoTradePanel({
         </div>
 
         <button
-          aria-label="Показать QR-код для подключения"
+          aria-label="Show the pairing QR code"
           className={`profile-trade-swap${isQrVisible ? ' profile-trade-swap-active' : ''}`}
           disabled={isBusy || give === ''}
           onClick={showQr}
@@ -231,12 +231,12 @@ export function DemoTradePanel({
           <div className="profile-trade-qr-card" aria-live="polite">
             <TradeQr value={pairingCode} />
             <div className="profile-trade-qr-copy">
-              <Typography as="strong" variant="bodySmMedium">QR для подключения</Typography>
+              <Typography as="strong" variant="bodySmMedium">Pairing QR code</Typography>
               <Typography as="span" variant="bodyXs">
-                В демо выберите участника — его предложение появится в нижней ячейке.
+                In the demo, pick a participant — their item appears in the lower slot.
               </Typography>
               <label className="profile-trade-partner-field">
-                <Typography as="span" variant="bodyXs">Кому предложить обмен</Typography>
+                <Typography as="span" variant="bodyXs">Who to offer the trade to</Typography>
                 <select
                   disabled={isBusy}
                   onChange={(event) => {
@@ -261,17 +261,17 @@ export function DemoTradePanel({
 
         <div className="profile-trade-side">
           <Typography as="span" variant="bodySmMedium" className="profile-trade-side-title">
-            Предмет участника
+            Participant's item
           </Typography>
           <div
-            aria-label={takeItem === null ? 'Предмет другого участника пока не выбран' : `Участник предлагает ${takeItem.name}`}
+            aria-label={takeItem === null ? 'No item chosen from the other participant yet' : `The participant offers ${takeItem.name}`}
             className={`profile-trade-slot discount-slot profile-trade-partner-slot${takeItem === null ? ' empty-slot profile-trade-slot-empty' : ` filled-slot item-rarity-${takeItem.rarity}`}`}
           >
             {takeItem === null ? (
               <>
                 <Typography as="span" variant="body" className="profile-trade-person" aria-hidden="true">?</Typography>
                 <Typography as="span" variant="bodyXs">
-                  {isQrVisible ? 'Подходящего предмета нет' : 'Подключите участника'}
+                  {isQrVisible ? 'No matching item' : 'Connect a participant'}
                 </Typography>
               </>
             ) : (
@@ -283,12 +283,12 @@ export function DemoTradePanel({
           </div>
 
           {isQrVisible && incoming.length > 1 ? (
-            <div className="profile-trade-partner-options" role="group" aria-label="Предметы участника">
+            <div className="profile-trade-partner-options" role="group" aria-label="Participant items">
               {incoming.map((entry) => {
                 const item = findItem(entry.item_id)
                 return item === null ? null : (
                   <button
-                    aria-label={`Получить ${item.name}`}
+                    aria-label={`Receive ${item.name}`}
                     aria-pressed={take === item.id}
                     className={`profile-trade-partner-option item-rarity-${item.rarity}`}
                     key={item.id}
@@ -310,7 +310,7 @@ export function DemoTradePanel({
         onClick={submitTrade}
         type="button"
       >
-        <Typography as="span" variant="control">Подтвердить обмен</Typography>
+        <Typography as="span" variant="control">Confirm the trade</Typography>
       </button>
 
       {note === null ? null : (
@@ -320,13 +320,13 @@ export function DemoTradePanel({
       )}
 
       {trades.map((trade) => (
-        <article className="profile-trade-card" aria-label={`Предложение обмена ${trade.trade_id}`} key={trade.trade_id}>
+        <article className="profile-trade-card" aria-label={`Trade offer ${trade.trade_id}`} key={trade.trade_id}>
           <div className="profile-trade-card-head">
             <Typography as="strong" variant="bodySmMedium">
               {itemName(trade.offered_item_id)} ⇄ {itemName(trade.requested_item_id)}
             </Typography>
             <Typography as="span" variant="bodyXs" className={`profile-trade-status profile-trade-status-${trade.status}`}>
-              {tradeStatusLabels[trade.status as keyof typeof tradeStatusLabels] ?? 'Отменено'}
+              {tradeStatusLabels[trade.status as keyof typeof tradeStatusLabels] ?? 'Cancelled'}
             </Typography>
           </div>
           <Typography as="p" variant="bodyXs" className="profile-trade-card-copy">
@@ -346,7 +346,7 @@ export function DemoTradePanel({
                 })}
                 type="button"
               >
-                <Typography as="span" variant="control">Принять обмен</Typography>
+                <Typography as="span" variant="control">Accept the trade</Typography>
               </button>
               <button
                 className="profile-trade-card-button"
@@ -360,7 +360,7 @@ export function DemoTradePanel({
                 })}
                 type="button"
               >
-                <Typography as="span" variant="control">Отклонить обмен</Typography>
+                <Typography as="span" variant="control">Decline the trade</Typography>
               </button>
             </div>
           ) : null}
@@ -374,7 +374,7 @@ function TradeQr({ value }: { value: string }) {
   const cells = buildQrCells(value)
   return (
     <svg
-      aria-label="QR-код подключения к обмену"
+      aria-label="Exchange pairing QR code"
       className="profile-trade-qr"
       role="img"
       viewBox={`0 0 ${QR_SIZE} ${QR_SIZE}`}

@@ -12,10 +12,10 @@
   "challenge": {
     "challenge_id": "chl_demo_0001",
     "challenge_version": 1,
-    "title": "Молочный старт недели",
+    "title": "A dairy start to the week",
     "recipe_goal_id": "breakfast",
     "target": {
-      "category": "Молочные продукты",
+      "category": "Dairy",
       "sku_ids": [
         "sku-milk-1l"
       ],
@@ -28,7 +28,7 @@
       "digital_item_id": "milk-pitcher",
       "physical_sku": {
         "sku_id": "gift-milk-500",
-        "name": "Молоко 0,5 л (синтетический SKU)",
+        "name": "Milk 0.5 l (synthetic SKU)",
         "unit_cost_kopecks": 2500,
         "stock_reserved": true
       }
@@ -59,11 +59,11 @@
     }
   },
   "card": {
-    "headline": "Доброе утро: Молочный кувшин",
-    "body": "До 12.09.2026 купите «Молоко питьевое 1 л» — получите предмет «Молочный кувшин» для рецепта «Доброе утро».",
-    "reward_line": "Предмет «Молочный кувшин» и бесплатный товар: Молоко 0,5 л (синтетический SKU)",
-    "deadline_line": "Срок: до 12.09.2026",
-    "sponsor_line": "При поддержке бренда: Молочный бренд",
+    "headline": "Good Morning: Milk Pitcher",
+    "body": "Buy \"Drinking milk 1 l\" before 12.09.2026 and receive the \"Milk Pitcher\" item for the \"Good Morning\" recipe.",
+    "reward_line": "The \"Milk Pitcher\" item plus a free product: Milk 0.5 l (synthetic SKU)",
+    "deadline_line": "Deadline: 12.09.2026",
+    "sponsor_line": "Supported by the brand: Dairy brand",
     "source": "fallback",
     "violations": []
   },
@@ -75,7 +75,7 @@
         "candidate_id": "cnd_milk_breakfast",
         "item_id": "milk-pitcher",
         "recipe_id": "breakfast",
-        "category": "Молочные продукты",
+        "category": "Dairy",
         "rank": 0,
         "score": 0.82,
         "accepted": true,
@@ -88,7 +88,7 @@
         "candidate_id": "cnd_sushi_asian",
         "item_id": "sushi-kit",
         "recipe_id": "asian",
-        "category": "Рыба и азиатская кухня",
+        "category": "Fish & Asian Cuisine",
         "rank": 1,
         "score": 0.11,
         "accepted": false,

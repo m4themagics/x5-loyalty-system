@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-33",
-  "label": "Оценочный синтетический профиль 33",
+  "label": "Evaluation synthetic profile 33",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Лапша и азиатская кухня",
+          "category": "Noodles & Asian Cuisine",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11200

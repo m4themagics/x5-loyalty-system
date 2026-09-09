@@ -1,8 +1,8 @@
 import type { DemoChallenge, DemoReceipt } from '@pyaterochka-game-demo/contracts'
 
 /**
- * Синтетические тестовые чеки демонстрации. Ни один из них не является фискальным документом:
- * они существуют, чтобы показать квалификацию, отказ и повтор на одном экране.
+ * Synthetic test receipts for the demo. None of them is a fiscal document: they exist to show
+ * qualification, refusal and repetition on a single screen.
  */
 
 export type DemoReceiptKind = 'qualifying' | 'free_line' | 'wrong_category' | 'late' | 'returned'
@@ -11,11 +11,11 @@ const DAY_MS = 86_400_000
 const DEMO_STORE_ID = 'store-demo-local'
 
 export const DEMO_RECEIPT_LABELS: Record<DemoReceiptKind, string> = {
-  qualifying: 'Оплаченная покупка нужной категории',
-  free_line: 'Только бесплатная строка',
-  wrong_category: 'Покупка другой категории',
-  late: 'Покупка после срока',
-  returned: 'Покупка с возвратом',
+  qualifying: 'Paid purchase from the required category',
+  free_line: 'Free line only',
+  wrong_category: 'Purchase from another category',
+  late: 'Purchase after the deadline',
+  returned: 'Purchase that was returned',
 }
 
 export function buildDemoReceipt(
@@ -56,7 +56,7 @@ export function buildDemoReceipt(
     case 'wrong_category':
       return {
         ...base,
-        lines: [{ ...paidLine, sku_id: 'sku-demo-other', category: 'Снеки и орехи' }],
+        lines: [{ ...paidLine, sku_id: 'sku-demo-other', category: 'Snacks & Nuts' }],
       }
     case 'late':
       return {

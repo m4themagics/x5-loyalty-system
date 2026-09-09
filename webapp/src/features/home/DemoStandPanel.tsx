@@ -13,8 +13,8 @@ const RECEIPT_KINDS: readonly DemoReceiptKind[] = [
 ]
 
 /**
- * Служебная сцена демонстрации. Всё, чего нет в интерфейсе покупателя — подмена профиля,
- * тестовый чек вместо кассы, сброс и диагностика решения — живёт только здесь.
+ * The operator scene of the demo. Everything the customer interface does not have — profile
+ * switching, a test receipt instead of a till, reset and decision diagnostics — lives here.
  */
 export function DemoStandPanel({
   state,
@@ -45,27 +45,27 @@ export function DemoStandPanel({
 
   return (
     <div className="demo-x5-overlay">
-      <section className="demo-evaluation demo-stand" aria-label="Демо-стенд">
+      <section className="demo-evaluation demo-stand" aria-label="Demo stand">
         <div className="demo-x5-head">
           <span className="demo-x5-grabber" aria-hidden="true" />
           <Typography as="h3" variant="h2" className="demo-x5-title">
-            Демо-стенд
+            Demo stand
           </Typography>
-          <button className="demo-x5-close" onClick={onClose} type="button" aria-label="Закрыть демо-стенд">
+          <button className="demo-x5-close" onClick={onClose} type="button" aria-label="Close the demo stand">
             <Typography as="span" variant="body" aria-hidden="true">×</Typography>
           </button>
         </div>
 
         <Typography as="p" variant="bodyXs" className="demo-x5-note">
-          Этих элементов нет в интерфейсе покупателя. Они подменяют синтетический профиль
-          и подставляют тестовый чек вместо кассы.
+          None of these controls exist in the customer interface. They swap the synthetic
+          profile and submit a test receipt in place of a real till.
         </Typography>
 
         <div className="demo-x5-card">
           <Typography as="span" variant="bodyXs" className="demo-x5-eyebrow">
-            Синтетический профиль
+            Synthetic profile
           </Typography>
-          <div className="demo-chip-row" role="group" aria-label="Синтетический профиль">
+          <div className="demo-chip-row" role="group" aria-label="Synthetic profile">
             {profiles.map((profile) => (
               <button
                 aria-pressed={profile.profile_id === state.profile.profile_id}
@@ -84,9 +84,9 @@ export function DemoStandPanel({
         {challenge === null ? null : (
           <div className="demo-x5-card">
             <Typography as="span" variant="bodyXs" className="demo-x5-eyebrow">
-              Тестовый чек
+              Test receipt
             </Typography>
-            <div className="demo-chip-row" role="group" aria-label="Тестовые чеки">
+            <div className="demo-chip-row" role="group" aria-label="Test receipts">
               {RECEIPT_KINDS.map((kind) => (
                 <button
                   className="demo-button"
@@ -104,7 +104,7 @@ export function DemoStandPanel({
                 onClick={() => onSendReceipt('qualifying', true)}
                 type="button"
               >
-                <Typography as="span" variant="bodyXs">Тот же чек ещё раз</Typography>
+                <Typography as="span" variant="bodyXs">Send the same receipt again</Typography>
               </button>
             </div>
             {eventLog === null ? null : (
@@ -117,38 +117,38 @@ export function DemoStandPanel({
 
         <div className="demo-x5-card">
           <Typography as="span" variant="bodyXs" className="demo-x5-eyebrow">
-            Управление демонстрацией
+            Demo controls
           </Typography>
           <div className="demo-chip-row">
             <button className="demo-button" disabled={isBusy || state.login_box.days === 3} onClick={onAdvanceLoginDay} type="button">
-              <Typography as="span" variant="bodyXs">Следующий день входа (демо)</Typography>
+              <Typography as="span" variant="bodyXs">Next login day (demo)</Typography>
             </button>
             <button className="demo-button" disabled={isBusy} onClick={onRecompute} type="button">
-              <Typography as="span" variant="bodyXs">Пересчитать задание</Typography>
+              <Typography as="span" variant="bodyXs">Recompute the challenge</Typography>
             </button>
             <button className="demo-button" disabled={isBusy} onClick={onReset} type="button">
-              <Typography as="span" variant="bodyXs">Полный сброс демо</Typography>
+              <Typography as="span" variant="bodyXs">Full demo reset</Typography>
             </button>
           </div>
-          <Typography as="p" variant="bodyXs">Дни входа: {state.login_box.days} из 3. Кнопка меняет только счётчик коробки, не время чеков и кампаний.</Typography>
+          <Typography as="p" variant="bodyXs">Login days: {state.login_box.days} of 3. The button changes only the box counter, not receipt or campaign time.</Typography>
           <button className="demo-button demo-button-primary demo-button-block" onClick={onOpenX5} type="button">
-            <Typography as="span" variant="bodyXs">Для X5</Typography>
+            <Typography as="span" variant="bodyXs">For X5</Typography>
           </button>
         </div>
 
         {state.decision === null ? null : (
           <details className="demo-diagnostics">
-            <summary><Typography as="span" variant="bodyXs">Диагностика решения</Typography></summary>
+            <summary><Typography as="span" variant="bodyXs">Decision diagnostics</Typography></summary>
             <dl className="demo-metrics demo-metrics-wide">
-              <StandTerm label="Решение" value={state.decision.decision_id} />
-              <StandTerm label="Причины" value={state.decision.reason_codes.join(', ')} />
-              <StandTerm label="Источник карточки" value={state.decision.card_source ?? '—'} />
-              <StandTerm label="LLM" value={state.decision.llm_error ?? 'ответ модели принят'} />
-              <StandTerm label="Купонный фонд" value={formatRubles(state.decision.coupon_available_kopecks)} />
-              <StandTerm label="Товарный фонд" value={formatRubles(state.decision.physical_available_kopecks)} />
+              <StandTerm label="Decision" value={state.decision.decision_id} />
+              <StandTerm label="Reasons" value={state.decision.reason_codes.join(', ')} />
+              <StandTerm label="Card source" value={state.decision.card_source ?? '—'} />
+              <StandTerm label="LLM" value={state.decision.llm_error ?? 'model response accepted'} />
+              <StandTerm label="Coupon fund" value={formatRubles(state.decision.coupon_available_kopecks)} />
+              <StandTerm label="Product fund" value={formatRubles(state.decision.physical_available_kopecks)} />
               {state.challenge === null ? null : (
                 <StandTerm
-                  label="Резерв под задание"
+                  label="Reserve for the challenge"
                   value={`${formatRubles(state.challenge.reservation.coupon_reserve_kopecks)} / ${formatRubles(state.challenge.reservation.physical_reserve_kopecks)}`}
                 />
               )}
@@ -170,5 +170,5 @@ function StandTerm({ label, value }: { label: string; value: string }) {
 }
 
 function formatRubles(kopecks: number): string {
-  return `${(kopecks / 100).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽`
+  return `RUB ${(kopecks / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }

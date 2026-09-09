@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-35",
-  "label": "Оценочный синтетический профиль 35",
+  "label": "Evaluation synthetic profile 35",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Мороженое и десерты",
+          "category": "Ice Cream & Desserts",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11400
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Фрукты",
+          "category": "Fruit",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11400
@@ -42,7 +42,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-2",
-          "category": "Крупы, супы и соусы",
+          "category": "Grains, Soups & Sauces",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11400

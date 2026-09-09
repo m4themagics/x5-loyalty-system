@@ -32,7 +32,7 @@ function eligibility(store: DemoStore, ids: string[], nowMs: number): string | n
   return null
 }
 
-/** Отправитель подтверждает передачу своего предмета созданием предложения; оба предмета резервируются. */
+/** The sender confirms handing over their item by creating the offer; both items are reserved. */
 export function createDemoTrade(initial: DemoStore, input: DemoTradeCreate, nowMs: number): DemoTradeResult {
   const parsed = demoTradeCreateSchema.safeParse(input)
   if (!parsed.success) return { store: initial, reason: 'trade_invalid_command' }
@@ -113,14 +113,14 @@ function swapCopy(inventory: DemoInventoryEntry[], outgoing: string, incoming: s
   return [...counts].filter(([, quantity]) => quantity > 0).map(([item_id, quantity]) => ({ item_id, quantity }))
 }
 
-/** Истечение освобождает только игровые блокировки; купонные финансовые обязательства остаются. */
+/** Expiry releases only game locks; coupon financial liabilities stay in place. */
 export function expireDemoTrades(store: DemoStore, nowMs: number): DemoStore {
   if (!store.trades.some((trade) => trade.status === 'pending' && trade.expires_at_ms <= nowMs)) return store
   return transition(store, store.trades.map((trade) => trade.status === 'pending' && trade.expires_at_ms <= nowMs
     ? { ...trade, status: 'expired', resolved_at_ms: nowMs, revision: trade.revision + 1 } : trade))
 }
 
-/** Явный сброс демо не оставляет блокировку предмета у второго участника. История завершений сохраняется. */
+/** An explicit demo reset leaves no item lock on the other participant. Completion history is kept. */
 export function cancelProfileTrades(store: DemoStore, profileId: string, nowMs: number): DemoStore {
   if (!store.trades.some((trade) => trade.status === 'pending' && (trade.sender_profile_id === profileId || trade.receiver_profile_id === profileId))) return store
   return transition(store, store.trades.map((trade) => trade.status === 'pending' && (trade.sender_profile_id === profileId || trade.receiver_profile_id === profileId)
@@ -146,21 +146,21 @@ function transition(store: DemoStore, trades: DemoTrade[], inventories: Record<s
   return { ...store, store_revision: store.store_revision + 1, trades, profiles }
 }
 
-/** Подготовленные профили только для локального социального сценария, не бонус регистрации. */
-/** Профили-«друзья»: только им можно предложить обмен на экране покупателя. */
+/** Seeded profiles exist only for the local social scenario; they are not a signup bonus. */
+/** "Friend" profiles: only they can be offered a trade on the customer screen. */
 export const DEMO_TRADE_FRIEND_PREFIX = 'demo-trade-'
 
-/** Аня пригласила Бориса до его первой покупки: только так виден расчёт реферальной награды. */
+/** Anna invited Boris before his first purchase: only then is the referral calculation visible. */
 const TRADE_SEED_INVITE_MS = 5 * 24 * 60 * 60 * 1000
 
 export function createTradeSeedProfiles(template: DemoProfileSnapshot, nowMs: number): DemoProfileSnapshot[] {
   return [
-    { id: 'demo-trade-anya', label: 'Аня', invitedBy: null, inventory: [{ item_id: 'milk-pitcher', quantity: 2 }, { item_id: 'club-toaster', quantity: 1 }, { item_id: 'travel-mug', quantity: 1 }] },
-    { id: 'demo-trade-boris', label: 'Борис', invitedBy: 'demo-trade-anya', inventory: [{ item_id: 'breakfast-pan', quantity: 2 }, { item_id: 'fruit-basket', quantity: 1 }, { item_id: 'vegetable-crate', quantity: 1 }] },
+    { id: 'demo-trade-anya', label: 'Anna', invitedBy: null, inventory: [{ item_id: 'milk-pitcher', quantity: 2 }, { item_id: 'club-toaster', quantity: 1 }, { item_id: 'travel-mug', quantity: 1 }] },
+    { id: 'demo-trade-boris', label: 'Boris', invitedBy: 'demo-trade-anya', inventory: [{ item_id: 'breakfast-pan', quantity: 2 }, { item_id: 'fruit-basket', quantity: 1 }, { item_id: 'vegetable-crate', quantity: 1 }] },
   ].map((seed) => ({
     ...template, profile_id: seed.id, label: seed.label, inventory: seed.inventory,
     receipts: [3, 1].map((days) => ({ receipt_id: `${seed.id}-paid-day-${days}`, purchased_at_ms: nowMs - days * DEMO_TRADE_TTL_MS,
-      store_id: 'store-trade-synthetic', returned: false, lines: [{ sku_id: 'sku-trade-milk', category: 'Молочные продукты', quantity: 1, paid: true, amount_kopecks: 9900 }] })),
+      store_id: 'store-trade-synthetic', returned: false, lines: [{ sku_id: 'sku-trade-milk', category: 'Dairy', quantity: 1, paid: true, amount_kopecks: 9900 }] })),
     issued_rewards: [], processed_event_ids: [], active_coupon: null, outstanding_promise: null,
     progress: { completed_recipe_ids: [], avatar_level: 0, redeemed_savings_28d_kopecks: 0 },
     referral: {

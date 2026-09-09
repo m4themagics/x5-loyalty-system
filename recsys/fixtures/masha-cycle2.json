@@ -1,7 +1,7 @@
 {
   "profile": {
     "customer_id": "u_1042",
-    "display_name": "Маша, второй цикл",
+    "display_name": "Masha, second cycle",
     "cadence_weeks": 2.6,
     "categories": [
       "coffee",
@@ -81,11 +81,11 @@
   },
   "creative_copy": {
     "decision_id": "dec_1052",
-    "title": "Кофейный чекпоинт",
-    "body": "Ещё один визит — и выбираете тему следующего маршрута.",
-    "progress": "1 из 2 чекпоинтов",
-    "cta": "Продолжить маршрут",
-    "sponsored_label": "При поддержке бренда"
+    "title": "Coffee checkpoint",
+    "body": "One more visit and you choose the theme of the next route.",
+    "progress": "1 of 2 checkpoints",
+    "cta": "Continue the route",
+    "sponsored_label": "Supported by the brand"
   },
   "route_state": {
     "route_id": "r_1052",
@@ -98,5 +98,5 @@
       "theme_choice"
     ]
   },
-  "demo_note": "Тот же пользователь и та же кампания, подкрепление снизилось с товара за 18 ₽ до цифрового unlock. Пара masha.json → masha-cycle2.json показывает reward fading, а uplift 0.04 стоит ровно на пороге."
+  "demo_note": "The same user and the same campaign, with the reinforcement reduced from an RUB 18 product to a digital unlock. The masha.json -> masha-cycle2.json pair shows reward fading, and an uplift of 0.04 sits exactly on the threshold."
 }

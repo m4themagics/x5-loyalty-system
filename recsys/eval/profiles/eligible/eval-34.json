@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-34",
-  "label": "Оценочный синтетический профиль 34",
+  "label": "Evaluation synthetic profile 34",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Хлеб и выпечка",
+          "category": "Bread & Bakery",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11300
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Яйца и завтраки",
+          "category": "Eggs & Breakfast",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11300

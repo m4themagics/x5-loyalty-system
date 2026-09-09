@@ -1,41 +1,41 @@
 import { expect, type Page } from '@playwright/test'
 
-/** Служебные инструменты демонстрации живут в отдельном стенде, а не на экране покупателя. */
+/** The operator tools of the demo live on a separate stand, not on the customer screen. */
 export const DEMO_PROFILES = {
-  showcase: /Показательный профиль/,
-  empty: /Новый участник, пустой инвентарь/,
-  seeded: /три предмета «Доброго утра»/,
-  anya: 'Аня',
-  boris: 'Борис',
+  showcase: /Showcase profile/,
+  empty: /New member, empty inventory/,
+  seeded: /three "Good Morning" items collected/,
+  anya: 'Anna',
+  boris: 'Boris',
 } as const
 
 /**
- * Окно дня входа открывается на каждом новом засчитанном дне, в том числе на первой
- * загрузке. Ждём, пока состояние демо загрузится, иначе окно появится после проверки.
+ * The login-day dialog opens on every newly counted day, including the first load. Wait for the
+ * demo state to load, otherwise the dialog appears after the check has already run.
  */
 export async function dismissLoginDay(page: Page) {
-  await expect(page.locator('.chest-timer-value')).not.toHaveText('Загружаем…')
-  const dialog = page.getByRole('dialog', { name: 'День входа' })
+  await expect(page.locator('.chest-timer-value')).not.toHaveText('Loading…')
+  const dialog = page.getByRole('dialog', { name: 'Login day' })
   if (await dialog.count() === 0) return
-  await dialog.getByRole('button', { name: 'Закрыть окно дня входа' }).click()
+  await dialog.getByRole('button', { name: 'Close the login day dialog' }).click()
   await expect(dialog).toHaveCount(0)
 }
 
 export async function openStand(page: Page) {
-  await page.getByRole('button', { name: 'Демо-стенд', exact: true }).click()
-  await expect(page.getByRole('region', { name: 'Демо-стенд' })).toBeVisible()
+  await page.getByRole('button', { name: 'Demo stand', exact: true }).click()
+  await expect(page.getByRole('region', { name: 'Demo stand' })).toBeVisible()
 }
 
 export async function closeStand(page: Page) {
-  await page.getByRole('button', { name: 'Закрыть демо-стенд' }).click()
-  await expect(page.getByRole('region', { name: 'Демо-стенд' })).toHaveCount(0)
+  await page.getByRole('button', { name: 'Close the demo stand' }).click()
+  await expect(page.getByRole('region', { name: 'Demo stand' })).toHaveCount(0)
 }
 
-/** Переключает синтетический профиль и возвращает экран покупателя. */
+/** Switches the synthetic profile and returns to the customer screen. */
 export async function switchProfile(page: Page, name: string | RegExp) {
   await openStand(page)
   await page.getByRole('button', { name }).click()
-  // Новому профилю засчитывается день входа: окно перекрывает кнопку закрытия стенда.
+  // A new profile is credited a login day: the dialog covers the stand's close button.
   await dismissLoginDay(page)
   await closeStand(page)
 }
@@ -47,31 +47,31 @@ export async function sendReceipt(page: Page, name: string) {
 
 export const standLog = (page: Page) => page.locator('.demo-stand-log')
 
-/** Экран профиля разделён на вкладки: игровые действия доступны только на своей. */
-export async function openTab(page: Page, name: 'Задания' | 'Коллекция' | 'Друзья') {
+/** The profile screen is split into tabs: game actions live only on their own tab. */
+export async function openTab(page: Page, name: 'Challenges' | 'Collection' | 'Friends') {
   const tab = page
-    .getByRole('navigation', { name: 'Разделы профиля' })
+    .getByRole('navigation', { name: 'Profile sections' })
     .getByRole('button', { name, exact: true })
   await tab.click()
   await expect(tab).toHaveAttribute('aria-current', 'page')
 }
 
 /**
- * Единственный путь сборки скидки: карточка предмета в «Инвентаре» кладёт его в первую
- * свободную ячейку. Номер ячейки задаётся порядком вызовов и здесь только проверяется.
+ * The only path to crafting a discount: the item card in "Inventory" puts it into the first free
+ * slot. The slot number follows from the call order and is only asserted here.
  */
 export async function putItemIntoDiscountSlot(page: Page, itemName: string, slotNumber: number) {
   await page.getByRole('button', { name: new RegExp(`^${itemName}, `) }).click()
-  const itemDialog = page.getByRole('dialog', { name: `Предмет «${itemName}»` })
+  const itemDialog = page.getByRole('dialog', { name: `Item "${itemName}"` })
   await expect(itemDialog).toBeVisible()
-  await itemDialog.getByRole('button', { name: 'Добавить в набор' }).click()
+  await itemDialog.getByRole('button', { name: 'Add to the set' }).click()
   await expect(itemDialog).toHaveCount(0)
-  await expect(page.getByRole('button', { name: new RegExp(`^${itemName} в ячейке ${slotNumber}`) }))
+  await expect(page.getByRole('button', { name: new RegExp(`^${itemName} in slot ${slotNumber}`) }))
     .toBeVisible()
 }
 
-/** В демо-режиме коробка доступна сразу; helper только дожидается загруженного состояния. */
+/** In demo mode the box is available at once; this helper only waits for a loaded state. */
 export async function prepareLoginBox(page: Page) {
   await dismissLoginDay(page)
-  await expect(page.getByRole('button', { name: 'Открыть коробку Пятёрочки' })).toBeEnabled()
+  await expect(page.getByRole('button', { name: 'Open the Pyaterochka box' })).toBeEnabled()
 }

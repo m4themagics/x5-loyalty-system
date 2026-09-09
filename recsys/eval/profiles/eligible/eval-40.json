@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-40",
-  "label": "Оценочный синтетический профиль 40",
+  "label": "Evaluation synthetic profile 40",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Бакалея и консервы",
+          "category": "Groceries & Canned Food",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11900
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Хлеб, сыр и колбасы",
+          "category": "Bread, Cheese & Deli",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11900

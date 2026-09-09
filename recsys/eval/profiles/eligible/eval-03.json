@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-03",
-  "label": "Оценочный синтетический профиль 03",
+  "label": "Evaluation synthetic profile 03",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Овощи и зелень",
+          "category": "Vegetables & Herbs",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 8200

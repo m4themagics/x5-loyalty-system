@@ -1,9 +1,9 @@
-"""Титул коллекции: короткая подпись поверх уже собранных предметов.
+"""Collection title: a short caption written over the items already collected.
 
-Модель видит только факты коллекции — названия собранных наборов и категории предметов.
-Любая ошибка, таймаут, невалидный JSON или нарушение контракта дают детерминированный
-шаблон с источником `fallback`. Титул не содержит сумм, скидок и обещаний: сравнение
-людей по деньгам исключено на уровне валидатора.
+The model sees only collection facts — the names of completed sets and the item categories.
+Any error, timeout, invalid JSON or contract violation yields a deterministic template with
+source `fallback`. A title carries no amounts, discounts or promises: comparing people by
+money is excluded at the validator level.
 """
 from __future__ import annotations
 
@@ -15,26 +15,27 @@ from typing import Any
 from . import ollama, yandexgpt
 
 SYSTEM_PROMPT = (
-    "Ты придумываешь короткий титул игрока для программы лояльности «X5 Чекпоинт». "
-    "Титул — это звание, которое обобщает собранную коллекцию: «Хлебный барон», "
-    "«Кофейный алхимик», «Король завтрака». "
-    "Запрещено перечислять предметы или категории: «Тостер, кувшин, завтрак» — "
-    "это список, а не титул. Не более трёх слов, без запятых, без цифр, без денег, "
-    "без скидок и без обещаний. "
-    "Ответь строго одним JSON-объектом с единственным полем title, без markdown."
+    "You invent a short player title for the \"X5 Checkpoint\" loyalty programme. "
+    "A title is an honorific that sums up the collection: \"Bread Baron\", "
+    "\"Coffee Alchemist\", \"Breakfast King\". "
+    "Listing items or categories is forbidden: \"Toaster, pitcher, breakfast\" is a list, "
+    "not a title. Three words at most, no commas, no digits, no money, no discounts and no "
+    "promises. "
+    "Answer with exactly one JSON object holding a single field title, without markdown."
 )
 
 MAX_TITLE_LENGTH = 28
 WORD_PATTERN = re.compile(r"[\w-]+", re.UNICODE)
 ENUMERATION_PATTERN = re.compile(r"[,;]|\s/\s")
 FORBIDDEN_PATTERN = re.compile(
-    r"\d|₽|руб|скидк|процент|%|бесплатн|подар|выигр|приз|гарант|кэшбэк|кешбэк",
+    r"\d|₽|\brub\b|\bruble|\brouble|discount|percent|%|\bfree\b|\bgift\b|\bwin\b|\bprize\b"
+    r"|guarantee|cashback|\bsale\b|\bsave\b|\boff\b",
     re.IGNORECASE,
 )
 
 
 def build_title(profile: dict[str, Any], game: dict[str, Any]) -> tuple[dict[str, Any], str | None]:
-    """Возвращает (титул, ошибка LLM). Ошибка нужна только диагностике."""
+    """Returns (title, LLM error). The error is for diagnostics only."""
     facts = collect_facts(profile, game)
     template = template_title(facts)
 
@@ -67,7 +68,7 @@ def build_title(profile: dict[str, Any], game: dict[str, Any]) -> tuple[dict[str
 
 
 def check(title: Any, facts: dict[str, Any] | None = None) -> list[str]:
-    """Титул описывает коллекцию, ничего не обещает и не пересказывает её состав."""
+    """A title describes the collection, promises nothing and does not retell its contents."""
     if not isinstance(title, str) or not title.strip():
         return ["title_empty"]
 
@@ -88,9 +89,9 @@ def check(title: Any, facts: dict[str, Any] | None = None) -> list[str]:
 
 def _repeats_collection(value: str, facts: dict[str, Any]) -> bool:
     """
-    Модель охотно отвечает списком собранного: «Тостер, кувшин, завтрак». Формально это
-    три слова без денег, поэтому прежние правила такой ответ пропускали. Титул считается
-    пересказом, если хотя бы два его слова взяты из названий предметов или категорий.
+    The model happily answers with a list of what was collected: "Toaster, pitcher, breakfast".
+    Formally that is three words without money, so the earlier rules let such an answer through.
+    A title counts as a retelling when at least two of its words come from item or category names.
     """
     source = " ".join(facts.get("item_names", []) + facts.get("top_categories", []))
     known = {_stem(word) for word in WORD_PATTERN.findall(source.lower()) if len(word) > 3}
@@ -99,8 +100,8 @@ def _repeats_collection(value: str, facts: dict[str, Any]) -> bool:
 
 
 def _stem(word: str) -> str:
-    """Грубая нормализация окончаний: «кувшин» и «кувшины» — одно слово."""
-    return word[:-2] if len(word) > 6 else word[:-1] if len(word) > 4 else word
+    """Rough plural normalisation: "pitcher" and "pitchers" are one word."""
+    return word[:-1] if len(word) > 4 and word.endswith("s") else word
 
 
 def collect_facts(profile: dict[str, Any], game: dict[str, Any]) -> dict[str, Any]:
@@ -133,58 +134,58 @@ def collect_facts(profile: dict[str, Any], game: dict[str, Any]) -> dict[str, An
 
 
 def template_title(facts: dict[str, Any]) -> dict[str, str]:
-    """Детерминированный титул: используется как fallback и как подсказка модели."""
+    """Deterministic title: used both as a fallback and as a hint for the model."""
     completed = facts["completed_recipes"]
     categories = facts["top_categories"]
 
     if completed:
-        title = f"Мастер «{completed[0]}»" if len(completed) == 1 else "Мастер коллекций"
-        subtitle = f"Собранных наборов: {len(completed)}"
+        title = f'"{completed[0]}" Master' if len(completed) == 1 else "Master of Collections"
+        subtitle = f"Sets collected: {len(completed)}"
     elif facts["items_total"] > 0:
         title = _category_title(categories) or _collector_title(facts["distinct_items"])
         subtitle = (
-            f"Больше всего: {categories[0].lower()}" if categories
-            else f"Предметов в коллекции: {facts['items_total']}"
+            f"Mostly: {categories[0].lower()}" if categories
+            else f"Items in the collection: {facts['items_total']}"
         )
     else:
-        title = "Пустая полка"
-        subtitle = "Откройте коробку или выполните задание"
+        title = "Empty Shelf"
+        subtitle = "Open a box or complete a challenge"
 
     return {"title": _fit(title), "subtitle": subtitle[:90]}
 
 
-# Титул по главной категории коллекции. Это подписи к экрану, а не второй каталог предметов:
-# состав и категории приходят снимком из webapp, здесь лежат только слова.
+# Title by the leading category of the collection. These are screen captions, not a second item
+# catalog: contents and categories arrive as a snapshot from the webapp, only the words live here.
 CATEGORY_TITLES = {
-    "Хлеб и выпечка": "Хлебный барон",
-    "Молочные продукты": "Молочный барон",
-    "Фрукты": "Фруктовый знаток",
-    "Овощи и зелень": "Грядочный магнат",
-    "Кофе и чай": "Кофейный алхимик",
-    "Снеки и орехи": "Хрустящий гурман",
-    "Яйца и завтраки": "Король завтрака",
-    "Всё для выпечки": "Домашний пекарь",
-    "Свежие продукты": "Знаток свежего",
-    "Замороженные продукты": "Повелитель холода",
-    "Полезные напитки": "Витаминный мастер",
-    "Мясо и колбасы": "Гриль-мастер",
-    "Рыба и азиатская кухня": "Мастер палочек",
-    "Кофе и десерты": "Сластёна с кофе",
-    "Пицца и готовая еда": "Пицца-магнат",
-    "Холодные напитки и мороженое": "Ледяной гурман",
-    "Готовая еда": "Мастер быстрого ужина",
-    "Любимые покупки": "Верный поклонник",
-    "Крупы, супы и соусы": "Хозяин казана",
-    "Лапша и азиатская кухня": "Повелитель вока",
-    "Мороженое и десерты": "Главный сластёна",
-    "Хлеб, сыр и колбасы": "Мастер сэндвича",
-    "Бакалея и консервы": "Хранитель запасов",
-    "Овощи, фрукты и зелень": "Хранитель свежести",
+    "Bread & Bakery": "Bread Baron",
+    "Dairy": "Dairy Baron",
+    "Fruit": "Fruit Connoisseur",
+    "Vegetables & Herbs": "Garden Magnate",
+    "Coffee & Tea": "Coffee Alchemist",
+    "Snacks & Nuts": "Crunch Gourmet",
+    "Eggs & Breakfast": "Breakfast King",
+    "Baking Supplies": "Home Baker",
+    "Fresh Food": "Fresh Food Expert",
+    "Frozen Food": "Lord of Cold",
+    "Healthy Drinks": "Vitamin Master",
+    "Meat & Sausages": "Grill Master",
+    "Fish & Asian Cuisine": "Chopstick Master",
+    "Coffee & Desserts": "Sweet Coffee Fan",
+    "Pizza & Ready Meals": "Pizza Magnate",
+    "Cold Drinks & Ice Cream": "Ice Gourmet",
+    "Ready Meals": "Quick Dinner Master",
+    "Favourite Buys": "Loyal Regular",
+    "Grains, Soups & Sauces": "Cauldron Keeper",
+    "Noodles & Asian Cuisine": "Wok Commander",
+    "Ice Cream & Desserts": "Chief Sweet Tooth",
+    "Bread, Cheese & Deli": "Sandwich Master",
+    "Groceries & Canned Food": "Pantry Keeper",
+    "Vegetables, Fruit & Herbs": "Freshness Keeper",
 }
 
 
 def _category_title(categories: list[str]) -> str | None:
-    """Титул различает игроков по тому, что они собирают, а не только по размеру коллекции."""
+    """The title tells players apart by what they collect, not only by collection size."""
     for category in categories:
         title = CATEGORY_TITLES.get(category)
         if title is not None:
@@ -194,18 +195,17 @@ def _category_title(categories: list[str]) -> str | None:
 
 def _collector_title(distinct_items: int) -> str:
     """
-    Титул до первого собранного набора. Раньше здесь подставлялось первое слово категории
-    («Собиратель: молочные»), и получалось повисшее прилагательное вместо названия.
-    Ступени зависят от размера коллекции, поэтому титул растёт вместе с игроком
-    и не требует склонения категорий.
+    The title before the first completed set. It used to substitute the first word of a category
+    ("Collector: dairy"), which left a dangling adjective instead of a name. The steps depend on
+    collection size, so the title grows with the player and needs no category inflection.
     """
     if distinct_items <= 1:
-        return "Первая находка"
+        return "First Find"
     if distinct_items <= 3:
-        return "Охотник за коробками"
+        return "Box Hunter"
     if distinct_items <= 6:
-        return "Кухонный энтузиаст"
-    return "Кухонный магнат"
+        return "Kitchen Enthusiast"
+    return "Kitchen Magnate"
 
 
 def _fit(title: str) -> str:

@@ -16,8 +16,8 @@
 }
 
 /*
- * Раньше здесь был декоративный кружок в фоне, который читался как пустой аватар.
- * Строка стоит в потоке под заголовком и не заезжает ни на маскота, ни на кнопку обмена.
+ * There used to be a decorative background circle here that read as an empty avatar.
+ * The row now sits in flow under the title and overlaps neither the mascot nor the trade button.
  */
 .profile-identity {
   position: relative;
@@ -99,7 +99,7 @@
   object-fit: contain;
 }
 
-/* Радость и удивление коротко подбрасывают персонажа, чтобы смена позы читалась как реакция. */
+/* Joy and surprise briefly lift the character so the pose change reads as a reaction. */
 .profile-character[data-mood='happy'],
 .profile-character[data-mood='surprised'] {
   animation: profile-character-pop 420ms ease-out;
@@ -303,7 +303,7 @@
 
 .login-day-overlay {
   position: fixed;
-  /* Выше демо-стенда (320) и карточек инвентаря (350): окно входа перекрывает всё. */
+  /* Above the demo stand (320) and inventory cards (350): the login dialog covers everything. */
   z-index: 500;
   inset: 0;
   display: grid;
@@ -2054,7 +2054,7 @@ button.profile-trade-slot {
   }
 }
 
-/* --- Статистика в шапке и вкладки профиля -------------------------------- */
+/* --- Header statistics and profile tabs ---------------------------------- */
 
 .profile-stats {
   position: relative;
@@ -2199,7 +2199,7 @@ button.profile-trade-slot {
   max-width: none;
 }
 
-/* Надеть и снять вещь — второе действие в карточке предмета, рядом с выбором для сборки. */
+/* Wearing an item is the second action on the item card, next to picking it for crafting. */
 .inventory-item-card-wear {
   width: 100%;
   margin-top: 10px;

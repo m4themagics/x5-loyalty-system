@@ -5,7 +5,7 @@
   "profile": {
     "snapshot_version": 2,
     "profile_id": "demo-breakfast-seeded",
-    "label": "Подготовленный профиль: onboarding пройден, собраны три предмета «Доброго утра» (синтетический профиль)",
+    "label": "Seeded profile: onboarding done, three \"Good Morning\" items collected (synthetic profile)",
     "synthetic": true,
     "receipts": [
       {
@@ -16,7 +16,7 @@
         "lines": [
           {
             "sku_id": "sku-eggs-10",
-            "category": "Яйца и завтраки",
+            "category": "Eggs & Breakfast",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 11900
@@ -31,7 +31,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 2,
             "paid": true,
             "amount_kopecks": 17800
@@ -46,7 +46,7 @@
         "lines": [
           {
             "sku_id": "sku-bread-500",
-            "category": "Хлеб и выпечка",
+            "category": "Bread & Bakery",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 5400
@@ -61,7 +61,7 @@
         "lines": [
           {
             "sku_id": "sku-coffee-250",
-            "category": "Кофе и чай",
+            "category": "Coffee & Tea",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 32900
@@ -76,7 +76,7 @@
         "lines": [
           {
             "sku_id": "sku-eggs-10",
-            "category": "Яйца и завтраки",
+            "category": "Eggs & Breakfast",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 11900
@@ -138,154 +138,154 @@
     "items": [
       {
         "id": "club-toaster",
-        "name": "Клубный тостер",
+        "name": "Clubhouse Toaster",
         "rarity": "common",
-        "category": "Хлеб и выпечка"
+        "category": "Bread & Bakery"
       },
       {
         "id": "milk-pitcher",
-        "name": "Молочный кувшин",
+        "name": "Milk Pitcher",
         "rarity": "common",
-        "category": "Молочные продукты"
+        "category": "Dairy"
       },
       {
         "id": "fruit-basket",
-        "name": "Фруктовая корзинка",
+        "name": "Fruit Basket",
         "rarity": "common",
-        "category": "Фрукты"
+        "category": "Fruit"
       },
       {
         "id": "vegetable-crate",
-        "name": "Овощной ящик",
+        "name": "Vegetable Crate",
         "rarity": "common",
-        "category": "Овощи и зелень"
+        "category": "Vegetables & Herbs"
       },
       {
         "id": "travel-mug",
-        "name": "Термокружка",
+        "name": "Travel Mug",
         "rarity": "common",
-        "category": "Кофе и чай"
+        "category": "Coffee & Tea"
       },
       {
         "id": "snack-bowl",
-        "name": "Миска для снеков",
+        "name": "Snack Bowl",
         "rarity": "common",
-        "category": "Снеки и орехи"
+        "category": "Snacks & Nuts"
       },
       {
         "id": "breakfast-pan",
-        "name": "Сковорода завтрака",
+        "name": "Breakfast Pan",
         "rarity": "common",
-        "category": "Яйца и завтраки"
+        "category": "Eggs & Breakfast"
       },
       {
         "id": "baker-apron",
-        "name": "Фартук пекаря",
+        "name": "Baker's Apron",
         "rarity": "common",
-        "category": "Всё для выпечки"
+        "category": "Baking Supplies"
       },
       {
         "id": "chef-knife",
-        "name": "Нож шефа",
+        "name": "Chef's Knife",
         "rarity": "epic",
-        "category": "Свежие продукты"
+        "category": "Fresh Food"
       },
       {
         "id": "freezer-chest",
-        "name": "Морозильная камера",
+        "name": "Freezer Chest",
         "rarity": "epic",
-        "category": "Замороженные продукты"
+        "category": "Frozen Food"
       },
       {
         "id": "power-blender",
-        "name": "Блендер здоровья",
+        "name": "Power Blender",
         "rarity": "epic",
-        "category": "Полезные напитки"
+        "category": "Healthy Drinks"
       },
       {
         "id": "master-grill",
-        "name": "Гриль мастера",
+        "name": "Master's Grill",
         "rarity": "epic",
-        "category": "Мясо и колбасы"
+        "category": "Meat & Sausages"
       },
       {
         "id": "sushi-kit",
-        "name": "Набор сушиста",
+        "name": "Sushi Kit",
         "rarity": "epic",
-        "category": "Рыба и азиатская кухня"
+        "category": "Fish & Asian Cuisine"
       },
       {
         "id": "barista-machine",
-        "name": "Кофемашина бариста",
+        "name": "Barista Machine",
         "rarity": "epic",
-        "category": "Кофе и десерты"
+        "category": "Coffee & Desserts"
       },
       {
         "id": "pizza-oven",
-        "name": "Печь пиццайоло",
+        "name": "Pizzaiolo Oven",
         "rarity": "epic",
-        "category": "Пицца и готовая еда"
+        "category": "Pizza & Ready Meals"
       },
       {
         "id": "picnic-cooler",
-        "name": "Холодильник для пикника",
+        "name": "Picnic Cooler",
         "rarity": "epic",
-        "category": "Холодные напитки и мороженое"
+        "category": "Cold Drinks & Ice Cream"
       },
       {
         "id": "golden-chef-hat",
-        "name": "Золотой колпак повара",
+        "name": "Golden Chef's Hat",
         "rarity": "legendary",
-        "category": "Готовая еда"
+        "category": "Ready Meals"
       },
       {
         "id": "magic-fridge",
-        "name": "Волшебный холодильник",
+        "name": "Magic Fridge",
         "rarity": "legendary",
-        "category": "Любимые покупки"
+        "category": "Favourite Buys"
       },
       {
         "id": "royal-cauldron",
-        "name": "Королевский казан",
+        "name": "Royal Cauldron",
         "rarity": "legendary",
-        "category": "Крупы, супы и соусы"
+        "category": "Grains, Soups & Sauces"
       },
       {
         "id": "dragon-wok",
-        "name": "Драконий вок",
+        "name": "Dragon Wok",
         "rarity": "legendary",
-        "category": "Лапша и азиатская кухня"
+        "category": "Noodles & Asian Cuisine"
       },
       {
         "id": "crystal-icecream-maker",
-        "name": "Кристальная мороженица",
+        "name": "Crystal Ice Cream Maker",
         "rarity": "legendary",
-        "category": "Мороженое и десерты"
+        "category": "Ice Cream & Desserts"
       },
       {
         "id": "legendary-sandwich-press",
-        "name": "Пресс идеального сэндвича",
+        "name": "Perfect Sandwich Press",
         "rarity": "legendary",
-        "category": "Хлеб, сыр и колбасы"
+        "category": "Bread, Cheese & Deli"
       },
       {
         "id": "treasure-pantry",
-        "name": "Сундук запасов",
+        "name": "Pantry Chest",
         "rarity": "legendary",
-        "category": "Бакалея и консервы"
+        "category": "Groceries & Canned Food"
       },
       {
         "id": "freshness-dome",
-        "name": "Купол свежести",
+        "name": "Freshness Dome",
         "rarity": "legendary",
-        "category": "Овощи, фрукты и зелень"
+        "category": "Vegetables, Fruit & Herbs"
       }
     ],
     "recipes": [
       {
         "id": "breakfast",
-        "title": "Доброе утро",
-        "category": "Завтраки, выпечка и горячие напитки",
+        "title": "Good Morning",
+        "category": "Breakfast, bakery and hot drinks",
         "item_ids": [
           "club-toaster",
           "milk-pitcher",
@@ -298,8 +298,8 @@
       },
       {
         "id": "fresh",
-        "title": "Свежий выбор",
-        "category": "Овощи, фрукты и полезные продукты",
+        "title": "Fresh Pick",
+        "category": "Vegetables, fruit and healthy food",
         "item_ids": [
           "fruit-basket",
           "vegetable-crate",
@@ -311,8 +311,8 @@
       },
       {
         "id": "movie",
-        "title": "Вечер без готовки",
-        "category": "Снеки, напитки и готовая еда",
+        "title": "No-Cook Evening",
+        "category": "Snacks, drinks and ready meals",
         "item_ids": [
           "snack-bowl",
           "pizza-oven",
@@ -323,8 +323,8 @@
       },
       {
         "id": "asian",
-        "title": "Азиатский ужин",
-        "category": "Рыба, рис, лапша и азиатские соусы",
+        "title": "Asian Dinner",
+        "category": "Fish, rice, noodles and Asian sauces",
         "item_ids": [
           "sushi-kit",
           "dragon-wok",
@@ -336,8 +336,8 @@
       },
       {
         "id": "chef",
-        "title": "Ужин шефа",
-        "category": "Мясо, свежие продукты и кулинария",
+        "title": "Chef's Dinner",
+        "category": "Meat, fresh food and cooking",
         "item_ids": [
           "chef-knife",
           "master-grill",
@@ -349,8 +349,8 @@
       },
       {
         "id": "dessert",
-        "title": "Сладкая пауза",
-        "category": "Десерты, кофе и всё для выпечки",
+        "title": "Sweet Break",
+        "category": "Desserts, coffee and baking supplies",
         "item_ids": [
           "baker-apron",
           "barista-machine",
@@ -362,8 +362,8 @@
       },
       {
         "id": "pantry",
-        "title": "Домашний запас",
-        "category": "Бакалея, заморозка и продукты долгого хранения",
+        "title": "Home Pantry",
+        "category": "Groceries, frozen food and long-life products",
         "item_ids": [
           "treasure-pantry",
           "freezer-chest",

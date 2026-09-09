@@ -1,11 +1,12 @@
-"""Проверяет объяснение маршрута против уже выбранного действия.
+"""Validates a route explanation against the action that was already selected.
 
-LLM получает валидированный action payload и может только назвать маршрут, описать один
-следующий ход и объяснить причину. Всё остальное — нарушение контракта из контракта LLM в описании
-проекта: креатив не меняет механику, срок, стоимость, бид, eligibility и funding, не создаёт SKU и
-условия, не снимает hold, не обещает причинный эффект и не прячет пометку о спонсорстве.
+The LLM receives a validated action payload and may only name the route, describe one next
+step and explain the reason. Everything else violates the LLM contract from the project
+description: the creative does not change mechanics, deadline, cost, bid, eligibility or
+funding, does not invent SKUs and terms, does not release a hold, does not promise a causal
+effect and does not hide the sponsorship label.
 
-Невалидный ответ блокируется, вместо него отдаётся детерминированный шаблон.
+An invalid answer is blocked and replaced with a deterministic template.
 """
 import json, pathlib, re, sys
 
@@ -13,70 +14,76 @@ ALLOWED_KEYS = {"decision_id", "title", "body", "progress", "cta", "sponsored_la
 REQUIRED_KEYS = {"decision_id", "title", "body", "cta"}
 LIMITS = {"title": 40, "body": 120, "progress": 40, "cta": 24}
 
-MONEY = re.compile(r"\d+[\s ]*(?:₽|руб)", re.I)
+MONEY = re.compile(r"\d[\d\s.,  ]*(?:₽|\brub\b|\brubles?\b)|(?:₽|\bRUB\b)\s*\d", re.I)
 SKU = re.compile(r"\bsku[_\-]?\d+\b", re.I)
-DAYS = re.compile(r"\b(\d+)\s*(?:дн|дней|день|дня)", re.I)
-CAUSAL = re.compile(r"гарантир|обязательно вернёт|увеличит ваши покупки|доказан|точно приведёт", re.I)
-HOLD_LIFTED = re.compile(r"награда ваша|забирайте сейчас|получите сразу|hold снят", re.I)
-URGENCY = re.compile(r"только сегодня|последний шанс|успей|осталось \d+ час|торопитесь", re.I)
-NEXT_STEP = re.compile(r"визит|покупк|верн|зайд|чек", re.I)
+DAYS = re.compile(r"\b(\d+)\s*days?\b", re.I)
+CAUSAL = re.compile(
+    r"guarantee|will definitely|is proven|proven to|will increase your purchases|certain to",
+    re.I,
+)
+HOLD_LIFTED = re.compile(
+    r"the reward is yours|collect it now|receive it immediately|hold (?:is )?lifted|hold released",
+    re.I,
+)
+URGENCY = re.compile(r"today only|last chance|hurry|only \d+ hours? left|do not miss", re.I)
+NEXT_STEP = re.compile(r"\bvisit|\bpurchas|\bbuy|\breturn|\breceipt|\bshop", re.I)
 
 FALLBACK = {
-    "personal_finish": "Один следующий покупочный день завершает маршрут.",
-    "store_coop": "Один следующий покупочный день добавит вклад в цель магазина.",
-    "family_relay": "Награда придёт после подтверждённой покупки приглашённого.",
-    "organic_progress": "Маршрут доступен без награды от бренда.",
-    "no_action": "Сейчас предложений нет.",
+    "personal_finish": "One more purchase day completes the route.",
+    "store_coop": "One more purchase day adds to the store goal.",
+    "family_relay": "The reward arrives after the invitee makes a confirmed purchase.",
+    "organic_progress": "The route is available without a brand reward.",
+    "no_action": "There are no offers right now.",
 }
 
 
 def check(action, explanation):
-    """Возвращает список нарушений. Пустой список — ответ можно показывать."""
+    """Returns the list of violations. An empty list means the answer can be shown."""
     problems = []
     if explanation is None:
-        return ["нет объяснения"]
+        return ["no explanation"]
 
     extra = set(explanation) - ALLOWED_KEYS
     if extra:
-        problems.append(f"лишние поля: {', '.join(sorted(extra))}")
+        problems.append(f"extra fields: {', '.join(sorted(extra))}")
     for key in REQUIRED_KEYS:
         if key not in explanation:
-            problems.append(f"нет поля {key}")
+            problems.append(f"missing field {key}")
 
     if explanation.get("decision_id") != action["decision_id"]:
-        problems.append("decision_id не совпадает с выбранным решением")
+        problems.append("decision_id does not match the selected decision")
 
     if action.get("surface_result") == "sponsored" and not explanation.get("sponsored_label"):
-        problems.append("нет пометки о спонсорстве")
+        problems.append("no sponsorship label")
     if action.get("surface_result") != "sponsored" and explanation.get("sponsored_label"):
-        problems.append("пометка о спонсорстве на неспонсируемом маршруте")
+        problems.append("sponsorship label on a non-sponsored route")
 
     for field, limit in LIMITS.items():
         value = explanation.get(field)
         if isinstance(value, str) and len(value) > limit:
-            problems.append(f"{field} длиннее {limit} символов")
+            problems.append(f"{field} is longer than {limit} characters")
 
     text = " ".join(str(explanation.get(f, "")) for f in ("title", "body", "progress", "cta"))
 
     if MONEY.search(text):
-        problems.append("названа цена или стоимость")
+        problems.append("a price or cost is named")
     for sku in SKU.findall(text):
         if sku.lower() != str(action.get("reinforcement_id") or "").lower():
-            problems.append(f"выдуман SKU {sku}")
+            problems.append(f"invented SKU {sku}")
     for days in DAYS.findall(text):
         if action.get("window_days") is None or int(days) != action["window_days"]:
-            problems.append(f"срок {days} дн. не совпадает с окном действия")
+            problems.append(f"the {days}-day deadline does not match the action window")
     if CAUSAL.search(text):
-        problems.append("обещан причинный эффект")
+        problems.append("a causal effect is promised")
     if action.get("status") == "delayed" and HOLD_LIFTED.search(text):
-        problems.append("снят fraud hold")
+        problems.append("the fraud hold released")
 
     if URGENCY.search(text):
-        problems.append("ложная срочность: срок задан окном действия")
+        problems.append("false urgency: the deadline is set by the action window")
 
     body = str(explanation.get("body", ""))
     if action.get("surface_result") in ("sponsored", "organic") and body and not NEXT_STEP.search(body):
-        problems.append("не назван следующий шаг")
+        problems.append("the next step is not named")
 
     return problems
 
@@ -84,13 +91,13 @@ def check(action, explanation):
 def fallback_for(action):
     card = {
         "decision_id": action["decision_id"],
-        "title": "Ваш чекпоинт",
+        "title": "Your checkpoint",
         "body": FALLBACK.get(action["mechanic_family"], FALLBACK["no_action"]),
         "progress": "",
-        "cta": "Открыть",
+        "cta": "Open",
     }
     if action.get("surface_result") == "sponsored":
-        card["sponsored_label"] = "При поддержке бренда"
+        card["sponsored_label"] = "Supported by the brand"
     return card
 
 
@@ -105,22 +112,22 @@ def main():
         problems = check(action, doc.get("creative_copy")) if doc.get("creative_copy") else []
         if problems:
             failures += 1
-            print(f"{path.name}: ЗАБЛОКИРОВАНО — {'; '.join(problems)}")
+            print(f"{path.name}: BLOCKED — {'; '.join(problems)}")
             print(f"  fallback: {fallback_for(action)['body']}")
         else:
-            print(f"{path.name}: ок")
+            print(f"{path.name}: ok")
 
     adversarial = json.loads((root / "fixtures/creatives-adversarial.json").read_text(encoding="utf-8"))
-    print("\nПопытки нарушить контракт:")
+    print("\nAttempts to break the contract:")
     for case in adversarial["cases"]:
         problems = check(case["decision"], case["creative_copy"])
         expected = case["expected_problem"]
         hit = any(expected in p for p in problems)
-        print(f"  {'✓' if hit else '✗'} {case['name']}: {'; '.join(problems) or 'не поймано'}")
+        print(f"  {'✓' if hit else '✗'} {case['name']}: {'; '.join(problems) or 'not caught'}")
         if not hit:
             failures += 1
 
-    print("\nвсе объяснения проходят контракт" if not failures else f"\nнарушений: {failures}")
+    print("\nevery explanation satisfies the contract" if not failures else f"\nviolations: {failures}")
     return 1 if failures else 0
 
 

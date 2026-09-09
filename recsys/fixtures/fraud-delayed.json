@@ -1,7 +1,7 @@
 {
   "profile": {
     "customer_id": "u_4750",
-    "display_name": "Семейная эстафета — подозрительная связь",
+    "display_name": "Family relay — suspicious link",
     "cadence_weeks": 1.9,
     "categories": [
       "coffee"
@@ -80,11 +80,11 @@
   },
   "creative_copy": {
     "decision_id": "dec_4750",
-    "title": "Семейная эстафета",
-    "body": "Награда придёт после подтверждённой покупки приглашённого.",
-    "progress": "Ожидает подтверждения",
-    "cta": "Понятно",
-    "sponsored_label": "При поддержке бренда"
+    "title": "Family relay",
+    "body": "The reward arrives after the invitee makes a confirmed purchase.",
+    "progress": "Awaiting confirmation",
+    "cta": "Got it",
+    "sponsored_label": "Supported by the brand"
   },
   "route_state": {
     "route_id": "r_4750",
@@ -95,5 +95,5 @@
     "fading_phase": "onboarding",
     "unlocks": []
   },
-  "demo_note": "Пока событие не подтверждено, p_billable равна нулю: обязательство перед бюджетом рекламодателя не резервируется и счёт не выставляется."
+  "demo_note": "While the event is unconfirmed, p_billable is zero: no liability is reserved against the advertiser budget and nothing is billed."
 }

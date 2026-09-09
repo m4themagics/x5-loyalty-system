@@ -1,8 +1,8 @@
 # Documentation
 
-The portfolio overview, technical guides and implementation status are available in English.
-The application, screenshots, original product specifications and submitted case materials
-retain their original Russian language.
+The portfolio overview, maintained technical guides, implementation status, application, and
+screenshots are available in English. The original case brief and submitted competition artifacts
+retain their source language so the historical record is not silently rewritten.
 
 ## English technical documentation
 
@@ -17,11 +17,12 @@ retain their original Russian language.
 | [Decision engine](../recsys/engine/README.md) | Challenge selection, CPA ad auction and reward economics |
 | [Evaluation](../recsys/eval/README.md) | Relevance, policy simulations and the offline learned recommender |
 
-## Original product specifications (Russian)
+## Product source documents
 
 These documents preserve the team's full product specification and source case. They describe
 both the implemented local PoC and target behavior. Use the English [implementation status](project/poc-status.md)
-and current code to distinguish shipped demo behavior from future requirements.
+and current code to distinguish shipped demo behavior from future requirements. The maintained
+portfolio and engineering documentation is English; historical source documents are retained for traceability.
 
 | Document | Scope |
 | --- | --- |
@@ -32,7 +33,7 @@ and current code to distinguish shipped demo behavior from future requirements.
 | [plan.md](project/plan.md) | Team responsibilities and acceptance criteria |
 | [context-pack.md](project/context-pack.md) | Working product context |
 
-## Archived submission (Russian)
+## Archived submission
 
 The submitted materials are preserved in `submission/` and are not maintained alongside the code:
 

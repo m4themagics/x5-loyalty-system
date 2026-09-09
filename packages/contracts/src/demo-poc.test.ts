@@ -88,25 +88,25 @@ describe('local PoC demo contract', () => {
   })
 })
 
-describe('титул коллекции', () => {
+describe('collection title', () => {
   const titleRequest = readExample('title-request-seeded.json')
   const titleResponse = readExample('title-response-seeded.json')
 
-  test('эталонные запрос и ответ проходят контракт', () => {
+  test('the reference request and response satisfy the contract', () => {
     expect(() => demoTitleRequestSchema.parse(titleRequest)).not.toThrow()
     const parsed = demoTitleResponseSchema.parse(titleResponse)
     expect(parsed.source).toBe('fallback')
     expect(parsed.violations).toEqual([])
   })
 
-  test('титул ограничен по длине: он подпись, а не текст карточки', () => {
+  test('the title is length-limited: it is a caption, not card copy', () => {
     expect(() => demoTitleResponseSchema.parse({
       ...(titleResponse as object),
-      title: 'Очень длинный титул, который не помещается в подпись коллекции',
+      title: 'A very long collection title that does not fit into the caption line',
     })).toThrow()
   })
 
-  test('источник ограничен моделью и шаблоном', () => {
+  test('the source is limited to the model and the template', () => {
     expect(() => demoTitleResponseSchema.parse({
       ...(titleResponse as object),
       source: 'manual',

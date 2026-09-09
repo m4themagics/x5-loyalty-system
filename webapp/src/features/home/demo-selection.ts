@@ -1,7 +1,7 @@
 import type { DemoInventoryEntry } from '@pyaterochka-game-demo/contracts'
 import { DEMO_CRAFT_SIZE } from '@pyaterochka-game-demo/contracts'
 
-/** Каждый слот занимает одну копию, в том числе при повторяющихся ID. */
+/** Each slot takes one copy, including when the same ID repeats. */
 export function addDemoSelection(
   selected: readonly string[],
   inventory: readonly DemoInventoryEntry[],

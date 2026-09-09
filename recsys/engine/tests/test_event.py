@@ -1,4 +1,4 @@
-"""Проверки квалификации чека, однократной выдачи и решений риска."""
+"""Checks for receipt qualification, one-time issuing and risk decisions."""
 import copy
 import json
 import pathlib
@@ -39,8 +39,8 @@ class EventTest(unittest.TestCase):
         self.assertIsNone(response["grant"])
         self.assertIn("idempotent_replay", response["reason_codes"])
 
-        # Клиент хранит возвращённый event_id, а повтор может прийти с тем же
-        # idempotency key и изменённым телом чека. Это всё ещё одно событие.
+        # The client stores the returned event_id, and a repeat may arrive with the same
+        # idempotency key and a changed receipt body. It is still one event.
         request = copy.deepcopy(self.request)
         first = handle_event(request)
         request["profile"]["processed_event_ids"] = [first["event_id"]]
@@ -125,7 +125,7 @@ class EventTest(unittest.TestCase):
     def test_a_different_category_does_not_qualify(self) -> None:
         request = copy.deepcopy(self.request)
         for line in request["receipt"]["lines"]:
-            line["category"] = "Снеки и орехи"
+            line["category"] = "Snacks & Nuts"
         response = handle_event(request)
         self.assertEqual(response["reason_codes"], ["receipt_category_mismatch"])
 

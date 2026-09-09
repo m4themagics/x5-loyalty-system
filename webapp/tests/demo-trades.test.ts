@@ -23,8 +23,8 @@ function offer(store = initial(), id = 'trade-1') {
   return createDemoTrade(store, { trade_id: id, actor_profile_id: a.profile_id, receiver_profile_id: b.profile_id, offered_item_id: 'milk-pitcher', requested_item_id: 'breakfast-pan', expected_store_revision: store.store_revision }, NOW)
 }
 
-describe('обмен цифровыми предметами', () => {
-  test('резервирует оба предмета, затем передаёт их одним снимком без изменения денежного резерва', () => {
+describe('digital item exchange', () => {
+  test('reserves both items, then transfers them in one snapshot without changing the money reserve', () => {
     const created = offer()
     expect(created.reason).toBe('trade_created')
     expect(created.store.profiles[a.profile_id].trade_reserved_items).toEqual([{ item_id: 'milk-pitcher', quantity: 1 }])
@@ -39,7 +39,7 @@ describe('обмен цифровыми предметами', () => {
     expect(accepted.store.profiles[a.profile_id].trade_reserved_items).toEqual([])
   })
 
-  test('крафт не расходует резерв, а каждую доступную копию можно предложить отдельно', () => {
+  test('crafting does not spend the reserve, and every available copy can be offered separately', () => {
     const created = offer()
     const state = created.store.profiles[a.profile_id]
     const ids = ['milk-pitcher', 'milk-pitcher', 'club-toaster', 'travel-mug']
@@ -52,7 +52,7 @@ describe('обмен цифровыми предметами', () => {
     expect(offer(second.store, 'trade-3').reason).toBe('trade_duplicate_unavailable')
   })
 
-  test('позволяет предложить единственную доступную копию предмета', () => {
+  test('allows offering the only available copy of an item', () => {
     const store = initial()
     const result = createDemoTrade(store, {
       trade_id: 'single-copy',
@@ -69,7 +69,7 @@ describe('обмен цифровыми предметами', () => {
     ])
   })
 
-  test('отклонение и истечение через 24 часа освобождают предметы без передачи', () => {
+  test('a decline and a 24-hour expiry free the items without a transfer', () => {
     const created = offer()
     const current = selectDemoProfile(created.store, b, budget)
     const rejected = respondDemoTrade(current, { trade_id: 'trade-1', actor_profile_id: b.profile_id, action: 'reject', expected_store_revision: current.store_revision, expected_trade_revision: 1 }, NOW + 1)
@@ -81,7 +81,7 @@ describe('обмен цифровыми предметами', () => {
     expect(expired.profiles[b.profile_id].trade_reserved_items).toEqual([])
   })
 
-  test('допускает только предметы одинаковой редкости и два оплаченных покупочных дня', () => {
+  test('admits only items of equal rarity and two paid purchase days', () => {
     const store = initial()
     const receiver = store.profiles[b.profile_id]
     receiver.profile = { ...receiver.profile, inventory: [...receiver.profile.inventory, { item_id: 'power-blender', quantity: 2 }] }
@@ -91,7 +91,7 @@ describe('обмен цифровыми предметами', () => {
     expect(offer(store).reason).toBe('trade_purchase_days_insufficient')
   })
 
-  test('устаревшая версия и чужое подтверждение не изменяют снимок', () => {
+  test("a stale revision and someone else's confirmation leave the snapshot unchanged", () => {
     const created = offer()
     const command = { trade_id: 'trade-1', actor_profile_id: b.profile_id, action: 'accept' as const, expected_store_revision: 0, expected_trade_revision: 1 }
     const receiver = selectDemoProfile(created.store, b, budget)
@@ -99,7 +99,7 @@ describe('обмен цифровыми предметами', () => {
     expect(respondDemoTrade(created.store, { ...command, actor_profile_id: a.profile_id, expected_store_revision: created.store.store_revision }, NOW + 1).reason).toBe('trade_receiver_required')
   })
 
-  test('повтор create и accept идемпотентен, ограничение три обмена действует на обоих', () => {
+  test('repeating create and accept is idempotent, and the three-trade limit binds both sides', () => {
     const created = offer()
     expect(offer(created.store).reason).toBe('trade_idempotent')
     const receiver = selectDemoProfile(created.store, b, budget)
@@ -111,7 +111,7 @@ describe('обмен цифровыми предметами', () => {
     expect(createDemoTrade(capped, { trade_id: 'fourth', actor_profile_id: a.profile_id, receiver_profile_id: b.profile_id, offered_item_id: 'milk-pitcher', requested_item_id: 'breakfast-pan', expected_store_revision: capped.store_revision }, NOW + 2).reason).toBe('trade_weekly_limit')
   })
 
-  test('store v1 мигрирует в v3 без потери состояния, ожидающий обмен переживает reload', () => {
+  test('store v1 migrates to v3 without losing state, and a pending trade survives a reload', () => {
     const store = initial()
     const legacy = { store_version: 1, active_profile_id: store.active_profile_id, profiles: store.profiles, referral_awards: [] }
     const migrated = resolveDemoStore(JSON.stringify(legacy))!
@@ -123,10 +123,10 @@ describe('обмен цифровыми предметами', () => {
   })
 })
 
-describe('реферальная связь подготовленных профилей', () => {
-  test('Борис приглашён Аней, и его приглашение предшествует его же оплаченным чекам', () => {
-    // Кейс требует показать расчёт реферальной награды, а не только покрыть его модульным тестом:
-    // без приглашённого seed-профиля панель всегда отвечала referral_not_invited.
+describe('referral link between seeded profiles', () => {
+  test('Boris was invited by Anna, and the invitation precedes his own paid receipts', () => {
+    // The case asks to show the referral calculation, not only cover it with a unit test:
+    // without an invited seed profile the panel always answered referral_not_invited.
     expect(a.referral.invited_by_profile_id).toBeNull()
     expect(b.referral.invited_by_profile_id).toBe(a.profile_id)
     expect(b.referral.had_confirmed_purchase_before_invite).toBe(false)
@@ -134,9 +134,9 @@ describe('реферальная связь подготовленных про�
 
     const invitedAt = b.referral.invited_at_ms!
     const earliestPaid = Math.min(...b.receipts.map((receipt) => receipt.purchased_at_ms))
-    // Иначе применилось бы правило «уже наш покупатель», и награда не начислилась бы никогда.
+    // Otherwise the "already our customer" rule would apply and no reward would ever be granted.
     expect(invitedAt).toBeLessThan(earliestPaid)
-    // Первая покупка должна попасть в семидневное окно приглашения.
+    // The first purchase must fall inside the seven-day invitation window.
     expect(earliestPaid - invitedAt).toBeLessThan(DEMO_REFERRAL_WINDOW_DAYS * 86_400_000)
   })
 })

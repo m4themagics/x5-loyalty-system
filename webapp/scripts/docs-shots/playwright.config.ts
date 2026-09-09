@@ -3,8 +3,8 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig, devices } from '@playwright/test'
 
 /**
- * Съёмка картинок для документации. Живёт в репозитории намеренно: пока она лежала во
- * временной папке, скриншоты отставали от интерфейса на несколько релизов и никто этого не видел.
+ * Capturing documentation images. It lives in the repository on purpose: while it sat in a
+ * temporary folder the screenshots lagged the interface by several releases and nobody noticed.
  */
 const webPort = 5205
 const webUrl = `http://127.0.0.1:${webPort}`

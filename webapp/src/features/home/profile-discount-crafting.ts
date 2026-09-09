@@ -11,44 +11,44 @@ const RARITY_POINTS: Record<ItemRarity, number> = {
 export const DISCOUNT_RECIPES = [
   {
     id: 'breakfast',
-    title: 'Доброе утро',
-    category: 'Завтраки, выпечка и горячие напитки',
+    title: 'Good Morning',
+    category: 'Breakfast, bakery and hot drinks',
     itemIds: ['club-toaster', 'milk-pitcher', 'travel-mug', 'breakfast-pan', 'barista-machine', 'baker-apron', 'fruit-basket'],
   },
   {
     id: 'fresh',
-    title: 'Свежий выбор',
-    category: 'Овощи, фрукты и полезные продукты',
+    title: 'Fresh Pick',
+    category: 'Vegetables, fruit and healthy food',
     itemIds: ['fruit-basket', 'vegetable-crate', 'power-blender', 'freshness-dome', 'milk-pitcher', 'breakfast-pan'],
   },
   {
     id: 'movie',
-    title: 'Вечер без готовки',
-    category: 'Снеки, напитки и готовая еда',
+    title: 'No-Cook Evening',
+    category: 'Snacks, drinks and ready meals',
     itemIds: ['snack-bowl', 'pizza-oven', 'picnic-cooler', 'legendary-sandwich-press', 'freezer-chest'],
   },
   {
     id: 'asian',
-    title: 'Азиатский ужин',
-    category: 'Рыба, рис, лапша и азиатские соусы',
+    title: 'Asian Dinner',
+    category: 'Fish, rice, noodles and Asian sauces',
     itemIds: ['sushi-kit', 'dragon-wok', 'royal-cauldron', 'chef-knife', 'vegetable-crate', 'treasure-pantry'],
   },
   {
     id: 'chef',
-    title: 'Ужин шефа',
-    category: 'Мясо, свежие продукты и кулинария',
+    title: "Chef's Dinner",
+    category: 'Meat, fresh food and cooking',
     itemIds: ['chef-knife', 'master-grill', 'golden-chef-hat', 'vegetable-crate', 'magic-fridge', 'royal-cauldron'],
   },
   {
     id: 'dessert',
-    title: 'Сладкая пауза',
-    category: 'Десерты, кофе и всё для выпечки',
+    title: 'Sweet Break',
+    category: 'Desserts, coffee and baking supplies',
     itemIds: ['baker-apron', 'barista-machine', 'crystal-icecream-maker', 'milk-pitcher', 'fruit-basket', 'travel-mug'],
   },
   {
     id: 'pantry',
-    title: 'Домашний запас',
-    category: 'Бакалея, заморозка и продукты долгого хранения',
+    title: 'Home Pantry',
+    category: 'Groceries, frozen food and long-life products',
     itemIds: ['treasure-pantry', 'freezer-chest', 'magic-fridge', 'picnic-cooler', 'club-toaster', 'legendary-sandwich-press'],
   },
 ] as const
@@ -81,8 +81,8 @@ export type CraftingGuidance = {
 export function getCraftingGuidance(itemIds: readonly string[]): CraftingGuidance {
   if (itemIds.length === 0) {
     return {
-      title: 'Соберите тематический набор',
-      description: 'Связанные продукты дают до +3% к итоговой скидке.',
+      title: 'Collect a themed set',
+      description: 'Related products add up to +3% to the final discount.',
       matchedCount: 0,
       suggestedItemIds: [...DISCOUNT_RECIPES[0].itemIds.slice(0, 3)],
     }
@@ -96,10 +96,10 @@ export function getCraftingGuidance(itemIds: readonly string[]): CraftingGuidanc
     .slice(0, Math.max(1, 4 - itemIds.length))
 
   return {
-    title: `Ближе всего: «${recipe.title}»`,
+    title: `Closest set: "${recipe.title}"`,
     description: matchedCount >= 3
-      ? 'Тематический бонус уже активирован. Четвёртое совпадение усилит его.'
-      : `Совпадений: ${matchedCount} из 3 для бонуса +2%.`,
+      ? 'The themed bonus is already active. A fourth match makes it stronger.'
+      : `Matches: ${matchedCount} of 3 for the +2% bonus.`,
     matchedCount,
     suggestedItemIds: [...suggestedItemIds],
   }
@@ -129,7 +129,7 @@ export function previewCraftedDiscount(
   )[0]
 
   return {
-    title: hasRecipe ? recipe.title : `Скидка на ${lowerFirst(strongestItem.category)}`,
+    title: hasRecipe ? recipe.title : `Discount on ${lowerFirst(strongestItem.category)}`,
     category: hasRecipe ? recipe.category : strongestItem.category,
     rarity: resolveDiscountRarity(rarityScore),
     rarityScore,
@@ -228,5 +228,5 @@ function basePercentForScore(score: number): number {
 }
 
 function lowerFirst(value: string): string {
-  return `${value.charAt(0).toLocaleLowerCase('ru-RU')}${value.slice(1)}`
+  return `${value.charAt(0).toLocaleLowerCase('en-US')}${value.slice(1)}`
 }

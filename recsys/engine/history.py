@@ -1,4 +1,4 @@
-"""Признаки истории покупок: покупочные дни, знакомые категории, давность и ритм визитов."""
+"""Purchase-history features: purchase days, familiar categories, recency and visit rhythm."""
 from __future__ import annotations
 
 import datetime as dt
@@ -8,7 +8,7 @@ DAY_MS = 86_400_000
 
 
 class PurchaseHistory:
-    """Считает покупочные дни, а не чеки: два чека одного дня — один покупочный день."""
+    """Counts purchase days, not receipts: two receipts on one day are one purchase day."""
 
     def __init__(self, receipts: list[dict[str, Any]], now_ms: int, window_days: int) -> None:
         self.now_ms = now_ms
@@ -59,7 +59,7 @@ class PurchaseHistory:
         return max(0, (self.now_ms - last_ms) // DAY_MS)
 
     def split_days(self) -> list[str]:
-        """Дни, в которых несколько чеков: признак дробления корзины, не самостоятельный запрет."""
+        """Days with several receipts: a basket-splitting signal, not a standalone block."""
         return sorted(day for day, receipts in self.day_receipts.items() if len(receipts) > 1)
 
 

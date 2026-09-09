@@ -1,1 +1,1 @@
-"""Движок выбора задания локального PoC. Только стандартная библиотека Python."""
+"""Challenge-selection engine of the local PoC. Python standard library only."""

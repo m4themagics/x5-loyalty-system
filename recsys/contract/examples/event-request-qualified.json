@@ -6,7 +6,7 @@
   "profile": {
     "snapshot_version": 2,
     "profile_id": "demo-empty",
-    "label": "Новый участник, пустой инвентарь (синтетический профиль)",
+    "label": "New member, empty inventory (synthetic profile)",
     "synthetic": true,
     "receipts": [
       {
@@ -17,7 +17,7 @@
         "lines": [
           {
             "sku_id": "sku-milk-1l",
-            "category": "Молочные продукты",
+            "category": "Dairy",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 8900
@@ -32,7 +32,7 @@
         "lines": [
           {
             "sku_id": "sku-bread-500",
-            "category": "Хлеб и выпечка",
+            "category": "Bread & Bakery",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 5400
@@ -47,7 +47,7 @@
         "lines": [
           {
             "sku_id": "sku-coffee-250",
-            "category": "Кофе и чай",
+            "category": "Coffee & Tea",
             "quantity": 1,
             "paid": true,
             "amount_kopecks": 32900
@@ -88,10 +88,10 @@
   "challenge": {
     "challenge_id": "chl_demo_0001",
     "challenge_version": 1,
-    "title": "Молочный старт недели",
+    "title": "A dairy start to the week",
     "recipe_goal_id": "breakfast",
     "target": {
-      "category": "Молочные продукты",
+      "category": "Dairy",
       "sku_ids": [
         "sku-milk-1l"
       ],
@@ -104,7 +104,7 @@
       "digital_item_id": "milk-pitcher",
       "physical_sku": {
         "sku_id": "gift-milk-500",
-        "name": "Молоко 0,5 л (синтетический SKU)",
+        "name": "Milk 0.5 l (synthetic SKU)",
         "unit_cost_kopecks": 2500,
         "stock_reserved": true
       }
@@ -142,14 +142,14 @@
     "lines": [
       {
         "sku_id": "sku-milk-1l",
-        "category": "Молочные продукты",
+        "category": "Dairy",
         "quantity": 1,
         "paid": true,
         "amount_kopecks": 8900
       },
       {
         "sku_id": "sku-sample-tasting",
-        "category": "Молочные продукты",
+        "category": "Dairy",
         "quantity": 1,
         "paid": false,
         "amount_kopecks": 0

@@ -1,8 +1,8 @@
-"""Детерминированные ограничения карточки относительно уже утверждённого решения.
+"""Deterministic card constraints relative to an already approved decision.
 
-LLM объясняет валидированное действие. Она не имеет права придумать цену или SKU, изменить
-срок, обещать причинный эффект, снять удержание или скрыть пометку о спонсорстве.
-Правила согласованы с `recsys/validate_explanation.py`.
+The LLM explains a validated action. It may not invent a price or a SKU, change a deadline,
+promise a causal effect, release a hold or hide the sponsorship label.
+The rules stay aligned with `recsys/validate_explanation.py`.
 """
 import re
 from typing import Any
@@ -10,17 +10,23 @@ from typing import Any
 LIMITS = {"headline": 60, "body": 220, "reward_line": 120, "deadline_line": 120, "sponsor_line": 120}
 TEXT_FIELDS = ("headline", "body", "reward_line", "deadline_line", "sponsor_line")
 
-MONEY = re.compile(r"\d+[\s  ]*(?:₽|руб)", re.I)
+MONEY = re.compile(r"\d[\d\s.,  ]*(?:₽|\brub\b|\brubles?\b)|(?:₽|\bRUB\b)\s*\d", re.I)
 SKU = re.compile(r"\bsku[_\-][a-z0-9_\-]+\b", re.I)
-DAYS = re.compile(r"\b(\d+)\s*(?:дн|дней|день|дня)", re.I)
-CAUSAL = re.compile(r"гарантир|обязательно вернёт|увеличит ваши покупки|доказан|точно приведёт", re.I)
-HOLD_LIFTED = re.compile(r"награда ваша|забирайте сейчас|получите сразу|hold снят", re.I)
-URGENCY = re.compile(r"только сегодня|последний шанс|успей|осталось \d+ час|торопитесь", re.I)
-NEXT_STEP = re.compile(r"визит|покупк|купит|купи|верн|зайд|чек", re.I)
+DAYS = re.compile(r"\b(\d+)\s*days?\b", re.I)
+CAUSAL = re.compile(
+    r"guarantee|will definitely|is proven|proven to|will increase your purchases|certain to",
+    re.I,
+)
+HOLD_LIFTED = re.compile(
+    r"the reward is yours|collect it now|receive it immediately|hold (?:is )?lifted|hold released",
+    re.I,
+)
+URGENCY = re.compile(r"today only|last chance|hurry|only \d+ hours? left|do not miss", re.I)
+NEXT_STEP = re.compile(r"\bvisit|\bpurchas|\bbuy|\bbuying|\breturn|\breceipt|\bcheckout|\bshop", re.I)
 
 
 def check(card: Any, challenge: dict[str, Any], item_name: str) -> list[str]:
-    """Возвращает список нарушений. Пустой список — карточку можно показывать."""
+    """Returns the list of violations. An empty list means the card can be shown."""
     if not isinstance(card, dict):
         return ["card_not_an_object"]
 

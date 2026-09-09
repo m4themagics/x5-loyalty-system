@@ -1,11 +1,11 @@
-"""Единственная точка входа движка локального PoC.
+"""The single entry point of the local PoC engine.
 
-    python3 recsys/engine/cli.py decision < запрос.json > ответ.json
-    python3 recsys/engine/cli.py event    < запрос.json > ответ.json
-    python3 recsys/engine/cli.py title    < запрос.json > ответ.json
+    python3 recsys/engine/cli.py decision < request.json > response.json
+    python3 recsys/engine/cli.py event    < request.json > response.json
+    python3 recsys/engine/cli.py title    < request.json > response.json
 
-В stdout всегда попадает ровно один JSON-объект. Диагностика идёт в stderr.
-Код возврата: 0 — ответ по контракту, 2 — некорректный вход, 1 — сбой движка.
+Exactly one JSON object always reaches stdout. Diagnostics go to stderr.
+Exit codes: 0 — a response that satisfies the contract, 2 — invalid input, 1 — engine failure.
 """
 import json
 import pathlib
@@ -23,16 +23,16 @@ CONTRACT_VERSION = 2
 
 def main(argv: list[str]) -> int:
     if len(argv) != 1 or argv[0] not in HANDLERS:
-        return _fail("unknown", "bad_request", f"ожидается одна команда: {', '.join(HANDLERS)}", 2)
+        return _fail("unknown", "bad_request", f"exactly one command expected: {', '.join(HANDLERS)}", 2)
 
     raw = sys.stdin.read()
     try:
         request = json.loads(raw)
     except json.JSONDecodeError as error:
-        return _fail("unknown", "bad_request", f"вход не является JSON: {error}", 2)
+        return _fail("unknown", "bad_request", f"input is not JSON: {error}", 2)
 
     if not isinstance(request, dict):
-        return _fail("unknown", "bad_request", "вход должен быть объектом JSON", 2)
+        return _fail("unknown", "bad_request", "input must be a JSON object", 2)
 
     request_id = request.get("request_id")
     request_id = request_id if isinstance(request_id, str) and request_id else "unknown"
@@ -41,16 +41,16 @@ def main(argv: list[str]) -> int:
         return _fail(
             request_id,
             "bad_request",
-            f"неподдерживаемая версия контракта: {request.get('contract_version')!r}",
+            f"unsupported contract version: {request.get('contract_version')!r}",
             2,
         )
 
     try:
         response = HANDLERS[argv[0]](request)
     except (KeyError, TypeError, ValueError) as error:
-        return _fail(request_id, "bad_request", f"запрос не соответствует контракту: {error}", 2)
-    except Exception as error:  # noqa: BLE001 - движок обязан вернуть конверт, а не трейсбек
-        return _fail(request_id, "engine_failed", f"сбой движка: {error}", 1)
+        return _fail(request_id, "bad_request", f"the request does not match the contract: {error}", 2)
+    except Exception as error:  # noqa: BLE001 - the engine must return an envelope, not a traceback
+        return _fail(request_id, "engine_failed", f"engine failure: {error}", 1)
 
     _emit(response)
     return 0

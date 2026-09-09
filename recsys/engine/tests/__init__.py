@@ -1,1 +1,1 @@
-"""Проверки движка локального PoC."""
+"""Checks for the local PoC engine."""

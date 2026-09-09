@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-refusal-04",
-  "label": "Отказ: у знакомой категории нет обеспеченного подарка",
+  "label": "Refusal: the familiar category has no funded gift",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-refusal",
-          "category": "Готовая еда",
+          "category": "Ready Meals",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 6900

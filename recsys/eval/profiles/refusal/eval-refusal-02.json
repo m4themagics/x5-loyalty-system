@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-refusal-02",
-  "label": "Отказ: только бесплатные строки в истории",
+  "label": "Refusal: only free lines in the history",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-refusal",
-          "category": "Бакалея и консервы",
+          "category": "Groceries & Canned Food",
           "quantity": 1,
           "paid": false,
           "amount_kopecks": 6900

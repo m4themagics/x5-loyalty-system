@@ -27,9 +27,9 @@ test('every profile item points to an optimized webp icon', () => {
 
 test('item descriptions hint at their use without revealing a discount category', () => {
   for (const item of profileItems) {
-    expect(item.description.toLocaleLowerCase('ru-RU')).not.toContain('скидк')
-    expect(item.description.toLocaleLowerCase('ru-RU')).not.toContain(
-      item.category.toLocaleLowerCase('ru-RU'),
+    expect(item.description.toLocaleLowerCase('en-US')).not.toContain('discount')
+    expect(item.description.toLocaleLowerCase('en-US')).not.toContain(
+      item.category.toLocaleLowerCase('en-US'),
     )
   }
 })

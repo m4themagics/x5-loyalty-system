@@ -9,7 +9,7 @@ async function sendTitle(route: Route, title: string) {
     request_id: request.request_id,
     server_time_ms: request.now_ms,
     title,
-    subtitle: 'Ваша коллекция кухонных предметов',
+    subtitle: 'Your collection of kitchen items',
     source: 'fallback',
     violations: [],
   } })
@@ -22,26 +22,26 @@ test('shows your title before slow friends and keeps the ranking scores visible'
     if (route.request().postDataJSON().profile.profile_id.startsWith('demo-trade-')) {
       await friendsReady
     }
-    await sendTitle(route, 'Кухонный энтузиаст')
+    await sendTitle(route, 'Kitchen Enthusiast')
   })
 
   try {
     await page.goto('/')
-    await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+    await page.getByRole('button', { name: 'Profile', exact: true }).click()
     await dismissLoginDay(page)
-    await openTab(page, 'Друзья')
+    await openTab(page, 'Friends')
 
-    await expect(page.locator('.demo-title-value')).toHaveText('Кухонный энтузиаст')
-    await expect(page.locator('.demo-friend-score').first()).toContainText('набор')
-    await expect(page.locator('.demo-friend-score').first()).toContainText('предмет')
+    await expect(page.locator('.demo-title-value')).toHaveText('Kitchen Enthusiast')
+    await expect(page.locator('.demo-friend-score').first()).toContainText('set')
+    await expect(page.locator('.demo-friend-score').first()).toContainText('item')
     await expect(page.locator('.demo-friend-list')).not.toContainText('₽')
-    await expect(page.getByText('Подбираем титул по вашей коллекции')).toHaveCount(0)
+    await expect(page.getByText('Choosing a title for your collection')).toHaveCount(0)
 
     releaseFriends()
     await expect(page.locator('.demo-friend-title')).toHaveText([
-      'Кухонный энтузиаст', 'Кухонный энтузиаст', 'Кухонный энтузиаст',
+      'Kitchen Enthusiast', 'Kitchen Enthusiast', 'Kitchen Enthusiast',
     ])
-    await expect(page.locator('.demo-friend-score').first()).toContainText('предмет')
+    await expect(page.locator('.demo-friend-score').first()).toContainText('item')
   } finally {
     releaseFriends()
   }
@@ -50,20 +50,20 @@ test('shows your title before slow friends and keeps the ranking scores visible'
 test('failed titles leave the collection usable and can be retried', async ({ page }) => {
   await page.route('**/api/demo/title', (route) => route.fulfill({ status: 503, json: {} }))
   await page.goto('/')
-  await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await page.getByRole('button', { name: 'Profile', exact: true }).click()
   await dismissLoginDay(page)
-  await openTab(page, 'Друзья')
+  await openTab(page, 'Friends')
 
-  await expect(page.locator('.demo-title-value')).toHaveText('Ваша коллекция')
-  await expect(page.getByText('Титул пока недоступен')).toBeVisible()
-  await expect(page.locator('.demo-friend-score').first()).toContainText('предмет')
+  await expect(page.locator('.demo-title-value')).toHaveText('Your collection')
+  await expect(page.getByText('The title is unavailable right now')).toBeVisible()
+  await expect(page.locator('.demo-friend-score').first()).toContainText('item')
 
-  await page.route('**/api/demo/title', (route) => sendTitle(route, 'Кухонный энтузиаст'))
-  await page.getByRole('button', { name: 'Обновить титул' }).click()
-  await expect(page.locator('.demo-title-value')).toHaveText('Кухонный энтузиаст')
-  await expect(page.getByText('Титул пока недоступен')).toHaveCount(0)
+  await page.route('**/api/demo/title', (route) => sendTitle(route, 'Kitchen Enthusiast'))
+  await page.getByRole('button', { name: 'Refresh the title' }).click()
+  await expect(page.locator('.demo-title-value')).toHaveText('Kitchen Enthusiast')
+  await expect(page.getByText('The title is unavailable right now')).toHaveCount(0)
 
-  await page.getByRole('button', { name: 'Открыть коллекцию', exact: true }).click()
-  await expect(page.getByRole('navigation', { name: 'Разделы профиля' })
-    .getByRole('button', { name: 'Коллекция', exact: true })).toHaveAttribute('aria-current', 'page')
+  await page.getByRole('button', { name: 'Open the collection', exact: true }).click()
+  await expect(page.getByRole('navigation', { name: 'Profile sections' })
+    .getByRole('button', { name: 'Collection', exact: true })).toHaveAttribute('aria-current', 'page')
 })

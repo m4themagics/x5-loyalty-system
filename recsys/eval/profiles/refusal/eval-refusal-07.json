@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-refusal-07",
-  "label": "Отказ: единственная покупка возвращена",
+  "label": "Refusal: the only purchase was returned",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-refusal",
-          "category": "Бакалея и консервы",
+          "category": "Groceries & Canned Food",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 6900

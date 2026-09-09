@@ -22,15 +22,15 @@ async function readActiveState(page: import('@playwright/test').Page) {
 
 async function openProfile(page: import('@playwright/test').Page) {
   await page.goto('/')
-  await page.getByRole('button', { name: 'Профиль' }).click()
+  await page.getByRole('button', { name: 'Profile' }).click()
   await dismissLoginDay(page)
-  await expect(page.getByRole('heading', { level: 2, name: 'Персональный челлендж' })).toBeVisible()
-  await expect(page.getByText('Одно задание по вашим покупкам. Выполните его за обычный поход в магазин.')).toHaveCount(0)
-  await expect(page.getByText('Подобрали особое задание на основе ваших прошлых покупок.')).toBeVisible()
+  await expect(page.getByRole('heading', { level: 2, name: 'Personal challenge' })).toBeVisible()
+  await expect(page.getByText('One challenge based on your purchases. Complete it on an ordinary shopping trip.')).toHaveCount(0)
+  await expect(page.getByText('We picked a special challenge based on your past purchases.')).toBeVisible()
 }
 
 test.beforeEach(async ({ page }) => {
-  // Однократная очистка на контекст: перезагрузка в тесте обязана сохранять состояние демо.
+  // One cleanup per context: a reload inside a test must preserve the demo state.
   await page.addInitScript((key) => {
     if (window.sessionStorage.getItem('demo-state-cleared') === 'true') return
     window.localStorage.removeItem(key)
@@ -44,62 +44,62 @@ test('keeps the challenge preview unchanged when the engine is unavailable', asy
   })
   await openProfile(page)
 
-  await page.getByRole('button', { name: 'Показать задание' }).click()
+  await page.getByRole('button', { name: 'Show the challenge' }).click()
 
   await expect(page.getByRole('alert')).toHaveCount(0)
-  await expect(page.getByText('Задание готово к показу')).toBeVisible()
-  await expect(page.getByText('Подобрали особое задание на основе ваших прошлых покупок.')).toBeVisible()
+  await expect(page.getByText('A challenge is ready to show')).toBeVisible()
+  await expect(page.getByText('We picked a special challenge based on your past purchases.')).toBeVisible()
 })
 
 test('the showcase profile opens with one challenge that finishes its set', async ({ page }) => {
   await openProfile(page)
 
-  await page.getByRole('button', { name: 'Показать задание' }).click()
-  const card = page.getByRole('article', { name: 'Карточка задания' })
+  await page.getByRole('button', { name: 'Show the challenge' }).click()
+  const card = page.getByRole('article', { name: 'Challenge card' })
   await expect(card).toBeVisible()
-  await expect(card.locator('.demo-card-headline')).toHaveText('Доброе утро: Термокружка')
-  await expect(card.locator('.demo-recipe-count')).toHaveText('3 из 4')
-  await expect(card.locator('.demo-terms dd').first()).toHaveText('Кофе и чай')
+  await expect(card.locator('.demo-card-headline')).toHaveText('Good Morning: Travel Mug')
+  await expect(card.locator('.demo-recipe-count')).toHaveText('3 of 4')
+  await expect(card.locator('.demo-terms dd').first()).toHaveText('Coffee & Tea')
 })
 
 test('computes a challenge from purchase history and issues both rewards once', async ({ page }) => {
   await openProfile(page)
   await switchProfile(page, DEMO_PROFILES.empty)
 
-  await page.getByRole('button', { name: 'Показать задание' }).click()
-  const card = page.getByRole('article', { name: 'Карточка задания' })
+  await page.getByRole('button', { name: 'Show the challenge' }).click()
+  const card = page.getByRole('article', { name: 'Challenge card' })
   await expect(card).toBeVisible()
-  await expect(card.locator('.demo-card-headline')).toHaveText('Доброе утро: Молочный кувшин')
+  await expect(card.locator('.demo-card-headline')).toHaveText('Good Morning: Milk Pitcher')
 
   await openStand(page)
-  await page.getByRole('button', { name: 'Оплаченная покупка нужной категории' }).click()
-  const reveal = page.getByRole('dialog', { name: 'Награда за задание' })
+  await page.getByRole('button', { name: 'Paid purchase from the required category' }).click()
+  const reveal = page.getByRole('dialog', { name: 'Challenge reward' })
   await expect(reveal).toBeVisible()
-  await expect(reveal.getByText('Плюс демонстрационное право на бесплатный товар')).toBeVisible()
-  await reveal.getByRole('button', { name: 'Забрать' }).click()
+  await expect(reveal.getByText('Plus a demonstration entitlement to one free product')).toBeVisible()
+  await reveal.getByRole('button', { name: 'Collect' }).click()
 
-  await expect(page.getByRole('status')).toContainText('Покупка засчитана')
+  await expect(page.getByRole('status')).toContainText('Purchase counted')
   await closeStand(page)
-  await openTab(page, 'Коллекция')
-  // Награда за задание попадает в тот же инвентарь, что и предмет из коробки.
-  await expect(page.getByRole('button', { name: 'Молочный кувшин, Обычный, доступно 1 из 1' })).toBeVisible()
-  await openTab(page, 'Задания')
+  await openTab(page, 'Collection')
+  // The challenge reward lands in the same inventory as a box item.
+  await expect(page.getByRole('button', { name: 'Milk Pitcher, Common, 1 of 1 available' })).toBeVisible()
+  await openTab(page, 'Challenges')
 
   const afterGrant = await readActiveState(page)
   expect(afterGrant.profile.issued_rewards).toHaveLength(1)
   expect(afterGrant.profile.outstanding_promise.fulfilled).toBe(true)
   expect(afterGrant.budget.coupon_settled_kopecks).toBe(0)
-  // 25 ₽ за начатую коробку + 25 ₽ за выданный предмет задания.
+  // RUB 2.50 for the started box + RUB 2.50 for the issued challenge item.
   expect(afterGrant.budget.coupon_reserved_kopecks).toBe(500)
 
   await openStand(page)
   const repeatedRequest = page.waitForRequest((request) => request.url().endsWith('/api/demo/event'))
-  await page.getByRole('button', { name: 'Тот же чек ещё раз' }).click()
+  await page.getByRole('button', { name: 'Send the same receipt again' }).click()
   const replayPayload = (await repeatedRequest).postDataJSON()
   expect(replayPayload.receipt).toEqual(afterGrant.last_receipt.receipt)
   expect(replayPayload.idempotency_key).toBe(`idem-${afterGrant.challenge.challenge_id}-${afterGrant.last_receipt.receipt.receipt_id}`)
   await expect(standLog(page)).toContainText('duplicate')
-  await expect(page.getByRole('status')).toContainText('Этот чек уже учтён')
+  await expect(page.getByRole('status')).toContainText('This receipt has already been counted')
 
   const afterReplay = await readActiveState(page)
   expect(afterReplay.profile.issued_rewards).toHaveLength(1)
@@ -109,34 +109,34 @@ test('computes a challenge from purchase history and issues both rewards once', 
 test('keeps the issued item and the fulfilled promise after a reload', async ({ page }) => {
   await openProfile(page)
   await switchProfile(page, DEMO_PROFILES.empty)
-  await page.getByRole('button', { name: 'Показать задание' }).click()
+  await page.getByRole('button', { name: 'Show the challenge' }).click()
   await openStand(page)
-  await page.getByRole('button', { name: 'Оплаченная покупка нужной категории' }).click()
-  await page.getByRole('dialog', { name: 'Награда за задание' }).getByRole('button', { name: 'Забрать' }).click()
+  await page.getByRole('button', { name: 'Paid purchase from the required category' }).click()
+  await page.getByRole('dialog', { name: 'Challenge reward' }).getByRole('button', { name: 'Collect' }).click()
 
   await page.reload()
-  await page.getByRole('button', { name: 'Профиль' }).click()
+  await page.getByRole('button', { name: 'Profile' }).click()
   await dismissLoginDay(page)
 
-  await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
-  await openTab(page, 'Коллекция')
-  await expect(page.getByRole('button', { name: 'Молочный кувшин, Обычный, доступно 1 из 1' })).toBeVisible()
+  await expect(page.getByRole('article', { name: 'Challenge card' })).toBeVisible()
+  await openTab(page, 'Collection')
+  await expect(page.getByRole('button', { name: 'Milk Pitcher, Common, 1 of 1 available' })).toBeVisible()
 })
 
 test('switching synthetic profiles preserves their separate promises and inventory', async ({ page }) => {
   await openProfile(page)
   await switchProfile(page, DEMO_PROFILES.empty)
-  await page.getByRole('button', { name: 'Показать задание' }).click()
-  await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
+  await page.getByRole('button', { name: 'Show the challenge' }).click()
+  await expect(page.getByRole('article', { name: 'Challenge card' })).toBeVisible()
   const original = await readActiveState(page)
 
   await switchProfile(page, DEMO_PROFILES.seeded)
-  await openTab(page, 'Коллекция')
-  await expect(page.getByRole('button', { name: 'Клубный тостер, Обычный, доступно 1 из 1' })).toBeVisible()
+  await openTab(page, 'Collection')
+  await expect(page.getByRole('button', { name: 'Clubhouse Toaster, Common, 1 of 1 available' })).toBeVisible()
 
   await switchProfile(page, DEMO_PROFILES.empty)
-  await openTab(page, 'Задания')
-  await expect(page.getByRole('article', { name: 'Карточка задания' })).toBeVisible()
+  await openTab(page, 'Challenges')
+  await expect(page.getByRole('article', { name: 'Challenge card' })).toBeVisible()
   const restored = await readActiveState(page)
   expect(restored.challenge).toEqual(original.challenge)
   expect(restored.profile.inventory).toEqual(original.profile.inventory)
@@ -145,67 +145,67 @@ test('switching synthetic profiles preserves their separate promises and invento
 test('a free line alone does not close the challenge', async ({ page }) => {
   await openProfile(page)
   await switchProfile(page, DEMO_PROFILES.empty)
-  await page.getByRole('button', { name: 'Показать задание' }).click()
+  await page.getByRole('button', { name: 'Show the challenge' }).click()
   await openStand(page)
-  await page.getByRole('button', { name: 'Только бесплатная строка' }).click()
+  await page.getByRole('button', { name: 'Free line only' }).click()
 
   await expect(standLog(page)).toContainText('not_qualified')
-  await expect(page.getByRole('dialog', { name: 'Награда за задание' })).toHaveCount(0)
+  await expect(page.getByRole('dialog', { name: 'Challenge reward' })).toHaveCount(0)
   await closeStand(page)
-  await expect(page.getByRole('status')).toContainText('нет оплаченной покупки из нужной категории')
-  await openTab(page, 'Коллекция')
-  // Единственный инвентарь остался пустым: незачтённый чек ничего не выдал.
+  await expect(page.getByRole('status')).toContainText('no paid purchase from the required category')
+  await openTab(page, 'Collection')
+  // The single inventory stayed empty: a receipt that did not count issued nothing.
   await expect(page.locator('.inventory-item')).toHaveCount(0)
-  await expect(page.getByRole('heading', { name: 'Коллекция пока пуста' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Your collection is empty' })).toBeVisible()
 })
 
 test('a prepared profile receives a different challenge that completes its recipe', async ({ page }) => {
   await openProfile(page)
   await switchProfile(page, DEMO_PROFILES.seeded)
-  await page.getByRole('button', { name: 'Показать задание' }).click()
+  await page.getByRole('button', { name: 'Show the challenge' }).click()
 
-  const card = page.getByRole('article', { name: 'Карточка задания' })
-  await expect(card.locator('.demo-card-headline')).toHaveText('Доброе утро: Сковорода завтрака')
-  await expect(card.locator('.demo-terms dd').first()).toHaveText('Яйца и завтраки')
+  const card = page.getByRole('article', { name: 'Challenge card' })
+  await expect(card.locator('.demo-card-headline')).toHaveText('Good Morning: Breakfast Pan')
+  await expect(card.locator('.demo-terms dd').first()).toHaveText('Eggs & Breakfast')
 })
 
 test('four personal items craft one coupon and raise the avatar once', async ({ page }) => {
-  // Показательный профиль: три предмета набора и дубликат, четвёртый приходит за задание.
+  // Showcase profile: three items of the set plus a duplicate; the fourth comes from a challenge.
   await openProfile(page)
-  await page.getByRole('button', { name: 'Показать задание' }).click()
+  await page.getByRole('button', { name: 'Show the challenge' }).click()
   await openStand(page)
-  await page.getByRole('button', { name: 'Оплаченная покупка нужной категории' }).click()
-  await page.getByRole('dialog', { name: 'Награда за задание' }).getByRole('button', { name: 'Забрать' }).click()
+  await page.getByRole('button', { name: 'Paid purchase from the required category' }).click()
+  await page.getByRole('dialog', { name: 'Challenge reward' }).getByRole('button', { name: 'Collect' }).click()
   await closeStand(page)
-  await openTab(page, 'Коллекция')
+  await openTab(page, 'Collection')
 
-  const breakfastSet = ['Клубный тостер', 'Молочный кувшин', 'Термокружка', 'Сковорода завтрака'] as const
+  const breakfastSet = ['Clubhouse Toaster', 'Milk Pitcher', 'Travel Mug', 'Breakfast Pan'] as const
   for (const [index, itemName] of breakfastSet.entries()) {
     await putItemIntoDiscountSlot(page, itemName, index + 1)
   }
 
-  // Освобождённая ячейка снова закрывает сборку: купон стоит ровно четырёх предметов.
-  await page.getByRole('button', { name: /^Молочный кувшин в ячейке 2/ }).click()
-  await expect(page.getByRole('button', { name: 'Пустая ячейка скидки 2' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Добавьте ещё 1' })).toBeDisabled()
-  await putItemIntoDiscountSlot(page, 'Молочный кувшин', 2)
+  // A freed slot closes crafting again: a coupon costs exactly four items.
+  await page.getByRole('button', { name: /^Milk Pitcher in slot 2/ }).click()
+  await expect(page.getByRole('button', { name: 'Empty discount slot 2' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Add 1 more' })).toBeDisabled()
+  await putItemIntoDiscountSlot(page, 'Milk Pitcher', 2)
 
-  await page.getByRole('button', { name: 'Создать скидку 8%' }).click()
-  const discountDialog = page.getByRole('dialog', { name: 'Созданная скидка' })
+  await page.getByRole('button', { name: 'Create a 8% discount' }).click()
+  const discountDialog = page.getByRole('dialog', { name: 'Crafted discount' })
   await expect(discountDialog).toBeVisible()
-  await page.getByRole('button', { name: 'Закрыть скидку' }).click()
+  await page.getByRole('button', { name: 'Close discount' }).click()
 
-  // Активный купон проверяем по структуре карточки, а не по её тексту: копию правят отдельно.
-  const activeCoupon = page.getByRole('region', { name: 'Активная скидка' })
+  // The active coupon is asserted by card structure, not copy: wording is edited separately.
+  const activeCoupon = page.getByRole('region', { name: 'Active discount' })
   await expect(activeCoupon).toBeVisible()
   await expect(activeCoupon.locator('.demo-coupon-percent')).toHaveText('8%')
-  await expect(page.locator('.profile-stat-level-value')).toHaveText('1 из 7')
-  // Пока купон активен, второй набор собрать нельзя: ячейки скрыты.
-  await expect(page.getByRole('button', { name: 'Пустая ячейка скидки 1' })).toHaveCount(0)
+  await expect(page.locator('.profile-stat-level-value')).toHaveText('1 of 7')
+  // While a coupon is active a second set cannot be crafted: the slots are hidden.
+  await expect(page.getByRole('button', { name: 'Empty discount slot 1' })).toHaveCount(0)
 
-  await page.getByRole('button', { name: 'Погасить (демо)' }).click()
+  await page.getByRole('button', { name: 'Redeem (demo)' }).click()
   await expect(activeCoupon).toHaveCount(0)
-  await expect(page.getByRole('button', { name: 'Пустая ячейка скидки 1' })).toBeVisible()
-  // Рецепт засчитан один раз: погашение не поднимает уровень повторно.
-  await expect(page.locator('.profile-stat-level-value')).toHaveText('1 из 7')
+  await expect(page.getByRole('button', { name: 'Empty discount slot 1' })).toBeVisible()
+  // The recipe counts once: redemption does not raise the level again.
+  await expect(page.locator('.profile-stat-level-value')).toHaveText('1 of 7')
 })

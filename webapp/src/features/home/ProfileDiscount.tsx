@@ -12,7 +12,7 @@ type ActiveDiscountBadgeProps = {
 export function ActiveDiscountBadge({ discount, onClick }: ActiveDiscountBadgeProps) {
   return (
     <button
-      aria-label={`Открыть скидку ${discount.percent}% «${discount.title}»`}
+      aria-label={`Open the ${discount.percent}% "${discount.title}" discount`}
       className={`active-discount-badge item-rarity-${discount.rarity}`}
       onClick={onClick}
       type="button"
@@ -47,14 +47,14 @@ export function ProfileDiscountOverlay({
 
   return (
     <div
-      aria-label={mode === 'reveal' ? 'Созданная скидка' : 'Штрихкод скидки'}
+      aria-label={mode === 'reveal' ? 'Crafted discount' : 'Discount barcode'}
       aria-modal="true"
       className="discount-overlay"
       role="dialog"
     >
       <div className={`discount-result-card item-rarity-${discount.rarity}`}>
         <button
-          aria-label="Закрыть скидку"
+          aria-label="Close discount"
           className="discount-overlay-close"
           onClick={onClose}
           type="button"
@@ -65,7 +65,7 @@ export function ProfileDiscountOverlay({
         {mode === 'reveal' ? (
           <>
             <Typography as="span" variant="bodyXs" className="discount-result-eyebrow">
-              Скидка создана
+              Discount created
             </Typography>
             <Typography as="strong" variant="h1" className="discount-result-percent">
               −{discount.percent}%
@@ -77,10 +77,10 @@ export function ProfileDiscountOverlay({
               {discount.category}
             </Typography>
             <Typography as="p" variant="bodySm" className="discount-result-category">
-              Не более {discount.maxKopecks / 100} ₽ на подходящие товары.
-              При сумме 500 ₽ — экономия {Math.min(discount.percent * 5, discount.maxKopecks / 100)} ₽.
+              Up to RUB {discount.maxKopecks / 100} on eligible products.
+              On a RUB 500 basket that is RUB {Math.min(discount.percent * 5, discount.maxKopecks / 100)} saved.
             </Typography>
-            <div className="discount-ingredient-row" aria-label="Использованные предметы">
+            <div className="discount-ingredient-row" aria-label="Items used">
               {ingredients.map((item, index) => (
                 <div className={`discount-ingredient item-rarity-${item.rarity}`} key={`${item.id}-${index}`}>
                   <img alt={item.name} src={item.iconSrc} />
@@ -89,14 +89,14 @@ export function ProfileDiscountOverlay({
             </div>
             <Typography as="span" variant="bodyXs" className="discount-result-bonus">
               {discount.synergyBonus > 0
-                ? `Тематический бонус: +${discount.synergyBonus}%`
-                : 'Смешанный набор — без тематического бонуса'}
+                ? `Themed bonus: +${discount.synergyBonus}%`
+                : 'Mixed set — no themed bonus'}
             </Typography>
             <button className="show-barcode-button" onClick={onShowBarcode} type="button">
-              <Typography as="span" variant="control">Показать штрихкод</Typography>
+              <Typography as="span" variant="control">Show barcode</Typography>
             </button>
             <button className="discount-done-button" onClick={onClose} type="button">
-              <Typography as="span" variant="control">Готово</Typography>
+              <Typography as="span" variant="control">Done</Typography>
             </button>
           </>
         ) : (
@@ -114,7 +114,7 @@ export function ProfileDiscountOverlay({
               {discount.category}
             </Typography>
             <Typography as="span" variant="bodyXs" className="discount-barcode-note">
-              Не более {discount.maxKopecks / 100} ₽ на подходящие товары. Демо-штрихкод, на кассе не действует.
+              Up to RUB {discount.maxKopecks / 100} on eligible products. Demo barcode; it does not work at a real till.
             </Typography>
           </>
         )}
@@ -127,7 +127,7 @@ function Ean13Barcode({ value }: { value: string }) {
   const modules = encodeEan13(value)
 
   return (
-    <div className="ean-barcode" aria-label={`Штрихкод ${value}`} role="img">
+    <div className="ean-barcode" aria-label={`Barcode ${value}`} role="img">
       <svg aria-hidden="true" viewBox="0 0 95 64" preserveAspectRatio="none">
         <rect width="95" height="64" fill="white" />
         {[...modules].map((module, index) => module === '1' ? (

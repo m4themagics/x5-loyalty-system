@@ -18,9 +18,9 @@ import { isWearable, type WearableItemId } from './profile-outfit'
 
 const SLOT_COUNT = 4
 const rarityLabels: Record<ItemRarity, string> = {
-  common: 'Обычный',
-  epic: 'Эпический',
-  legendary: 'Легендарный',
+  common: 'Common',
+  epic: 'Epic',
+  legendary: 'Legendary',
 }
 
 type DragState = {
@@ -36,11 +36,11 @@ type DragState = {
 type ProfileInventoryCraftingProps = {
   inventory: readonly InventoryEntry[]
   onCraft: (itemIds: readonly string[]) => void
-  /** Пока активна скидка, второй купон собрать нельзя: ячейки прячем, инвентарь оставляем. */
+  /** While a discount is active a second coupon cannot be crafted: hide slots, keep inventory. */
   craftingDisabled?: boolean
   wornItemIds: readonly WearableItemId[]
   onToggleWorn: (itemId: WearableItemId) => void
-  /** Четвёртая ячейка заполнена: набор готов к сборке. */
+  /** The fourth slot is filled: the set is ready to craft. */
   onSetAssembled: () => void
 }
 
@@ -172,7 +172,7 @@ export function ProfileInventoryCrafting({
   const inspectedItem = inspectedItemId === null
     ? null
     : profileItems.find((item) => item.id === inspectedItemId) ?? null
-  // Сужаем тип один раз здесь: внутри разметки проверка не переносится на обработчик.
+  // Narrow the type once here: inside the markup the check would not carry to the handler.
   const inspectedWearableId = inspectedItem !== null && isWearable(inspectedItem.id)
     ? inspectedItem.id
     : null
@@ -180,16 +180,16 @@ export function ProfileInventoryCrafting({
   const firstFreeSlot = slots.findIndex((slotItemId) => slotItemId === null)
 
   /**
-   * Кладём предмет в первую свободную ячейку сразу из карточки. Раньше кнопка лишь «выбирала»
-   * предмет и просила нажать ячейку вторым действием — лишний шаг без смысла: ячейки
-   * заполняются по порядку, и выбирать между ними нечего.
+   * Put the item into the first free slot straight from the card. The button used to merely
+   * "select" an item and ask for a second tap on a slot — a pointless extra step, since slots
+   * fill in order and there is nothing to choose between them.
    */
   const chooseInspectedItem = () => {
     if (inspectedItem === null || availableCount(inspectedItem.id) <= 0) return
     if (firstFreeSlot < 0) return
     putItemIntoSlot(inspectedItem.id, firstFreeSlot)
     setInspectedItemId(null)
-    // Набор собран — это отдельный момент, ради которого предметы и копились.
+    // The set is complete — the moment the items were collected for.
     if (firstFreeSlot === SLOT_COUNT - 1) onSetAssembled()
   }
 
@@ -205,18 +205,18 @@ export function ProfileInventoryCrafting({
     : profileItems.find((item) => item.id === dragState.itemId) ?? null
 
   if (inventory.length === 0) {
-    // Пустые сетки занимали пол-экрана и ничего не сообщали: показываем одну строку.
+    // Empty grids took half the screen and said nothing: show a single row instead.
     return (
       <section className="profile-section equipment-section" aria-labelledby="equipment-title">
         <div className="collection-empty">
           <img alt="" src="/assets/pyaterochka-cardboard-chest.webp" />
           <div>
             <Typography as="h2" variant="h2" className="section-title" id="equipment-title">
-              Коллекция пока пуста
+              Your collection is empty
             </Typography>
             <Typography as="span" variant="bodyXs" className="section-hint">
-              Сюда попадают предметы из коробок и награды за задания. Четыре предмета одного
-              набора превращаются в скидку.
+              Items from boxes and challenge rewards land here. Four items from the same set
+              turn into a discount.
             </Typography>
           </div>
         </div>
@@ -231,10 +231,10 @@ export function ProfileInventoryCrafting({
         <div className="profile-section-heading">
           <div>
             <Typography as="h2" variant="h2" className="section-title" id="equipment-title">
-              Ячейки скидок
+              Discount slots
             </Typography>
             <Typography as="span" variant="bodyXs" className="section-hint">
-              Собери 4 предмета
+              Collect 4 items
             </Typography>
           </div>
           <Typography as="span" variant="bodyXs" className="slots-counter">
@@ -245,7 +245,7 @@ export function ProfileInventoryCrafting({
         <Typography
           as="div"
           variant="body"
-          aria-label={`${filledItemIds.length} из ${SLOT_COUNT} ячеек скидки заполнено`}
+          aria-label={`${filledItemIds.length} of ${SLOT_COUNT} discount slots filled`}
           className="empty-slots equipment-slots"
         >
           {slots.map((itemId, index) => {
@@ -253,8 +253,8 @@ export function ProfileInventoryCrafting({
             return (
               <button
                 aria-label={item === undefined
-                  ? `Пустая ячейка скидки ${index + 1}`
-                  : `${item.name} в ячейке ${index + 1}. Нажмите, чтобы убрать`}
+                  ? `Empty discount slot ${index + 1}`
+                  : `${item.name} in slot ${index + 1}. Tap to remove`}
                 className={`discount-slot${item === undefined ? ' empty-slot' : ` filled-slot item-rarity-${item.rarity}`}`}
                 data-discount-slot={index}
                 key={index}
@@ -277,11 +277,11 @@ export function ProfileInventoryCrafting({
             <Typography as="span" variant="bodyXs" className="crafting-guidance-copy">
               {preview === null
                 ? guidance.description
-                : `${preview.category} · не более ${DEMO_COUPON_MAX_KOPECKS / 100} ₽ · при сумме подходящих товаров 500 ₽ экономия ${Math.min(preview.percent * 5, DEMO_COUPON_MAX_KOPECKS / 100)} ₽${preview.synergyBonus > 0 ? ` · бонус +${preview.synergyBonus}%` : ''}`}
+                : `${preview.category} · up to RUB ${DEMO_COUPON_MAX_KOPECKS / 100} · on RUB 500 of eligible products you save RUB ${Math.min(preview.percent * 5, DEMO_COUPON_MAX_KOPECKS / 100)}${preview.synergyBonus > 0 ? ` · bonus +${preview.synergyBonus}%` : ''}`}
             </Typography>
           </div>
           {preview === null && guidance.suggestedItemIds.length > 0 ? (
-            <div className="crafting-suggestions" aria-label="Подходящие предметы">
+            <div className="crafting-suggestions" aria-label="Suggested items">
               {guidance.suggestedItemIds.map((itemId) => {
                 const item = profileItems.find((candidate) => candidate.id === itemId)
                 return item === undefined ? null : (
@@ -299,7 +299,7 @@ export function ProfileInventoryCrafting({
           type="button"
         >
           <Typography as="span" variant="control" className="create-discount-label">
-            {preview === null ? `Добавьте ещё ${SLOT_COUNT - filledItemIds.length}` : `Создать скидку ${preview.percent}%`}
+            {preview === null ? `Add ${SLOT_COUNT - filledItemIds.length} more` : `Create a ${preview.percent}% discount`}
           </Typography>
         </button>
       </section>
@@ -309,10 +309,10 @@ export function ProfileInventoryCrafting({
         <div className="profile-section-heading">
           <div>
             <Typography as="h2" variant="h2" className="section-title" id="inventory-title">
-              Инвентарь
+              Inventory
             </Typography>
             <Typography as="span" variant="bodyXs" className="section-hint">
-              Полученные вами предметы, которые можно использовать для создания скидки.
+              The items you have received, ready to be spent on a discount.
             </Typography>
           </div>
           <Typography as="span" variant="bodyXs" className="slots-counter">
@@ -323,7 +323,7 @@ export function ProfileInventoryCrafting({
         <Typography
           as="div"
           variant="body"
-          aria-label={`Инвентарь: ${inventory.length} из ${profileItems.length} предметов`}
+          aria-label={`Inventory: ${inventory.length} of ${profileItems.length} items`}
           className="empty-slots inventory-slots"
         >
           {inventory.map((entry) => {
@@ -332,7 +332,7 @@ export function ProfileInventoryCrafting({
             const available = availableCount(item.id)
             return (
               <button
-                aria-label={`${item.name}, ${rarityLabels[item.rarity]}, доступно ${available} из ${entry.quantity}`}
+                aria-label={`${item.name}, ${rarityLabels[item.rarity]}, ${available} of ${entry.quantity} available`}
                 aria-pressed={selectedItemId === item.id}
                 className={`inventory-item item-rarity-${item.rarity}${selectedItemId === item.id ? ' inventory-item-selected' : ''}${available <= 0 ? ' inventory-item-unavailable' : ''}`}
                 draggable={available > 0}
@@ -360,7 +360,7 @@ export function ProfileInventoryCrafting({
             )
           })}
           {Array.from({ length: Math.max(0, 8 - inventory.length) }, (_, index) => (
-            <span className="empty-slot" aria-label={`Пустая ячейка ${index + 1}`} key={index} />
+            <span className="empty-slot" aria-label={`Empty slot ${index + 1}`} key={index} />
           ))}
         </Typography>
       </section>
@@ -377,14 +377,14 @@ export function ProfileInventoryCrafting({
 
       {inspectedItem !== null ? (
         <div
-          aria-label={`Предмет «${inspectedItem.name}»`}
+          aria-label={`Item "${inspectedItem.name}"`}
           aria-modal="true"
           className="inventory-item-overlay"
           role="dialog"
         >
           <div className={`inventory-item-card item-rarity-${inspectedItem.rarity}`}>
             <button
-              aria-label="Закрыть описание предмета"
+              aria-label="Close item description"
               className="inventory-item-card-close"
               onClick={() => setInspectedItemId(null)}
               type="button"
@@ -408,13 +408,13 @@ export function ProfileInventoryCrafting({
                 className="inventory-item-card-wear"
                 onClick={() => {
                   onToggleWorn(inspectedWearableId)
-                  // Закрываем карточку: иначе результат и радость маскота остаются за затемнением.
+                  // Close the card: otherwise the result and the mascot stay behind the dimmer.
                   setInspectedItemId(null)
                 }}
                 type="button"
               >
                 <Typography as="span" variant="control">
-                  {wornItemIds.includes(inspectedWearableId) ? 'Снять' : 'Надеть'}
+                  {wornItemIds.includes(inspectedWearableId) ? 'Take off' : 'Wear'}
                 </Typography>
               </button>
             ) : null}
@@ -426,14 +426,14 @@ export function ProfileInventoryCrafting({
             >
               <Typography as="span" variant="control">
                 {availableCount(inspectedItem.id) <= 0
-                  ? 'Все копии уже в наборе'
-                  : firstFreeSlot < 0 ? 'Набор уже собран' : 'Добавить в набор'}
+                  ? 'Every copy is already in the set'
+                  : firstFreeSlot < 0 ? 'The set is already full' : 'Add to the set'}
               </Typography>
             </button>
             <Typography as="span" variant="bodyXs" className="inventory-item-card-hint">
               {firstFreeSlot < 0
-                ? 'Четыре предмета собраны — набор готов'
-                : `Свободных ячеек: ${SLOT_COUNT - filledItemIds.length}`}
+                ? 'Four items collected — the set is ready'
+                : `Free slots: ${SLOT_COUNT - filledItemIds.length}`}
             </Typography>
           </div>
         </div>

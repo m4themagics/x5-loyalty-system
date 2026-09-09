@@ -1,8 +1,8 @@
-"""Адаптер YandexGPT Lite через HTTP, без SDK и без новых зависимостей.
+"""YandexGPT Lite adapter over HTTP, without an SDK and without new dependencies.
 
-Ключ и идентификатор каталога берутся только из окружения серверного процесса и никогда
-не печатаются, не логируются и не сохраняются в файлы.
-Справка по API: https://aistudio.yandex.ru/ru/docs/ai-studio/text-generation/api-ref/TextGeneration/completion
+The API key and folder id are read only from the server process environment and are never
+printed, logged or written to files.
+API reference: https://aistudio.yandex.ru/en/docs/ai-studio/text-generation/api-ref/TextGeneration/completion
 """
 from __future__ import annotations
 

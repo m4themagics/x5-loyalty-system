@@ -1,25 +1,25 @@
 {
   "version": 1,
-  "population": "Пользователи мобильного приложения Пятёрочки",
+  "population": "Users of the Pyaterochka mobile app",
   "evidence": {
     "segment_distribution": {
       "source_type": "case_qa_fact",
-      "source": "docs/project/case-brief.md, раздел 2",
-      "note": "Доли сегментов внутри аудитории МП ТС5; сумма 100%."
+      "source": "docs/project/case-brief.md, section 2",
+      "note": "Segment shares inside the Pyaterochka mobile-app audience; they sum to 100%."
     },
     "engagement": {
       "source_type": "synthetic_assumption",
-      "note": "В Q&A нет распределения интереса к новой игре. Доли нужны для стресс-теста и не являются исследованием пользователей."
+      "note": "The Q&A gives no distribution of interest in a new game. These shares exist for a stress test and are not user research."
     },
     "behaviour": {
       "source_type": "synthetic_assumption",
-      "note": "Вероятности относятся к покупке знакомой категории задания за неделю, а не к любому визиту в магазин."
+      "note": "The probabilities describe buying the challenge's familiar category within a week, not any store visit."
     }
   },
   "segments": [
     {
       "id": "youth",
-      "label": "Молодёжь",
+      "label": "Young adults",
       "share": 0.37,
       "baseline_purchase_multiplier": 0.9,
       "missing_history_multiplier": 1.2,
@@ -27,7 +27,7 @@
     },
     {
       "id": "harmful_habits",
-      "label": "Взрослые с вредными привычками",
+      "label": "Adults with harmful habits",
       "share": 0.05,
       "baseline_purchase_multiplier": 0.95,
       "missing_history_multiplier": 1.3,
@@ -35,7 +35,7 @@
     },
     {
       "id": "parents_u3",
-      "label": "Взрослые с детьми до 3 лет",
+      "label": "Adults with children under 3",
       "share": 0.26,
       "baseline_purchase_multiplier": 1.2,
       "missing_history_multiplier": 0.8,
@@ -43,7 +43,7 @@
     },
     {
       "id": "mature",
-      "label": "Зрелые",
+      "label": "Mature",
       "share": 0.21,
       "baseline_purchase_multiplier": 1.05,
       "missing_history_multiplier": 0.8,
@@ -51,7 +51,7 @@
     },
     {
       "id": "senior",
-      "label": "Старшие",
+      "label": "Seniors",
       "share": 0.11,
       "baseline_purchase_multiplier": 0.85,
       "missing_history_multiplier": 1.4,
@@ -60,7 +60,7 @@
   ],
   "engagement": {
     "interested": {
-      "label": "Заинтересованные",
+      "label": "Interested",
       "positive_response_multiplier": 1.7,
       "negative_response_multiplier": 0.4,
       "coupon_craft_probability": 0.70,
@@ -68,7 +68,7 @@
       "starting_inventory_distribution": {"0": 0.25, "1": 0.20, "2": 0.25, "3": 0.30}
     },
     "neutral": {
-      "label": "Нейтральные",
+      "label": "Neutral",
       "positive_response_multiplier": 0.65,
       "negative_response_multiplier": 0.8,
       "coupon_craft_probability": 0.40,
@@ -76,7 +76,7 @@
       "starting_inventory_distribution": {"0": 0.55, "1": 0.20, "2": 0.15, "3": 0.10}
     },
     "skeptical": {
-      "label": "Скептичные",
+      "label": "Sceptical",
       "positive_response_multiplier": 0.12,
       "negative_response_multiplier": 1.4,
       "coupon_craft_probability": 0.12,

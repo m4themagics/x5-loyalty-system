@@ -63,7 +63,7 @@ class PolicyComparisonTest(unittest.TestCase):
         with patch.object(simulate, "handle_decision", side_effect=capture):
             result = simulate.run_scenario(scenario(), policy_name="fixed_dairy")
         self.assertGreater(result["offers"], 0)
-        self.assertEqual(set(emitted), {"Молочные продукты"})
+        self.assertEqual(set(emitted), {"Dairy"})
         self.assertGreater(result["refusals"], 0)
 
     def test_all_policies_share_latent_outcomes_but_never_receive_traits(self):
@@ -82,10 +82,10 @@ class PolicyComparisonTest(unittest.TestCase):
                 self.assertNotIn(latent, text)
 
     def test_broad_and_sponsored_onboarding_are_distinct_allocation_policies(self):
-        # Политики расходятся только там, где рекламного финансирования не хватает на всех.
-        # Полный каталог покрывает все игровые категории, поэтому дефицит задаётся явно:
-        # кампании остаются лишь в молочной категории. Иначе тест проверял бы не правило
-        # финансирования, а случайную полноту каталога.
+        # The policies diverge only where advertiser funding is not enough for everyone.
+        # The full catalog covers every game category, so the shortage is set explicitly:
+        # campaigns remain in the dairy category only. Otherwise the test would check catalog
+        # completeness by accident rather than the funding rule.
         catalog = load_campaigns()
         scarce = {
             **catalog,
@@ -94,7 +94,7 @@ class PolicyComparisonTest(unittest.TestCase):
                 if "dairy" in entry["eligible_categories"]
             ],
         }
-        self.assertTrue(scarce["campaigns"], "нужна хотя бы одна кампания для сравнения")
+        self.assertTrue(scarce["campaigns"], "at least one campaign is needed for the comparison")
 
         value = scenario()
         with patch("recsys.engine.decision.load_campaigns", return_value=scarce):
@@ -106,7 +106,7 @@ class PolicyComparisonTest(unittest.TestCase):
         self.assertGreater(sponsored["refusal_reasons"].get("funding_gate", 0), 0)
 
     def test_advertiser_coverage_is_a_declared_assumption(self):
-        """Каталог кампаний покрывает не весь ассортимент, поэтому гейт финансирования ограничивает охват."""
+        """The campaign catalog does not cover the whole range, so the funding gate limits coverage."""
         value = scenario()
         sponsored = simulate.run_scenario(value, policy_name="sponsored_onboarding")
         broad = simulate.run_scenario(value, policy_name="personalized_broad")
@@ -206,7 +206,7 @@ class PolicyComparisonTest(unittest.TestCase):
                 "returned": False,
                 "lines": [{
                     "sku_id": "synthetic-bread",
-                    "category": "Хлеб и выпечка",
+                    "category": "Bread & Bakery",
                     "quantity": 1,
                     "paid": True,
                     "amount_kopecks": 10_000,

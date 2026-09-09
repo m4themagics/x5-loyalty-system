@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-02",
-  "label": "Оценочный синтетический профиль 02",
+  "label": "Evaluation synthetic profile 02",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Замороженные продукты",
+          "category": "Frozen Food",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 8100
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Холодные напитки и мороженое",
+          "category": "Cold Drinks & Ice Cream",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 8100
@@ -42,7 +42,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-2",
-          "category": "Хлеб и выпечка",
+          "category": "Bread & Bakery",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 8100

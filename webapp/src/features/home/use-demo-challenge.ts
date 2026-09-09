@@ -245,7 +245,7 @@ export function useDemoChallenge() {
     if (applied === current) return
     const referral = applyReferralReward(applied, state.profile.profile_id, result.data, receipt, nowMs)
     setLastEvent({ qualification: result.data.qualification, reasonCodes: result.data.reason_codes })
-    setEventLog(`${result.data.qualification} · риск: ${result.data.risk.decision} · ${result.data.reason_codes.join(', ')}${state.profile.referral.invited_by_profile_id === null ? '' : ` · ${referral.reason}`}`)
+    setEventLog(`${result.data.qualification} · risk: ${result.data.risk.decision} · ${result.data.reason_codes.join(', ')}${state.profile.referral.invited_by_profile_id === null ? '' : ` · ${referral.reason}`}`)
     persistStore(referral.store)
   }, [persistStore, state])
 
@@ -254,7 +254,7 @@ export function useDemoChallenge() {
     persist(revealGrant(state))
   }, [persist, state])
 
-  /** Единственный путь сборки: списывает предметы и возвращает скидку со штрихкодом. */
+  /** The only crafting path: it spends the items and returns a discount with a barcode. */
   const craft = useCallback((itemIds: readonly string[]) => {
     if (state === null || itemIds.length !== DEMO_CRAFT_SIZE) return null
     const discount = craftDiscount(itemIds)
@@ -264,7 +264,7 @@ export function useDemoChallenge() {
     return discount
   }, [persist, state])
 
-  /** Коробка пополняет тот же инвентарь, что и задания. */
+  /** The box adds to the same inventory as challenges do. */
   const collectChestItem = useCallback((itemId: string) => {
     const current = storeRef.current
     if (current === null || busyRef.current) return false
@@ -276,7 +276,7 @@ export function useDemoChallenge() {
     return true
   }, [persistStore])
 
-  // Только для демо-стенда: меняется день входа, а не время чеков и кампаний.
+  // Demo stand only: it changes the login day, not receipt or campaign time.
   const advanceLoginDay = useCallback(() => {
     const current = storeRef.current
     if (current === null || busyRef.current) return
@@ -325,20 +325,20 @@ export function useDemoChallenge() {
 export type DemoChallengeController = ReturnType<typeof useDemoChallenge>
 
 
-/** Технические причины обмена превращаются в объяснение для человека. */
+/** Technical trade reasons are turned into an explanation for a person. */
 function tradeReason(reason: string): string {
   const messages: Record<string, string> = {
-    trade_created: 'Предложение отправлено. Обе копии зарезервированы на 24 часа.',
-    trade_accepted: 'Предметы переданы обоим участникам.',
-    trade_rejected: 'Предложение отклонено. Копии снова доступны.',
-    trade_expired: 'Срок предложения истёк. Копии снова доступны.',
-    trade_idempotent: 'Это действие уже учтено; повторной передачи нет.',
-    trade_weekly_limit: 'У одного из участников уже три завершённых обмена за последние семь дней.',
-    trade_purchase_days_insufficient: 'Каждому участнику нужны минимум два оплаченных покупочных дня.',
-    trade_duplicate_unavailable: 'Выбранный предмет уже недоступен. Обновите выбор.',
-    trade_stale_revision: 'Состояние изменилось. Проверьте предложение и повторите действие.',
-    trade_rarity_mismatch: 'Можно обмениваться только предметами одной редкости.',
-    trade_receiver_required: 'Подтвердить или отклонить предложение может только получатель.',
+    trade_created: 'Offer sent. Both copies are reserved for 24 hours.',
+    trade_accepted: 'The items have been transferred to both participants.',
+    trade_rejected: 'The offer was declined. Both copies are available again.',
+    trade_expired: 'The offer expired. Both copies are available again.',
+    trade_idempotent: 'This action was already counted; nothing is transferred twice.',
+    trade_weekly_limit: 'One of the participants already has three completed trades in the last seven days.',
+    trade_purchase_days_insufficient: 'Each participant needs at least two paid purchase days.',
+    trade_duplicate_unavailable: 'The selected item is no longer available. Refresh your choice.',
+    trade_stale_revision: 'The state has changed. Check the offer and repeat the action.',
+    trade_rarity_mismatch: 'Only items of the same rarity can be exchanged.',
+    trade_receiver_required: 'Only the receiver can accept or decline the offer.',
   }
-  return messages[reason] ?? `Обмен не выполнен: ${reason}`
+  return messages[reason] ?? `The trade did not go through: ${reason}`
 }

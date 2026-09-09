@@ -23,9 +23,9 @@ DEFAULT_USERS = 6000
 DEFAULT_SEED = 20260906
 OPERATION_COST_KOPECKS = 120
 ISOTONIC_WEIGHT = 0.35
-# Совпадает с recsys/engine/data/policy.json и webapp: четыре копии на один купон,
-# порог ожидаемого прироста — 1 ₽. Значения продублированы, потому что оценочный
-# контур намеренно не импортирует боевую политику.
+# Matches recsys/engine/data/policy.json and the webapp: four copies per coupon, and an
+# expected-increment threshold of RUB 1. The values are duplicated because the evaluation
+# loop deliberately does not import the runtime policy.
 MIN_EXPECTED_INCREMENT_KOPECKS = 100
 CRAFT_SIZE = 4
 
@@ -48,7 +48,7 @@ FEATURE_NAMES = (
 ACTION_CATALOG = (
     {
         "action_id": "dairy",
-        "category": "Молочные продукты",
+        "category": "Dairy",
         "margin_kopecks": 7000,
         "reward_cost_kopecks": 3500,
         "cpa_kopecks": 1200,
@@ -58,7 +58,7 @@ ACTION_CATALOG = (
     },
     {
         "action_id": "coffee",
-        "category": "Кофе и чай",
+        "category": "Coffee & Tea",
         "margin_kopecks": 9000,
         "reward_cost_kopecks": 3000,
         "cpa_kopecks": 3300,
@@ -68,7 +68,7 @@ ACTION_CATALOG = (
     },
     {
         "action_id": "produce",
-        "category": "Овощи и фрукты",
+        "category": "Fruit & Vegetables",
         "margin_kopecks": 8500,
         "reward_cost_kopecks": 1800,
         "cpa_kopecks": 0,
@@ -78,7 +78,7 @@ ACTION_CATALOG = (
     },
     {
         "action_id": "ready_meal",
-        "category": "Готовая еда",
+        "category": "Ready Meals",
         "margin_kopecks": 10500,
         "reward_cost_kopecks": 3900,
         "cpa_kopecks": 2400,
@@ -664,11 +664,11 @@ def _learned_choice(
 
 
 def _rules_choice(candidates: list[dict]) -> tuple[dict | None, dict | None]:
-    """Наивная эвристика без экономики: только полезность коллекции и знакомость категории.
+    """A naive heuristic without economics: collection usefulness and category familiarity only.
 
-    Отдельная от :func:`_rules_runtime_choice` политика. Пара нужна, чтобы разделить вклад
-    экономического отбора и вклад обученной модели: иначе выигрыш learned над одной наивной
-    эвристикой ошибочно читается как заслуга ML.
+    A separate policy from :func:`_rules_runtime_choice`. The pair exists to separate the
+    contribution of economic selection from that of the learned model: otherwise a win over one
+    naive heuristic reads, wrongly, as a credit to ML.
     """
     eligible = [row for row in candidates if row["eligible"]]
     if not eligible:
@@ -680,11 +680,11 @@ def _rules_choice(candidates: list[dict]) -> tuple[dict | None, dict | None]:
 
 
 def _rules_expected_net_kopecks(observable: dict) -> int:
-    """Экономика правил: статичное допущение о марже, без обученной вероятности.
+    """Rules economics: a static margin assumption without a learned probability.
 
-    Повторяет runtime: ожидаемая дополнительная маржа категории плюс платёж рекламодателя
-    минус стоимость награды и операции. Ни один член не взвешен предсказанным откликом —
-    в этом и состоит отличие от :func:`_learned_choice`.
+    It mirrors the runtime: expected incremental category margin plus advertiser payment minus
+    reward and operating cost. No term is weighted by a predicted response — that is exactly the
+    difference from :func:`_learned_choice`.
     """
     economics = observable["economics"]
     sponsor_income = economics["cpa_kopecks"] if observable["sponsored"] else 0
@@ -697,11 +697,11 @@ def _rules_expected_net_kopecks(observable: dict) -> int:
 
 
 def _rules_runtime_choice(candidates: list[dict]) -> tuple[dict | None, dict | None]:
-    """Порядок и допуск боевого движка, перенесённые на синтетический каталог.
+    """The runtime engine's ordering and admission, carried over to the synthetic catalog.
 
-    Лексикографический ключ повторяет ``Candidate.rank_key`` из ``recsys/engine/candidates.py``:
-    целевой рецепт, знакомость категории, завершение набора, прогресс, давность, экономика,
-    стабильный идентификатор. Жёсткий отбор повторяет ``min_expected_increment_kopecks``.
+    The lexicographic key mirrors ``Candidate.rank_key`` from ``recsys/engine/candidates.py``:
+    target recipe, category familiarity, set completion, progress, recency, economics, stable
+    identifier. The hard filter mirrors ``min_expected_increment_kopecks``.
     """
     scored = []
     for observable in candidates:
@@ -728,11 +728,11 @@ def _rules_runtime_choice(candidates: list[dict]) -> tuple[dict | None, dict | N
 
 
 def _rules_profit_ranked_choice(candidates: list[dict]) -> tuple[dict | None, dict | None]:
-    """Правила, в которых экономика решает, а не стоит шестой в лексикографическом ключе.
+    """Rules where economics decides instead of sitting sixth in the lexicographic key.
 
-    В боевом ``rank_key`` экономика недостижима: непрерывная ``category_affinity`` разрывает
-    любое сравнение раньше. Эта политика отделяет вклад экономического отбора от вклада
-    обученной модели: она берёт ту же статичную экономику, но ранжирует по ней напрямую.
+    In the runtime ``rank_key`` economics is unreachable: the continuous ``category_affinity``
+    breaks every comparison earlier. This policy separates the contribution of economic selection
+    from that of the learned model: it takes the same static economics and ranks by it directly.
     """
     scored = []
     for observable in candidates:

@@ -1,7 +1,7 @@
 {
   "profile": {
     "customer_id": "u_5120",
-    "display_name": "Ирина",
+    "display_name": "Irina",
     "cadence_weeks": 2.1,
     "categories": [
       "baby",
@@ -80,11 +80,11 @@
   },
   "creative_copy": {
     "decision_id": "dec_5120",
-    "title": "Чекпоинт своей Пятёрочки",
-    "body": "Один визит за семь дней продвинет выбранную цель магазина.",
-    "progress": "Сезон 41 процент",
-    "cta": "Внести вклад",
-    "sponsored_label": "При поддержке бренда"
+    "title": "Your own Pyaterochka checkpoint",
+    "body": "One visit within seven days advances the chosen store goal.",
+    "progress": "Season 41 percent",
+    "cta": "Contribute",
+    "sponsored_label": "Supported by the brand"
   },
   "route_state": {
     "route_id": "r_5120",
@@ -97,5 +97,5 @@
       "milestone_vote_token"
     ]
   },
-  "demo_note": "Кампания brand_19 бидует 36 ₽ против 18 ₽ и подходит по категории, но её доступный бюджет 400 ₽ уже зарезервирован под pending liability. Побеждает следующая релевантная кампания."
+  "demo_note": "Campaign brand_19 bids RUB 36 against RUB 18 and matches the category, but its available RUB 400 budget is already reserved for a pending liability. The next relevant campaign wins."
 }

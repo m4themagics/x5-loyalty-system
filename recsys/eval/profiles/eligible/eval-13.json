@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-13",
-  "label": "Оценочный синтетический профиль 13",
+  "label": "Evaluation synthetic profile 13",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Холодные напитки и мороженое",
+          "category": "Cold Drinks & Ice Cream",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 9200
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Всё для выпечки",
+          "category": "Baking Supplies",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 9200

@@ -10,8 +10,8 @@ import type { InventoryEntry } from './profile-inventory'
 import { profileItems } from './profile-items'
 
 /**
- * Снимок каталога и рассчитанные игровые признаки для локального движка решения.
- * Каталог и рецепты остаются здесь; движок получает копию снимка и не хранит второй каталог.
+ * A catalog snapshot plus computed game features for the local decision engine.
+ * The catalog and recipes stay here; the engine receives a copy and keeps no second catalog.
  */
 export function buildDemoGameSnapshot(): DemoGameSnapshot {
   return {

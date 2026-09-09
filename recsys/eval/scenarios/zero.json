@@ -2,8 +2,8 @@
   "users": 1000,
   "seed": 20260905,
   "operations_cost_per_offer_kopecks": 120,
-  "name": "Нулевой эффект",
-  "notes": "Игра не добавляет покупок. Любой положительный денежный итог возможен только за счёт финансирования, а не дополнительной покупательной активности.",
+  "name": "Zero effect",
+  "notes": "The game adds no purchases. Any positive cash result can only come from funding, not from additional purchase activity.",
   "hidden": {
     "base_purchase_probability": 0.34,
     "game_uplift_probability": 0.0,
@@ -29,5 +29,5 @@
     "physical_settled_kopecks": 0,
     "physical_reserved_kopecks": 0
   },
-  "initial_state_note": "Смесь пустого и подготовленного инвентаря из 40 синтетических шаблонов; каждая стартовая копия резервируется по 2,50 ₽. Товар оплачивается полностью при выдаче; остальные три копии не предполагаются автоматически."
+  "initial_state_note": "A mix of empty and seeded inventories from 40 synthetic templates; every starting copy reserves RUB 2.50. The product is paid in full on issue; the other three copies are not assumed automatically."
 }

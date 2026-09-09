@@ -1,7 +1,7 @@
-"""Загрузка политики, каталога синтетических SKU и кампаний.
+"""Loading the policy, the synthetic SKU catalog and the campaigns.
 
-Пороговые значения не выдумываются в момент выдачи задания: они читаются из
-`data/policy.json`. Отсутствие обязательного параметра запрещает новое обещание.
+Thresholds are not invented at the moment a challenge is issued: they are read from
+`data/policy.json`. A missing required parameter forbids a new promise.
 """
 from __future__ import annotations
 
@@ -14,23 +14,23 @@ RECSYS_ROOT = ENGINE_ROOT.parent
 
 
 class PolicyError(Exception):
-    """Обязательный параметр политики отсутствует или задан некорректно."""
+    """A required policy parameter is missing or invalid."""
 
 
 def load_policy(path: pathlib.Path | None = None) -> dict[str, Any]:
     policy = _read_json(path or ENGINE_ROOT / "data" / "policy.json")
     missing = [name for name in policy.get("required_parameters", []) if name not in policy]
     if missing:
-        raise PolicyError(f"нет обязательных параметров политики: {', '.join(sorted(missing))}")
+        raise PolicyError(f"missing required policy parameters: {', '.join(sorted(missing))}")
     if policy.get("insufficient_history_policy") not in {"refuse", "fixed_challenge"}:
-        raise PolicyError("insufficient_history_policy должен быть refuse или fixed_challenge")
+        raise PolicyError("insufficient_history_policy must be refuse or fixed_challenge")
     if policy.get("first_cycle_funding_policy") not in {
         "advertiser_only",
         "advertiser_or_positive_margin",
     }:
         raise PolicyError(
-            "first_cycle_funding_policy должен быть advertiser_only "
-            "или advertiser_or_positive_margin"
+            "first_cycle_funding_policy must be advertiser_only "
+            "or advertiser_or_positive_margin"
         )
     return policy
 
@@ -44,7 +44,7 @@ def load_campaigns(path: pathlib.Path | None = None) -> dict[str, Any]:
 
 
 def rubles_to_kopecks(value: float | int) -> int:
-    """Суммы каталога кампаний заданы в рублях; храним и считаем только копейки."""
+    """Campaign catalog amounts are given in rubles; we store and compute kopecks only."""
     return int(round(float(value) * 100))
 
 
@@ -52,6 +52,6 @@ def _read_json(path: pathlib.Path) -> dict[str, Any]:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except FileNotFoundError as error:
-        raise PolicyError(f"нет файла политики: {path}") from error
+        raise PolicyError(f"policy file not found: {path}") from error
     except json.JSONDecodeError as error:
-        raise PolicyError(f"повреждён файл политики {path}: {error}") from error
+        raise PolicyError(f"corrupted policy file {path}: {error}") from error

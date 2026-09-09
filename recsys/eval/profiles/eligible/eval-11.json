@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-11",
-  "label": "Оценочный синтетический профиль 11",
+  "label": "Evaluation synthetic profile 11",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Холодные напитки и мороженое",
+          "category": "Cold Drinks & Ice Cream",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 9000
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Крупы, супы и соусы",
+          "category": "Grains, Soups & Sauces",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 9000
@@ -42,7 +42,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-2",
-          "category": "Лапша и азиатская кухня",
+          "category": "Noodles & Asian Cuisine",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 9000

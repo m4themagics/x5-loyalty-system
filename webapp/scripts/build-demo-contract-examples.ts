@@ -1,7 +1,7 @@
 /**
- * Собирает эталонные запросы локального PoC из игровых модулей и вручную заданных профилей.
- * Запуск из корня репозитория: `bun webapp/scripts/build-demo-contract-examples.ts`.
- * Проверка расхождения: `bun webapp/scripts/build-demo-contract-examples.ts --check`.
+ * Builds the reference PoC requests from the game modules and hand-written profiles.
+ * Run from the repository root: `bun webapp/scripts/build-demo-contract-examples.ts`.
+ * Drift check: `bun webapp/scripts/build-demo-contract-examples.ts --check`.
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
@@ -74,10 +74,10 @@ for (const [name, content] of generated) {
 
 if (isCheck) {
   if (drifted.length > 0) {
-    console.error(`эталон разошёлся с игровыми модулями: ${drifted.join(', ')}`)
+    console.error(`the reference drifted from the game modules: ${drifted.join(', ')}`)
     process.exit(1)
   }
-  console.log(`эталонные запросы совпадают с игровыми модулями: ${generated.size} файлов`)
+  console.log(`reference requests match the game modules: ${generated.size} files`)
 }
 
 function readJson(name: string): unknown {

@@ -56,6 +56,6 @@
     "sponsored_result": "no_fill",
     "surface_result": "organic"
   },
-  "decision_note": "Кампания brand_07 набирает наибольшую медийную ценность — 25.63 ₽ — именно потому, что визит почти наверняка произойдёт. Порог инкрементальности 0.04 её отклоняет: бренду не продаётся визит, который случился бы и так. Пользователь при этом получает organic-маршрут, а не пустой экран.",
-  "notes": "Синтетические данные. Не экономика X5 и не измеренный эффект."
+  "decision_note": "Campaign brand_07 scores the highest media value — RUB 25.63 — precisely because the visit is nearly certain. The 0.04 incrementality threshold rejects it: a visit that would have happened anyway is not sold to a brand. The user still receives an organic route rather than an empty screen.",
+  "notes": "Synthetic data. Neither X5 economics nor a measured effect."
 }

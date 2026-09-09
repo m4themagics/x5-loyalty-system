@@ -56,8 +56,8 @@ function grantedState() {
   return applyEvent(state, grantedEvent, receipt, state.revision, NOW_MS)
 }
 
-describe('демонстрационное состояние персонального сценария', () => {
-  test('публикует обещание и держит полный максимальный резерв', () => {
+describe('demonstration state of the personal scenario', () => {
+  test('publishes a promise and holds the full maximum reserve', () => {
     const state = offeredState()
     expect(state.profile.outstanding_promise?.fulfilled).toBe(false)
     expect(state.budget.coupon_reserved_kopecks).toBe(250)
@@ -65,7 +65,7 @@ describe('демонстрационное состояние персональ
     expect(state.card?.source).toBe('fallback')
   })
 
-  test('no_action сохраняет инвентарь и не создаёт обещания', () => {
+  test('no_action keeps the inventory and creates no promise', () => {
     const initial = createDemoState(profile, budget)
     const state = applyDecision(initial, noAction, initial.revision, NOW_MS)
     expect(state.challenge).toBeNull()
@@ -73,14 +73,14 @@ describe('демонстрационное состояние персональ
     expect(state.decision?.reason_codes).toEqual(['promise_already_outstanding'])
   })
 
-  test('устаревший ответ не перезаписывает более новое состояние', () => {
+  test('a stale response does not overwrite newer state', () => {
     const initial = createDemoState(profile, budget)
     const stale: DemoDecisionResponse = { ...offer, decision_id: 'dec_stale' }
     const state = applyDecision(initial, stale, initial.revision - 1, NOW_MS)
     expect(state).toBe(initial)
   })
 
-  test('подходящий чек начисляет предмет и право на товар ровно один раз', () => {
+  test('a qualifying receipt grants the item and the product entitlement exactly once', () => {
     const state = grantedState()
     expect(state.profile.inventory).toEqual([{ item_id: 'milk-pitcher', quantity: 1 }])
     expect(state.profile.issued_rewards).toHaveLength(1)
@@ -91,7 +91,7 @@ describe('демонстрационное состояние персональ
     expect(state.budget.coupon_reserved_kopecks).toBe(250)
   })
 
-  test('повтор того же начисления не выдаёт вторую награду', () => {
+  test('repeating the same grant does not issue a second reward', () => {
     const first = grantedState()
     const receipt = buildDemoReceipt('qualifying', first.challenge!, NOW_MS, 'rcp-test-1')
     const second = applyEvent(first, grantedEvent, receipt, first.revision, NOW_MS)
@@ -99,7 +99,7 @@ describe('демонстрационное состояние персональ
     expect(second.profile.inventory).toEqual([{ item_id: 'milk-pitcher', quantity: 1 }])
   })
 
-  test('идемпотентный повтор без выдачи ничего не начисляет', () => {
+  test('an idempotent repeat without issuing grants nothing', () => {
     const state = offeredState()
     const receipt = buildDemoReceipt('qualifying', state.challenge!, NOW_MS, 'rcp-test-2')
     const next = applyEvent(state, duplicateEvent, receipt, state.revision, NOW_MS)
@@ -108,7 +108,7 @@ describe('демонстрационное состояние персональ
     expect(next.profile.processed_event_ids).toContain('rcp-test-2')
   })
 
-  test('раскрытие анимацией только помечает награду показанной', () => {
+  test('the reveal animation only marks the reward as shown', () => {
     const state = grantedState()
     const revealed = revealGrant(state)
     expect(revealed.last_grant?.revealed).toBe(true)
@@ -116,7 +116,7 @@ describe('демонстрационное состояние персональ
     expect(revealGrant(revealed)).toBe(revealed)
   })
 
-  test('истёкшее невыполненное обещание освобождает резерв', () => {
+  test('an expired unfulfilled promise releases its reserve', () => {
     const state = offeredState()
     const released = releaseExpiredPromise(state, state.challenge!.target.deadline_ms + 1)
     expect(released.profile.outstanding_promise).toBeNull()
@@ -124,12 +124,12 @@ describe('демонстрационное состояние персональ
     expect(released.budget.physical_reserved_kopecks).toBe(0)
   })
 
-  test('действующее обещание не освобождается', () => {
+  test('an active promise is not released', () => {
     const state = offeredState()
     expect(releaseExpiredPromise(state, NOW_MS)).toBe(state)
   })
 
-  test('четыре предмета дают один купон и один завершённый рецепт', () => {
+  test('four items yield one coupon and one completed recipe', () => {
     const itemIds = ['club-toaster', 'milk-pitcher', 'travel-mug', 'breakfast-pan']
     let state = createDemoState(
       { ...profile, inventory: itemIds.map((item_id) => ({ item_id, quantity: 1 })) },
@@ -146,7 +146,7 @@ describe('демонстрационное состояние персональ
     expect(state.budget.coupon_settled_kopecks).toBe(0)
   })
 
-  test('активный купон блокирует создание второго', () => {
+  test('an active coupon blocks creating a second one', () => {
     const itemIds = ['club-toaster', 'milk-pitcher', 'travel-mug', 'breakfast-pan']
     let state = createDemoState(
       {
@@ -160,7 +160,7 @@ describe('демонстрационное состояние персональ
     expect(blocked).toBe(state)
   })
 
-  test('повтор того же рецепта не поднимает уровень аватара', () => {
+  test('repeating the same recipe does not raise the avatar level', () => {
     const itemIds = ['club-toaster', 'milk-pitcher', 'travel-mug', 'breakfast-pan']
     let state = createDemoState(
       { ...profile, inventory: itemIds.map((item_id) => ({ item_id, quantity: 2 })) },
@@ -174,7 +174,7 @@ describe('демонстрационное состояние персональ
     expect(state.profile.progress.avatar_level).toBe(1)
   })
 
-  test('погашение записывает фактическую экономию не выше максимума купона', () => {
+  test('redemption records actual savings no higher than the coupon cap', () => {
     const itemIds = ['club-toaster', 'milk-pitcher', 'travel-mug', 'breakfast-pan']
     let state = createDemoState(
       { ...profile, inventory: itemIds.map((item_id) => ({ item_id, quantity: 1 })) },
@@ -187,21 +187,21 @@ describe('демонстрационное состояние персональ
     expect(state.profile.progress.redeemed_savings_28d_kopecks).toBe(1000)
   })
 
-  test('крафт без достаточного количества копий не меняет состояние', () => {
+  test('crafting without enough copies leaves the state unchanged', () => {
     const state = createDemoState(profile, budget)
     const itemIds = ['club-toaster', 'milk-pitcher', 'travel-mug', 'breakfast-pan']
     expect(applyCraft(state, craftDiscount(itemIds, NOW_MS, 0.5), NOW_MS)).toBe(state)
   })
 
-  test('состояние переживает перезагрузку и отбрасывает мусор', () => {
+  test('the state survives a reload and discards junk', () => {
     const state = grantedState()
     expect(resolveDemoState(serializeDemoState(state))).toEqual(state)
     expect(resolveDemoState(null)).toBeNull()
-    expect(resolveDemoState('не json')).toBeNull()
+    expect(resolveDemoState('not json')).toBeNull()
     expect(resolveDemoState(JSON.stringify({ state_version: 99 }))).toBeNull()
   })
 
-  test('сохраняет точный последний чек для воспроизводимого повтора', () => {
+  test('keeps the exact last receipt for a reproducible repeat', () => {
     const state = grantedState()
     expect(state.last_receipt?.receipt.receipt_id).toBe('rcp-test-1')
     expect(state.last_receipt?.challenge_id).toBe(state.challenge?.challenge_id)
@@ -209,7 +209,7 @@ describe('демонстрационное состояние персональ
     expect(replay.profile.receipts.filter((receipt) => receipt.receipt_id === 'rcp-test-1')).toHaveLength(1)
   })
 
-  test('экономия учитывает окно 28 дней по времени погашения, без повторов', () => {
+  test('savings honour the 28-day window by redemption time, without repeats', () => {
     const ids = ['club-toaster', 'milk-pitcher', 'travel-mug', 'breakfast-pan']
     let state = createDemoState({ ...profile, inventory: ids.map((item_id) => ({ item_id, quantity: 1 })) }, budget)
     state = applyCraft(state, craftDiscount(ids, NOW_MS, 0.5), NOW_MS)
@@ -221,7 +221,7 @@ describe('демонстрационное состояние персональ
     expect(refreshDemoSavings(state, NOW_MS + 28 * 86_400_000).profile.progress.redeemed_savings_28d_kopecks).toBe(0)
   })
 
-  test('новый снимок резервирует максимум будущего купона для уже выданных предметов', () => {
+  test('a new snapshot reserves the future coupon maximum for already issued items', () => {
     const itemIds = ['club-toaster', 'milk-pitcher', 'travel-mug']
     const state = createDemoState(
       { ...profile, inventory: itemIds.map((item_id) => ({ item_id, quantity: 1 })) },
@@ -229,7 +229,7 @@ describe('демонстрационное состояние персональ
     )
     expect(state.budget.coupon_reserved_kopecks).toBe(750)
   })
-  test('предмет из коробки попадает в общий инвентарь и удерживает свой резерв', () => {
+  test('a box item lands in the shared inventory and holds its own reserve', () => {
     const initial = createDemoState({ ...profile, inventory: [] }, budget)
     expect(initial.budget.coupon_reserved_kopecks).toBe(0)
 

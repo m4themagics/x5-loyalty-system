@@ -7,18 +7,18 @@ import { ProfileScreen } from './ProfileScreen'
 import './pyaterochka-home.css'
 
 const quickActions = [
-  { icon: '🍎🧾', label: ['История', 'покупок'], tone: 'blue' },
-  { icon: '⭐', label: ['Оценка', 'товаров'], tone: 'yellow' },
-  { icon: '🔥', label: ['Моя', 'выгода'], tone: 'orange' },
-  { icon: '🐑', label: ['Выиграйте', '1 500 000 ₽'], tone: 'violet' },
-  { icon: '🔪', badge: '5', label: ['Ножи', 'за 1₽'], tone: 'gray' },
+  { icon: '🍎🧾', label: ['Purchase', 'history'], tone: 'blue' },
+  { icon: '⭐', label: ['Rate', 'products'], tone: 'yellow' },
+  { icon: '🔥', label: ['My', 'savings'], tone: 'orange' },
+  { icon: '🐑', label: ['Win', 'RUB 1,500,000'], tone: 'violet' },
+  { icon: '🔪', badge: '5', label: ['Knives', 'for RUB 1'], tone: 'gray' },
 ] as const
 
 const navigation = [
-  { id: 'home', label: 'Главная' },
-  { id: 'catalog', label: 'Каталог' },
-  { id: 'orange', label: 'Апельсин' },
-  { id: 'profile', label: 'Профиль' },
+  { id: 'home', label: 'Home' },
+  { id: 'catalog', label: 'Catalog' },
+  { id: 'orange', label: 'Orange' },
+  { id: 'profile', label: 'Profile' },
 ] as const
 
 export function PyaterochkaHome() {
@@ -36,12 +36,12 @@ export function PyaterochkaHome() {
       {screen === 'home' ? (
         <>
           <main className="app-content">
-        <section className="sky-section" aria-label="Карта лояльности">
+        <section className="sky-section" aria-label="Loyalty card">
           <div className="cloud cloud-left" />
           <div className="cloud cloud-right" />
 
           <header className="mobile-header">
-            <div className="status-row" aria-label="Строка состояния">
+            <div className="status-row" aria-label="Status bar">
               <Typography as="span" variant="body" className="status-time">
                 14:12
               </Typography>
@@ -63,18 +63,18 @@ export function PyaterochkaHome() {
               <div className="round-switch faded" aria-hidden="true">
                 <WalkingIcon />
               </div>
-              <button className="round-switch store" type="button" aria-label="Выбрать магазин">
+              <button className="round-switch store" type="button" aria-label="Choose a store">
                 <StoreIcon />
               </button>
               <Typography as="span" variant="body" className="location-name">
-                г Санкт-Пете... 4 литера А
+                St Petersb... 4 bldg A
               </Typography>
               <ChevronRight />
               <div className="header-actions">
-                <button type="button" aria-label="Уведомления">
+                <button type="button" aria-label="Notifications">
                   <BellIcon />
                 </button>
-                <button type="button" aria-label="Помощь">
+                <button type="button" aria-label="Help">
                   <HelpIcon />
                 </button>
               </div>
@@ -92,16 +92,16 @@ export function PyaterochkaHome() {
             <BlueRabbit />
             <div className="character-copy">
               <Typography as="span" variant="body" className="character-title">
-                Смешарики
+                Smeshariki
               </Typography>
               <Typography as="span" variant="body" className="character-subtitle">
-                В подарок
+                As a gift
               </Typography>
             </div>
             <Typography as="span" variant="body" className="butterfly" aria-hidden="true">🦋</Typography>
             <button className="want-button" type="button">
               <Typography as="span" variant="body" className="want-label">
-                Хочу
+                I want it
               </Typography>
               <ChevronRight />
             </button>
@@ -111,7 +111,7 @@ export function PyaterochkaHome() {
           </div>
         </section>
 
-        <section className="quick-panel" aria-label="Быстрые действия">
+        <section className="quick-panel" aria-label="Quick actions">
           <div className="quick-list">
             {quickActions.map((action) => (
               <button className="quick-action" type="button" key={action.label.join('-')}>
@@ -129,33 +129,33 @@ export function PyaterochkaHome() {
           </div>
         </section>
 
-        <section className="offers-section" aria-label="Подборки и предложения">
+        <section className="offers-section" aria-label="Collections and offers">
           <div className="offer-peek" aria-hidden="true" />
           <article className="season-offer">
             <div className="offer-pattern" aria-hidden="true" />
             <Typography as="h2" variant="h2" className="offer-title">
-              Золотая пора
+              Golden season
               <br />
-              выгоды
+              of savings
             </Typography>
             <Typography as="span" variant="body" className="offer-subtitle">
-              Скидки до 40%
+              Up to 40% off
             </Typography>
             <button className="selection-button" type="button">
               <Typography as="span" variant="body" className="selection-label">
-                В подборку
+                See selection
               </Typography>
             </button>
             <div className="products-illustration" aria-hidden="true">
               <Typography as="span" variant="body" className="leaf leaf-one">🍂</Typography>
               <Typography as="span" variant="body" className="leaf leaf-two">🍁</Typography>
               <div className="pickle-pack">
-                <Typography as="span" variant="body">Ряба</Typography>
-                <Typography as="small" variant="bodyXs">огурчики</Typography>
+                <Typography as="span" variant="body">Ryaba</Typography>
+                <Typography as="small" variant="bodyXs">pickles</Typography>
               </div>
               <div className="meat-pack">
                 <Typography as="span" variant="body">Deli</Typography>
-                <Typography as="small" variant="bodyXs">карбонад</Typography>
+                <Typography as="small" variant="bodyXs">pork loin</Typography>
               </div>
               <PriceTag className="price-one" price="159" />
               <PriceTag className="price-two" price="169" />
@@ -164,7 +164,7 @@ export function PyaterochkaHome() {
 
           <div className="round-offers" aria-hidden="true">
             <Typography as="span" variant="body" className="round-offer orange">🍊</Typography>
-            <Typography as="span" variant="body" className="round-offer purple">Ягодный</Typography>
+            <Typography as="span" variant="body" className="round-offer purple">Berry</Typography>
             <Typography as="span" variant="body" className="round-offer cream">🥛</Typography>
             <Typography as="span" variant="body" className="round-offer lime">🥗</Typography>
           </div>
@@ -174,10 +174,10 @@ export function PyaterochkaHome() {
           <div className="floating-coupon">
             <Typography as="span" variant="body" className="coupon-icon" aria-hidden="true">%</Typography>
             <Typography as="span" variant="body" className="coupon-copy">
-              Промокод −500₽ на заказ от 1 000₽ •
+              Promo code −RUB 500 on orders over RUB 1,000 •
             </Typography>
             <Typography as="strong" variant="emphasis" className="coupon-code">
-              ЛУЧИ500
+              RAYS500
             </Typography>
           </div>
         </>
@@ -185,7 +185,7 @@ export function PyaterochkaHome() {
         <ProfileScreen />
       )}
 
-      <nav className="bottom-nav" aria-label="Основная навигация">
+      <nav className="bottom-nav" aria-label="Main navigation">
         {navigation.map((item) => (
           <button
             aria-current={item.id === screen ? 'page' : undefined}
@@ -210,28 +210,28 @@ function LoyaltyCard() {
     <article className="loyalty-card">
       <div className="loyalty-main">
         <Typography as="span" variant="body" className="x5-brand">
-          <Typography as="strong" variant="emphasis" className="x5-brand-bold">X5</Typography>Клуб ›
+          <Typography as="strong" variant="emphasis" className="x5-brand-bold">X5</Typography>Club ›
         </Typography>
         <div className="points-row">
           <Typography as="span" variant="body" className="points-value">1 034</Typography>
           <span className="x5-symbol" aria-hidden="true" />
         </div>
-        <Typography as="span" variant="body" className="points-money">103,4 ₽</Typography>
+        <Typography as="span" variant="body" className="points-money">RUB 103.40</Typography>
         <QrCode />
       </div>
       <div className="loyalty-footer">
         <div className="loyalty-benefit">
           <Typography as="span" variant="body" className="benefit-icon" aria-hidden="true">↩</Typography>
           <div>
-            <Typography as="span" variant="body" className="benefit-title">Кешбэк</Typography>
+            <Typography as="span" variant="body" className="benefit-title">Cashback</Typography>
             <Typography as="span" variant="body" className="benefit-value">1%</Typography>
           </div>
         </div>
         <div className="loyalty-benefit categories">
           <Typography as="span" variant="body" className="benefit-icon" aria-hidden="true">♣</Typography>
           <div>
-            <Typography as="span" variant="body" className="benefit-title">Любимые категории</Typography>
-            <Typography as="span" variant="body" className="benefit-value">3 до 18%</Typography>
+            <Typography as="span" variant="body" className="benefit-title">Favourite categories</Typography>
+            <Typography as="span" variant="body" className="benefit-value">3 up to 18%</Typography>
           </div>
         </div>
       </div>
@@ -242,10 +242,10 @@ function LoyaltyCard() {
 function OrangeCard() {
   return (
     <article className="orange-card">
-      <Typography as="span" variant="body" className="orange-brand">◒ апельсин</Typography>
-      <Typography as="span" variant="body" className="orange-copy">7% кешбэка<br />за покупки&nbsp; ❕</Typography>
+      <Typography as="span" variant="body" className="orange-brand">◒ orange</Typography>
+      <Typography as="span" variant="body" className="orange-copy">7% cashback<br />on purchases&nbsp; ❕</Typography>
       <button type="button" className="return-button">
-        <Typography as="span" variant="body" className="return-label">Вернуть</Typography>
+        <Typography as="span" variant="body" className="return-label">Return</Typography>
       </button>
     </article>
   )
@@ -283,7 +283,7 @@ function QrCode() {
   }
 
   return (
-    <div className="qr-shell" aria-label="QR-код карты лояльности">
+    <div className="qr-shell" aria-label="Loyalty card QR code">
       <svg viewBox="0 0 29 29" role="img" aria-hidden="true">
         {cells.map((cell) => <rect key={`${cell.x}-${cell.y}`} x={cell.x} y={cell.y} width="1" height="1" />)}
       </svg>

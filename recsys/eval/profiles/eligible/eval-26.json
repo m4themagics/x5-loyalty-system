@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-26",
-  "label": "Оценочный синтетический профиль 26",
+  "label": "Evaluation synthetic profile 26",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Хлеб и выпечка",
+          "category": "Bread & Bakery",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 10500
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Замороженные продукты",
+          "category": "Frozen Food",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 10500
@@ -42,7 +42,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-2",
-          "category": "Всё для выпечки",
+          "category": "Baking Supplies",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 10500

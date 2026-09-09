@@ -9,8 +9,8 @@ const AVATAR_STEPS = [0, 1, 2, 3, 4, 5, 6]
 const AVATAR_MAX_LEVEL = 7
 
 /**
- * Постоянная шапка профиля: кто пользователь, чего достиг и что у него на руках.
- * Она не меняется при переключении вкладок, поэтому уровень и экономия всегда на виду.
+ * The permanent profile header: who the user is, what they have achieved and what they hold.
+ * It does not change between tabs, so level and savings stay visible at all times.
  */
 export function ProfileHeader({
   profileLabel,
@@ -32,9 +32,9 @@ export function ProfileHeader({
   onOpenTrade: () => void
 }) {
   return (
-    <section className="profile-hero" aria-label="Профиль игрока">
+    <section className="profile-hero" aria-label="Player profile">
       <Typography as="h1" variant="h1" className="profile-title">
-        Профиль
+        Profile
       </Typography>
       <div className="profile-identity">
         <Typography as="span" variant="body" className="profile-avatar" aria-hidden="true">
@@ -46,7 +46,7 @@ export function ProfileHeader({
       </div>
       <ProfileCharacter mood={characterMood} wornItemIds={wornItemIds} />
       <button
-        aria-label="Открыть обмен предметами"
+        aria-label="Open item exchange"
         className="profile-trade-entry"
         onClick={onOpenTrade}
         type="button"
@@ -54,7 +54,7 @@ export function ProfileHeader({
         <svg aria-hidden="true" viewBox="0 0 32 32">
           <path d="M7 10h15l-3.5-3.5M25 22H10l3.5 3.5" />
         </svg>
-        <Typography as="span" variant="bodyXs">Обмен</Typography>
+        <Typography as="span" variant="bodyXs">Trade</Typography>
       </button>
       {activeDiscount !== null ? (
         <ActiveDiscountBadge discount={activeDiscount} onClick={onOpenDiscount} />
@@ -64,10 +64,10 @@ export function ProfileHeader({
         <div className="profile-stat-level">
           <div className="profile-stat-level-row">
             <Typography as="span" variant="bodyXs" className="profile-stat-label">
-              Уровень
+              Level
             </Typography>
             <Typography as="span" variant="bodySmMedium" className="profile-stat-level-value">
-              {level} из {AVATAR_MAX_LEVEL}
+              {level} of {AVATAR_MAX_LEVEL}
             </Typography>
           </div>
           <div className="profile-level-track" aria-hidden="true">
@@ -83,7 +83,7 @@ export function ProfileHeader({
         <div className="profile-stat-savings">
           <div className="profile-stat-level-row">
             <Typography as="span" variant="bodyXs" className="profile-stat-label">
-              Выгода за 28 дней
+              Savings over 28 days
             </Typography>
             <Typography as="span" variant="body" className="profile-stat-value">
               {formatRubles(savingsKopecks)}

@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-16",
-  "label": "Оценочный синтетический профиль 16",
+  "label": "Evaluation synthetic profile 16",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Кофе и десерты",
+          "category": "Coffee & Desserts",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 9500
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Рыба и азиатская кухня",
+          "category": "Fish & Asian Cuisine",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 9500

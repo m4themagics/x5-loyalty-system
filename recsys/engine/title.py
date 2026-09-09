@@ -1,4 +1,4 @@
-"""Обработчик титула коллекции: контрактный конверт поверх генератора текста."""
+"""Collection-title handler: a contract envelope around the text generator."""
 from __future__ import annotations
 
 import time

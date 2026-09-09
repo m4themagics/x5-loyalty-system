@@ -6,8 +6,9 @@ import { expect, test, type Page } from '@playwright/test'
 import { dismissLoginDay, openTab, prepareLoginBox, putItemIntoDiscountSlot } from '../../e2e/demo/stand'
 
 /**
- * Кадры уходят сырыми в артефакты, а `build.mjs` собирает из них WebP и GIF в docs/assets.
- * Селекторы берём из общих помощников e2e: один источник правды не даёт съёмке отстать от кода.
+ * Frames are written raw into artifacts, and `build.mjs` turns them into WebP and GIF in
+ * docs/assets. Selectors come from the shared e2e helpers: one source of truth keeps the capture
+ * from lagging behind the code.
  */
 const raw = fileURLToPath(new URL('../../e2e/.artifacts/docs-shots/raw/', import.meta.url))
 mkdirSync(raw, { recursive: true })
@@ -17,18 +18,18 @@ const shot = (page: Page, name: string) =>
 
 async function openProfile(page: Page) {
   await page.goto('/')
-  await page.getByRole('button', { name: 'Профиль', exact: true }).click()
+  await page.getByRole('button', { name: 'Profile', exact: true }).click()
   await dismissLoginDay(page)
-  await expect(page.getByRole('heading', { level: 1, name: 'Профиль' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1, name: 'Profile' })).toBeVisible()
 }
 
 /**
- * Задание считается отдельным запросом к движку. Пока приложение догружает синтетические
- * профили, нажатие молча игнорируется, поэтому клик повторяется до появления карточки.
+ * A challenge is a separate request to the engine. While the app is still loading synthetic
+ * profiles the press is silently ignored, so the click repeats until the card appears.
  */
 async function showChallenge(page: Page) {
-  const card = page.getByRole('article', { name: 'Карточка задания' })
-  const ask = page.getByRole('button', { name: 'Показать задание' })
+  const card = page.getByRole('article', { name: 'Challenge card' })
+  const ask = page.getByRole('button', { name: 'Show the challenge' })
   await expect.poll(async () => {
     if (await card.count() > 0) return true
     if (await ask.count() > 0) await ask.first().click()
@@ -38,9 +39,9 @@ async function showChallenge(page: Page) {
   return card
 }
 
-test('снимает картинки для документации', async ({ page }) => {
+test('captures the documentation images', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('region', { name: 'Карта лояльности' })).toBeVisible()
+  await expect(page.getByRole('region', { name: 'Loyalty card' })).toBeVisible()
   await page.waitForTimeout(600)
   await shot(page, 'home')
 
@@ -50,26 +51,26 @@ test('снимает картинки для документации', async ({
   await page.waitForTimeout(400)
   await card.screenshot({ path: `${raw}challenge.png`, animations: 'disabled' })
 
-  await openTab(page, 'Друзья')
+  await openTab(page, 'Friends')
   const ranking = page.locator('.demo-progress')
-  await expect(ranking.getByRole('heading', { name: 'Прогресс друзей' })).toBeVisible()
+  await expect(ranking.getByRole('heading', { name: "Friends' progress" })).toBeVisible()
   await page.waitForTimeout(400)
   await ranking.screenshot({ path: `${raw}friends.png`, animations: 'disabled' })
 
-  await openTab(page, 'Задания')
-  await page.getByRole('button', { name: 'Демо-стенд', exact: true }).click()
-  await page.getByRole('button', { name: 'Для X5', exact: true }).click()
-  const panel = page.getByRole('region', { name: 'Для X5', exact: true })
+  await openTab(page, 'Challenges')
+  await page.getByRole('button', { name: 'Demo stand', exact: true }).click()
+  await page.getByRole('button', { name: 'For X5', exact: true }).click()
+  const panel = page.getByRole('region', { name: 'For X5', exact: true })
   await expect(panel).toBeVisible()
   await page.waitForTimeout(600)
   await panel.screenshot({ path: `${raw}x5-panel.png`, animations: 'disabled' })
 })
 
-test('снимает открытие коробки', async ({ page }) => {
+test('captures opening the box', async ({ page }) => {
   await openProfile(page)
   await prepareLoginBox(page)
-  await page.getByRole('button', { name: 'Открыть коробку Пятёрочки' }).click()
-  const shakeTarget = page.getByRole('button', { name: 'Трясти коробку' })
+  await page.getByRole('button', { name: 'Open the Pyaterochka box' }).click()
+  const shakeTarget = page.getByRole('button', { name: 'Shake the box' })
   await expect(shakeTarget).toBeVisible()
   await page.waitForTimeout(800)
 
@@ -84,35 +85,35 @@ test('снимает открытие коробки', async ({ page }) => {
       await page.waitForTimeout(35)
     }
     await page.mouse.up()
-    await expect(page.getByRole('heading', { name: 'Вам выпал предмет!' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'You got an item!' })).toBeVisible()
     await page.waitForTimeout(1_200)
     await shot(page, 'reward')
-    // Забираем предмет прямо в записи: маскот радуется после закрытия окна награды.
-    await page.getByRole('button', { name: 'Забрать' }).click()
+    // Collect the item inside the recording: the mascot celebrates after the dialog closes.
+    await page.getByRole('button', { name: 'Collect', exact: true }).click()
     await page.waitForTimeout(1_600)
   })
 
-  // Радость держится 2,6 секунды после закрытия окна — успеваем снять шапку с маскотом.
+  // The celebration lasts 2.6 seconds after the dialog closes — enough to capture the header.
   await shot(page, 'mascot')
 })
 
-test('снимает сборку скидки', async ({ page }) => {
+test('captures crafting a discount', async ({ page }) => {
   await openProfile(page)
-  await openTab(page, 'Коллекция')
-  await expect(page.getByRole('button', { name: 'Пустая ячейка скидки 1' })).toBeVisible()
+  await openTab(page, 'Collection')
+  await expect(page.getByRole('button', { name: 'Empty discount slot 1' })).toBeVisible()
   await page.waitForTimeout(400)
 
   await record(page, 'craft', async () => {
-    const items = ['Клубный тостер', 'Клубный тостер', 'Молочный кувшин', 'Сковорода завтрака']
+    const items = ['Clubhouse Toaster', 'Clubhouse Toaster', 'Milk Pitcher', 'Breakfast Pan']
     for (const [index, itemName] of items.entries()) {
       await putItemIntoDiscountSlot(page, itemName, index + 1)
       await page.waitForTimeout(200)
     }
     await page.waitForTimeout(600)
-    // Четыре заполненные ячейки — состояние перед списанием, его и показываем в документации.
+    // Four filled slots: the state before spending, which is what the documentation shows.
     await shot(page, 'collection')
-    await page.getByRole('button', { name: /^Создать скидку \d+%$/ }).click()
-    await expect(page.getByRole('dialog', { name: 'Созданная скидка' })).toBeVisible()
+    await page.getByRole('button', { name: /^Create a \d+% discount$/ }).click()
+    await expect(page.getByRole('dialog', { name: 'Crafted discount' })).toBeVisible()
     await page.waitForTimeout(1_400)
     await shot(page, 'discount')
   })
@@ -120,7 +121,7 @@ test('снимает сборку скидки', async ({ page }) => {
 
 type Frame = { data: Buffer; ts: number }
 
-/** Пишет экран через CDP: обычная видеозапись Playwright даёт слишком мягкую картинку для GIF. */
+/** Records the screen through CDP: Playwright video is too soft an image for a GIF. */
 async function record(page: Page, name: string, run: () => Promise<void>) {
   const target = `${raw}frames-${name}/`
   mkdirSync(target, { recursive: true })
@@ -137,5 +138,5 @@ async function record(page: Page, name: string, run: () => Promise<void>) {
     writeFileSync(`${target}${String(index).padStart(4, '0')}.jpg`, frame.data)
   })
   writeFileSync(`${target}meta.json`, JSON.stringify(frames.map((frame) => frame.ts)))
-  console.log(`${name}: ${frames.length} кадров`)
+  console.log(`${name}: ${frames.length} frames`)
 }

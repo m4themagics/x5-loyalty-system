@@ -1,7 +1,7 @@
 {
   "profile": {
     "customer_id": "u_1042",
-    "display_name": "Маша",
+    "display_name": "Masha",
     "cadence_weeks": 2.6,
     "categories": [
       "coffee",
@@ -82,11 +82,11 @@
   },
   "creative_copy": {
     "decision_id": "dec_1042",
-    "title": "Кофейный чекпоинт",
-    "body": "Этот чек уже открыл маршрут — остался один визит за пять дней.",
-    "progress": "1 из 2 чекпоинтов",
-    "cta": "Продолжить маршрут",
-    "sponsored_label": "При поддержке бренда"
+    "title": "Coffee checkpoint",
+    "body": "This receipt already opened the route — one visit within five days is left.",
+    "progress": "1 of 2 checkpoints",
+    "cta": "Continue the route",
+    "sponsored_label": "Supported by the brand"
   },
   "route_state": {
     "route_id": "r_1042",

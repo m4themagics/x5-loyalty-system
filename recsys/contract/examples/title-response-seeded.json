@@ -2,8 +2,8 @@
   "contract_version": 2,
   "request_id": "req-demo-title-seeded",
   "server_time_ms": 1788598800000,
-  "title": "Кофейный алхимик",
-  "subtitle": "Больше всего: кофе и чай",
+  "title": "Bread Baron",
+  "subtitle": "Mostly: bread & bakery",
   "source": "fallback",
   "violations": []
 }

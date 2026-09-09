@@ -1,7 +1,7 @@
 {
   "profile": {
     "customer_id": "u_6203",
-    "display_name": "Олег, контрольная группа",
+    "display_name": "Oleg, control group",
     "cadence_weeks": 2.4,
     "categories": [
       "coffee"
@@ -52,7 +52,7 @@
       "creative_id": "cr_042_a",
       "effective_bid": 28.8,
       "would_have_spent": 9.79,
-      "note": "Что policy показала бы этому пользователю. Исход не выводится: ghost говорит о выборе системы, а не о поведении человека. Бюджет не расходуется, обязательство не резервируется, fatigue не растёт."
+      "note": "What the policy would have shown this user. No outcome is derived: a ghost record describes the system's choice, not a person's behaviour. No budget is spent, no liability is reserved and fatigue does not grow."
     },
     "status": "active",
     "decision_id": "dec_6203",
@@ -73,5 +73,5 @@
   },
   "creative_copy": null,
   "route_state": null,
-  "demo_note": "Инкрементальность считается сравнением рандомизированных групп на уровне назначения, а не вычитанием ghost-предсказания."
+  "demo_note": "Incrementality is measured by comparing randomized groups at the assignment level, not by subtracting a ghost prediction."
 }

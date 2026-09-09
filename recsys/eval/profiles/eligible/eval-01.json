@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-01",
-  "label": "Оценочный синтетический профиль 01",
+  "label": "Evaluation synthetic profile 01",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Холодные напитки и мороженое",
+          "category": "Cold Drinks & Ice Cream",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 8000
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Мороженое и десерты",
+          "category": "Ice Cream & Desserts",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 8000

@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-refusal-08",
-  "label": "Отказ: знакомая категория без предмета в рецептах",
+  "label": "Refusal: familiar category with no item in any recipe",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-refusal",
-          "category": "Любимые покупки",
+          "category": "Favourite Buys",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 6900

@@ -31,8 +31,8 @@ function referralScenario() {
   return { store, event, receipt }
 }
 
-describe('сохранение персональных сценариев', () => {
-  test('переключение и reload сохраняют инвентарь каждого профиля', () => {
+describe('persistence of personal scenarios', () => {
+  test('switching and reloading keep every profile inventory', () => {
     const first = createDemoState(profile, budget)
     let store = createDemoStore(first)
     store = saveDemoProfile(store, { ...first, revision: 3, profile: { ...profile, inventory: [{ item_id: 'milk-pitcher', quantity: 2 }] } })
@@ -44,7 +44,7 @@ describe('сохранение персональных сценариев', () 
     expect(store.profiles[prepared.profile_id].profile.inventory).toHaveLength(3)
   })
 
-  test('снимок прежнего формата переносится без потери профиля', () => {
+  test('an older snapshot format migrates without losing the profile', () => {
     const state = createDemoState(prepared, budget)
     const restored = resolveDemoStore(serializeDemoState(state))!
     expect(restored.active_profile_id).toBe(prepared.profile_id)
@@ -52,8 +52,8 @@ describe('сохранение персональных сценариев', () 
   })
 })
 
-describe('живой Ads-журнал', () => {
-  test('атомарно резервирует показ и один раз списывает first-price CPA', () => {
+describe('live Ads log', () => {
+  test('reserves an exposure atomically and charges first-price CPA once', () => {
     const offer = demoDecisionResponseSchema.parse(example('decision-response-offer.json'))
     const event = demoEventResponseSchema.parse(example('event-response-granted.json'))
     let store = createDemoStore(createDemoState(profile, budget), ads)
@@ -83,7 +83,7 @@ describe('живой Ads-журнал', () => {
     expect(reset.referral_awards).toEqual([])
   })
 
-  test('отклоняет подмену billing, его пропуск и необеспеченное списание', () => {
+  test('rejects a swapped billing intent, a skipped one and an unreserved charge', () => {
     const offer = demoDecisionResponseSchema.parse(example('decision-response-offer.json'))
     const event = demoEventResponseSchema.parse(example('event-response-granted.json'))
     let store = createDemoStore(createDemoState(profile, budget), ads)
@@ -113,7 +113,7 @@ describe('живой Ads-журнал', () => {
     expect(applyDemoEvent(depleted, profile.profile_id, event, receipt, state.revision, nowMs)).toBe(depleted)
   })
 
-  test('освобождает истёкшие Ads-резервы всех профилей', () => {
+  test('releases expired Ads reserves across every profile', () => {
     const offer = demoDecisionResponseSchema.parse(example('decision-response-offer.json'))
     let store = createDemoStore(createDemoState(profile, budget), ads)
     store = applyDemoDecision(store, profile.profile_id, offer, 1, nowMs)
@@ -126,8 +126,8 @@ describe('живой Ads-журнал', () => {
   })
 })
 
-describe('реферальное начисление', () => {
-  test('передаёт обычный предмет пригласившему один раз и резервирует 250 копеек', () => {
+describe('referral granting', () => {
+  test('grants a common item to the inviter once and reserves 250 kopecks', () => {
     const { store, event, receipt } = referralScenario()
     const before = store.profiles[prepared.profile_id]
     const first = applyReferralReward(store, profile.profile_id, event, receipt, nowMs)
@@ -141,7 +141,7 @@ describe('реферальное начисление', () => {
     expect(replay.store).toBe(first.store)
   })
 
-  test('не создаёт право при недостатке денег или удержанном событии', () => {
+  test('creates no entitlement when money is short or the event is held', () => {
     const { store, event, receipt } = referralScenario()
     const inviter = store.profiles[prepared.profile_id]
     inviter.budget = { ...inviter.budget, coupon_fund_kopecks: inviter.budget.coupon_reserved_kopecks + inviter.budget.coupon_settled_kopecks }
@@ -151,10 +151,10 @@ describe('реферальное начисление', () => {
   })
 })
 
-describe('выбор копий для крафта', () => {
+describe('choosing copies for crafting', () => {
   const inventory = [{ item_id: 'milk-pitcher', quantity: 2 }, { item_id: 'travel-mug', quantity: 3 }]
 
-  test('можно снять единственную выбранную копию и добавить две одинаковых', () => {
+  test('the only selected copy can be removed and two identical ones can be added', () => {
     let selected = addDemoSelection([], inventory, 'milk-pitcher')
     expect(removeDemoSelection(selected, 'milk-pitcher')).toEqual([])
     selected = addDemoSelection(selected, inventory, 'milk-pitcher')
@@ -163,7 +163,7 @@ describe('выбор копий для крафта', () => {
     expect(removeDemoSelection(selected, 'milk-pitcher')).toEqual(['milk-pitcher'])
   })
 
-  test('нельзя выбрать неизвестный предмет или пятую копию', () => {
+  test('an unknown item or a fifth copy cannot be selected', () => {
     const selected = ['milk-pitcher', 'milk-pitcher', 'travel-mug', 'travel-mug']
     expect(addDemoSelection(selected, inventory, 'travel-mug')).toEqual(selected)
     expect(addDemoSelection([], inventory, 'unknown')).toEqual([])

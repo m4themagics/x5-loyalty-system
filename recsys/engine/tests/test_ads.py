@@ -1,8 +1,8 @@
-"""Контрактные тесты локального Ads-аукциона.
+"""Contract tests for the local Ads auction.
 
-Аукцион фильтрует недопустимые кампании до скоринга, резервирует максимальное
-обязательство и возвращает first-price billing intent, который можно списать только
-после подтверждённого квалифицирующего события.
+The auction filters ineligible campaigns before scoring, reserves the maximum liability and
+returns a first-price billing intent that can only be charged after a confirmed qualifying
+event.
 """
 import datetime as dt
 import json
@@ -77,7 +77,7 @@ class AdsAuctionTest(unittest.TestCase):
         examples = pathlib.Path(__file__).resolve().parents[2] / "contract" / "examples"
         ads = json.loads((examples / "ads.json").read_text(encoding="utf-8"))
         sponsorship = select_sponsorship(
-            "Молочные продукты",
+            "Dairy",
             1_788_598_800_000,
             load_policy(),
             load_campaigns(),
@@ -313,7 +313,7 @@ class AdsAuctionTest(unittest.TestCase):
             ],
         }
         policy = {
-            "campaign_category_map": {"Молочные продукты": "dairy"},
+            "campaign_category_map": {"Dairy": "dairy"},
             "min_expected_increment_kopecks": 100,
             "expected_incremental_margin_default_kopecks": 3_500,
         }
@@ -342,7 +342,7 @@ class AdsAuctionTest(unittest.TestCase):
         }
 
         sponsorship = select_sponsorship(
-            "Молочные продукты",
+            "Dairy",
             now_ms,
             policy,
             catalog,
@@ -363,7 +363,7 @@ class AdsAuctionTest(unittest.TestCase):
         self.assertIsInstance(sponsorship.rank_score_kopecks, int)
         self.assertEqual(sponsorship.billing_intent.bid_kopecks, 1_800)
 
-        economics = build_economics("Молочные продукты", 250, 2_500, sponsorship, policy)
+        economics = build_economics("Dairy", 250, 2_500, sponsorship, policy)
         self.assertEqual(economics["quality_score"], 0.81)
         self.assertEqual(economics["pacing_multiplier"], 1.1)
         self.assertEqual(economics["campaign_reserve_kopecks"], 4_300)
@@ -390,7 +390,7 @@ class AdsAuctionTest(unittest.TestCase):
             ],
         }
         policy = {
-            "campaign_category_map": {"Молочные продукты": "dairy"},
+            "campaign_category_map": {"Dairy": "dairy"},
             "min_expected_increment_kopecks": 100,
             "expected_incremental_margin_default_kopecks": 3_500,
         }
@@ -409,7 +409,7 @@ class AdsAuctionTest(unittest.TestCase):
         }
 
         exhausted = select_sponsorship(
-            "Молочные продукты", now_ms, policy, catalog, ads=base_state, profile_id="u-1"
+            "Dairy", now_ms, policy, catalog, ads=base_state, profile_id="u-1"
         )
         self.assertIsNone(exhausted.campaign_id)
 
@@ -429,13 +429,13 @@ class AdsAuctionTest(unittest.TestCase):
             ],
         }
         capped = select_sponsorship(
-            "Молочные продукты", now_ms, policy, catalog, ads=frequency_state, profile_id="u-1"
+            "Dairy", now_ms, policy, catalog, ads=frequency_state, profile_id="u-1"
         )
         self.assertIsNone(capped.campaign_id)
 
         missing_campaign_state = {"campaigns": [], "exposures": [], "billings": []}
         missing = select_sponsorship(
-            "Молочные продукты",
+            "Dairy",
             now_ms,
             policy,
             catalog,
@@ -464,7 +464,7 @@ class AdsAuctionTest(unittest.TestCase):
             ],
         }
         policy = {
-            "campaign_category_map": {"Молочные продукты": "dairy"},
+            "campaign_category_map": {"Dairy": "dairy"},
             "min_expected_increment_kopecks": 100,
             "expected_incremental_margin_default_kopecks": 3_500,
         }
@@ -483,7 +483,7 @@ class AdsAuctionTest(unittest.TestCase):
         }
 
         sponsorship = select_sponsorship(
-            "Молочные продукты",
+            "Dairy",
             now_ms,
             policy,
             catalog,
@@ -497,11 +497,11 @@ class AdsAuctionTest(unittest.TestCase):
 
 
 class DerivedPacingTest(unittest.TestCase):
-    """Каталог не задаёт темп расходования: он выводится из фактического расхода по флайту.
+    """The catalog does not set the spend pace: it follows from actual flight spend.
 
-    Флайт 2026-09-01..2026-09-30 (30 дней), «сегодня» — пятый день, бюджет 100 ₽.
-    Плановый расход к этому дню — 16,67 ₽, поэтому недобор ускоряет показы, а перерасход
-    их замедляет. Множитель ограничен диапазоном 0,5x-1,5x.
+    Flight 2026-09-01..2026-09-30 (30 days), "today" is the fifth day, budget RUB 100.
+    Planned spend by that day is RUB 16.67, so under-delivery speeds impressions up and
+    over-delivery slows them down. The multiplier is clamped to 0.5x-1.5x.
     """
 
     NOW_MS = 1_788_598_800_000
@@ -529,7 +529,7 @@ class DerivedPacingTest(unittest.TestCase):
             ],
         }
         policy = {
-            "campaign_category_map": {"Молочные продукты": "dairy"},
+            "campaign_category_map": {"Dairy": "dairy"},
             "min_expected_increment_kopecks": 100,
             "expected_incremental_margin_default_kopecks": 3_500,
         }
@@ -547,7 +547,7 @@ class DerivedPacingTest(unittest.TestCase):
             "billings": [],
         }
         return select_sponsorship(
-            "Молочные продукты",
+            "Dairy",
             self.NOW_MS,
             policy,
             catalog,
@@ -575,7 +575,7 @@ class DerivedPacingTest(unittest.TestCase):
         self.assertLess(overspent, on_plan)
 
     def test_the_multiplier_stays_inside_the_bounded_range(self) -> None:
-        # Каждое значение оставляет кампании бюджет на резерв, иначе она отсеется до скоринга.
+        # Every value leaves the campaign budget for a reserve, otherwise it is filtered before scoring.
         for settled in (1, 500, 1_667, 4_000, 8_000):
             with self.subTest(settled=settled):
                 self.assertTrue(5_000 <= self.sponsorship_for(settled).pacing_bps <= 15_000)

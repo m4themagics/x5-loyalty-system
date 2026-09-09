@@ -1,11 +1,12 @@
-"""Оценка контура креативов: детекция нарушений, ложные срабатывания и починка.
+"""Evaluation of the creative loop: violation detection, false positives and repair.
 
-Детекция без ложных срабатываний ничего не значит: валидатор, отвергающий всё подряд, покажет
-100% детекции и будет бесполезен. Поэтому здесь три числа — доля пойманных мутаций по категориям,
-доля ложных срабатываний на легитимных вариантах и доля успешно починенных креативов.
+Detection without false positives means nothing: a validator that rejects everything reports
+100% detection and is useless. Hence three numbers — the share of mutations caught per category,
+the share of false positives on legitimate variants and the share of successfully repaired
+creatives.
 
-Мутации порождаются детерминированно из валидных фикстур, поэтому набор воспроизводим и растёт
-вместе с фикстурами.
+Mutations are generated deterministically from the valid fixtures, so the set is reproducible and
+grows with them.
 """
 import copy, json, pathlib, re, sys
 from collections import defaultdict
@@ -24,30 +25,30 @@ def load_valid():
     return out
 
 
-# --- мутации: каждая ломает ровно одно правило ---------------------------------
+# --- mutations: each one breaks exactly one rule -------------------------------
 
 def m_price(d, c):
-    c["body"] = "Заберите товар за 149 ₽ бесплатно."
+    c["body"] = "Take the RUB 149 product for free."
     return c
 
 def m_sku(d, c):
-    c["body"] = "В награду положен sku_999 после визита."
+    c["body"] = "The reward is sku_999 after your visit."
     return c
 
 def m_deadline(d, c):
     if d.get("window_days") is None:
         return None
-    c["body"] = f"У вас есть {d['window_days'] + 9} дней на визит."
+    c["body"] = f"You have {d['window_days'] + 9} days to visit."
     return c
 
 def m_causal(d, c):
-    c["body"] = "Маршрут гарантированно поднимет вашу экономию за месяц."
+    c["body"] = "The route is guaranteed to raise your monthly savings."
     return c
 
 def m_hold(d, c):
     if d.get("status") != "delayed":
         return None
-    c["body"] = "Награда ваша, забирайте сейчас после покупки."
+    c["body"] = "The reward is yours, collect it now after the purchase."
     return c
 
 def m_sponsorship(d, c):
@@ -61,11 +62,11 @@ def m_swap(d, c):
     return c
 
 def m_urgency(d, c):
-    c["body"] = "Только сегодня: вернитесь за покупкой."
+    c["body"] = "Today only: come back for a purchase."
     return c
 
 def m_no_next_step(d, c):
-    c["body"] = "Отличный день для хорошего настроения."
+    c["body"] = "A fine day for a good mood."
     return c
 
 def m_extra_field(d, c):
@@ -73,37 +74,37 @@ def m_extra_field(d, c):
     return c
 
 def m_overflow(d, c):
-    c["title"] = "Очень длинный заголовок про кофейный маршрут, который никуда не помещается совсем"
+    c["title"] = "A very long headline about the coffee route that does not fit anywhere at all"
     return c
 
 MUTATIONS = {
-    "выдуманная цена": m_price,
-    "выдуманный SKU": m_sku,
-    "изменённый срок": m_deadline,
-    "обещание эффекта": m_causal,
-    "снятие hold": m_hold,
-    "скрытая маркировка": m_sponsorship,
-    "подмена решения": m_swap,
-    "ложная срочность": m_urgency,
-    "нет следующего шага": m_no_next_step,
-    "лишнее поле": m_extra_field,
-    "переполнение длины": m_overflow,
+    "invented price": m_price,
+    "invented SKU": m_sku,
+    "changed deadline": m_deadline,
+    "promised effect": m_causal,
+    "released hold": m_hold,
+    "hidden label": m_sponsorship,
+    "swapped decision": m_swap,
+    "false urgency": m_urgency,
+    "no next step": m_no_next_step,
+    "extra field": m_extra_field,
+    "length overflow": m_overflow,
 }
 
 
-# --- легитимные варианты: их отвергать нельзя ----------------------------------
+# --- benign variants: rejecting these is not allowed ---------------------------
 
 def benign_variants(decision, card):
     out = []
-    a = copy.deepcopy(card); a["cta"] = "Открыть маршрут"; out.append(("другой CTA", a))
-    b = copy.deepcopy(card); b["progress"] = ""; out.append(("без прогресса", b))
+    a = copy.deepcopy(card); a["cta"] = "Open the route"; out.append(("different CTA", a))
+    b = copy.deepcopy(card); b["progress"] = ""; out.append(("no progress", b))
     c = copy.deepcopy(card)
-    c["body"] = c["body"].replace("Один визит", "Ещё один визит") if "Один визит" in c["body"] else c["body"] + " Ждём вас за покупкой."
-    out.append(("перефразированный текст", c))
+    c["body"] = c["body"].replace("One visit", "One more visit") if "One visit" in c["body"] else c["body"] + " We look forward to your purchase."
+    out.append(("rephrased copy", c))
     return out
 
 
-# --- починка: детерминированный ремонт вместо отказа ---------------------------
+# --- repair: deterministic fixing instead of refusal ---------------------------
 
 def repair(decision, card):
     fixed = copy.deepcopy(card)
@@ -114,10 +115,10 @@ def repair(decision, card):
     text_fields = ("title", "body")
     for f in text_fields:
         if f in fixed:
-            fixed[f] = re.sub(r"\d+[\s ]*(?:₽|руб)\w*", "", str(fixed[f]))
+            fixed[f] = re.sub(r"(?:₽|\bRUB\b)\s*\d[\d\s.,]*|\d[\d\s.,]*\s*(?:₽|\brubles?\b|\brub\b)", "", str(fixed[f]), flags=re.I)
             fixed[f] = re.sub(r"\bsku[_\-]?\d+\b", "", fixed[f], flags=re.I)
-            fixed[f] = re.sub(r"гарантированно|только сегодня|последний шанс|торопитесь", "", fixed[f], flags=re.I)
-            fixed[f] = re.sub(r"награда ваша|забирайте сейчас|получите сразу", "", fixed[f], flags=re.I)
+            fixed[f] = re.sub(r"is guaranteed to|guaranteed|today only|last chance|hurry", "", fixed[f], flags=re.I)
+            fixed[f] = re.sub(r"the reward is yours|collect it now|receive it immediately", "", fixed[f], flags=re.I)
             fixed[f] = re.sub(r"\s{2,}", " ", fixed[f]).strip()
     template = fallback_for(decision)
     if not check(decision, fixed):
@@ -128,18 +129,18 @@ def repair(decision, card):
 def main():
     valid = load_valid()
     if not valid:
-        print("нет валидных фикстур"); return 1
+        print("no valid fixtures"); return 1
 
-    # 1. ложные срабатывания
+    # 1. false positives
     controls, false_positives = 0, []
     for name, decision, card in valid:
-        for label, variant in [("исходный", card)] + benign_variants(decision, card):
+        for label, variant in [("original", card)] + benign_variants(decision, card):
             controls += 1
             problems = check(decision, variant)
             if problems:
                 false_positives.append(f"{name} / {label}: {'; '.join(problems)}")
 
-    # 2. детекция по категориям
+    # 2. detection per category
     per_cat = defaultdict(lambda: [0, 0])
     misses, repaired, fell_back = [], 0, 0
     for name, decision, card in valid:
@@ -160,19 +161,19 @@ def main():
     total_hits = sum(h for h, _ in per_cat.values())
     total_cases = sum(n for _, n in per_cat.values())
 
-    print(f"Легитимных вариантов: {controls}, ложных срабатываний: {len(false_positives)}")
+    print(f"Benign variants: {controls}, false positives: {len(false_positives)}")
     for fp in false_positives:
-        print("  ЛОЖНОЕ:", fp)
-    print(f"\nМутаций: {total_cases}, поймано: {total_hits} ({total_hits / total_cases:.0%})\n")
-    print(f"{'категория':<24} {'поймано':>10}")
+        print("  FALSE POSITIVE:", fp)
+    print(f"\nMutations: {total_cases}, caught: {total_hits} ({total_hits / total_cases:.0%})\n")
+    print(f"{'category':<24} {'caught':>10}")
     for cat, (hits, n) in sorted(per_cat.items()):
-        mark = "" if hits == n else "  <-- пропуск"
+        mark = "" if hits == n else "  <-- miss"
         print(f"{cat:<24} {hits:>5}/{n:<4}{mark}")
     if misses:
-        print("\nПропущено:")
+        print("\nMissed:")
         for m in misses:
             print("  ", m)
-    print(f"\nПосле блокировки: починено {repaired}, отдан шаблон {fell_back}")
+    print(f"\nAfter blocking: repaired {repaired}, template returned {fell_back}")
     return 1 if (false_positives or misses) else 0
 
 

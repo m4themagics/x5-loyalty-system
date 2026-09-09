@@ -4,9 +4,9 @@
 
 # X5 Checkpoint
 
-### Multi-objective Recommendation & Ad Allocation for Retail Loyalty
+### Winning X5 Hackathon Project
 
-One personalized shopping challenge, selected for customer relevance, expected retailer value, and available reward funding.
+A playable retail loyalty system that turns purchase history into one funded, personalized challenge—then carries the reward through collection, exchange, and discount crafting.
 
 *Next-best-action ranking · quality-adjusted CPA auction · offline uplift modeling · validated LLM copy*
 
@@ -24,7 +24,7 @@ One personalized shopping challenge, selected for customer relevance, expected r
 
 </div>
 
-A three-person X5 hackathon project connecting a collectible-item game to a local RecSys/Ads decision engine. **The application serves a rules-based policy; the learned policy is evaluated offline on randomized synthetic logs.** All purchases, campaigns, billing, and reward entitlements are demonstrational.
+**Winner of an X5 hackathon, built by a three-person team.** X5 Checkpoint connects a collectible-item game to a local RecSys/Ads decision engine. The application serves a rules-based policy; the learned policy is evaluated offline on randomized synthetic logs. All purchases, campaigns, billing, and reward entitlements are demonstrational.
 
 <div align="center">
 
@@ -94,7 +94,7 @@ A versioned Zod contract defines the webapp ↔ Python boundary. Vite developmen
 
 ## Screens
 
-The original retail demo and captured UI are in Russian; captions and technical documentation are in English.
+The demo interface, captions, and maintained technical documentation are in English.
 
 <div align="center">
 
@@ -222,7 +222,7 @@ Browser journeys run separately with `bun run e2e:demo`. README screenshots and 
 
 ## Team & Contribution
 
-Built by a three-person team for the X5 hackathon. The [recorded ownership split](docs/project/plan.md) assigns **RecSys/Ads, data, and analytics to @m4themagics**: action selection, baselines, explanations, SKU economics, auction logic, and reproducible evaluation. Game implementation and screen integration are assigned to @grigorii_zor; product research and design to @yungatla. The concept and final integration were collaborative.
+Built by a three-person team and selected as an **X5 hackathon winner**. The [recorded ownership split](docs/project/plan.md) assigns **RecSys/Ads, data, and analytics to @m4themagics**: action selection, baselines, explanations, SKU economics, auction logic, and reproducible evaluation. Game implementation and screen integration are assigned to @grigorii_zor; product research and design to @yungatla. The concept and final integration were collaborative.
 
 ## Scope & Next Steps
 
@@ -240,9 +240,9 @@ A real pilot would require SKU-level costs and margins, server-owned entitlement
 | [Evaluation](recsys/eval/README.md) | Experimental design, baselines, results, and reproduction commands |
 | [Implementation status](docs/project/poc-status.md) | Implemented capabilities and remaining limitations |
 | [Webapp](webapp/README.md) | UI scope, setup, and browser checks |
-| [Documentation index](docs/README.md) | Technical docs and original Russian product specifications and submission materials |
+| [Documentation index](docs/README.md) | Technical docs, product specifications, and archived source materials |
 
-The original case brief, detailed product specifications, and archived hackathon submission remain in Russian. Current code and the English implementation/evaluation docs establish what the prototype runs today.
+The original case brief and archived submission remain in their source language as immutable competition artifacts. The demo, portfolio narrative, maintained implementation documentation, and evaluation tooling are in English; current code establishes what the prototype runs today.
 
 ## License
 

@@ -1,1 +1,1 @@
-"""Пакет recsys: контракты, движок локального PoC и проверки."""
+"""recsys package: contracts, the local PoC engine and its checks."""

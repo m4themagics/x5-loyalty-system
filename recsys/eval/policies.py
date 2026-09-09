@@ -8,7 +8,7 @@ from unittest.mock import patch
 from recsys.engine import decision as engine_decision
 
 POLICIES = ("personalized_broad", "sponsored_onboarding", "fixed_dairy", "reward_only")
-FIXED_CATEGORY = "Молочные продукты"
+FIXED_CATEGORY = "Dairy"
 FUNDING_POLICY = {
     # These switches are evaluation assumptions only. The runtime policy file remains
     # advertiser_only, while the broad baselines reproduce the wider policy that was

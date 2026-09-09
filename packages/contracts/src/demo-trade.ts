@@ -8,7 +8,7 @@ export const DEMO_TRADE_REQUIRED_PURCHASE_DAYS = 2
 const id = z.string().min(1).max(120)
 const revision = z.number().int().nonnegative()
 
-/** Контракт локального обмена. Товарные права и купоны не являются предметами обмена. */
+/** Contract of the local exchange. Product entitlements and coupons are never traded. */
 export const demoTradeSchema = z.object({
   trade_id: id,
   sender_profile_id: id,

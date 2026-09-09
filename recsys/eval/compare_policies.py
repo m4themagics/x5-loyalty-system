@@ -116,15 +116,15 @@ def main(argv=None):
     args = parser.parse_args(argv)
     report = build_report()
     primary = report["primary_result"]
-    print(f"Основной сценарий: {primary['policy']}, {primary['conservative_positive_net_seeds']}/{len(SEEDS)} "
-          "положительных seed после покрытия прироста максимальных обязательств.")
+    print(f"Primary scenario: {primary['policy']}, {primary['conservative_positive_net_seeds']}/{len(SEEDS)} "
+          "positive seeds after covering the growth in maximum liabilities.")
     for row in report["comparison"]:
-        print(f"{row['policy']}: после обязательств "
-              f"{rubles(row['mean']['conservative_net_after_outstanding_max_liability_kopecks'])} ₽; "
-              f"денежный итог {rubles(row['mean']['net_kopecks'])} ₽; "
-              f"охват {row['mean_coverage']:.1%}; дельта дней {row['mean']['incremental_purchases']:+.1f}; "
-              f"CPA после покрытия обязательств {row['pooled_conservative_break_even_cpa_kopecks']} коп.")
-    print("Это парное сравнение сценарных допущений, не измеренная прибыль и не исследование привычки.")
+        print(f"{row['policy']}: after liabilities "
+              f"RUB {rubles(row['mean']['conservative_net_after_outstanding_max_liability_kopecks'])}; "
+              f"cash net RUB {rubles(row['mean']['net_kopecks'])}; "
+              f"coverage {row['mean_coverage']:.1%}; day delta {row['mean']['incremental_purchases']:+.1f}; "
+              f"CPA after covering liabilities {row['pooled_conservative_break_even_cpa_kopecks']} kopecks.")
+    print("This is a paired comparison of scenario assumptions, not measured profit and not habit research.")
     if args.json_out:
         args.json_out.parent.mkdir(parents=True, exist_ok=True)
         args.json_out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

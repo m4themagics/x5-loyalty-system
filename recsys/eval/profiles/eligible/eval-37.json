@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-37",
-  "label": "Оценочный синтетический профиль 37",
+  "label": "Evaluation synthetic profile 37",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Снеки и орехи",
+          "category": "Snacks & Nuts",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11600
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Фрукты",
+          "category": "Fruit",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 11600

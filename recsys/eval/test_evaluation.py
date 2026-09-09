@@ -34,7 +34,7 @@ class EvaluationTest(unittest.TestCase):
         with patch.object(run_relevance, "call_engine", side_effect=answers), \
                 contextlib.redirect_stdout(io.StringIO()) as output:
             self.assertEqual(run_relevance.main(), 1)
-        self.assertIn("ОШИБКА eval-refusal-01", output.getvalue())
+        self.assertIn("ERROR eval-refusal-01", output.getvalue())
 
     def test_relevance_request_uses_contract_v2_and_ads_state(self):
         profile = json.loads(
@@ -153,7 +153,7 @@ class EvaluationTest(unittest.TestCase):
                 "returned": False,
                 "lines": [{
                     "sku_id": "synthetic-dairy",
-                    "category": "Молочные продукты",
+                    "category": "Dairy",
                     "quantity": 1,
                     "paid": True,
                     "amount_kopecks": 10_000,

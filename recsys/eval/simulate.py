@@ -38,61 +38,61 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Run the heterogeneous synthetic X5 audience")
     parser.add_argument("--json-out", type=pathlib.Path, help="write aggregate reproducible report")
     args = parser.parse_args(argv)
-    print("Синтетика: 1 000 пользователей, четыре недельных шага; реальные decision/event.")
-    print("Состав откалиброван по пяти сегментам МП Пятёрочки из Q&A кейса.")
-    print("Интерес к игре и поведенческие вероятности — явные синтетические допущения.")
+    print("Synthetic: 1,000 users, four weekly steps; real decision/event calls.")
+    print("The mix is calibrated to the five Pyaterochka mobile-app segments from the case Q&A.")
+    print("Interest in the game and behavioural probabilities are explicit synthetic assumptions.")
     results = []
     for path in sorted((EVAL / "scenarios").glob("*.json")):
         row = run_scenario(load_json(path))
         results.append(row)
-        print(f"\n{row['name']}: охват {row['served_users']}/{row['users']}, "
-              f"заданий {row['offers']}, отказов {row['refusals']} "
-              f"(бюджет: {row['budget_refusals']}), выдано предметов {row['items_granted']}")
-        print(f"  купонов {row['coupons_crafted']}, потрачено копий {row['items_consumed']}, "
-              f"первых физических товаров {row['physical_gifts']}")
-        print(f"  подготовленных стартовых копий {row['initial_item_instances']}; "
-              "их полный купонный резерв включён до первого показа")
-        print(f"  покупочных дней: база {row['baseline_purchase_days']}, "
-              f"игра {row['purchase_days']}, разница {row['incremental_purchases']}")
-        print(f"  расходы {rubles(row['spend_kopecks'])} ₽; максимум резерва "
-              f"{rubles(row['peak_reserved_kopecks'])} ₽; дополнительная маржа "
-              f"{rubles(row['incremental_margin_kopecks'])} ₽; итог "
-              f"{rubles(row['net_kopecks'])} ₽")
-        print(f"  доход бренда {rubles(row['sponsor_income_kopecks'])} ₽; "
-              f"субсидия {rubles(row['subsidy_income_kopecks'])} ₽")
-        print(f"  остаток предметов {row['remaining_item_instances']}; "
-              f"непогашенных купонов {row['outstanding_coupons']}; "
-              f"причины отказов {row['refusal_reasons']}")
-        print(f"  фонды (копейки): {json.dumps(row['final_budget'], ensure_ascii=False)}")
-        print("  по сегментам аудитории:")
+        print(f"\n{row['name']}: coverage {row['served_users']}/{row['users']}, "
+              f"challenges {row['offers']}, refusals {row['refusals']} "
+              f"(budget: {row['budget_refusals']}), items granted {row['items_granted']}")
+        print(f"  coupons {row['coupons_crafted']}, copies spent {row['items_consumed']}, "
+              f"first physical products {row['physical_gifts']}")
+        print(f"  seeded starting copies {row['initial_item_instances']}; "
+              "their full coupon reserve is counted before the first impression")
+        print(f"  purchase days: baseline {row['baseline_purchase_days']}, "
+              f"game {row['purchase_days']}, difference {row['incremental_purchases']}")
+        print(f"  spend RUB {rubles(row['spend_kopecks'])}; peak reserve "
+              f"RUB {rubles(row['peak_reserved_kopecks'])}; incremental margin "
+              f"RUB {rubles(row['incremental_margin_kopecks'])}; net "
+              f"RUB {rubles(row['net_kopecks'])}")
+        print(f"  brand income RUB {rubles(row['sponsor_income_kopecks'])}; "
+              f"subsidy RUB {rubles(row['subsidy_income_kopecks'])}")
+        print(f"  items remaining {row['remaining_item_instances']}; "
+              f"unredeemed coupons {row['outstanding_coupons']}; "
+              f"refusal reasons {row['refusal_reasons']}")
+        print(f"  funds (kopecks): {json.dumps(row['final_budget'], ensure_ascii=False)}")
+        print("  by audience segment:")
         for group in row["audience_breakdown"]:
-            print(f"    {group['label']}: {group['users']} чел., охват {group['served_users']}, "
-                  f"дельта дней {group['incremental_purchases']:+d}, итог {rubles(group['net_kopecks'])} ₽")
-        print("  по отношению к игре:")
+            print(f"    {group['label']}: {group['users']} users, coverage {group['served_users']}, "
+                  f"day delta {group['incremental_purchases']:+d}, net RUB {rubles(group['net_kopecks'])}")
+        print("  by attitude to the game:")
         for group in row["engagement_breakdown"]:
-            print(f"    {group['label']}: {group['users']} чел., охват {group['served_users']}, "
-                  f"дельта дней {group['incremental_purchases']:+d}, итог {rubles(group['net_kopecks'])} ₽")
-    print("\nИтог не является прогнозом X5. CPA/субсидия берутся из задания и собираются "
-          "с заданным множителем. Сравнение политик — в compare_policies.py; "
-          "проверки привычки после поощрений нет. "
-          "Даже нулевой прирост может окупаться финансированием: это не рост покупок.")
+            print(f"    {group['label']}: {group['users']} users, coverage {group['served_users']}, "
+                  f"day delta {group['incremental_purchases']:+d}, net RUB {rubles(group['net_kopecks'])}")
+    print("\nThe result is not an X5 forecast. CPA and subsidy come from the challenge and are "
+          "collected with a fixed multiplier. Policy comparison lives in compare_policies.py; "
+          "there is no check of habit after incentives. "
+          "Even zero increment can pay off through funding: that is not purchase growth.")
     if args.json_out:
         args.json_out.parent.mkdir(parents=True, exist_ok=True)
         report = {
             "report_version": 1,
             "population": "synthetic_pyaterochka_mobile_app_audience",
             "evidence_boundary": {
-                "case_fact": "Пять долей сегментов МП ТС5 из Q&A кейса",
+                "case_fact": "Five Pyaterochka mobile-app segment shares from the case Q&A",
                 "synthetic_assumptions": [
-                    "интерес к игре", "вероятность покупки категории задания",
-                    "отклик на игру", "крафт и погашение", "экономика сценария",
+                    "interest in the game", "probability of buying the challenge category",
+                    "response to the game", "crafting and redemption", "scenario economics",
                 ],
                 "not_a_forecast": True,
             },
             "scenarios": results,
         }
         args.json_out.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        print(f"Агрегированный отчёт: {args.json_out}")
+        print(f"Aggregate report: {args.json_out}")
     return 0
 
 
@@ -118,7 +118,7 @@ def _run_scenario(scenario: dict, policy_name: str = "personalized_broad") -> di
     for index, trait in enumerate(traits):
         profile = copy.deepcopy(templates[index % len(templates)])
         profile["profile_id"] = f"sim-{index:04d}"
-        profile["label"] = f"Синтетический профиль {index:04d}"
+        profile["label"] = f"Synthetic profile {index:04d}"
         source_inventory = prepared[index % len(prepared)]["inventory"][0]
         profile["inventory"] = ([] if trait["inventory_count"] == 0 else [{
             "item_id": source_inventory["item_id"], "quantity": trait["inventory_count"]

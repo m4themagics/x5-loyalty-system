@@ -1,10 +1,10 @@
 /**
- * Что персонаж носит на себе. Отдельно от инвентаря: владеть предметом и носить его — разное.
- * Надетое хранится в браузере, как и остальное состояние демонстрации.
+ * What the character wears. Kept apart from inventory: owning an item and wearing it differ.
+ * The worn set lives in the browser like the rest of the demo state.
  */
 const OUTFIT_STORAGE_KEY = 'pyaterochka_profile_worn_items'
 
-/** Носибельны только эти предметы каталога: для остальных двадцати двух нет одетых кадров. */
+/** Only these catalog items are wearable: the other twenty-two have no dressed frames. */
 export const WEARABLE_ITEM_IDS = ['baker-apron', 'chef-knife'] as const
 
 export type WearableItemId = (typeof WEARABLE_ITEM_IDS)[number]
@@ -32,7 +32,7 @@ export function persistWornItemIds(itemIds: readonly WearableItemId[]) {
   window.localStorage.setItem(OUTFIT_STORAGE_KEY, JSON.stringify(itemIds))
 }
 
-/** Снятое остаётся снятым, а потраченный в крафте предмет перестаёт быть надетым сам. */
+/** What was taken off stays off, and an item spent on crafting stops being worn by itself. */
 export function toggleWornItem(
   worn: readonly WearableItemId[],
   itemId: WearableItemId,

@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "demo-empty",
-  "label": "Новый участник, пустой инвентарь (синтетический профиль)",
+  "label": "New member, empty inventory (synthetic profile)",
   "synthetic": true,
   "receipts": [
     {
@@ -10,7 +10,7 @@
       "store_id": "store-demo-1",
       "returned": false,
       "lines": [
-        { "sku_id": "sku-milk-1l", "category": "Молочные продукты", "quantity": 1, "paid": true, "amount_kopecks": 8900 }
+        { "sku_id": "sku-milk-1l", "category": "Dairy", "quantity": 1, "paid": true, "amount_kopecks": 8900 }
       ]
     },
     {
@@ -19,7 +19,7 @@
       "store_id": "store-demo-1",
       "returned": false,
       "lines": [
-        { "sku_id": "sku-bread-500", "category": "Хлеб и выпечка", "quantity": 1, "paid": true, "amount_kopecks": 5400 }
+        { "sku_id": "sku-bread-500", "category": "Bread & Bakery", "quantity": 1, "paid": true, "amount_kopecks": 5400 }
       ]
     },
     {
@@ -28,7 +28,7 @@
       "store_id": "store-demo-1",
       "returned": false,
       "lines": [
-        { "sku_id": "sku-coffee-250", "category": "Кофе и чай", "quantity": 1, "paid": true, "amount_kopecks": 32900 }
+        { "sku_id": "sku-coffee-250", "category": "Coffee & Tea", "quantity": 1, "paid": true, "amount_kopecks": 32900 }
       ]
     }
   ],

@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-14",
-  "label": "Оценочный синтетический профиль 14",
+  "label": "Evaluation synthetic profile 14",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Кофе и десерты",
+          "category": "Coffee & Desserts",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 9300
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Полезные напитки",
+          "category": "Healthy Drinks",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 9300
@@ -42,7 +42,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-2",
-          "category": "Всё для выпечки",
+          "category": "Baking Supplies",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 9300

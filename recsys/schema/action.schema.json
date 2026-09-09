@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://x5-checkpoint/recsys/action.schema.json",
   "title": "QuestRank decision",
-  "description": "Контракт между аллокатором и клиентом. Решение раскладывается на три независимых уровня: назначение эксперимента, результат рекламной аллокации и то, что в итоге показано пользователю. Источник: разделы 8.3 и 8.4 описания проекта и Материал 6 продуктовых материалов; правится во всех трёх местах сразу.",
+  "description": "Contract between the allocator and the client. A decision has three independent levels: experiment assignment, advertising allocation result, and the surface ultimately shown to the user. Source: sections 8.3 and 8.4 of the project description and Material 6 of the product materials; keep all three locations aligned.",
   "type": "object",
   "required": ["decision_id", "experiment_arm", "sponsored_result", "surface_result", "propensity", "reason_codes"],
   "additionalProperties": false,
@@ -11,15 +11,15 @@
 
     "experiment_arm": {
       "enum": ["holdout", "serve"],
-      "description": "Случайное назначение, устойчивое на уровне пользователя. holdout — контроль: воздействия нет, но ghost записывается"
+      "description": "Random assignment stable at user level. Holdout is the control: no treatment is shown, but a ghost decision is recorded."
     },
     "sponsored_result": {
       "enum": ["filled", "no_fill", "not_applicable"],
-      "description": "Результат рекламной аллокации. no_fill — ни одна кампания не прошла бюджетный, качественный или инкрементальный порог"
+      "description": "Advertising allocation result. no_fill means no campaign passed the budget, quality, or incrementality threshold."
     },
     "surface_result": {
       "enum": ["sponsored", "organic", "none"],
-      "description": "Что показано пользователю. no_fill и organic совместимы: рекламы нет, продукт есть"
+      "description": "What the user sees. no_fill and organic are compatible: there is no ad, while the product surface remains available."
     },
 
     "propensity": {
@@ -48,13 +48,13 @@
     "reinforcement_type": { "enum": ["supplier_trial", "points", "digital_unlock", "digital_vote_token", "local_privilege", "progress_only", "none"] },
     "reinforcement_id": { "type": ["string", "null"] },
     "reinforcement_cost": { "type": "number", "minimum": 0 },
-    "uncovered_reward_cost": { "type": "number", "minimum": 0, "description": "часть стоимости награды, которую не покрывает рекламодатель; только она вычитается из score" },
+    "uncovered_reward_cost": { "type": "number", "minimum": 0, "description": "Part of the reward cost not covered by the advertiser; only this amount is subtracted from the score." },
     "funding_source": { "enum": ["advertiser", "promo_fund", "own_margin", "none"] },
 
-    "bid_per_qualified_visit": { "type": "number", "minimum": 0, "description": "назначается рекламодателем, моделью не предсказывается" },
+    "bid_per_qualified_visit": { "type": "number", "minimum": 0, "description": "Supplied by the advertiser, not predicted by the model." },
     "pacing_multiplier": { "type": "number", "minimum": 0 },
     "effective_bid": { "type": "number", "minimum": 0 },
-    "expected_liability": { "type": "number", "minimum": 0, "description": "p_billable × effective_bid; резервируется до созревания окна атрибуции" },
+    "expected_liability": { "type": "number", "minimum": 0, "description": "p_billable × effective_bid; reserved until the attribution window matures." },
     "campaign_budget_snapshot": {
       "type": ["object", "null"],
       "additionalProperties": false,
@@ -67,11 +67,11 @@
     },
 
     "p_qvisit_treat": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
-    "p_qvisit_control": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "обучается на рандомизированном холдауте, не на общей истории" },
+    "p_qvisit_control": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "Learned from a randomized holdout, not from pooled history." },
     "uplift": { "type": ["number", "null"], "description": "p_qvisit_treat − p_qvisit_control" },
     "incrementality_floor": { "type": ["number", "null"], "minimum": 0 },
     "p_billable": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
-    "p_accept": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "диагностика воронки, в score не входит" },
+    "p_accept": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "Funnel diagnostic; not included in the score." },
 
     "fading_phase": { "enum": ["onboarding", "confirmation", "persistence", "maintain", "rotate", "none"] },
     "frequency_state": { "type": ["object", "null"], "additionalProperties": true },
@@ -80,7 +80,7 @@
       "type": ["object", "null"],
       "required": ["media_net", "x5_incremental_value", "total"],
       "additionalProperties": false,
-      "description": "всё в рублях, без переводных коэффициентов",
+      "description": "All values are in rubles, with no conversion factors.",
       "properties": {
         "media_net": { "type": "number", "description": "p_billable × effective_bid − uncovered_reward_cost" },
         "x5_incremental_value": { "type": "number", "description": "uplift × contribution margin" },
@@ -88,13 +88,13 @@
       }
     },
 
-    "candidate_set": { "type": ["array", "null"], "items": { "type": "string" }, "description": "полный набор кандидатов на момент решения" },
+    "candidate_set": { "type": ["array", "null"], "items": { "type": "string" }, "description": "Complete candidate set at decision time." },
     "policy_version": { "type": "string" },
     "decision_seed": { "type": ["integer", "null"] },
     "ghost": {
       "type": ["object", "null"],
       "additionalProperties": true,
-      "description": "что policy показала бы холдауту. Не содержит исхода: контрфактический результат из ghost не выводится"
+      "description": "What the policy would have shown to the holdout. Contains no outcome: a counterfactual result cannot be inferred from the ghost record."
     },
 
     "status": { "enum": ["active", "delayed", "blocked"] },

@@ -4,14 +4,14 @@ import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
 
 /**
- * Собирает картинки документации из кадров, снятых `shots.spec.ts`.
- * Скриншоты уходят в WebP, записи экрана — в GIF с реальными интервалами записи.
+ * Builds the documentation images from the frames captured by `shots.spec.ts`.
+ * Screenshots become WebP, screen recordings become GIFs with the real capture intervals.
  */
 const raw = fileURLToPath(new URL('../../e2e/.artifacts/docs-shots/raw/', import.meta.url))
 const out = fileURLToPath(new URL('../../../docs/assets/screenshots/', import.meta.url))
 
 if (!existsSync(raw)) {
-  console.error('Нет снятых кадров. Сначала: bun run docs:shots')
+  console.error('No captured frames. Run this first: bun run docs:shots')
   process.exit(1)
 }
 
@@ -37,7 +37,7 @@ async function buildGif(dir, output) {
   if (files.length === 0) return
   const stamps = JSON.parse(readFileSync(`${dir}meta.json`, 'utf8'))
 
-  // Равномерная выборка по реальному времени записи, чтобы темп совпал с живым интерфейсом.
+  // Even sampling over the real capture time so the pace matches the live interface.
   const picked = []
   for (let time = stamps[0]; time <= stamps.at(-1) + 1e-6; time += 1 / GIF_FPS) {
     let best = 0
@@ -72,5 +72,5 @@ async function buildGif(dir, output) {
     .gif({ delay: delays, loop: 0, colours: 48, dither: 0.5 })
     .toFile(output)
 
-  console.log(`${output.split('/').at(-1)}: ${pages.length} кадров, ${GIF_WIDTH}x${height}`)
+  console.log(`${output.split('/').at(-1)}: ${pages.length} frames, ${GIF_WIDTH}x${height}`)
 }

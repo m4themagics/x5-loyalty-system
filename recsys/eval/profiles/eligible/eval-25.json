@@ -1,7 +1,7 @@
 {
   "snapshot_version": 2,
   "profile_id": "eval-25",
-  "label": "Оценочный синтетический профиль 25",
+  "label": "Evaluation synthetic profile 25",
   "synthetic": true,
   "receipts": [
     {
@@ -12,7 +12,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-0",
-          "category": "Хлеб, сыр и колбасы",
+          "category": "Bread, Cheese & Deli",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 10400
@@ -27,7 +27,7 @@
       "lines": [
         {
           "sku_id": "sku-eval-1",
-          "category": "Лапша и азиатская кухня",
+          "category": "Noodles & Asian Cuisine",
           "quantity": 1,
           "paid": true,
           "amount_kopecks": 10400

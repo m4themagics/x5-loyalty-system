@@ -1,13 +1,13 @@
 import type { DemoProfileSnapshot } from '@pyaterochka-game-demo/contracts'
 
 /**
- * Один показательный профиль, который открывается по умолчанию. Он собран так, чтобы весь путь
- * продукта был виден без переключений: три предмета набора «Доброе утро» уже собраны, недостающая
- * «Термокружка» лежит в категории с активной кампанией и в истории покупок, поэтому задание
- * находится сразу, а лишняя копия «Клубного тостера» открывает обмен дубликатами.
+ * The single showcase profile that opens by default. It is built so the whole product path is
+ * visible without switching: three items of the "Good Morning" set are already collected, the
+ * missing "Travel Mug" sits in a category with an active campaign and in the purchase history,
+ * so a challenge is found immediately, and a spare "Clubhouse Toaster" opens duplicate trading.
  *
- * Профиль остаётся демонстрационным: он строится из синтетического seed-профиля движка,
- * а не из реальной истории покупок.
+ * The profile stays demonstrational: it is built from a synthetic engine seed profile, not from
+ * real purchase history.
  */
 export const DEMO_SHOWCASE_PROFILE_ID = 'demo-showcase'
 
@@ -21,7 +21,7 @@ export function createShowcaseProfile(template: DemoProfileSnapshot): DemoProfil
   return {
     ...template,
     profile_id: DEMO_SHOWCASE_PROFILE_ID,
-    label: 'Показательный профиль: три предмета набора и дубликат для обмена',
+    label: 'Showcase profile: three items of a set and a duplicate to trade',
     inventory: DEMO_SHOWCASE_INVENTORY.map((entry) => ({ ...entry })),
     issued_rewards: [],
     processed_event_ids: [],

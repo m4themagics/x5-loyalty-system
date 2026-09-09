@@ -1,13 +1,13 @@
-"""Строит независимый набор оценочных профилей и рубрику приемлемых решений.
+"""Builds an independent set of evaluation profiles and a rubric of acceptable decisions.
 
-Разметка фиксируется ДО прогона движка и не подстраивается под его ответы. Критерий
-приемлемости продуктовый, а не копия ранжирования: показанное задание должно лежать в
-категории, которую человек действительно покупает, и приближать хотя бы один рецепт.
+The labelling is frozen BEFORE the engine runs and is never adjusted to its answers. The
+acceptance criterion is a product one, not a copy of the ranking: the challenge shown must sit in
+a category the person actually buys and must bring at least one recipe closer.
 
-Все записи помечены `label_status: "agent_draft"`. Статус экспертной оценки появляется только
-после подтверждения человеком.
+Every record is marked `label_status: "agent_draft"`. An expert-review status appears only after a
+human confirms it.
 
-Запуск из корня репозитория: python3 recsys/eval/build_profiles.py
+Run from the repository root: python3 recsys/eval/build_profiles.py
 """
 import json
 import pathlib
@@ -25,16 +25,46 @@ LABELLED_ON = "2026-09-05"
 SEED = 20260905
 CONTRACT_VERSION = 2
 
+# The order the 40 profiles were sampled in on 2026-09-05, pinned so the published rubric stays
+# reproducible. It used to be `sorted(...)` over the category names, which made a deterministic
+# dataset depend on how a category happens to be spelled: renaming one reshuffled every profile.
+SAMPLING_ORDER = (
+    "Groceries & Canned Food",
+    "Baking Supplies",
+    "Frozen Food",
+    "Coffee & Desserts",
+    "Coffee & Tea",
+    "Grains, Soups & Sauces",
+    "Noodles & Asian Cuisine",
+    "Dairy",
+    "Ice Cream & Desserts",
+    "Meat & Sausages",
+    "Vegetables & Herbs",
+    "Vegetables, Fruit & Herbs",
+    "Healthy Drinks",
+    "Fish & Asian Cuisine",
+    "Snacks & Nuts",
+    "Fruit",
+    "Bread & Bakery",
+    "Bread, Cheese & Deli",
+    "Cold Drinks & Ice Cream",
+    "Eggs & Breakfast",
+)
+
 
 def main() -> None:
     game = json.loads((EXAMPLES / "game-snapshot.json").read_text(encoding="utf-8"))
     catalog = json.loads((ROOT / "recsys/engine/data/sku_catalog.json").read_text(encoding="utf-8"))
 
-    gift_categories = sorted(
-        {sku["category"] for sku in catalog["gift_skus"] if sku["stock"] > 0}
-    )
+    gift_categories = {sku["category"] for sku in catalog["gift_skus"] if sku["stock"] > 0}
     paid_categories = {sku["category"] for sku in catalog["skus"] if sku["stock"] > 0}
-    fundable = [category for category in gift_categories if category in paid_categories]
+    available = gift_categories & paid_categories
+    if available != set(SAMPLING_ORDER):
+        raise AssertionError(
+            "SAMPLING_ORDER no longer matches the catalog: "
+            f"{sorted(available ^ set(SAMPLING_ORDER))}"
+        )
+    fundable = list(SAMPLING_ORDER)
 
     items_by_category: dict[str, list[str]] = {}
     for item in game["items"]:
@@ -54,15 +84,15 @@ def main() -> None:
 
     rubric = {
         "notes": (
-            "Независимая разметка. Приемлемым считается любое задание, категория которого есть в "
-            "истории покупок профиля и предмет которого недостающий в каком-либо рецепте. "
-            "Рубрика допускает множество решений и не повторяет порядок ранжирования движка. "
-            "Допустимые профили оцениваются в цифровом цикле после onboarding: так прогон измеряет "
-            "релевантность RecSys отдельно от охвата Ads первого физического подарка."
+            "Independent labelling. Any challenge counts as acceptable when its category appears in "
+            "the profile's purchase history and its item is missing from some recipe. "
+            "The rubric admits many decisions and does not repeat the engine's ranking order. "
+            "Eligible profiles are evaluated in the digital cycle after onboarding, so the run "
+            "measures RecSys relevance separately from Ads coverage of the first physical gift."
         ),
         "label_status": LABEL_STATUS,
         "labelled_on": LABELLED_ON,
-        "expert_confirmation": "не проводилась",
+        "expert_confirmation": "not performed",
         "threshold": {"eligible_profiles": 40, "minimum_hits": 28},
         "eligible": [entry for _, entry in eligible],
         "refusal": [entry for _, entry in refusals],
@@ -70,7 +100,7 @@ def main() -> None:
     (EVAL_ROOT / "rubric.json").write_text(
         json.dumps(rubric, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
-    print(f"профилей: {len(eligible)} допустимых, {len(refusals)} отказных; рубрика записана")
+    print(f"profiles: {len(eligible)} eligible, {len(refusals)} refusal; rubric written")
 
 
 def build_eligible_profile(
@@ -84,7 +114,7 @@ def build_eligible_profile(
     familiar_count = 1 + (index % 3)
     categories = random_source.sample(fundable, familiar_count)
 
-    # Неудобные случаи: редкие визиты, дубликаты и почти собранный рецепт.
+    # Awkward cases: rare visits, duplicates and a nearly complete recipe.
     rare_visits = index % 7 == 0
     duplicate_heavy = index % 5 == 0
     nearly_complete = index % 11 == 0
@@ -123,12 +153,12 @@ def build_eligible_profile(
 
     acceptable = acceptable_items(categories, inventory, items_by_category, in_any_recipe)
     if not acceptable and duplicate_heavy:
-        # Инвариант набора: у допустимого профиля есть хотя бы один приемлемый ответ.
-        # Дубликаты не должны выкупать единственный предмет знакомой категории.
+        # Set invariant: an eligible profile has at least one acceptable answer.
+        # Duplicates must not buy out the only item of a familiar category.
         inventory = [entry for entry in inventory if entry["quantity"] == 1]
         acceptable = acceptable_items(categories, inventory, items_by_category, in_any_recipe)
     if not acceptable:
-        raise AssertionError(f"{profile_id}: допустимый профиль без приемлемого ответа")
+        raise AssertionError(f"{profile_id}: an eligible profile without an acceptable answer")
 
     unacceptable = sorted(
         {
@@ -142,7 +172,7 @@ def build_eligible_profile(
     profile = {
         "snapshot_version": CONTRACT_VERSION,
         "profile_id": profile_id,
-        "label": f"Оценочный синтетический профиль {index:02d}",
+        "label": f"Evaluation synthetic profile {index:02d}",
         "synthetic": True,
         "receipts": receipts,
         "inventory": inventory,
@@ -175,7 +205,7 @@ def build_eligible_profile(
         "acceptable_item_ids": acceptable,
         "unacceptable_item_ids": unacceptable[:12],
         "expected_status": "offer",
-        "rationale": "Категория есть в истории, предмет недостающий в рецепте.",
+        "rationale": "The category is in the history and the item is missing from a recipe.",
         "label_status": LABEL_STATUS,
         "labelled_on": LABELLED_ON,
     }
@@ -253,24 +283,24 @@ def build_refusal_profiles(
 
     cases: list[tuple[dict, dict]] = []
 
-    empty = base("eval-refusal-01", "Отказ: покупок нет вовсе")
-    cases.append((empty, refusal_entry(empty, "no_purchase_history", "История покупок пуста.")))
+    empty = base("eval-refusal-01", "Refusal: no purchases at all")
+    cases.append((empty, refusal_entry(empty, "no_purchase_history", "The purchase history is empty.")))
 
-    unpaid = base("eval-refusal-02", "Отказ: только бесплатные строки в истории")
+    unpaid = base("eval-refusal-02", "Refusal: only free lines in the history")
     unpaid["receipts"] = [receipt("rcp-ref-02", 5, fundable[0], paid=False)]
-    cases.append((unpaid, refusal_entry(unpaid, "no_purchase_history", "Бесплатные строки не создают покупочный день.")))
+    cases.append((unpaid, refusal_entry(unpaid, "no_purchase_history", "Free lines do not create a purchase day.")))
 
-    foreign = base("eval-refusal-03", "Отказ: покупки только вне игрового каталога")
-    foreign["receipts"] = [receipt("rcp-ref-03", 4, "Бытовая химия")]
+    foreign = base("eval-refusal-03", "Refusal: purchases outside the game catalog only")
+    foreign["receipts"] = [receipt("rcp-ref-03", 4, "Household chemicals")]
     foreign["risk_signals"]["confirmed_purchase_days"] = 1
-    cases.append((foreign, refusal_entry(foreign, "category_not_in_history", "Ни одна купленная категория не связана с предметом рецепта.")))
+    cases.append((foreign, refusal_entry(foreign, "category_not_in_history", "No purchased category maps to an item in a recipe.")))
 
-    no_gift = base("eval-refusal-04", "Отказ: у знакомой категории нет обеспеченного подарка")
-    no_gift["receipts"] = [receipt("rcp-ref-04", 3, "Готовая еда")]
+    no_gift = base("eval-refusal-04", "Refusal: the familiar category has no funded gift")
+    no_gift["receipts"] = [receipt("rcp-ref-04", 3, "Ready Meals")]
     no_gift["risk_signals"]["confirmed_purchase_days"] = 1
-    cases.append((no_gift, refusal_entry(no_gift, "sku_out_of_stock", "Для категории нет подарочного SKU с остатком.")))
+    cases.append((no_gift, refusal_entry(no_gift, "sku_out_of_stock", "The category has no gift SKU in stock.")))
 
-    outstanding = base("eval-refusal-05", "Отказ: действующее невыполненное обещание")
+    outstanding = base("eval-refusal-05", "Refusal: an outstanding unfulfilled promise")
     outstanding["receipts"] = [receipt("rcp-ref-05", 2, fundable[0])]
     outstanding["risk_signals"]["confirmed_purchase_days"] = 1
     outstanding["outstanding_promise"] = {
@@ -281,23 +311,23 @@ def build_refusal_profiles(
         "deadline_ms": NOW_MS + 4 * DAY_MS,
         "fulfilled": False,
     }
-    cases.append((outstanding, refusal_entry(outstanding, "promise_already_outstanding", "Новое обещание не показывается поверх действующего.")))
+    cases.append((outstanding, refusal_entry(outstanding, "promise_already_outstanding", "A new promise is not shown on top of an active one.")))
 
-    stale = base("eval-refusal-06", "Отказ: покупки старше окна истории")
+    stale = base("eval-refusal-06", "Refusal: purchases older than the history window")
     stale["receipts"] = [receipt("rcp-ref-06", 200, fundable[0])]
-    cases.append((stale, refusal_entry(stale, "no_purchase_history", "Покупки за пределами окна истории не считаются знакомой категорией.")))
+    cases.append((stale, refusal_entry(stale, "no_purchase_history", "Purchases outside the history window do not make a category familiar.")))
 
-    returned = base("eval-refusal-07", "Отказ: единственная покупка возвращена")
+    returned = base("eval-refusal-07", "Refusal: the only purchase was returned")
     returned["receipts"] = [receipt("rcp-ref-07", 3, fundable[0])]
     returned["receipts"][0]["returned"] = True
-    cases.append((returned, refusal_entry(returned, "no_purchase_history", "Возвращённый чек не создаёт покупочный день.")))
+    cases.append((returned, refusal_entry(returned, "no_purchase_history", "A returned receipt does not create a purchase day.")))
 
-    unknown_item = base("eval-refusal-08", "Отказ: знакомая категория без предмета в рецептах")
-    unknown_item["receipts"] = [receipt("rcp-ref-08", 6, "Любимые покупки")]
+    unknown_item = base("eval-refusal-08", "Refusal: familiar category with no item in any recipe")
+    unknown_item["receipts"] = [receipt("rcp-ref-08", 6, "Favourite Buys")]
     unknown_item["risk_signals"]["confirmed_purchase_days"] = 1
-    cases.append((unknown_item, refusal_entry(unknown_item, "sku_out_of_stock", "Для категории нет обеспеченного товара; предмет один и без подарка.")))
+    cases.append((unknown_item, refusal_entry(unknown_item, "sku_out_of_stock", "The category has no funded product; the single item comes without a gift.")))
 
-    assert items_by_category  # каталог нужен только для проверки согласованности данных
+    assert items_by_category  # the catalog is only needed to check data consistency
     return cases
 
 
