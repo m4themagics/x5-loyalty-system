@@ -1,48 +1,66 @@
-# Документация
+# Documentation
 
-## Продукт
+The portfolio overview, technical guides and implementation status are available in English.
+The application, screenshots, original product specifications and submitted case materials
+retain their original Russian language.
 
-| Документ | О чём |
+## English technical documentation
+
+| Document | Scope |
 | --- | --- |
-| [project-description.md](project/project-description.md) | Полное описание продукта: механика, экономика, границы PoC |
-| [item-pool.md](project/item-pool.md) | Каталог 24 предметов, редкости, составы семи рецептов |
-| [product-materials.md](project/product-materials.md) | Пользовательские и операторские сценарии |
-| [case-brief.md](project/case-brief.md) | Исходный кейс, дословно |
-| [plan.md](project/plan.md) | Разделение работ и приёмка |
-| [poc-status.md](project/poc-status.md) | Что реализовано, а что осталось гипотезой |
-| [context-pack.md](project/context-pack.md) | Рабочий контекст проекта |
+| [Root README](../README.md) | RecSys/Ads portfolio overview, local setup and demo walkthrough |
+| [Implementation status](project/poc-status.md) | Implemented behavior, validation scope, synthetic results and remaining work |
+| [Webapp](../webapp/README.md) | Browser demo, checks and runtime boundaries |
+| [TypeScript contracts](../packages/contracts/README.md) | Shared Zod schemas and coordinated contract changes |
+| [Decision system overview](../recsys/README.md) | Engine, evaluation and the evidence each check provides |
+| [Wire contract](../recsys/contract/README.md) | Versioned JSON exchange between the webapp and Python |
+| [Decision engine](../recsys/engine/README.md) | Challenge selection, CPA ad auction and reward economics |
+| [Evaluation](../recsys/eval/README.md) | Relevance, policy simulations and the offline learned recommender |
 
-## Материалы защиты
+## Original product specifications (Russian)
 
-Переданные материалы хранятся в `submission/` как есть и не поддерживаются вместе с кодом:
+These documents preserve the team's full product specification and source case. They describe
+both the implemented local PoC and target behavior. Use the English [implementation status](project/poc-status.md)
+and current code to distinguish shipped demo behavior from future requirements.
 
-- [presentation.pdf](submission/presentation.pdf) — слайды защиты
-- [product-materials.pdf](submission/product-materials.pdf) — продуктовые материалы
-- [project-description-final.md](submission/project-description-final.md) — финальное описание проекта
+| Document | Scope |
+| --- | --- |
+| [project-description.md](project/project-description.md) | Complete product design: mechanics, economics and PoC boundaries |
+| [item-pool.md](project/item-pool.md) | Catalog of 24 items, rarities and exact membership of seven recipes |
+| [product-materials.md](project/product-materials.md) | Customer and operator scenarios |
+| [case-brief.md](project/case-brief.md) | Original case brief, preserved verbatim |
+| [plan.md](project/plan.md) | Team responsibilities and acceptance criteria |
+| [context-pack.md](project/context-pack.md) | Working product context |
 
-## Движок решений
+## Archived submission (Russian)
 
-Контракты, границы и результаты независимой оценки описаны отдельно:
+The submitted materials are preserved in `submission/` and are not maintained alongside the code:
 
-- [recsys/README.md](../recsys/README.md) — обзор движка и что подтверждают проверки
-- [recsys/contract/README.md](../recsys/contract/README.md) — общий контракт webapp ↔ Python
-- [recsys/engine/README.md](../recsys/engine/README.md) — выбор задания, Ads-аукцион, экономика
-- [recsys/eval/README.md](../recsys/eval/README.md) — релевантность, симуляции, offline learned RecSys
+- [presentation.pdf](submission/presentation.pdf): presentation slides.
+- [product-materials.pdf](submission/product-materials.pdf): product materials.
+- [project-description-final.md](submission/project-description-final.md): submitted project description.
 
-## Запуск и проверки
+## Setup and checks
 
-Установка и запуск — в [корневом README](../README.md). Все проверки разом:
+Installation and local setup are documented in the [root README](../README.md). Run the
+combined type, lint, unit, engine, evaluation and RecSys validation checks with:
 
 ```bash
 bun run check
 ```
 
-## Картинки документации
+Build and browser acceptance are separate commands:
 
-Скриншоты и анимации в `assets/screenshots/` снимаются с работающего приложения командой
-`bun run docs:shots`. Съёмка живёт в `webapp/scripts/docs-shots/` и берёт селекторы из общих
-помощников e2e, поэтому не расходится с интерфейсом. Пересоберите картинки после заметных
-изменений экранов.
+```bash
+bun run build
+bun run e2e:demo
+```
 
-Исходники маскота лежат в `assets/mascot-source/`: четыре позы и две накладки косметики.
-Готовые слои для приложения собраны из них в `webapp/public/assets/character/`.
+## Documentation images
+
+Screenshots and animations in `assets/screenshots/` are captured from the running app with
+`bun run docs:shots`. The capture code in `webapp/scripts/docs-shots/` uses shared E2E selectors.
+Regenerate these assets after visible screen changes.
+
+Mascot source images live in `assets/mascot-source/`: four poses and two cosmetic overlays.
+The application layers built from these sources live in `webapp/public/assets/character/`.

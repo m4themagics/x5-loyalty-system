@@ -1,45 +1,52 @@
 # Contracts
 
-`@pyaterochka-game-demo/contracts` — единственный контракт провода между webapp и локальным
-Python-движком. Обе стороны импортируют схемы отсюда и не переопределяют формы запросов и
-ответов у себя.
+`@pyaterochka-game-demo/contracts` defines the shared wire contract between the webapp and
+the local Python engine. The TypeScript client and Vite middleware import its Zod schemas.
+Python consumes and produces the corresponding versioned JSON; it does not import Zod.
+The middleware validates requests before invoking Python and validates engine responses
+before returning them to the client.
 
-## Состав
+## Modules
 
-| Модуль | Что описывает |
+| Module | Scope |
 | --- | --- |
-| `src/demo-poc.ts` | Contract v2: профиль, решение, событие, Ads-снимок, фонды и лимиты |
-| `src/demo-trade.ts` | Обмен предметами между локальными синтетическими профилями |
-| `src/demo-evaluation.ts` | Ответ панели «Для X5» с результатами сравнения политик |
+| `src/demo-poc.ts` | Contract v2: profiles, decisions, events, Ads snapshots, funds and limits |
+| `src/demo-trade.ts` | Item exchanges between local synthetic profiles |
+| `src/demo-evaluation.ts` | Policy comparison response for the X5 evaluation panel |
 
-Всё экспортируется из `src/index.ts`.
+All modules are exported from `src/index.ts`. Exchange state remains local to the webapp;
+the trade schema does not imply a Python trading service or a protected server ledger.
 
-## Стек
+## Stack
 
-TypeScript и Zod. Других зависимостей у пакета нет.
+TypeScript and Zod. Zod is the package's only runtime dependency.
 
-## Команды
+## Checks
 
 ```bash
 bun run --cwd packages/contracts typecheck
 bun run --cwd packages/contracts test
 ```
 
-## Правила
+## Contract changes
 
-Контракт меняется одной согласованной правкой: Zod-схемы здесь, эталонные payload в
-`recsys/contract/examples/`, Python-движок в `recsys/engine/` и webapp — вместе. Изменение
-только одной стороны ломает границу, потому что валидация стоит на обеих.
+Update the contract in one coordinated change: the Zod schemas here, reference payloads in
+`recsys/contract/examples/`, the Python engine in `recsys/engine/` and the webapp must agree.
+Changing only one side can break request or response validation.
 
-Деньги — целые копейки. Никакой рантайм-логики здесь быть не должно: пакет отвечает за
-валидацию, нормализацию и общие типы.
+Money is represented as integer kopecks. Current demo constants reserve 250 kopecks
+(RUB 2.50) per item instance and cap each new coupon at 1,000 kopecks (RUB 10).
+This package owns validation, normalization, shared constants and types; decision and
+gameplay behavior belongs to the consuming modules.
 
-После изменения схемы проверьте обе стороны в одном проходе: тесты пакета, тесты движка
-(`python3 -m unittest discover -s recsys/engine/tests`) и тесты webapp.
+After changing a schema, check both sides together: package tests, engine tests
+(`python3 -m unittest discover -s recsys/engine/tests -t .`) and webapp tests.
+See the [wire contract documentation](../../recsys/contract/README.md) for reference examples
+and boundary checks.
 
-## Внешняя документация
+## Library documentation
 
-По поведению библиотек авторитетна их документация, а не этот файл.
+Consult the official documentation for library behavior:
 
 - [Zod](https://zod.dev/)
 - [TypeScript](https://www.typescriptlang.org/docs/)

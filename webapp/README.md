@@ -1,32 +1,34 @@
-# Webapp X5 Чекпоинт
+# X5 Checkpoint Webapp
 
-Единственный пользовательский интерфейс репозитория — мобильное браузерное демо на React 19, TypeScript и Vite. Авторизации, ролей, административной панели, отдельного публичного сайта, backend и базы данных в проекте нет.
+The repository's only user interface is a mobile browser demo built with React 19, TypeScript and Vite. It connects a collectible loyalty game to a local next-best-action recommender and CPA ad auction. The application and screenshots retain the original Russian interface used for the X5 case.
 
-## Что находится в интерфейсе
+## Demo features
 
-- копия главной страницы приложения «Пятёрочки» с переходом в профиль;
-- профиль с маскотом, уровнем, личной выгодой, коробкой и тремя вкладками;
-- два предмета, которые можно надеть на маскота: фартук пекаря и нож шефа;
-- случайная коробка и общий локальный инвентарь для наград и создания скидки;
-- четыре слота, семь рецептов и активный демо-купон со штрихкодом;
-- персональный челлендж, статические задания недели, титулы коллекций и рейтинг друзей по собранным наборам и предметам;
-- локальный обмен между синтетическими профилями;
-- «Демо-стенд» для тестовых чеков и экран «Для X5».
+- A recreation of the Pyaterochka app home screen with a profile entry point.
+- A profile with a mascot, level, private savings, reward box and three tabs.
+- Two wearable items: a baker's apron and a chef's knife.
+- Random box rewards and personal challenge rewards in one local inventory.
+- Four crafting slots, seven recipes and an active demo coupon with a barcode.
+- A personal challenge, static weekly tasks, collection titles and a friends ranking based on completed sets and collected items.
+- Local item trading between synthetic profiles.
+- A demo control panel for synthetic receipts and an X5 evaluation panel.
 
-Предмет из случайной коробки и награда персонального задания попадают в одну коллекцию и участвуют в одном крафте. Профили, инвентарь, одежда маскота, купон и служебные журналы сохраняются только в браузере.
+Box rewards and challenge rewards contribute to the same collection and discount crafting. Profiles, inventory, mascot outfits, coupons and event records persist only in the browser.
 
-## Запуск
+The current demo allows repeated box opening without waiting for login days, subject to the shared coupon fund. The three-day login counter and four-claims-per-28-days rules remain in the code, but box eligibility is bypassed by `DEMO_UNLIMITED_CHEST`. Each new item still reserves RUB 2.50; crafting four items transfers their reserves to one coupon capped at RUB 10. These are demo settings.
 
-Из корня репозитория:
+## Run locally
+
+From the repository root:
 
 ```bash
 bun install --frozen-lockfile
 bun --bun run --cwd webapp dev
 ```
 
-Обычно приложение доступно на [localhost:5173](http://localhost:5173). Персональные API работают только через Vite dev middleware. Если Ollama/Qwen недоступна, сервер возвращает валидный шаблон карточки.
+The app is usually available at [localhost:5173](http://localhost:5173). Python 3 is required for the local decision engine. Personalization APIs are available only through the Vite development middleware; `vite preview` serves the static build without these APIs. If Ollama/Qwen is unavailable or returns invalid copy, the engine uses a validated card template.
 
-## Команды
+## Checks
 
 ```bash
 bun run --cwd webapp test
@@ -36,15 +38,16 @@ bun run --cwd webapp build
 bun run --cwd webapp e2e:demo
 ```
 
-В webapp проходят 101 unit-тест и 20 Playwright-сценариев. Браузерные проверки покрывают единый путь от задания до коллекции и скидки, Ads, обмен, вкладку друзей, ошибку загрузки титула и повторную попытку.
+The browser suite covers the challenge-to-collection-to-discount journey, Ads allocation and billing, trading, the friends tab, collection-title loading failures and retries. See the [implementation status](../docs/project/poc-status.md) for validation scope.
 
-## Технические границы
+## Technical boundaries
 
-- состояние хранится в `localStorage` и не защищено от ручного изменения;
-- нет синхронизации между устройствами и производственного API;
-- EAN-13 генерируется локально и не зарегистрирован в POS;
-- тестовые профили, чеки, товары и рекламные кампании синтетические;
-- локальный Python вызывается фиксированным Vite middleware через contract v2;
-- learned RecSys оценивается offline и не обслуживает пользовательские запросы.
+- State lives in `localStorage` and can be edited manually.
+- There is no authentication, role system, administration panel, separate public website, production backend or database.
+- There is no cross-device synchronization or production API.
+- EAN-13 barcodes are generated locally and are not registered with a point-of-sale system.
+- Profiles, receipts, products and advertising campaigns are synthetic.
+- Vite middleware invokes Python with fixed arguments and exchanges versioned JSON under contract v2.
+- The learned recommender is evaluated offline; runtime decisions use rules.
 
-Общее описание и маршрут демонстрации: [README](../README.md).
+See the [root README](../README.md) for the project overview and demo walkthrough.

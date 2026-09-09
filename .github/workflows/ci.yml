@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   web:
-    name: webapp и контракты
+    name: Webapp and contracts
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,28 +21,28 @@ jobs:
         with:
           bun-version: 1.4.0
 
-      - name: Установить зависимости
+      - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Типы
+      - name: Type checking
         run: |
           bun run --cwd packages/contracts typecheck
           bun run --cwd webapp typecheck
 
-      - name: Линтер
+      - name: Lint
         run: bun run --cwd webapp lint
 
-      - name: Тесты контрактов
+      - name: Contract tests
         run: bun run --cwd packages/contracts test
 
-      - name: Тесты webapp
+      - name: Webapp tests
         run: bun run --cwd webapp test
 
-      - name: Сборка
+      - name: Build
         run: bun run --cwd webapp build
 
   engine:
-    name: движок решений
+    name: Decision engine
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -51,21 +51,21 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Тесты движка
+      - name: Engine tests
         run: python -m unittest discover -s recsys/engine/tests -t .
         env:
           PYTHONDONTWRITEBYTECODE: '1'
 
-      - name: Тесты независимой оценки
+      - name: Independent evaluation tests
         run: python -m unittest discover -s recsys/eval -p 'test_*.py'
         env:
           PYTHONDONTWRITEBYTECODE: '1'
 
-      - name: Контракт сценариев
+      - name: Scenario contract
         run: python recsys/validate.py
 
-      - name: Контракт текста карточки
+      - name: Card text contract
         run: python recsys/validate_explanation.py
 
-      - name: Мутационные проверки текста
+      - name: Card mutation checks
         run: python recsys/eval_creatives.py

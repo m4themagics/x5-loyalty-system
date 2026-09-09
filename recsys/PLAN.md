@@ -1,752 +1,460 @@
-# План RecSys, Ads, экономики и антифрода
+# RecSys, Ads, economics, and antifraud roadmap
 
-Зона @m4themagics. Канонический продукт — [описание проекта](../docs/project/project-description.md);
-последовательность работы команды — [общий план](../docs/project/plan.md).
-Фактическое содержимое этой зоны и команды проверок — [README.md](README.md).
+Area owned by @m4themagics. The canonical product is defined in the
+[project description](../docs/project/project-description.md); team sequencing is in the
+[shared plan](../docs/project/plan.md). Current artifacts and validation commands are in
+[README.md](README.md).
 
-**Статус:** локально реализованы rules-based движок следующего задания, проверка события,
-Qwen/fallback-карточка, quality-adjusted first-price CPA-аукцион с браузерным ledger,
-симулятор аудитории и политик, offline learned RecSys, простой fraud scorer и обмен дубликатами.
-Промышленная выдача, защищённый серверный реестр, реальные bidder accounts и обучение на логах
-X5 не реализованы. Ниже отделены работающий PoC и следующий производственный этап.
+**Status:** the local PoC implements a rules-based next-challenge engine, event qualification,
+Qwen/template cards, a quality-adjusted first-price CPA auction with a browser ledger,
+audience and policy simulators, an offline learned RecSys, a simple fraud scorer, and item
+exchange. Production fulfillment, a protected server ledger, real bidder accounts, and training
+on X5 logs are not implemented. The sections below distinguish the working PoC from the next
+production stage.
 
-План фиксирует продуктовые правила и границы модулей, достаточные для отдельных задач команды.
-Численные пороги, которых нет в согласованном решении, ниже помечены как **параметры перед
-запуском**: их задают в версии политики на основании данных и бюджета, а не придумывают
-в момент выдачи задания. Отсутствие обязательного параметра означает отказ до обещания.
+This roadmap defines product rules and module boundaries sufficient for separate team tasks.
+Numerical thresholds absent from the agreed product decision are marked as **pre-launch
+parameters**. They must be set in a policy version from data and budgets, rather than invented
+when a challenge is issued. A missing required parameter prevents a promise.
 
-## 1. Что персонализируем
+## 1. What is personalized
 
-Сохраняем игру коллег: **коробка → цифровой предмет → инвентарь → четыре предмета → собственная
-скидка**. Задача RecSys — выбрать одно следующее выполнимое действие, которое приближает
-пользователя к нужному рецепту и создаёт ожидаемую дополнительную покупочную ценность.
+Preserve the team's existing game: **reward box → digital item → inventory → four items → a
+crafted discount**. RecSys selects one achievable next action that helps the user complete a
+relevant recipe and is expected to create incremental purchase value.
 
-Целевой цикл:
+Target cycle:
 
-1. По истории покупок, ритму визитов и инвентарю выбираем один челлендж и полезный предмет.
-2. Проверяем ограничения, товарное наличие, риск и экономику; резервируем обязательства.
-3. Показываем точное задание, срок и награду. Первое допустимое задание обещает бесплатный
-   физический товар и цифровой предмет.
-4. Подтверждаем квалифицирующее событие; выдаём обещанное один раз.
-5. Пользователь копит предметы, обменивается дубликатами и использует четыре копии для обычной
-   скидки либо конкретного бесплатного SKU по активной обеспеченной цели рецепта.
+1. Select one challenge and useful item from purchase history, visit cadence, and inventory.
+2. Check constraints, stock, risk, and economics; reserve the obligations.
+3. Display the exact challenge, deadline, and reward. The first eligible challenge promises
+   a free physical product and a digital item.
+4. Verify the qualifying event and grant each promised reward once.
+5. The user collects items, exchanges duplicates, and spends four instances on an ordinary
+   discount or a specific free SKU under an active, funded recipe goal.
 
-Показанное обещание не заменяется случайным выпадением. Бесплатный товар гарантирован после
-выполнения и подтверждения уже показанного допустимого первого задания; сам вход в приложение
-не создаёт такого обещания. Первое показанное задание заканчивается после одного обычного
-допустимого покупочного дня; оно не требует нескольких покупочных дней или большого обязательного
-чека. Персональное окно выполнения фиксируется до обещания; общего ограничения в семь дней нет.
-Удержание для проверки имеет понятный статус и срок разбирательства:
-подтверждённое выполнение сохраняет право на обещанную награду.
+A displayed promise cannot be replaced with a random drop. The free product is guaranteed after
+completion and verification of an already displayed, eligible first challenge; opening the app
+does not itself create that promise. The first challenge can be completed in one ordinary
+eligible purchase day. It does not require several purchase days or a large mandatory basket.
+The personalized completion window is fixed before the promise; seven days is not a universal
+limit. A review hold has a clear status and resolution deadline: verified completion preserves
+the right to the promised reward.
 
-В повторных циклах конкретный бесплатный товар становится видимой целью обеспеченного
-рецепта. Четыре копии расходуются на один результат: обычную скидку либо обещанный SKU.
-Наличие, частоту и финансирование проверяем до обещания; товар не выдаётся за каждое задание.
-`no_action` применяется до нового обещания и не отменяет ранее выданное или зарезервированное.
+In repeat cycles, a specific free product becomes the visible goal of a funded recipe. Four
+instances produce one result: an ordinary discount or the promised SKU. Stock, frequency, and
+funding are checked before the promise; a product is not granted for every challenge.
+`no_action` applies before a new promise and does not cancel existing grants or reservations.
 
-Новый пользователь начинает с пустым инвентарём. После первого задания у него один полезный
-цифровой предмет и бесплатный физический товар; четыре предмета и готовая скидка ему ещё
-не обещаны. Первый физический товар имеет самостоятельную ценность. Для короткого демо
-завершения рецепта отдельно используем явно подготовленный профиль с тремя ранее полученными
-предметами. Это другой стартовый сценарий, не скрытый подарок каждому новичку.
+A new user starts with an empty inventory. The first challenge grants one useful digital item
+and a free physical product; it does not promise four items or an immediately craftable discount.
+The first physical product has value on its own. A short recipe-completion demo uses a separate,
+explicitly seeded profile with three previously granted items. That is a different starting
+scenario, not an undisclosed gift to every newcomer.
 
-## 2. Кандидаты и данные
+## 2. Candidates and data
 
-**Тип задачи — next-best-action recommendation.** Кандидат связывает допустимое задание,
-окно выполнения, недостающий предмет рецепта, пакет награды и возможный источник финансирования.
-Небольшой каталог оцениваем целиком; two-tower retrieval и нейронный retrieval здесь не нужны.
+**The task is next-best-action recommendation.** A candidate combines an eligible challenge,
+completion window, missing recipe item, reward package, and possible funding source. The small
+catalog is scored in full; two-tower or neural retrieval is unnecessary at this scale.
 
-| Группа | Нужные признаки / данные | Для чего |
+| Group | Required features / data | Purpose |
 | --- | --- | --- |
-| Покупки | Категории, давность и число покупочных дней, интервалы между визитами | Выбрать знакомое действие и выполнимое окно |
-| Игра | Инвентарь, дубликаты, недостающие предметы, ближайшие рецепты | Дать понятный прогресс к желаемой скидке |
-| SKU | Закупочная стоимость, цена, маржа после обычных промо и до новой игровой скидки, наличие, безопасный класс | Проверить полную стоимость и доступность награды |
-| Кампания | Ставка за событие, отдельная субсидия товара, флайт, бюджет, частотный лимит | Допустить спонсора и рассчитать финансирование |
-| Риск | Уникальность чека, скорость, возвраты, связи аккаунтов и обменов | Разрешить, проверить, удержать или отклонить |
-| Контекст решения | Дата, версия политики, доступные кандидаты, экспериментальное назначение | Воспроизвести выбор и корректно его оценить |
+| Purchases | Categories, recency and number of purchase days, intervals between visits | Select a familiar action and an achievable window |
+| Game | Inventory, duplicates, missing items, nearby recipes | Provide clear progress toward a desired discount |
+| SKU | Procurement cost, price, margin after ordinary promotions but before the new game discount, stock, permitted product class | Check full reward cost and availability |
+| Campaign | Event bid, separate product subsidy, flight, budget, frequency cap | Admit a sponsor and calculate funding |
+| Risk | Receipt uniqueness, velocity, returns, account and exchange links | Allow, review, hold, or reject |
+| Decision context | Date, policy version, available candidates, experimental assignment | Reproduce the selection and evaluate it correctly |
 
-Отсутствие покупок категории — неопределённость. Ограниченное исследование новой категории
-допустимо при близости к знакомым категориям, положительной ожидаемой экономике и безопасном
-товарном классе. Оно не служит доказательством интереса или будущей привычки.
+No purchase history in a category means uncertainty. Bounded exploration of a new category is
+permitted when it is related to familiar categories, has positive expected economics, and belongs
+to a safe product class. This does not establish interest or future habit formation.
 
-Алкоголь, табак, никотин и другие чувствительные категории исключены из PoC. Любая будущая
-проработка требует отдельной правовой оценки, возрастной проверки и политики ответственного
-продвижения; она не входит в этот план реализации.
+Alcohol, tobacco, nicotine, and other sensitive categories are excluded from the PoC. Future
+consideration requires a separate legal assessment, age verification, and responsible-promotion
+policy; it is outside this implementation plan.
 
-Игровой каталог остаётся в существующих модулях игры. Будущее подключение использует его
-идентификаторы и правила рецептов; второй независимый набор предметов в `recsys` не создаётся.
+The game catalog stays in the existing game modules. Integration uses its identifiers and
+recipe rules; `recsys` must not create a second independent item catalog.
 
-### 2.1. Связь кандидата с существующей игрой
+### 2.1. Connecting candidates to the existing game
 
-Источник предметов — [profile-items.ts](../webapp/src/features/home/profile-items.ts),
-рецептов и расчёта — [profile-discount-crafting.ts](../webapp/src/features/home/profile-discount-crafting.ts).
-В текущем наборе 24 предмета, редкости `common` / `epic` / `legendary` и семь `recipeId`:
-`breakfast`, `fresh`, `movie`, `asian`, `chef`, `dessert`, `pantry`.
-Полный состав и правила — [каталог предметов](../docs/project/item-pool.md).
+Items come from [profile-items.ts](../webapp/src/features/home/profile-items.ts); recipes and
+calculations come from
+[profile-discount-crafting.ts](../webapp/src/features/home/profile-discount-crafting.ts).
+The current catalog contains 24 items, rarities `common` / `epic` / `legendary`, and seven
+`recipeId` values: `breakfast`, `fresh`, `movie`, `asian`, `chef`, `dessert`, and `pantry`.
+Full membership and rules are in the [item catalog](../docs/project/item-pool.md).
 
-Рецепт получает бонус за разные подходящие `itemId`, а четыре ячейки требуют четыре доступные
-копии: два экземпляра одного предмета занимают две ячейки, но дают одно тематическое совпадение.
-Поэтому признаки содержат и число копий, и число разных совпадений. Категория цифрового
-предмета — игровая метка; она сама по себе не задаёт перечень физических SKU для оплаты скидкой.
-Разрешённый ассортимент будущего купона определяется отдельно до обещания.
+A recipe earns its bonus from distinct matching `itemId` values, while the four slots require
+four available instances: two copies of one item occupy two slots but provide one thematic match.
+Features therefore include both instance counts and distinct matches. A digital item's category
+is a game label; it does not itself define which physical SKUs qualify for a discount. The future
+coupon's eligible assortment is defined separately before a promise is shown.
 
-При большом инвентаре считаем достижимый результат по допустимым комбинациям **четырёх**
-экземпляров через те же правила preview, а не складываем все совпадения инвентаря в одну
-скидку. Зарезервированные и удержанные экземпляры в комбинации не входят. При менее четырёх
-доступных копиях показываем прогресс набора, а не процент уже доступного купона.
+For a large inventory, calculate achievable outcomes over valid combinations of **four** instances
+using the same preview rules, rather than aggregating every inventory match into one discount.
+Reserved and held instances are excluded. With fewer than four available instances, show set
+progress rather than the percentage of an already available coupon.
 
-Будущая запись кандидата должна содержать:
+A future candidate record must include:
 
-| Блок кандидата | Поля / правило |
+| Candidate block | Fields / rule |
 | --- | --- |
-| Воспроизведение | `candidate_id`, `policy_version`, версия игрового каталога, время снимка истории/инвентаря/наличия; это предлагаемые будущие поля |
-| Действие | Предикат допустимой покупки, разрешённые категории/SKU, число отдельных покупочных дней, окно выполнения; для первого задания достаточно одного дня |
-| Игровая цель | Существующий `recipeId`, существующий обещанный `itemId`, количество 1, редкость из каталога; текущие разные совпадения и прогресс после выдачи |
-| Первая награда | Точный физический `sku_id`, количество 1, условия получения, стоимость, наличие и подтверждённый источник финансирования; вместе с цифровым предметом |
-| Следующая награда | Цифровой предмет для выбранной цели; отдельный конкретный SKU за рецепт при обеспечении до показа, либо обычная скидка. Цель не является подарком за каждое задание |
-| Экономика | Горизонт, источник каждой оценки маржи, ожидаемая стоимость, максимальные обязательства и бюджеты-владельцы |
-| Спонсор | Нет спонсора либо совместимые кампании с исходными ставками, отдельными субсидиями и договорным событием |
-| Допуск | Релевантность, выполнимость, риск, наличие, частотные ограничения и причины исключения |
+| Reproducibility | `candidate_id`, `policy_version`, game catalog version, and timestamps of history/inventory/stock snapshots; these are proposed future fields |
+| Action | Eligible purchase predicate, allowed categories/SKUs, number of distinct purchase days, and completion window; the first challenge requires only one day |
+| Game goal | Existing `recipeId`, existing promised `itemId`, quantity 1, catalog rarity, current distinct matches, and progress after the grant |
+| First reward | Exact physical `sku_id`, quantity 1, fulfillment terms, cost, stock, and confirmed funding source, alongside the digital item |
+| Later reward | A digital item for the selected goal; a separate specific SKU for a recipe if funded before display, or an ordinary discount. A goal is not a gift for every challenge |
+| Economics | Horizon, source of each margin estimate, expected cost, maximum obligations, and owning budgets |
+| Sponsor | No sponsor, or compatible campaigns with original bids, separate subsidies, and contractual events |
+| Eligibility | Relevance, feasibility, risk, stock, frequency constraints, and exclusion reasons |
 
-RecSys предлагает полезный следующий предмет и рецепт, но пользователь по-прежнему сам
-выбирает четыре предмета для скидки. Выбор цели не должен превращаться в обязательство покупать
-все категории рецепта. В дальнейшем адаптер экспортирует один версионированный игровой каталог
-для Python и сервера; правила создания скидки остаются у одного владельца и проверяются
-на одинаковых примерах на границе интеграции.
+RecSys recommends a useful next item and recipe, but the user still chooses the four items for
+a discount. Choosing a goal must not require buying every category represented in the recipe.
+A future adapter exports one versioned game catalog for Python and the server; discount rules
+retain a single owner and are checked against the same examples at the integration boundary.
 
-**Квалификация демо:** до показа фиксируются допустимые SKU или категория, минимальное количество
-оплаченных единиц и срок. Синтетический пример — одна оплаченная единица указанной категории
-за семь дней после показа. Бесплатные строки, повтор чека/события и другая категория условие
-не закрывают. Покупочный день учитывается один раз; возврат передаётся в отдельную проверку.
-Экономический допуск не следует автоматически из суммы чека или факта выполнения условия.
-Это будущий контракт задания, а не новые поля действующей JSON-схемы.
+**Demo qualification:** before display, fix the eligible SKUs or category, minimum number of paid
+units, and deadline. The synthetic example requires one paid unit from the specified category
+within seven days of display. Free lines, duplicate receipts/events, and other categories do not
+qualify. A purchase day counts once; a return goes to separate review. Economic eligibility does
+not follow automatically from receipt total or challenge completion. These requirements describe
+the challenge contract, not new fields in the legacy allocator JSON schema.
 
-### 2.2. Конкретный товар как цель повторного цикла
+### 2.2. A specific product as a repeat-cycle goal
 
-Одна активная персональная цель связывает существующий `recipeId` и конкретный SKU/упаковку,
-количество, срок завершения, место/срок получения, версию условий и полный резерв. Имена
-`goal_id`, `goal_snapshot` и `result_kind` ниже — будущий контракт, не поля текущей схемы.
-RecSys рекомендует доступную цель и следующее посильное действие к выбранному результату;
-выданное обещание не меняется при новом ранжировании. Число недостающих предметов и реальная
-выполнимость учитывают уже имеющиеся копии и допустимый обмен, а не предполагаемые новые визиты.
+One active personal goal binds an existing `recipeId` to a specific SKU/package, quantity,
+completion deadline, collection location/window, terms version, and full reserve. Names such as
+`goal_id`, `goal_snapshot`, and `result_kind` below belong to a future contract, not the current
+schema. RecSys recommends an available goal and an achievable next action toward the selected
+result; reranking cannot change an existing promise. Missing-item counts and feasibility account
+for owned instances and eligible exchanges, rather than assumed new visits.
 
-Для закрытия нужны четыре доступных экземпляра, для которых существующий алгоритм выбирает
-целевой тематический рецепт с бонусом. Три разных совпадения могут дать тематический рецепт;
-четыре одинаковые копии — нет. Для `breakfast` тостер, кувшин, термокружка и сковорода могут
-дать обычные 8% либо обещанный товар активной цели. Четыре экземпляра списываются только один
-раз; одновременно выдать на них купон и товар нельзя. Первый подарок по заданию — отдельная
-выдача без расхода четырёх предметов; одновременные обещания требуют двух физических резервов.
+Completion requires four available instances for which the existing algorithm selects the target
+thematic recipe with a bonus. Three distinct matches may produce a thematic recipe; four identical
+instances do not. For `breakfast`, the toaster, pitcher, travel mug, and pan can yield the ordinary
+8% discount or the promised product under an active goal. The four instances are spent only once;
+they cannot produce both a coupon and a product. The first challenge gift is a separate grant
+without spending four items; simultaneous promises require two physical reserves.
 
-Финансирование и наличие проверяются до показа конкретного обещания. Цель не финансируется
-гипотетическим выигрышем будущего аукциона. Ads остаётся одним плейсментом задания; получение
-подарка само по себе не становится вторым CPA-событием. Модель вероятности бесплатного
-получения не заменяет оценку дополнительности последующих платных покупок.
+Funding and stock are verified before displaying the specific promise. A goal is not funded by
+a hypothetical future auction win. Ads remains one challenge placement; collecting a gift does
+not itself become a second CPA event. Predicting free-product collection does not replace
+estimating incremental subsequent paid purchases.
 
-## 3. Runtime baseline и offline обучаемая версия
+## 3. Runtime baseline and offline learned policy
 
-### Сейчас и до экспериментальных логов
+### Current baseline and the stage before experimental logs
 
-Начинаем с rules-based baseline: категория знакома, окно соответствует ритму покупок,
-предмет нужен для рецепта, экономика допустима, лимиты соблюдены. Правила возвращают объяснение
-и причину отказа. Прогноз эффекта на этом этапе является явно заданным допущением симуляции.
+Start with a rules-based baseline: a familiar category, a window matching purchase cadence, an
+item needed for a recipe, eligible economics, and satisfied limits. Rules return explanations
+and refusal reasons. Effect estimates at this stage are explicit simulation assumptions.
 
-Воспроизводимая первая политика имеет следующий порядок:
+The reproducible initial policy follows this sequence:
 
-1. Собрать все пары «допустимое действие + полезный предмет» из существующего каталога,
-   применив ограничения первого/последующих циклов. Для неполной истории использовать
-   сильное фиксированное задание в доступной безопасной категории или `no_action`.
-2. Отсечь отсутствующие SKU, запрещённые классы, нарушенные лимиты, риск `hold`/`reject`,
-   неисполнимое окно и необеспеченное обещание. До завершения дополнительной проверки
-   новый финансовый результат не обещается. Уже показанные задания проходят свой жизненный цикл.
-3. Проверить пороги релевантности и выполнимости, положительную консервативную экономику
-   и, для Ads, минимальный ожидаемый прирост. Значения порогов, допустимый интервал посещений,
-   доля ограниченного исследования и горизонт экономики — параметры перед запуском.
-4. Упорядочить оставшиеся лексикографически: явно выбранный пользователем рецепт, затем
-   знакомая категория перед исследуемой, достижимый тематический бонус после выдачи,
-   прирост разных совпадений, меньше необходимых покупочных дней, выше консервативная
-   ожидаемая маржа, затем стабильный `candidate_id`. При отсутствии выбранного рецепта
-   первый признак одинаков для всех. У новичка нет искусственного бонуса «почти собран».
-5. Сохранить весь набор допущенных/отклонённых кандидатов и причины. При одинаковом снимке
-   входа и версии политики результат одинаков. `action_given_serve` для выбранного
-   детерминированного действия равен 1; рандомизация исследования требует отдельного логирования.
+1. Generate all pairs of eligible actions and useful items from the existing catalog, applying
+   first/subsequent-cycle constraints. With incomplete history, use a strong fixed challenge
+   in an available safe category or `no_action`.
+2. Exclude unavailable SKUs, prohibited classes, exceeded limits, `hold`/`reject` risk, infeasible
+   windows, and unfunded promises. Do not promise a new financial outcome while additional review
+   is pending. Existing displayed challenges follow their own lifecycle.
+3. Check relevance and feasibility thresholds, positive conservative economics, and minimum
+   expected increment for Ads. Thresholds, allowed visit intervals, the bounded-exploration share,
+   and the economic horizon are pre-launch parameters.
+4. Sort remaining candidates lexicographically: explicit user-selected recipe; familiar before
+   exploratory category; achievable thematic bonus after the grant; additional distinct matches;
+   fewer required purchase days; higher conservative expected margin; stable `candidate_id`.
+   Without a selected recipe, the first feature is equal for all candidates. New users receive
+   no artificial “almost complete” bonus.
+5. Save all admitted/rejected candidates and reasons. Identical input snapshots and policy versions
+   produce identical results. `action_given_serve` is 1 for the selected deterministic action;
+   randomized exploration requires separate logging.
 
-Это порядок правил, не обученная вероятность интереса. Проверка 70% релевантности на
-размеченных профилях ниже оценивает выбранное действие, а не доказывает прогноз uplift.
+This is an ordering of rules, not a learned interest probability. The 70% labeled-profile
+relevance check assesses selected actions; it does not establish uplift prediction quality.
 
-**Разбор подготовленного профиля:** в инвентаре по одной копии `club-toaster`, `milk-pitcher`,
-`travel-mug`; пользователь выбирает `breakfast` и покупает знакомые продукты для завтрака.
-Кандидат с обещанным `breakfast-pan` добавляет четвёртое разное совпадение. После выдачи
-пользователь может собрать четыре common-предмета: 4 балла редкости → 5% базы + 3 п. п.
-тематического бонуса = 8%. Кандидат с `snack-bowl` не завершает этот рецепт и уступает при
-остальных равных. Если у первого кандидата нет товара, бюджета или допустимой экономики,
-он исключается до ранжирования: прогресс рецепта не обходит финансовый запрет.
+**Seeded-profile example:** inventory contains one each of `club-toaster`, `milk-pitcher`, and
+`travel-mug`; the user selects `breakfast` and buys familiar breakfast categories. A candidate
+promising `breakfast-pan` adds a fourth distinct match. After the grant, the user can craft from
+four common items: 4 rarity points → 5% base + 3 percentage points of thematic bonus = 8%.
+A `snack-bowl` candidate does not complete this recipe and ranks lower, other factors equal.
+If the first candidate lacks stock, budget, or eligible economics, it is excluded before ranking:
+recipe progress cannot bypass a financial restriction.
 
-У новичка тот же `breakfast-pan` даёт один предмет, а не скидку 8%. Демо подготовки инвентаря
-и реальное начисление фиксируются как разные источники; подготовка не становится покупкой,
-рекламным событием или данными обучения.
+For a new user, the same `breakfast-pan` grants one item, not an 8% discount. Demo inventory
+seeding and earned grants have distinct sources; seeding is not a purchase, advertising event,
+or training observation.
 
-Продуктовый Q&A допускает решение без ML внутри продукта. Для Demo Day важнее воспроизводимый
-сценарий и корректная проверка, чем название модели. Использование ИИ командой подтверждаем
-реальными примерами инструментов в разработке и исследовании; offline-модель называем offline,
-а не production serving.
+The product Q&A permits a product without ML. A reproducible flow and sound evaluation matter
+more for the demo than a model name. The team's AI use must be supported by actual development
+and research examples; describe an offline model as offline, not production serving.
 
-### Реализованный offline-контур и путь к реальным логам
+### Implemented offline workflow and the path to real logs
 
-В PoC реализован воспроизводимый standard-library вариант на рандомизированных синтетических
-логах; NumPy и scikit-learn не требуются. Он повторяет предполагаемый производственный контракт,
-но не обслуживает runtime и не заменяет экспериментальные данные X5.
+The PoC implements a reproducible Python standard-library version on randomized synthetic logs;
+NumPy and scikit-learn are not required. It reflects the proposed production contract but does
+not serve runtime or replace experimental X5 data.
 
-- Две отдельные `LogisticRegression`: вероятность квалифицированного покупочного дня
-  при показе задания и при отсутствии этого задания — T-learner.
-- Разность вероятностей даёт оценку дополнительного эффекта задания.
-- `IsotonicRegression` калибрует разность прогнозов на отдельном calibration split.
-  При малом объёме данных сохраняем более простой baseline; калибровка не создаёт данные.
-- Отдельная `LogisticRegression` оценивает вероятность подтверждённого рекламного события.
-  Она не заменяет модель дополнительного визита: событие оплаты определяется договором кампании.
+- Two separate `LogisticRegression` models estimate the probability of a qualifying purchase
+  day with and without the displayed challenge: a T-learner.
+- Their probability difference estimates the challenge's incremental effect.
+- `IsotonicRegression` calibrates prediction differences on a separate calibration split.
+  With limited data, retain the simpler baseline; calibration does not create evidence.
+- A separate `LogisticRegression` estimates the probability of a verified advertising event.
+  It does not replace the incremental-visit model: the campaign contract defines billing.
 
-В offline-артефакте эти величины вычисляются моделями; legacy allocator JSON по-прежнему хранит
-часть значений вручную. Перед production serving потребуется общий versioned feature/model contract.
+Models compute these quantities in the offline artifact; legacy allocator JSON still stores some
+values manually. Production serving requires a shared versioned feature/model contract.
 
-Модели учатся на сопоставимых предрешенческих признаках. Покупки после назначения, факт получения
-приза и будущий инвентарь не попадают во вход модели. Деление данных — по пользователю и времени,
-с отдельными обучающей, калибровочной и итоговой выборками и дозревшими окнами конверсии.
+Models use comparable pre-decision features. Post-assignment purchases, prize collection, and
+future inventory must not enter model inputs. The production data split must separate users and
+time, with distinct training, calibration, and final evaluation sets and mature conversion windows.
 
-Один бинарный treatment поддерживает оценку заданного вида задания. Чтобы сравнивать несколько
-типов действий, нужны соответствующие рандомизированные назначения и покрытие кандидатов:
-нельзя обучить одну пару моделей на смеси несопоставимых заданий и объявить её причинным
-ранжировщиком каждого задания.
+One binary treatment supports evaluating one specified challenge type. Comparing multiple action
+types requires corresponding randomized assignments and candidate coverage: a single model pair
+trained on a mixture of incomparable challenges cannot be called a causal ranker for each action.
 
-Вероятности проверяем reliability curve и Brier score. Эффект проверяем отдельно:
-по бинам прогнозируемого uplift сравниваем фактическую разность долей в рандомизированных группах.
-Хорошая калибровка двух вероятностей сама по себе не доказывает точность индивидуального uplift.
-Повторную платную покупку категории сначала считаем метрикой исхода, отдельная модель необязательна.
+Assess probabilities with reliability curves and Brier scores. Assess effects separately: within
+predicted-uplift bins, compare observed rate differences between randomized groups. Well-calibrated
+component probabilities do not themselves establish accurate individual uplift. Initially, use
+repeat paid category purchases as an outcome metric; a separate prediction model is optional.
 
-Одна обучающая строка — возможность назначения заданного действия: предрешенческий снимок,
-идентификатор экспериментального назначения, назначенный вариант, фактический показ и
-исход за заранее фиксированное окно. Контроль получает то же определение квалифицированного
-покупочного дня, даже если задания на экране нет. Для оценивания эффекта назначения сохраняем
-всех назначенных; нельзя размечать treatment только по принявшим или выполнившим задание.
-Повторные возможности одного человека учитываются как зависимые; контроль одного действия
-не смешивается молча с показом другого стимулирующего задания.
+One training row represents an opportunity to assign a specified action: a pre-decision snapshot,
+experiment assignment ID, assigned variant, actual display, and outcome over a predefined window.
+Control uses the same definition of a qualifying purchase day even without a displayed challenge.
+Keep everyone assigned when estimating assignment effects; treatment labels must not include only
+people who accepted or completed a challenge. Repeated opportunities for one person are dependent;
+control for one action must not silently include another incentivized challenge.
 
-Метка для `p_billable` — финально подтверждённое договорное событие с учётом дедупликации
-и возвратов. Это прогноз оплачиваемости, а не вероятность дополнительной покупки: человек
-может с высокой вероятностью купить бренд и без нашего показа. Прошлая история без журналов
-назначения/показа позволяет строить признаки, но не обучить причинный эффект этих заданий.
+The `p_billable` label is a finally verified contractual event after deduplication and returns.
+It predicts billability, not incremental purchase probability: someone may be likely to buy the
+brand without display. Purchase history without assignment/display logs can supply features,
+but cannot train the causal effect of these challenges.
 
-## 4. Один плейсмент и first-price CPA-аукцион
+## 4. One placement and a first-price CPA auction
 
-**Локально реализована ограниченная версия закрытого quality-adjusted first-price CPA-аукциона.**
-Бренды подают ставки за заранее определённое подтверждённое событие.
-На пользователе выбирается один подходящий челлендж и максимум один спонсор.
+**A bounded local version of the closed quality-adjusted first-price CPA auction is implemented.**
+Brands submit bids for a predefined verified event. Each user receives one suitable challenge
+and at most one sponsor.
 
-RecSys формирует допустимые действия и органический выбор по правилам раздела 3.
-Ads оценивает пары «допустимое действие + совместимая кампания»; он может выбрать другую
-допустимую пару только внутри тех же пользовательских, финансовых и риск-ограничений.
-Победитель определяет единственный показанный челлендж. При `no_fill` первый цикл возвращает
-`no_action`, потому что его физический подарок требует спонсора; органический вариант доступен
-для последующего цифрового цикла. Второй параллельный слот или конкурирующее обещание не создаётся.
+RecSys produces eligible actions and an organic selection under section 3. Ads evaluates
+eligible-action/compatible-campaign pairs and may choose a different pair only within the same
+user, financial, and risk constraints. The winner determines the single displayed challenge.
+With `no_fill`, the first cycle returns `no_action` because its physical gift needs a sponsor;
+an organic alternative is available in subsequent digital cycles. No second parallel slot or
+competing promise is created.
 
-1. Отфильтровать кампании по релевантности задания, наличию SKU, допустимому товарному классу,
-   частотному лимиту, риску, флайту, бюджетам и минимальному ожидаемому приросту.
-2. Проверить положительную ожидаемую экономику без искусственной прибавки от pacing.
-3. Оценить оставшихся по ожидаемой оплате бренда, дополнительной марже X5, непокрытым расходам
-   на награду и темпу расходования бюджета.
-4. Зафиксировать победителя, исходную ставку, событие оплаты и резервы до показа.
-5. При подтверждённом квалифицирующем событии списать **собственную ставку победителя** один раз.
-   Показ, открытие коробки или неподтверждённый чек сами по себе не являются оплатой.
-6. В первом цикле без рекламного победителя не показывать физический подарок и вернуть
-   `no_action`; после первого подарка допустимо органическое цифровое задание. Если полезного
-   задания с допустимой экономикой нет вообще — `no_action`.
+1. Filter campaigns by challenge relevance, SKU stock, permitted product class, frequency cap,
+   risk, flight, budgets, and minimum expected increment.
+2. Require positive expected economics without an artificial pacing contribution.
+3. Score remaining campaigns by expected brand payment, incremental X5 margin, uncovered reward
+   costs, and budget pacing.
+4. Fix the winner, original bid, billable event, and reserves before display.
+5. After a verified qualifying event, charge **the winner's own bid** once. An impression, box
+   opening, or unverified receipt is not itself billable.
+6. In the first cycle, return `no_action` without displaying a physical gift if no advertiser
+   wins; after the first gift, an organic digital challenge is allowed. If no useful challenge
+   has eligible economics, return `no_action`.
 
-Упрощённая формула действующего локального ранжирования:
+Simplified form of local ranking:
 
 ```text
-ожидаемая оплата бренда = вероятность подтверждённого события × исходная ставка
+expected brand payment = probability of a verified event × original bid
 
-приоритет = pacing × ожидаемая оплата бренда
-          + ожидаемая дополнительная маржа X5
-          − непокрытая стоимость награды
-          − ожидаемая стоимость скидки
-          − ожидаемые потери от фрода
-          − операционные расходы
+priority = pacing × expected brand payment
+         + expected incremental X5 margin
+         − uncovered reward cost
+         − expected discount cost
+         − expected fraud losses
+         − operating costs
 ```
 
-Pacing управляет приоритетом кампании, не меняет договорную цену и не делает невыгодного
-кандидата выгодным. Проверка экономики использует реальные денежные величины без pacing.
-`bid_per_qualified_visit` задаёт рекламодатель; ставка не предсказывается моделью.
-Существующий `effective_bid` — поле старых сценариев, его нельзя использовать как новую
-first-price цену списания.
+Pacing controls campaign priority, does not change the contractual price, and does not make an
+unprofitable candidate profitable. The economics gate uses monetary values without pacing.
+Advertisers supply `bid_per_qualified_visit`; a model does not predict their bids.
+The existing `effective_bid` belongs to legacy scenarios and must not become the first-price
+billing amount.
 
-Квалифицирующее событие фиксируется в условиях кампании: например, подтверждённый отдельный
-покупочный день, соответствующий заданию. Бесплатная выдача SKU и оплачиваемое брендом событие
-учитываются раздельно, даже если относятся к одному прохождению. Возвраты и отмены обрабатываются
-по заранее заданному правилу окончательного подтверждения / корректировки.
+Campaign terms fix the qualifying event, such as a verified distinct purchase day satisfying the
+challenge. Free SKU fulfillment and the brand's billable event are recorded separately even when
+they belong to the same journey. Returns and cancellations follow a predefined final-verification
+and adjustment rule.
 
-### 4.1. Что именно оплачивается
+### 4.1. Exactly what is billed
 
-До запуска у каждой кампании фиксируются тип события (отдельный покупочный день или покупка
-заданного бренда/SKU), допустимые магазины и товары, окно от показанного задания, часовой пояс
-покупочного дня, правило исключения возвратов, срок окончательного подтверждения и ставка.
-Для первого контракта разрешено максимум одно CPA-списание на выданное задание. Бесплатная
-награда не засчитывается как оплаченная покупка бренда; несколько чеков одного дня не создают
-несколько покупочных дней. Параметры окна, срок проверки и часовой пояс задаются до запуска.
+Before launch, each campaign fixes its event type (distinct purchase day or specified brand/SKU
+purchase), eligible stores and products, attribution window from challenge display, purchase-day
+time zone, return-exclusion rule, final-verification deadline, and bid. The first contract permits
+at most one CPA charge per issued challenge. A free reward does not count as a paid brand purchase;
+multiple receipts in one day do not create multiple purchase days. The window, review deadline,
+and time zone are pre-launch parameters.
 
-Запись события связывает `campaign_id`, `challenge_id`, канонический `receipt_id` и
-квалифицирующее условие. Первая допустимая подтверждённая покупка закрывает обязательство;
-один чек не может заново закрыть другое назначение того же события. Повтор доставки сообщения
-возвращает прежний результат. Биллинг списывает исходную ставку, даже если при ранжировании
-использовались калиброванная вероятность, pacing или более высокая оценка маржи.
+An event links `campaign_id`, `challenge_id`, canonical `receipt_id`, and the qualifying condition.
+The first eligible verified purchase fulfills the obligation; one receipt cannot fulfill another
+assignment of the same event again. Message redelivery returns the existing result. Billing uses
+the original bid even if ranking used calibrated probabilities, pacing, or a higher margin estimate.
 
-После возврата квалификацию пересчитывают по оставшимся строкам покупки. Если условие
-сохранилось, частичный возврат не отменяет CPA-событие. При утрате условия до окончательного
-подтверждения ожидающее списание отменяется с освобождением CPA-резерва; после списания
-создаётся отдельная однократная кредитовая корректировка на исходную сумму.
-Повтор возврата не даёт второй возврат денег. Журнал и первоначальное списание
-не переписываются. Условия субсидии товара и уже заработанной пользовательской награды
-обрабатываются раздельно; корректировка рекламного платежа не отменяет награду автоматически.
+After a return, recompute qualification from remaining receipt lines. If the condition still
+holds, a partial return does not cancel the CPA event. If it no longer holds before final
+verification, cancel the pending charge and release the CPA reserve. After settlement, create
+a separate one-time credit adjustment for the original amount. Replayed returns do not refund
+twice. Do not rewrite the ledger or original charge. Product subsidy terms and already earned user
+rewards are handled separately; an advertising-payment adjustment does not automatically cancel
+a reward.
 
-Объём расходования рассчитывается по фактическим списаниям и полным открытым резервам,
-а целевой темп — по флайту и расписанию кампании. Конкретная функция pacing, границы множителя
-и правило высвобождения скорректированного бюджета — параметры перед запуском.
-При равном приоритете выигрывает стабильный `campaign_id`, затем `candidate_id`.
+Spending includes actual settlements and full outstanding reserves; target pace follows the
+campaign flight and schedule. The pacing function, multiplier bounds, and release rule for
+adjusted budget are pre-launch parameters. Ties use stable `campaign_id`, then `candidate_id`.
 
-Четыре политики — highest-bid, quality-adjusted, profit-aware и incrementality-gated —
-сравниваем позднее в отдельном исследовательском прогоне для GitHub-проекта.
-Это не обязательный объём демо. Сам по себе first-price дизайн не доказывает устойчивость
-к стратегическим ставкам: в PoC рекламодатели синтетические, рынок не исследован.
+Four policies—highest-bid, quality-adjusted, profit-aware, and incrementality-gated—are planned
+for a separate research comparison in the GitHub project. They are not required demo scope.
+A first-price design alone does not establish robustness to strategic bidding: PoC advertisers
+are synthetic, and market behavior has not been studied.
 
-| Будущая политика сравнения | Отличающийся выбор |
+| Future comparison policy | Distinguishing selection rule |
 | --- | --- |
-| Highest-bid | Максимальная исходная ставка среди допустимых рекламных кандидатов |
-| Quality-adjusted | Максимальная ожидаемая оплата: калиброванная вероятность события × ставка, с одинаковым для сравнения pacing |
-| Profit-aware | Ранжирование по денежному вкладу с маржой и расходами; положительная ожидаемая экономика обязательна |
-| Incrementality-gated | Profit-aware с дополнительным порогом ожидаемого прироста; это целевой наиболее ограниченный вариант |
+| Highest-bid | Highest original bid among eligible advertising candidates |
+| Quality-adjusted | Highest expected payment: calibrated event probability × bid, with identical pacing for the comparison |
+| Profit-aware | Rank by monetary contribution including margin and costs; positive expected economics is required |
+| Incrementality-gated | Profit-aware with an additional expected-increment threshold; the most constrained target policy |
 
-Во всех прогонах одинаковы данные и жёсткие ограничения наличия, безопасности, релевантности,
-частоты, риска и максимальных резервов. Отсутствие экономического/инкрементального порога
-в исследовательском baseline указывается явно; такая абляция допускается только в симуляции.
-Сравниваем не только выручку, но и маржу после расходов, дополнительные дни, расход бюджета,
-`no_fill`/`no_action`, долю недопустимых решений и максимальные обязательства.
+All runs share data and hard stock, safety, relevance, frequency, risk, and maximum-reserve
+constraints. Explicitly label research baselines that omit an economic or incrementality gate;
+such ablations are allowed only in simulation. Compare margin after costs as well as revenue,
+incremental purchase days, budget spending, `no_fill`/`no_action`, invalid-decision rates, and
+maximum obligations.
 
-## 5. Финансирование, маржа SKU и обязательства
+## 5. Funding, SKU margin, and obligations
 
-Две параллельные гипотезы:
+Two parallel hypotheses:
 
-| Источник | Условие допуска |
+| Source | Eligibility condition |
 | --- | --- |
-| Бренд | Отдельно оплачивает товар и может участвовать в CPA-аукционе; субсидия и ставка — разные обязательства |
-| X5 | Финансирует товар, если консервативная оценка дополнительной маржи после всех расходов положительна и есть полный резерв |
+| Brand | Funds the product separately and may participate in the CPA auction; subsidy and bid are distinct obligations |
+| X5 | Funds the product when conservative incremental margin after all costs is positive and the full reserve is available |
 
-Текущий runtime PoC реализует консервативную демонстрационную границу: первый физический
-подарок разрешён только победившей рекламной кампании. Вариант финансирования X5 остаётся
-гипотезой для будущего пилота после получения фактической SKU-маржи.
+Current PoC runtime uses a conservative demonstration boundary: the first physical gift requires
+a winning advertiser campaign. X5 funding remains a future-pilot hypothesis pending actual
+SKU margins.
 
-Отсутствие спонсора само по себе не означает доступность бесплатного товара за счёт X5.
-Для органического задания проходят те же проверки награды, риска и наличия бюджета.
+The absence of a sponsor does not itself make an X5-funded free product available. Organic
+challenges undergo the same reward, risk, and budget checks.
 
 ```text
-ожидаемая дополнительная маржа следующих визитов
-+ ожидаемая маржа последующих платных повторных покупок
-+ ожидаемая рекламная выручка
-+ субсидия поставщика
-− стоимость бесплатного товара для X5
-− ожидаемая стоимость будущей скидки
-− ожидаемые потери от фрода
-− операционные расходы
+expected incremental margin from subsequent visits
++ expected margin from later paid repeat purchases
++ expected advertising revenue
++ supplier subsidy
+− cost of the free product to X5
+− expected future discount cost
+− expected fraud losses
+− operating costs
 > 0
 ```
 
-Маржа повторных покупок включается отдельно только если те же продажи уже не включены в маржу
-следующих визитов. Маржа считается после обычных промо и до новой игровой скидки; если игровая
-скидка уже включена в исходную маржу, отдельно второй раз её не вычитаем.
-Аналогично субсидия учитывается либо отдельным плюсом при полной стоимости
-товара, либо через непокрытую стоимость товара; оба способа одновременно запрещены.
-Для одного горизонта и одной продажи каждое слагаемое учитывается один раз.
+Include repeat-purchase margin separately only when those sales are not already included in
+subsequent-visit margin. Measure margin after ordinary promotions but before the new game discount;
+if the game discount is already included, do not subtract it again. Similarly, account for a
+subsidy either as a separate positive term against full product cost or through uncovered product
+cost, never both. Count each component once for a given horizon and sale.
 
-Розничная цена награды не равна расходу X5. Используем стоимость конкретного SKU, реальную
-маржу платных покупок, субсидию, наличие и вероятности погашения. Единая синтетическая маржа
-из текущего каталога — только параметр старых примеров, её недостаточно для этого контракта.
+The reward's retail price is not X5's cost. Use the specific SKU cost, actual paid-purchase margin,
+subsidy, stock, and redemption probabilities. The shared synthetic margin in the current catalog
+is a legacy-example parameter and is insufficient for this contract.
 
-Ожидаемая прибыль и допустимый максимальный расход — две отдельные проверки:
+Expected profit and maximum permitted spending are separate checks:
 
 ```text
-доступный бюджет = общий бюджет
-                 − уже подтверждённые расходы
-                 − полная максимальная стоимость незакрытых обязательств
+available budget = total budget
+                 − settled spending
+                 − full maximum cost of outstanding obligations
 ```
 
-До показа резервируется полная максимальная стоимость обещанного физического товара
-и связанной будущей скидки. Процентная скидка требует заранее ограниченных суммы корзины,
-числа погашений и максимального расхода в рублях; без конечного верхнего предела полный резерв
-посчитать нельзя. Локальный PoC исполняет фиксированные демо-пределы в браузерном снимке;
-реальные лимиты и фонды должен применять защищённый backend.
-
-Цифровой предмет тоже может создать обязательство через будущий рецепт.
-Резерв сопровождает предметы / созданную скидку, при крафте переводится между состояниями
-без повторного списания или двойного учёта. Одинаковая редкость обмена не гарантирует одинаковую
-стоимость: новый набор может позволить более дорогой рецепт или повысить вероятность погашения.
-
-Для CPA отдельно резервируем максимум списания по каждому незакрытому обещанию кампании:
-исходную ставку за одно разрешённое событие. Для финансирования товара — соответствующий
-максимум по отдельному бюджету субсидии. Один и тот же рубль нельзя одновременно обещать
-в двух бюджетах. Резерв заменяется фактическим расходом или освобождается после закрытия
-обязательства; истечение окна задания не снимает уже заработанную награду.
-
-`expected_liability` legacy-фикстур — вероятностный прогноз. Его вычитание не обеспечивает
-жёсткий запрет перерасхода. Contract v2 и браузерный store демонстрируют полные резервы, но
-реальный запрет перерасхода требует серверного учёта и атомарной проверки бюджета.
-
-Положительный результат на синтетике доказывает лишь выполнение правил при выбранных
-допущениях. Реальная прибыльность требует данных X5 и проверки на последующих покупках.
-Неподтверждённую субсидию нельзя использовать как обеспеченный денежный резерв.
-
-### 5.1. Перенос обязательства от предметов к купону
-
-Для PoC выбран единый купонный фонд с общим максимумом любого купона **10 ₽**. Каждый
-непотраченный или обещанный, но ещё не выданный цифровой экземпляр обеспечивается **2,50 ₽**.
-Обещание и его исполненный экземпляр — одна позиция; резервирование для обмена не исключает
-копию из счёта. Выдача обещанной копии не добавляет второй резерв.
-
-Из N таких копий получится не больше ⌊N / 4⌋ купонов, поэтому 2,50 × N покрывает их максимум
-10 × ⌊N / 4⌋. Полный купонный резерв — 2,50 × N плюс сумма зафиксированных максимумов всех
-созданных непогашенных купонов. Копии, потраченные на эти купоны, в N уже не входят. Текущая
-безлимитная коробка демонстрационного прототипа не является источником обеспеченных копий.
-
-При крафте четыре резерва по 2,50 ₽ атомарно заменяются одним резервом купона 10 ₽; ничего
-дополнительно не высвобождается. Погашение переводит фактически использованную сумму в расход,
-остаток освобождается. Законное истечение купона освобождает его резерв. Истечение задания
-не сжигает заработанные предметы и не отменяет другие действующие права.
-
-Обмен сохраняет число копий и общий резерв, а происхождение переносится с экземпляром.
-Изменение вероятности погашения требует проверки ожидаемой экономики и риска. Доказательство
-действует для общего фонда всех купонов с единым пределом; отдельные бюджеты CPA и субсидий
-брендов не взаимозаменяемы. Повышение лимита требует дополнительного обеспечения старых прав.
-Реальные значения и условия согласуются с X5 перед пилотом; локальный runtime использует
-фиксированные демо-значения, а legacy allocator schema не меняет их семантику.
-
-Целевой сервер не стирает прежний неиспользованный купон новым крафтом: до погашения или
-объявленного истечения имеющегося купона новый купон недоступен. Текущее демо хранит одну
-активную скидку и заменяет её новой; это различие нужно закрыть при интеграции реальных прав.
-
-### 5.2. Резерв и завершение товарной цели
-
-Полный резерв SKU активной цели хранится отдельно от купонных резервов цифровых экземпляров.
-Он нужен уже до показа, даже если для рецепта ещё не хватает предметов. При выборе товарного
-результата сервер атомарно списывает четыре копии, освобождает их купонные резервы и переводит
-резерв цели на одно право получения SKU. Пример синтетического обеспечения: четыре копии с
-резервом 2,50 ₽ каждая плюс SKU себестоимостью 25 ₽ = 35 ₽; после товарного результата 10 ₽
-освобождаются, 25 ₽ остаются под выдачу. Резервы не считаются вторыми расходами в марже.
-
-При обычном крафте применяется прежняя схема «четыре резерва → один купон». Активная товарная
-цель не отменяется автоматически: её резерв остаётся до исполнения, явного отказа пользователя
-или истечения показанного срока. Имеющийся купон блокирует только новый купон, но не выдачу
-отдельного товара. Снятие одной цели не отменяет отдельные уже обещанные награды заданий.
-
-Экономика проверяется по всему оставшемуся пути, с учётом возможных новых начислений, обмена,
-первого подарка и иных открытых обязательств. Один платный повтор не приписывается нескольким
-целям, а уже собранным или обменянным предметам не приписываются несуществующие дополнительные
-визиты. Прежняя таблица первого предложения не включает дополнительный SKU повторной цели.
-
-Ожидаемая стоимость различает альтернативы: один набор не выдаёт одновременно купон и товар.
-Купон и последующий товар за новые копии — разные расходы; одну маржу нельзя учесть дважды.
-
-**Резерв и горизонт:** первый товар 25 ₽ плюс один обещанный предмет требуют 27,50 ₽.
-Три ранее обеспеченные копии добавляют 7,50 ₽, итого 35 ₽. Ожидаемые 5 ₽ на будущую скидку
-в сценарной экономике относятся ко всему пути до одного купона и не являются текущим резервом
-одной копии. Остальные ещё не обещанные начисления допускаются и обеспечиваются позже;
-маржу и скидку этого пути нельзя повторно приписывать каждому заданию.
-
-**Масштаб:** 35 000 ₽ дают максимум 1 000 одновременно обеспеченных предложений по 35 ₽,
-до других расходов и обязательств, при обеспеченных 10 000 ₽ купонной и 25 000 ₽ физической
-частях бюджета. Дефицит отдельного фонда блокирует новые обещания. Это синтетический пример,
-не обязательство выдать подарок всей аудитории. Уже показанные обещания сохраняются.
-
-## 6. Обмен и антифрод
-
-### Прямой обмен цифровыми предметами
-
-- Один предмет на один предмет одинаковой редкости, прежде всего для обмена дубликатами.
-- Предложение действует 24 часа; обе стороны явно подтверждают.
-- У обоих пользователей минимум два подтверждённых покупочных дня.
-- Не более трёх завершённых обменов в неделю на пользователя.
-- Предметы резервируются; подтверждение обеих сторон приводит к атомарной передаче.
-- Отмена / истечение предложения освобождает резерв предметов и не считается завершённым обменом.
-- Физические товары, купоны, активные скидки и ещё не полученные награды не передаются.
-- Сам обмен не создаёт новой бесплатной награды и не считается квалифицирующей покупкой.
-- Перед завершением проверяются риск и обеспеченность возможной дополнительной стоимости рецептов.
-
-Обмен — социальный слой первой версии. Пользовательский аукцион предметов и торговля за деньги
-не входят в него. Брендовый CPA-аукцион — отдельная задача финансирования.
-
-### Минимальный скоринг и обязательный будущий контур
-
-Для PoC нужен простой объяснимый скоринг синтетических чеков и реферальных приглашений.
-Полноценный платформенный антифрод не входит в хакатон, но серверная целостность наград
-обязательна перед реальным начислением.
-
-| Риск | Предусмотренная проверка |
-| --- | --- |
-| Повторный чек / повтор начисления | Уникальный идентификатор подтверждённого чека и идемпотентность награды |
-| Дробление корзины | Считать покупочный день один раз; связывать близкие покупки и оценивать отклонения |
-| Скорость действий / возврат после награды | Временные признаки, отложенное подтверждение и корректировка по правилам возвратов |
-| Мультиаккаунты / саморефералы | Совокупность покупочной истории, устройства, контакта и платёжного признака |
-| Циклические обмены / передача подозрительной награды | История происхождения предмета, граф передач, запрет передачи зарезервированных и удержанных предметов |
-| Повтор обмена / погашения | Идемпотентность операции и атомарная смена владельца / статуса |
-
-Решения: **разрешено, дополнительная проверка, удержано, отклонено**.
-Это будущий набор состояний риска; существующий `status` в JSON имеет только
-`active`, `delayed`, `blocked` и не покрывает весь жизненный цикл.
-
-Общий телефон, устройство или платёжный инструмент — признаки, не самостоятельное основание
-блокировки. В тестовых данных должны быть легитимные семьи с общими устройствами и покупками.
-Используем синтетические идентификаторы; реальные персональные и платёжные данные для PoC не нужны.
-
-Порог объясняем через ожидаемый предотвращённый ущерб и стоимость ошибочного отказа,
-а также ограничение доступного объёма ручной проверки. Оцениваем precision, recall,
-долю ошибочных удержаний легитимных пользователей и ожидаемые потери в рублях.
-Precision приоритетнее recall по кейсу; результат на искусственно сбалансированном наборе
-нельзя переносить на реальную частоту мошенничества.
-
-Backend должен быть источником истины для выдачи, резерва, обмена, списания и возврата.
-Текущие browser-local инвентарь и скидка демонстрируют UX и не обеспечивают эту защиту.
-Проверки рекламного текста в `validate_explanation.py` не являются антифродом покупок.
-
-Для решения по риску сравниваем ожидаемые потери вариантов: пропустить злоупотребление,
-ошибочно отказать честному пользователю либо оплатить дополнительную проверку и задержку.
-Жёсткие нарушения целостности (повтор уже исполненной операции, чужой экземпляр, недостаток
-предметов) отклоняются правилами, а не «вероятностью фрода». Повтор легитимного запроса
-получает прежний успешный ответ и сам по себе не является мошенничеством.
-Связь аккаунтов повышает риск только в совокупности с признаками злоупотребления.
-
-Минимальная матрица будущих тестов:
-
-| Вход / конкурирующие действия | Ожидаемый результат |
-| --- | --- |
-| Один чек отправлен дважды, повтор webhook выдачи или биллинга | Одно покупочное событие, одна выдача каждого обещанного компонента, одно CPA-списание; повторы возвращают сохранённый результат |
-| Один фискальный чек заявлен разными аккаунтами | Повторное начисление запрещено; конфликт владения уходит в объяснимую проверку |
-| Два чека одного дня вместо двух покупочных дней | Один день; доступ к обмену от двух дней не открывается |
-| Одновременно крафт и обмен одной копии; два разных обмена одной копии | Только одна операция может зарезервировать экземпляр; другая получает отказ без частичного списания |
-| Второе подтверждение обмена совпало с истечением 24 часов | Сервер выбирает один переход по своей временной метке; либо две атомарные передачи, либо полное освобождение резервов |
-| Четвёртый завершённый обмен недели; меньше двух покупочных дней | Отказ без передачи, новое вознаграждение отсутствует |
-| Цикл A → B → C → A, самореферал или серия новых аккаунтов с одним платёжным признаком | Совокупность событий повышает риск/инициирует проверку; не создаёт новые квалифицированные покупки |
-| Легитимная семья с общим устройством и разными подтверждёнными покупками | Общий признак сам по себе не блокирует; измеряется доля ошибочных удержаний |
-| Полный или частичный возврат до/после CPA-списания и повтор сообщения возврата | Если условие сохранилось по оставшимся строкам, CPA не отменяется; иначе отмена ожидающего платежа либо одна кредитовая корректировка. Пользовательские права рассматриваются отдельно |
-| Подмена процента, редкости, баланса или EAN-13 в браузере | Сервер пересчитывает правила и проверяет право по собственным данным; значение клиента не создаёт купон |
-| Одновременные обещания при остатке бюджета на одно | Ровно одно подтверждённое резервирование; вторая операция ничего не обещает |
-
-Набор включает обычные действия и разные частоты злоупотреблений, а не только очевидные атаки.
-В отчёте указываются количество примеров, способ разметки, confusion matrix для автоматических
-отказов и удержаний отдельно, precision, recall, цена ошибок и используемая доля фрода.
-Численный порог и время ручной проверки — параметры перед запуском, не достигнутые показатели.
-
-## 7. Legacy JSON, contract v2 и будущий production-контракт
-
-Legacy `schema/action.schema.json` требует `decision_id`, `experiment_arm`,
-`sponsored_result`, `surface_result`, `propensity`, `reason_codes`.
-Это контракт имеющихся сценариев аллокации, не полный контракт игры.
-
-Live-путь использует отдельный `packages/contracts/src/demo-poc.ts` **contract v2**. Он уже
-описывает profile/game snapshot, decision, две награды, полные демо-резервы, Ads campaign state,
-показы, one-time billing, receipt qualification, risk и идемпотентную выдачу. Обмен хранится
-в общем webapp store. Эти структуры браузерные и не являются production API или БД.
-
-| Production-блок | Чего не хватает сверх локального contract v2 |
-| --- | --- |
-| Челлендж и обещание | Долговечное серверное хранение, реальное исполнение, спорные случаи и повторные товарные цели |
-| Экономика SKU | Фактическая закупочная стоимость, маржа, наличие, подтверждённая субсидия и горизонт расчёта |
-| Обязательства | Бюджет-владелец, транзакционный резерв, исполнение, закрытие и сверка между процессами |
-| Аукцион | Реальные bidder accounts и договоры, защищённый ledger, атрибуция, возвратная корректировка и финансовая сверка |
-| Социальные события | Серверные владельцы и резервы, граф связей, аудит и защита межпроцессных гонок |
-| Риск | Production-признаки, история ручной проверки, корректировки и мониторинг ложных блокировок |
-| Измерение | Назначение эксперимента, показ, подтверждённая покупка, выдача, погашение, возврат, последующая платная покупка |
-
-Старые `mechanic_family` и `fading_phase` сохраняются для совместимости фикстур.
-Они не предписывают обязательный выбор из трёх механик и reward fading в текущем продукте.
-Одно поле `reinforcement_id` legacy schema не следует выдавать за contract v2 пакета из двух наград.
-Расширение не разрешает молча подменить экономическую семантику старого `expected_liability`.
-
-### 7.1. Границы production-операций
-
-Следующие операции описывают промышленный контракт. Часть выбора, публикации, квалификации,
-начисления, CPA и обмена уже представлена локальными структурами, но не добавлена в backend API
-или базу. Общий идентификатор каталожного предмета не заменяет идентификатор конкретного
-принадлежащего пользователю экземпляра.
-
-| Операция | Вход | Выход и инвариант |
-| --- | --- | --- |
-| Выбор | Снимок покупок, доступных/зарезервированных экземпляров, выбранного рецепта, кампаний, SKU и риска | `decision_id`, выбранный кандидат либо `no_action`, причины и оценки; локальные права остаются браузерными |
-| Публикация обещания | Выбранный кандидат, версия условий, проверенная доступность и бюджеты | `challenge_id`, неизменяемые условия, пакет награды, резервы, подтверждённая публикация; возвращаются только после успешного резервирования |
-| Подтверждение покупки | Достоверный `receipt_id`, строки SKU/количество/оплата, время, магазин, пользователь, возвраты | Квалификация конкретного `challenge_id`, отдельный покупочный день, решение риска; бесплатные строки не становятся платной покупкой |
-| Начисление | Подтверждённое выполнение, резервы и версия обещания | `reward_id`, цифровой `item_instance_id` и, если обещан, отдельное право на физический SKU; в первом цикле оба компонента, каждый выдаётся один раз |
-| Получение товара | Право на SKU, подтверждение магазина и ключ операции | Однократная физическая выдача/погашение права; открытие коробки не подтверждает фактический отпуск товара |
-| Публикация товарной цели | `goal_id`, `recipeId`, точный SKU, условия и полный резерв | Одна активная цель; пользователь видит обеспеченное обещание до прохождения |
-| Закрытие товарной цели | Активная цель и четыре допустимых экземпляра с нужным тематическим результатом | Один `reward_id` права на SKU, расход копий и перенос резерва атомарны; те же копии не дают купон; первый подарок учитывается отдельно |
-| Создание скидки | Четыре принадлежащих пользователю незарезервированных экземпляра | `coupon_id`, серверный расчёт по существующим правилам, фиксированный максимум и условия; четыре предмета списаны атомарно с выдачей |
-| Погашение скидки | `coupon_id`, допустимые платные строки чека, ключ погашения | Ровно одно списание купона и фактическая экономия в рублях, не выше максимума; один EAN-13 не является доказательством права |
-| Обмен | Два участника, два конкретных экземпляра одинаковой редкости, два подтверждения | `exchange_id`, атомарная смена владельцев, происхождение/резервы сохранены; предмет не может одновременно попасть в крафт |
-| CPA и корректировка | Финальное событие кампании / связанный возврат | `billing_id` либо связанный `adjustment_id`, собственная ставка победителя и освобождение/погашение нужного резерва |
-
-Общий конверт каждого будущего события: уникальный `event_id`, тип и версия, серверное время,
-`idempotency_key`, субъект, `decision_id`/`challenge_id` при наличии, исходный `receipt_id`,
-ссылка на породившее событие, предыдущий/новый статус и коды причин. Выдача дополнительно
-связывает `reward_id` и `item_instance_id`; крафт — четыре исходных экземпляра и `coupon_id`;
-обмен — экземпляры, прежних/новых владельцев и `exchange_id`; возврат — исходный платёж.
-Уникальность контролируется и по ключу запроса, и по бизнес-событию: новый ключ не позволяет
-начислить награду ещё раз по тому же чеку/заданию.
-
-Это журнал бизнес-операций в существующем монолитном backend и его БД, без требования
-строить отдельные микросервисы или платформу event sourcing. Внешнее исполнение при необходимости
-проходит через существующий `task_outbox`; повтор доставки безопасен благодаря идемпотентности.
-
-### 7.2. Состояния и ответственность
-
-| Сущность | Допустимый основной путь и исключения |
-| --- | --- |
-| Челлендж | Кандидат → зарезервирован и опубликован → покупка на проверке → выполнен → награды начислены. Без покупки допустимо истечение; выполненное задание не истекает вместе с окном выполнения |
-| Риск | Разрешено / дополнительная проверка / удержано / отклонено; отдельная ось, не замена статусу задания или купона |
-| Цифровой экземпляр | Обещан → доступен → зарезервирован обменом/крафтом → доступен новому владельцу либо потрачен; удержанный экземпляр недоступен для передачи |
-| Право на физический SKU | Обещано → заработано → получено. Период получения и обработка спорного исполнения зафиксированы до показа; факт выдачи хранится отдельно от начисления |
-| Купон | Активен → погашен или истёк по показанным условиям; одновременные погашения не удваивают скидку |
-| Обмен | Предложен → зарезервирован при подтверждении сторон → завершён; до завершения возможны отмена/истечение и освобождение резервов |
-| CPA | Зарезервирован → ожидает финальной проверки → списан; до списания возможна отмена, после — отдельная корректировка |
-
-При создании обмена инициатор подтверждает свои условия и резервирует свою копию; принятие
-другой стороной подтверждает тот же неизменённый набор и резервирует встречную копию.
-Срок 24 часа отсчитывается от создания. Финальная проверка срока, двух подтверждений,
-покупочных дней, недельных лимитов, риска и экономики проводится в одной транзакции передачи.
-Граница недели и часовой пояс — параметры перед запуском. Изменение предлагаемых предметов
-создаёт новое предложение и требует новых подтверждений.
-
-Владелец игровых правил — модуль игры; владелец выдачи, резервирования, купонов и обмена —
-серверный прикладной контур. RecSys возвращает решение, а не меняет баланс. Ads определяет
-спонсора/ставку, а не самостоятельно начисляет награду. Клиент показывает серверный результат;
-LLM получает только уже утверждённые условия. Сквозной тест проверяет одну операцию от решения
-до четырёх списанных экземпляров, купона и записи расхода, включая повтор запроса и гонку.
-
-### 7.3. Приёмка результата за рецепт
-
-- Повторное закрытие `goal_id`, в том числе с новым ключом запроса, возвращает прежний результат.
-- Гонка «купон / товар / обмен» на одни экземпляры допускает только один расход.
-- Четыре одинаковых предмета или другой победивший рецепт не закрывают товарную цель.
-- Активный купон сохраняется при отдельной выдаче товара; незакрытая цель не исчезает после обычного крафта.
-- Закрытие кампании не отменяет прежнее обещание; отсутствие нового бюджета блокирует только новую цель.
-- Первый подарок и товар за рецепт имеют отдельные основания и резерв; получение не создаёт лишний CPA.
-- Событие завершённого тематического рецепта обновляет будущий прогресс при любом результате один раз.
-- Жизненный цикл: обеспечена/показана → выполняется → право выдано → товар получен; отдельные
-  отказ/истечение освобождают только относящийся к цели резерв. Удержание проверки его сохраняет.
-
-## 8. Эксперимент и проверка привычки
-
-Проверяем три отдельных утверждения: желанность конкретной награды; вклад игры по сравнению
-с обычным предложением той же награды; устойчивые платные покупки после поощрений. В сравнении
-игры и обычного предложения совпадают SKU/купон, доступный выбор, условия покупок, сроки и
-бюджет. Большая награда в игровой группе не доказывает пользу коллекции.
-
-Отдельное наблюдение за устойчивостью начинается после общего заранее заданного окна
-поощрений, включая повторные товарные цели, без новых целевых подарков и дополнительных
-игровых скидок. Ранее выданные права сохраняются, обычные промо сопоставимы. В анализ входят
-все назначенные участники, а не только получившие товар; дата выдачи у успешного участника
-не определяет индивидуально начало сравниваемого периода. Бесплатное получение не считается
-платным повтором, а одна последующая платная покупка не доказывает автоматической привычки.
-
-Период устойчивости без игровой выгоды задаётся после предусмотренных сроков выполнения
-и погашения. Если остались действующие награды, отдельно отмечаем их влияние и не называем
-наблюдаемый результат покупками без поощрений.
-
-Сохраняем три независимых уровня:
-
-| Уровень | Значение |
-| --- | --- |
-| `experiment_arm` | `holdout` / `serve`, случайное устойчивое назначение |
-| `sponsored_result` | `filled` / `no_fill` / `not_applicable` |
-| `surface_result` | `sponsored` / `organic` / `none` |
-
-`no_fill` вместе с `organic` — нормальный результат.
-`no_action` — решение политики, а не случайная контрольная группа.
-Ghost описывает возможный выбор без показа, расходов и обязательств; он не является наблюдаемым
-исходом пользователя и не доказывает причинный эффект.
-
-Propensity хранится по реальной процедуре: `experiment`, `action_given_serve`,
-`creative_given_campaign` и произведение `logging`. Детерминированному выбору не приписываем
-фиктивную вероятность исследования. Оценка по альтернативным действиям требует ненулевого
-покрытия этих действий в логах.
-
-Основные исходы за 28 дней:
-
-- дополнительные покупочные дни относительно контроля;
-- платная повторная покупка категории после завершения бесплатной награды;
-- дополнительная маржа после товара, скидок, субсидий, рекламы, фрода и операций;
-- подтверждённая погашенная экономия пользователя в рублях.
-
-Открытие коробки, время в приложении и обмены — промежуточные показатели.
-Доказательство привычки требует платного возврата после бесплатного товара и наблюдения
-сохранения поведения; одного 28-дневного окна недостаточно для утверждения устойчивой привычки.
-
-Разделяем вклады компонентов:
-
-1. Игра против того же задания и той же награды без коллекции и обмена; одинаковые SKU, бюджет,
-   сегмент и окно.
-2. Персональный выбор против одного сильного фиксированного задания при одинаковой игре.
-3. Отдельная группа без бесплатного физического товара при сохранении остальных условий.
-
-Основной эффект считаем intention-to-treat по всем назначенным, включая не получивших показ
-и не забравших товар. Для метрики после награды заранее задаём сопоставимое временное окно
-для всех групп; анализ только получивших приз является описательным, не причинным.
-
-При обменах и рефералах учитываем перетекание эффекта: по возможности назначаем эксперимент
-на уровне домохозяйств / кластеров и фиксируем межгрупповые связи.
-Частоту покупок и экономику измеряем одновременно: рост частоты за счёт убыточных наград
-не проходит условие кейса.
-
-## 9. Реалистичная последовательность работ
-
-| Приоритет | Артефакт | Критерий готовности |
-| --- | --- | --- |
-| Готово в PoC | Один воспроизводимый путь от выбора задания до обещанной награды и игрового результата | Видны вход, правило выбора, условия, подтверждение и результат; симуляция явно обозначена |
-| Готово в PoC | Rules-based baseline, LLM-карточка и агентская разметка | 40/40 на профилях с допустимым заданием, 8/8 отказов; человеческое подтверждение остаётся следующим шагом |
-| Готово в PoC | Расчёт на уровне SKU и резервов | Раздельный учёт купона, физического товара, CPA и субсидии; отказ при недостаточном полном резерве |
-| Готово в PoC | Простой скоринг чеков и рефералов | Синтетические нарушения и легитимные семьи, precision / recall, ошибки и объяснение порога |
-| Готово в PoC | Симуляция 1 000 пользователей | Пять seed и парное сравнение политик; положительный, нулевой и отрицательный миры; охват, расходы, резервы и маржа |
-| Готово в PoC | Live Ads allocation и one-time billing | Минимум два конкурента в dairy/coffee; фильтры, pacing, резерв `bid + subsidy`, частотный лимит и повтор события проверяются |
-| Готово в PoC | Показ выбора и расходов для продакта / маркетолога | Панель «Для X5» показывает live Ads winner/score/ledger, финансирование, обязательства, риск, источник карточки и результаты симуляций |
-| Готово в PoC | Расчёт прогресса аватара, рейтинга и реферала | Подписанные синтетические события; повтор не увеличивает прогресс и не выдаёт вторую награду |
-| Готово локально | Безопасный обмен дубликатами | Два согласия, резерв, срок, лимит, reload и крафт после обмена; серверная атомарность остаётся следующим этапом |
-| Следующий этап | Товарные цели и промышленный серверный учёт | Серверная атомарность, идемпотентность, глобальные бюджеты и сохранение обязательств |
-| Готово offline на синтетике | Обучаемый RecSys и CPA-модель | Treatment/control logistic regression, uplift, isotonic calibration, billable model, deterministic split и held-out сравнение с правилами |
-| После получения реальных логов | Production RecSys/CPA | Дозревшие метки, фактические propensity, SKU-маржа, временной holdout, мониторинг и serving |
-| Готово синтетически | Четыре политики выдачи и дополнительные оценщики | Пять seed, одинаковые потенциальные исходы, расход, максимальные резервы и ограничения переносимости |
-
-**Протокол Demo Day:** агентская разметка зафиксирована до оценки на 40 профилях с хотя бы одним допустимым заданием; результат 40/40 и 8/8 отказов требует подтверждения человеком. Симуляция использует 1 000 пользователей, пять seed, общие потенциальные исходы и отдельные положительный, нулевой и отрицательный миры. Простой антифрод оценивается по precision/recall и ложным отказам на размеченных синтетических чеках/рефералах, включая легитимные семьи; порог объясняется и фиксируется до финальной оценки.
-
-Статус каждой строки отделяет готовый локальный результат от следующего production-этапа.
-Распределение владельцев и сценарий защиты находятся в общем плане команды.
-
-Для симуляции наблюдаемые признаки и скрытая модель отклика разделяются.
-Отдельно варьируем маржу SKU, оплату бренда, вероятность погашения скидки, стоимость фрода
-и долю органических покупок. Проверяем сценарий, в котором игра не добавляет покупок:
-расчёт не должен автоматически объявлять такой сценарий прибыльным за счёт двойного учёта.
-
-Многопериодные Ads-политики с pacing меняют будущие бюджеты и состав кандидатов.
-Их сравниваем прямым прогоном. IPS/SNIPS/DR — последующее исследование на подходящем
-одношаговом срезе при покрытии действий; обычный построчный IPS не оценивает весь такой цикл.
-
-## 10. Проверка текущих артефактов и формулировки защиты
-
-```bash
-python3 recsys/validate.py
-python3 recsys/validate_explanation.py
-python3 recsys/eval_creatives.py
-```
-
-Текущий результат проверки текста: 60 / 60 мутаций обнаружено, 0 / 24 ложных срабатываний,
-25 исправлений и 35 переходов к шаблону. Локальный Qwen-клиент отдельно проверен живым вызовом;
-15/15 синтетических персон извлекли три правила карточки в финальном structured-протоколе.
-Это не пользовательское исследование и не подтверждение качества модели на данных X5.
-
-На защите: показать игровой результат и обмен; объяснить runtime rules-based выбор задания,
-live quality-adjusted Ads-аукцион, резерв и one-time billing; затем показать offline learned
-сравнение. Его held-out результат: **+18 665,20 ₽** на 1 215 синтетических пользователях против
-**+13 533,60 ₽** rules и **−6 790,60 ₽** fixed dairy, uplift RMSE **0,063689**, billable AUC
-**0,801916**; learned выше rules и положителен на 5/5 seed. Числа явно называются сценарными,
-а production serving, реальные рекламные расчёты и эффект X5 — следующим этапом.
+Before display, reserve the full maximum cost of the promised physical product and associated
+future discount. A percentage discount requires advance limits on basket amount, number of
+redemptions, and maximum RUB cost; without a finite upper bound, a full reserve cannot be computed.
+The local PoC enforces fixed demo limits in a browser snapshot; a protected backend must enforce
+real limits and funds.
+
+A digital item can also create an obligation through a future recipe. Its reserve follows the
+items or crafted discount and transfers between states during crafting without double spending
+or double counting. Same-rarity exchange does not guarantee equal cost: a new combination can
+unlock a more expensive recipe or increase redemption probability.
+
+Reserve CPA separately at the maximum charge for each outstanding campaign promise: the original
+bid for one allowed event. Product funding has its own subsidy-budget maximum. The same RUB cannot
+be promised simultaneously in two budgets. A reserve becomes actual spending or is released when
+the obligation closes; challenge expiry does not remove an already earned reward.
+
+`expected_liability` in legacy fixtures is a probability-weighted forecast. Subtracting it does
+not enforce a hard overspending limit. Contract v2 and the browser store demonstrate full reserves,
+but real overspending protection requires server-owned accounting and atomic budget checks.
+
+Positive synthetic results establish rule compliance under chosen assumptions only. Actual
+profitability requires X5 data and subsequent-purchase evaluation. An unconfirmed subsidy cannot
+serve as a funded cash reserve.
+
+### 5.1. Transferring liability from items to a coupon
+
+The current PoC uses one coupon fund and a uniform **RUB 10** coupon maximum. Every unspent or
+promised-but-unissued digital instance is backed by **RUB 2.50**. A promise and its fulfilled
+instance are one position; reserving an instance for exchange does not remove it from the count.
+Issuing a promised instance does not create a second reserve.
+
+N such instances can create at most ⌊N / 4⌋ coupons, so 2.50 × N covers their maximum liability
+of 10 × ⌊N / 4⌋. The full coupon reserve is 2.50 × N plus the fixed maxima of all issued,
+unredeemed coupons. Instances spent on those coupons are no longer included in N. The current
+`DEMO_UNLIMITED_CHEST` switch bypasses the demo's box timing restriction, but every added instance
+still requires a funded coupon reserve.
+
+Crafting atomically replaces four RUB 2.50 reserves with one RUB 10 coupon reserve; it releases
+no additional funds. Redemption settles the amount actually used and releases the remainder.
+Valid coupon expiry releases its reserve. Challenge expiry neither burns earned items nor cancels
+other active entitlements.
+
+Exchange preserves instance count and the pooled reserve, with provenance following the instance.
+Changed redemption probabilities require expected-economics and risk checks. This proof applies
+to one shared coupon fund with a uniform cap; brand CPA and subsidy budgets are not interchangeable.
+Raising the limit requires additional funding for existing rights. Real values and terms must be
+agreed with X5 before a pilot; local runtime uses fixed demo values, and the legacy allocator
+schema does not change their meaning.
+
+The target server must preserve an existing unused coupon: another coupon remains unavailable
+until redemption or disclosed expiry. The current local `craftDemoDiscount` already refuses
+crafting while `active_coupon` is present; production must enforce this with server-owned rights.
+
+### 5.2. Reserving and completing a product goal
+
+An active goal's full SKU reserve is separate from digital-instance coupon reserves. It is required
+before display, even when the recipe is incomplete. If the user chooses the product result, the
+server atomically consumes four instances, releases their coupon reserves, and transfers the goal
+reserve to one SKU entitlement. Synthetic example: four instances backed by RUB 2.50 each plus
+a SKU costing RUB 25 total RUB 35; product completion releases RUB 10 and retains RUB 25 for
+fulfillment. Reserves are not additional costs in margin calculations.
+
+Ordinary crafting retains the “four reserves → one coupon” transition. It does not automatically
+cancel an active product goal: the goal reserve remains until fulfillment, explicit user refusal,
+or the displayed expiry. An existing coupon blocks only another coupon, not a separate product
+grant. Closing one goal does not cancel separate rewards already promised by challenges.
+
+Evaluate economics across the remaining journey, including possible new grants, exchange, the
+first gift, and other outstanding obligations. Do not attribute one paid repeat to multiple goals
+or invent incremental visits for already collected or exchanged items. The earlier first-offer
+table does not include an additional SKU for a repeat goal.
+
+Expected cost distinguishes alternatives: one set cannot yield both a coupon and a product.
+A coupon and a later product earned with new instances are separate costs; the same margin cannot
+fund both on paper.
+
+**Reserve and horizon:** the first RUB 25 product plus one promised item require RUB 27.50.
+Three previously funded instances add RUB 7.50, totaling RUB 35. The expected RUB 5 future-discount
+cost in scenario economics covers the entire path to one coupon; it is not the current reserve
+for a single instance. Further grants that have not yet been promised are admitted and funded
+later; do not attribute the journey's margin and discount to every challenge again.
+
+**Scale:** RUB 35,000 can back at most 1,000 simultaneous RUB 35 offers before other costs and
+obligations, provided the budget includes a funded RUB 10,000 coupon portion and RUB 25,000
+physical portion. A shortfall in either fund blocks new promises. This is a synthetic example,
+not a commitment to reward the entire audience. Existing displayed promises remain valid.

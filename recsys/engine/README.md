@@ -1,11 +1,11 @@
-# Движок решения локального PoC
+# Local PoC decision engine
 
-Выбирает одно следующее выполнимое задание и проверяет синтетический чек. Только стандартная
-библиотека Python, версионированный JSON на stdin/stdout, никаких сетевых сервисов и БД.
-Контракт — [`packages/contracts/src/demo-poc.ts`](../../packages/contracts/src/demo-poc.ts),
-границы — [`recsys/contract/README.md`](../contract/README.md).
+Selects one achievable next challenge and validates a synthetic receipt. Python standard library
+only, versioned JSON on stdin/stdout, with no network services or database in the decision engine.
+The contract is [`packages/contracts/src/demo-poc.ts`](../../packages/contracts/src/demo-poc.ts);
+integration boundaries are in [`recsys/contract/README.md`](../contract/README.md).
 
-## Запуск
+## Run
 
 ```bash
 python3 recsys/engine/cli.py decision < recsys/contract/examples/decision-request-empty.json
@@ -13,93 +13,91 @@ python3 recsys/engine/cli.py event    < recsys/contract/examples/event-request-q
 python3 -m unittest discover -s recsys/engine/tests -t .
 ```
 
-Код возврата: `0` — ответ по контракту, `2` — некорректный вход, `1` — сбой движка. В обоих
-неуспешных случаях в stdout уходит конверт `{"contract_version", "request_id", "error"}`,
-подробности — в stderr. Трейсбек наружу не выходит никогда.
+Exit codes: `0` for a contract-valid response, `2` for invalid input, and `1` for engine failure.
+Both failure cases write an envelope with `{"contract_version", "request_id", "error"}` to stdout
+and details to stderr. Tracebacks are never exposed in the response.
 
-## Как выбирается задание
+## Challenge selection
 
-Кандидат — пара «покупочное условие + недостающий предмет рецепта». Каталог предметов и рецепты
-приходят снимком в запросе: движок не хранит второй каталог и не считает процент скидки.
+A candidate pairs a purchase condition with a missing recipe item. The request supplies an item
+and recipe catalog snapshot: the engine stores no second catalog and does not calculate discounts.
 
-Фильтры до показа: категория есть в истории, есть оплачиваемый SKU и подарочный SKU с остатком,
-хватает жёсткого доступного бюджета на полный максимальный резерв, ожидаемая экономика выше
-минимального порога. Исследование незнакомых категорий в этом PoC отключено; при пустой истории
-движок отвечает объяснимым отказом, а не выдумывает задание.
+Pre-display filters require a category present in purchase history, a paid SKU and an in-stock
+gift SKU where required, enough hard available budget for the full maximum reserve, and expected
+economics above the minimum threshold. Unfamiliar-category exploration is disabled in this PoC;
+empty purchase history produces an explained refusal instead of an invented challenge.
 
-Порядок ранжирования: выбранный рецепт → знакомая категория → достижимое завершение → прирост
-совпадений → выполнимость (давность категории) → ожидаемая экономика → стабильный ID.
-`score` в диагностике — читаемая величина для человека; ранжирует кортеж `rank_key`, не она.
+Ranking order: selected recipe → familiar category → achievable completion → additional distinct
+matches → feasibility (category recency) → expected economics → stable ID. The diagnostic `score`
+is a human-readable value; the `rank_key` tuple determines the ranking.
 
-`no_action` применяется до показа нового задания. Действующее невыполненное обещание сохраняется
-и блокирует новое; истёкшее — не блокирует и освобождает резерв на стороне клиента.
+`no_action` applies before a new challenge is displayed. An active, incomplete promise is preserved
+and blocks a new challenge; an expired promise no longer blocks one and releases its reserve
+on the client.
 
-## Деньги и резервы
+## Money and reserves
 
-Все суммы — целые копейки. Купон 10 000, резерв 2 500 на непотраченный или обещанный экземпляр,
-подарочный SKU обеспечивается отдельным фондом. До показа резервируется полный максимум
-обязательства; жёсткий доступный бюджет вычитает подтверждённые расходы и полные максимальные
-незакрытые обязательства, а не вероятностный прогноз.
+All amounts are integer kopecks. The current contract caps a coupon at 1,000 and reserves 250
+per unspent or promised instance; a separate fund covers gift SKUs. The full maximum obligation
+is reserved before display. Hard available budget subtracts settled spending and full outstanding
+maximum obligations, rather than a probability-weighted forecast.
 
-`expected_incremental_margin_kopecks` — синтетическое допущение политики. Положительный прогноз
-не является доказанной прибыльностью.
+`expected_incremental_margin_kopecks` is a synthetic policy assumption. A positive forecast does
+not establish profitability.
 
-## Локальный Ads-аукцион
+## Local Ads auction
 
-Первый физический подарок допускается только при победившей рекламной кампании. Закрытый
-**quality-adjusted first-price CPA-аукцион** сравнивает минимум две кампании в молочной и
-кофейной категориях. До score применяются фильтры категории, периода, доступного бюджета,
-частотного лимита за 14 дней, минимального качества и ожидаемого прироста; риск и наличие
-проверены у самого кандидата. Для первого подарка `bid + subsidy` должны полностью покрывать
-себестоимость физического SKU. Резерв цифрового предмета отдельно обеспечивает купонный фонд.
+The first physical gift requires a winning advertiser campaign. The closed
+**quality-adjusted first-price CPA auction** compares at least two campaigns in dairy and coffee
+categories. Category, flight, available budget, 14-day frequency cap, minimum quality, and expected
+increment filters precede scoring; candidate checks cover risk and stock. For the first gift,
+`bid + subsidy` must fully cover the physical SKU cost. The coupon fund separately backs the
+digital item reserve.
 
-Score складывает ожидаемую оплату, скорректированную на качество и вероятность billable-события,
-синтетическую дополнительную маржу X5 и вычитает непокрытую стоимость награды. Pacing влияет
-только на allocation score. Победитель сохраняет исходную ставку: до показа браузерный ledger
-резервирует `bid + subsidy`, а после свежего `qualified + allow` события списывает их один раз.
-Повтор события не выставляет второй счёт. После первого цикла runtime допускает органические
-цифровые задания. Реальные bidder accounts, договоры, платёжная сверка и защищённый бюджетный
-ledger в PoC отсутствуют.
+The score combines expected payment adjusted for quality and billable-event probability,
+synthetic incremental X5 margin, and uncovered reward cost. Pacing affects allocation score only.
+The winner retains its original bid: before display, the browser ledger reserves `bid + subsidy`;
+a fresh `qualified + allow` event bills them once. Replayed events do not create a second charge.
+After the first cycle, runtime permits organic digital challenges. Real bidder accounts,
+contracts, payment reconciliation, and a protected budget ledger are absent from the PoC.
 
-## Данные политики
+## Policy data
 
-| Файл | Что задаёт |
+| File | Contents |
 | --- | --- |
-| `data/policy.json` | Версию политики, окно, резервы, пороги риска и экономики. Отсутствие обязательного параметра запрещает новое обещание |
-| `data/sku_catalog.json` | Синтетические оплачиваемые SKU и отдельные подарочные SKU. Алкоголь, табак и никотин исключены |
-| `../catalog/campaigns.json` | Существующие синтетические кампании, только чтение. Суммы в рублях переводятся в копейки явно |
+| `data/policy.json` | Policy version, window, reserves, risk thresholds, and economic thresholds. Missing required parameters prevent a new promise |
+| `data/sku_catalog.json` | Synthetic paid SKUs and separate gift SKUs. Alcohol, tobacco, and nicotine are excluded |
+| `../catalog/campaigns.json` | Existing synthetic campaigns, read-only. RUB amounts are explicitly converted to kopecks |
 
-Подарок держится около 25 ₽ по зафиксированной арифметике: четыре копии по 2,50 ₽ плюс товар
-25 ₽ = 35 ₽. Категория без подарочного SKU честно отдаёт `sku_out_of_stock`.
+The gift cost is approximately RUB 25 under the fixed arithmetic: four instances at RUB 2.50
+plus a RUB 25 product total RUB 35. A category without a gift SKU returns `sku_out_of_stock`.
 
-## Чек и риск
+## Receipts and risk
 
-Квалификация: оплаченная строка нужной категории и SKU, нужное количество, до дедлайна.
-Бесплатные строки не закрывают задание. Повтор `receipt_id` или ключа идемпотентности даёт
-`duplicate` без второй выдачи — и это не мошенничество. Возврат уходит в отдельное решение.
+Qualification requires a paid line with the specified category and SKU, sufficient quantity,
+and a timestamp before the deadline. Free lines do not complete the challenge. A repeated
+`receipt_id` or idempotency key returns `duplicate` without a second grant; a retry is not fraud.
+Returns receive a separate decision.
 
-Риск-решения `allow / review / hold / reject` складываются из объяснимых признаков. Общее
-домохозяйство или устройство сами по себе не блокируют: их вес ниже порога проверки.
-Выдача возможна только при `qualified` и `allow` — это же требование проверяет схема контракта.
+Risk decisions `allow / review / hold / reject` combine explainable signals. A shared household
+or device alone does not block a user: its weight is below the review threshold. Rewards can be
+granted only for `qualified` and `allow`, an invariant also enforced by the contract schema.
 
-## Карточка и LLM
+## Cards and the LLM
 
-Основной адаптер локального демо — Qwen3 1.7B через Ollama в [`recsys/llm`](../llm). Он работает
-по локальному HTTP без Python SDK и облачного ключа. Vite включает провайдер `ollama`
-автоматически; модель и адрес задаются через `OLLAMA_MODEL` и `OLLAMA_URL`.
+The local demo's primary adapter is Qwen3 1.7B through Ollama in [`recsys/llm`](../llm). It uses
+local HTTP without a Python SDK or cloud key. Vite enables the `ollama` provider automatically;
+`OLLAMA_MODEL` and `OLLAMA_URL` configure the model and endpoint.
 
-YandexGPT Lite сохранён как необязательный запасной адаптер. Для него нужно явно задать
-`LLM_PROVIDER=yandexgpt`, `YANDEX_API_KEY` и `YANDEX_FOLDER_ID` серверному процессу.
+YandexGPT Lite remains an optional alternative adapter. It requires explicit `LLM_PROVIDER=yandexgpt`,
+`YANDEX_API_KEY`, and `YANDEX_FOLDER_ID` settings on the server process.
 
-Модель получает уже утверждённое решение. Ответ проверяется детерминированными правилами:
-выдуманная цена или SKU, изменённый срок, обещание причинного эффекта, снятие удержания, ложная
-срочность, скрытая пометка о спонсорстве, отсутствие следующего шага и потерянная награда
-блокируются. Любая ошибка, таймаут, невалидный JSON или отсутствие ключа дают корректный шаблон
-с `source: "fallback"`; причина видна в `diagnostics.llm.error`.
+The model receives an already approved decision. Deterministic validation rejects invented prices
+or SKUs, changed deadlines, causal-effect claims, released holds, false urgency, hidden sponsorship,
+missing next steps, and omitted rewards. Any error, timeout, invalid JSON, or missing required key
+produces a valid template with `source: "fallback"`; `diagnostics.llm.error` exposes the reason.
+The same fallback applies when the local model is unavailable.
 
-Если локальная модель недоступна, карточка безопасно заменяется шаблоном, а причина видна в
-`diagnostics.llm.error`.
-
-Локальная модель отвечает только за заголовок карточки. Условие, срок, цифровая и физическая
-награды и маркировка спонсора собираются из утверждённого решения детерминированно. Это сохраняет
-видимое применение LLM, не передавая слабой модели право менять экономическое обещание.
+The local model generates only the card title. The condition, deadline, digital and physical
+rewards, and sponsorship disclosure are constructed deterministically from the approved decision.
+This makes the LLM contribution visible while keeping the financial promise under system control.

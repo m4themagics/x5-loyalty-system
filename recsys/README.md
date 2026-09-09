@@ -1,178 +1,180 @@
-# recsys: контракты, сценарии и план персонализации
+# RecSys: contracts, scenarios, and personalization
 
-Этот каталог содержит **фиксированные синтетические сценарии, локальные проверки и
-демонстрационный движок локального PoC**. Rules-based выбор задания, локальный Ads-аукцион,
-адаптер LLM и независимая оценка подключены к игровым экранам через Vite middleware.
-Отдельный обучаемый RecSys реализован и проверен offline на рандомизированных синтетических
-логах. Серверный реестр прав, production-биллинг и обучение на данных X5 не реализованы.
-Локальный обмен предметами использует общий браузерный снимок состояния.
+This directory contains **fixed synthetic scenarios, local checks, and the local PoC decision
+engine**. Rules-based challenge selection, a local Ads auction, an LLM adapter, and independent
+evaluation are connected to the game screens through Vite middleware. A separate learned
+RecSys is implemented and evaluated offline on randomized synthetic logs. Server-owned
+entitlement records, production billing, and training on X5 data are not implemented.
+Local item exchange uses a shared browser state snapshot.
 
-Продуктовая спецификация — [описание проекта](../docs/project/project-description.md),
-общая последовательность работ — [командный план](../docs/project/plan.md),
-детальный статус и промышленное развитие моделей и Ads — [PLAN.md](PLAN.md).
+The product specification is in the [project description](../docs/project/project-description.md),
+the team sequence is in the [team plan](../docs/project/plan.md), and detailed implementation
+status and the production roadmap for models and Ads are in [PLAN.md](PLAN.md).
 
-## Продукт, к которому подключаемся
+## The product integration
 
-**Коробка → цифровой предмет → инвентарь → четыре предмета → собственная скидка.**
+**Reward box → digital item → inventory → four items → a crafted discount.**
 
-Локальный rules-based RecSys выбирает одно выполнимое задание по синтетической истории покупок и недостающим предметам
-рецепта. После первого показанного, выполненного и подтверждённого допустимого задания
-пользователь гарантированно получает обещанный бесплатный физический товар и полезный цифровой
-предмет. Результат не подменяется случайным выпадением из демонстрационной коробки.
+The local rules-based RecSys selects one achievable challenge from synthetic purchase history
+and missing recipe items. After the first displayed, eligible challenge is completed and
+verified, the user is guaranteed the promised free physical product and useful digital item.
+A random demonstration box drop cannot replace that reward.
 
-В повторных циклах конкретный бесплатный товар может стать видимой целью обеспеченного
-рецепта. Четыре копии расходуются на скидку либо этот SKU, один раз. Две гипотезы
-финансирования первого и повторных товаров — бренд либо X5 при положительной ожидаемой
-дополнительной марже после всех затрат. В текущем runtime первый SKU разрешён только при
-победе рекламной кампании; собственное финансирование X5 остаётся целевой гипотезой. Первый
-SKU, rules-based RecSys, локальный quality-adjusted first-price CPA-аукцион и простой risk
-scoring работают в демонстрационном пути; промышленный антифрод остаётся следующим шагом.
+In the future repeat-cycle design, a specific free product can become the visible goal of a funded recipe.
+Four instances are spent once, either on a discount or on that SKU. The two funding hypotheses
+for first and repeat products are brand funding or X5 funding from positive expected incremental
+margin after all costs. Current runtime allows the first SKU only when an advertiser wins;
+X5 funding remains a target hypothesis. The first SKU, rules-based RecSys, local quality-adjusted
+first-price CPA auction, and simple risk scoring work in the demo flow; production antifraud
+remains future work.
 
-Персонализация использует существующие 24 предмета и семь рецептов: данные
-[profile-items.ts](../webapp/src/features/home/profile-items.ts) и правила
+Personalization uses the existing 24 items and seven recipes in
+[profile-items.ts](../webapp/src/features/home/profile-items.ts) and
 [profile-discount-crafting.ts](../webapp/src/features/home/profile-discount-crafting.ts).
-Полный перечень, редкости и бонусы приведены в [item-pool.md](../docs/project/item-pool.md).
-RecSys подбирает полезный следующий предмет; четыре экземпляра для скидки выбирает пользователь.
-Разные совпадения рецепта и число копий учитываются раздельно.
+The complete catalog, rarities, and bonuses are in [item-pool.md](../docs/project/item-pool.md).
+RecSys recommends a useful next item; the user chooses the four instances for crafting.
+Distinct recipe matches and the number of owned instances are counted separately.
 
-У нового пользователя пустой инвентарь: первое задание даёт один цифровой предмет и отдельный
-бесплатный товар, а не мгновенно четыре предмета. Сценарий «получить четвёртый предмет и создать
-скидку» использует явно подготовленный профиль с тремя предметами. Например, `breakfast-pan`
-дополняет `club-toaster`, `milk-pitcher`, `travel-mug` до четырёх common-предметов рецепта
-`breakfast`: 5% базы + 3 п. п. бонуса = 8% в существующем расчёте.
+A new user has an empty inventory: the first challenge grants one digital item and a separate
+free product, rather than four items immediately. The “earn the fourth item and craft a discount”
+scenario uses an explicitly seeded profile with three items. For example, `breakfast-pan`
+completes `club-toaster`, `milk-pitcher`, and `travel-mug` into four common items in the
+`breakfast` recipe: 5% base + 3 percentage points of bonus = 8% under the existing calculation.
 
-В повторном цикле одна активная товарная цель заранее связывает конкретный SKU и существующий
-рецепт. Для её завершения нужны четыре доступные копии, образующие этот тематический результат
-по существующим правилам. Серверный расход даёт один купон либо право на обещанный товар.
-Полный резерв SKU хранится отдельно от купонных резервов копий; первый подарок по заданию —
-тоже отдельное обязательство. Эти события и поля только описаны в плане, не добавлены в схему.
+In a repeat cycle, one active product goal binds a specific SKU to an existing recipe in advance.
+Completing it requires four available instances that produce that thematic result under the
+existing rules. Server-side consumption would grant one coupon or entitlement to the promised
+product. The full SKU reserve is separate from instance-level coupon reserves; the first
+challenge gift is also a separate obligation. These events and fields are described in the
+roadmap only and have not been added to the schema.
 
-Проверка эффекта разделяет желанность награды, пользу игры при той же награде и условиях и
-последующие платные покупки после общего заданного окна поощрений. Текущие валидаторы не
-проверяют такую устойчивость и не реализуют выдачу товара за рецепт.
+Effect evaluation separates reward desirability, the added value of the game under equal
+rewards and conditions, and subsequent paid purchases after a shared, predefined incentive
+window. Current validators do not test purchase persistence or implement product grants for recipes.
 
-## Что есть в каталоге
+## Directory contents
 
-| Артефакт | Что подтверждает |
+| Artifact | What it establishes |
 | --- | --- |
-| [action.schema.json](schema/action.schema.json) | Существующий контракт сценария аллокации; не контракт всего инвентаря, физической награды или погашения скидки |
-| [campaigns.json](catalog/campaigns.json) | 13 синтетических кампаний по 10 рекламным категориям; каждая из 24 игровых категорий получает минимум двух конкурентов в live-аукционе. Темп расходования в каталоге не задан: движок выводит его из фактического расхода по флайту |
-| [fixtures/](fixtures/) | Семь сценариев с решением и два отдельных набора для разбора кандидатов и проверки текстов |
-| [validate.py](validate.py) | Проверку поддержанного подмножества схемы, сочетаний уровней решения и произведения propensity |
-| [validate_explanation.py](validate_explanation.py) | Детерминированные ограничения текста относительно выбранного решения |
-| [eval_creatives.py](eval_creatives.py) | Мутационные проверки текста, контроль ложных срабатываний, исправление или шаблонный ответ |
+| [action.schema.json](schema/action.schema.json) | The existing allocator scenario contract; not a contract for the full inventory, physical rewards, or discount redemption |
+| [campaigns.json](catalog/campaigns.json) | 13 synthetic campaigns across 10 advertising categories; each of the 24 game categories has at least two competitors in the live local auction. The catalog does not specify pacing: the engine derives it from actual spending during the flight |
+| [fixtures/](fixtures/) | Seven decision scenarios and two separate datasets for candidate inspection and copy validation |
+| [validate.py](validate.py) | Validation of the supported schema subset, decision-level combinations, and the propensity product |
+| [validate_explanation.py](validate_explanation.py) | Deterministic copy constraints relative to the selected decision |
+| [eval_creatives.py](eval_creatives.py) | Copy mutation checks, false-positive checks, repair, or template fallback |
 
-`validate.py` не является полным валидатором JSON Schema: файлы без `decision` он пропускает.
-Сообщение о девяти файлах означает размер набора, а не проверку девяти одинаковых решений.
+`validate.py` is not a complete JSON Schema validator: it skips files without `decision`.
+A message reporting nine files describes the dataset size, not nine identically structured decisions.
 
-| Фикстура | Сценарий и границы |
+| Fixture | Scenario and limitations |
 | --- | --- |
-| [masha.json](fixtures/masha.json) | Заданный sponsored-сценарий с `personal_finish` и `supplier_trial` |
-| [masha-cycle2.json](fixtures/masha-cycle2.json) | Старый сценарий перехода к `digital_unlock`; поле fading сохранено для совместимости, обязательного reward fading в продукте нет |
-| [katya.json](fixtures/katya.json) | Заданный `store_coop` и выбор кампании с меньшей ставкой; результат не вычислен работающим аукционом |
-| [sergey.json](fixtures/sergey.json) | Отказ рекламе по порогу инкрементальности: `no_fill` вместе с `organic` |
-| [holdout-ghost.json](fixtures/holdout-ghost.json) | Формат контрольного назначения без показа; ghost хранит возможное действие |
-| [pacing-exhausted.json](fixtures/pacing-exhausted.json) | Заданный пример ограничения темпа расходов |
-| [fraud-delayed.json](fixtures/fraud-delayed.json) | Задержанная награда и рекламное списание; это сценарий, а не работающий fraud scorer |
-| [console-sergey.json](fixtures/console-sergey.json) | Данные для разбора кандидатов, не реализованная консоль |
-| [creatives-adversarial.json](fixtures/creatives-adversarial.json) | Семь нарушений контракта текста |
+| [masha.json](fixtures/masha.json) | A predefined sponsored scenario with `personal_finish` and `supplier_trial` |
+| [masha-cycle2.json](fixtures/masha-cycle2.json) | A legacy transition to `digital_unlock`; the fading field is retained for compatibility, but mandatory reward fading is not a product requirement |
+| [katya.json](fixtures/katya.json) | Predefined `store_coop` and selection of a lower-bid campaign; this result was not computed by a running auction |
+| [sergey.json](fixtures/sergey.json) | Ad rejection at the incrementality threshold: `no_fill` together with `organic` |
+| [holdout-ghost.json](fixtures/holdout-ghost.json) | A control assignment without display; the ghost record stores a possible action |
+| [pacing-exhausted.json](fixtures/pacing-exhausted.json) | A predefined spending-pace constraint example |
+| [fraud-delayed.json](fixtures/fraud-delayed.json) | Delayed reward and advertising charge; a scenario, not an operational fraud scorer |
+| [console-sergey.json](fixtures/console-sergey.json) | Candidate inspection data, not an implemented console |
+| [creatives-adversarial.json](fixtures/creatives-adversarial.json) | Seven copy-contract violations |
 
-Обычные семь сценариев имеют `profile`, `decision`, `creative_copy`, `route_state`.
-У консоли и набора нарушений другие структуры. Текущие игровые экраны не читают эти фикстуры.
+The seven regular scenarios contain `profile`, `decision`, `creative_copy`, and `route_state`.
+The console and adversarial datasets use other structures. Current game screens do not read these fixtures.
 
-## Локальный PoC
+## Local PoC
 
-| Зона | Что делает |
+| Area | Responsibility |
 | --- | --- |
-| [contract/](contract) | Общий contract v2 для decision/event, Ads-состояния и эталонных полезных нагрузок |
-| [engine/](engine) | Rules-based выбор задания, Ads allocation/billing, экономика, резервы, квалификация чека и скоринг риска |
-| [llm/](llm) | Локальный Qwen3 через Ollama, запасной адаптер YandexGPT, проверка карточки и шаблон |
-| [eval/](eval) | Независимая разметка, policy simulation, offline learned RecSys, Qwen-проверка текста и оценка антифрода |
+| [contract/](contract) | Shared contract v2 for decisions/events, Ads state, and reference payloads |
+| [engine/](engine) | Rules-based challenge selection, Ads allocation/billing, economics, reserves, receipt qualification, and risk scoring |
+| [llm/](llm) | Local Qwen3 through Ollama, optional YandexGPT adapter, card validation, and template fallback |
+| [eval/](eval) | Independent labels, policy simulation, offline learned RecSys, Qwen copy checks, and antifraud evaluation |
 
-Путь целиком: история покупок → вычисленное задание → live Ads-аукцион → проверенная карточка →
-тестовый чек → одноразовый CPA-биллинг и обещанные награды → обмен → существующий крафт.
-Панель «Для X5» показывает live Ads-ledger и компактные срезы воспроизводимых оценок. Учёт
-демонстрационный, в одной вкладке браузера;
-серверного реестра прав и реальной выдачи товара здесь нет.
+The complete flow is purchase history → computed challenge → live local Ads auction → validated
+card → synthetic receipt → one-time CPA billing and promised rewards → exchange → existing crafting.
+The “For X5” panel (`Для X5` in the Russian UI) displays the live local Ads ledger and compact
+views of reproducible evaluations. Accounting is demonstrational and runs in one browser tab;
+there is no server-owned entitlement ledger or real product fulfillment.
 
-## Что означает текущий результат проверок
+## What the current checks establish
 
-На текущем наборе мутационный тест обнаруживает 60 из 60 нарушений по 11 категориям,
-не отклоняет ни один из 24 легитимных вариантов; 25 нарушенных вариантов исправляются,
-35 заменяются шаблоном. Это результаты **конкретного детерминированного набора**.
-Они не доказывают качество живого LLM-агента, релевантность персонализации, защиту от мошенников
-или бизнес-эффект.
+On the current mutation suite, the copy checks detect 60 of 60 violations across 11 categories,
+reject none of 24 legitimate variants, repair 25 invalid variants, and replace 35 with templates.
+These are results for **one specific deterministic dataset**. They do not establish live LLM
+agent quality, personalization relevance, fraud protection, or business impact.
 
-Локальный Qwen3 1.7B генерирует заголовок карточки уже выбранного задания, а фактические поля
-собирает система; при ошибке используется шаблон. Обучение на синтетических логах представлено
-отдельным offline-контуром; измерения эффекта на людях нет.
-Для защиты использование ИИ командой нужно подтверждать фактическими инструментами,
-примерами задач и проверенными результатами работы.
+Local Qwen3 1.7B generates the title of a card for an already selected challenge; the system
+constructs factual fields. Errors produce a template fallback. Training on synthetic logs is
+implemented in a separate offline workflow; no effect has been measured on people.
+Claims about the team's use of AI must be supported by actual tools, task examples, and
+verified work outputs.
 
-Все денежные значения, вероятности и эффекты в JSON синтетические. Один общий
-`contribution_margin_rub` из каталога не заменяет маржу отдельных SKU.
-`expected_liability` — прогноз ожидаемого расхода, а не резерв максимальных обязательств.
-Pacing меняет только allocation score. В локальном аукционе победитель платит исходную
-синтетическую ставку после подтверждённого события; этот ledger не является реальным расчётом с брендом.
+All monetary values, probabilities, and effects in JSON are synthetic. A shared catalog-level
+`contribution_margin_rub` does not replace SKU-level margins. `expected_liability` forecasts
+expected spending; it is not a reserve for maximum obligations. Pacing changes allocation score
+only. In the local auction, the winner pays its original synthetic bid after a verified event;
+this ledger does not settle real payments with a brand.
 
-## Реализованный Ads и обучаемый контур
+## Implemented Ads and learned-policy evaluation
 
-Runtime next-best-action полностью перебирает небольшой каталог правилами. Затем один плейсмент
-запускает закрытый quality-adjusted first-price CPA-аукцион: category/flight/budget/frequency/
-quality/increment фильтры, pacing только в allocation, резерв `bid + subsidy` до показа и
-идемпотентное списание после `qualified + allow`. Первый физический подарок без победителя не
-публикуется; последующие цифровые задания могут быть органическими.
+Runtime next-best-action selection scores the entire small catalog using rules. One placement
+then runs a closed quality-adjusted first-price CPA auction: category/flight/budget/frequency/
+quality/increment filters, pacing in allocation only, a `bid + subsidy` reserve before display,
+and idempotent billing after `qualified + allow`. The first physical gift is not offered without
+an advertiser winner; later digital challenges may be organic.
 
-Offline learned RecSys написан на standard library: отдельные treatment/control logistic
-regression, uplift как разница, isotonic calibration и отдельная billable logistic model.
-Рандомизированные синтетические логи разделены детерминированно. На 1 215 held-out пользователях
-learned profit-gated политика дала **+18 665,20 ₽**, rules — **+13 533,60 ₽**, fixed dairy —
-**−6 790,60 ₽**; uplift RMSE **0,063689**, billable AUC **0,801916**. На пяти seed learned
-положителен и выше rules: **+15 828,20…+19 431,60 ₽**, среднее **+17 763,76 ₽**.
+The offline learned RecSys uses the Python standard library: separate treatment/control logistic
+regression models, uplift as their difference, isotonic calibration, and a separate billable-event
+logistic model. Randomized synthetic logs are split deterministically. On 1,215 held-out users,
+the learned profit-gated policy produced **RUB +18,665.20**, rules **RUB +13,533.60**, and fixed
+dairy **RUB −6,790.60**; uplift RMSE was **0.063689** and billable AUC **0.801916**. Across five
+seeds, learned results were positive and exceeded rules: **RUB +15,828.20…+19,431.60**, with a
+mean of **RUB +17,763.76**.
 
-Сравнение с одной наивной эвристикой переоценивало бы модель, поэтому в наборе есть ещё две
-политики. `rules_runtime` дословно повторяет боевой `Candidate.rank_key`, а `rules_profit_ranked`
-берёт ту же статичную экономику, но ранжирует по ней напрямую. Результат разделяет вклад:
-ранжирование по экономике даёт **+3 190,00 ₽** к боевому порядку, а калиброванная uplift-модель —
-ещё **+1 941,60 ₽**. То есть большая часть прежнего разрыва «learned против rules» объясняется
-не машинным обучением, а наличием экономической цели.
+Comparing only against one naive heuristic would overstate the model's contribution, so the
+suite includes two additional policies. `rules_runtime` adapts the ordering of `Candidate.rank_key`
+to offline candidates, replacing observed familiar purchase days with continuous category affinity
+and using a simplified economic estimate; it does not call the runtime allocator.
+`rules_profit_ranked` ranks directly by the same static economics. The comparison
+separates the contributions: ranking by economics adds **RUB +3,190.00** over runtime ordering,
+and calibrated uplift adds another **RUB +1,941.60**. Most of the earlier learned-versus-rules
+gap therefore comes from the economic objective, rather than machine learning.
 
-Отдельный вывод про боевой аллокатор: `rules_runtime` и `rules_affinity` совпадают на всех пяти
-seed. В лексикографическом `rank_key` экономика стоит шестой, а непрерывная `category_affinity`
-разрывает любое сравнение раньше, поэтому в runtime экономический член на выбор не влияет.
+A separate offline finding: `rules_runtime` and `rules_affinity` agree across all five seeds.
+Economics is sixth in the adapted lexicographic key, and continuous `category_affinity` resolves
+comparisons earlier in this generator. This does not establish that economics never affects
+the application's actual runtime selection.
 
-Эти суммы относятся к синтетическим оценочным когортам, а не к одному пользователю и не к
-фактическому эффекту X5. Production-этапу нужны реальные рандомизированные логи, дозревшие
-метки, аккаунты рекламодателей, защищённый ledger, POS и финансовая сверка. Промышленный обмен
-и серверный учёт наград также требуют отдельной реализации.
+These amounts describe synthetic evaluation cohorts, not an individual user or measured X5
+impact. Production requires real randomized logs, mature labels, advertiser accounts, a protected
+ledger, POS integration, and financial reconciliation. Production exchange and server-owned
+reward accounting also require separate implementation.
 
-План содержит контракты входов и результатов для выбора задания, публикации обещания,
-подтверждения чека, двух компонентов награды, крафта, погашения, обмена и CPA-списания.
-Идентификатор типа предмета отделён от идентификатора принадлежащей пользователю копии;
-повторы запросов и конкурирующие операции не должны создавать вторую выдачу или расход.
-Пороговые значения и финансовые условия, которых нет в исходных данных, явно отмечены
-как параметры перед запуском; пропущенные обязательные значения запрещают новое обещание.
+The roadmap specifies inputs and outputs for challenge selection, promise publication, receipt
+verification, both reward components, crafting, redemption, exchange, and CPA billing. Item type
+IDs are separate from IDs of user-owned instances; retries and concurrent operations must not
+produce duplicate grants or spending. Thresholds and financial terms absent from the source data
+are explicitly marked as pre-launch parameters; missing required values prevent new promises.
 
-Первая проверяемая интеграция реализована: детерминированный выбор на снимке истории/инвентаря →
-синтетический чек → гарантированная локальная выдача существующего предмета и права на SKU →
-существующее создание скидки. Для новичка и подготовленного профиля проверяются разные результаты.
-До настоящего исполнения прав нужны серверные резервы, атомарность и идемпотентность;
-замена локального процента или штрихкода не должна давать право на скидку.
+The first verifiable integration is implemented: deterministic selection from a history/inventory
+snapshot → synthetic receipt → guaranteed local grant of an existing item and SKU entitlement →
+existing discount crafting. New and seeded profiles have distinct expected results. Real
+fulfillment requires server-owned reserves, atomicity, and idempotency; changing a local
+percentage or barcode must not create a discount entitlement.
 
-Синтетические артефакты получены: evaluator contract v2 для post-onboarding digital cycle дал
-40/40 приемлемых решений и 8/8 ожидаемых отказов,
-симуляция 1 000 пользователей с тремя мирами, отдельный fraud challenge set и парное сравнение
-четырёх политик на пяти seed. Политика финансируемого первого подарка сохранила положительный
-итог после полного обеспечения прироста непогашенных купонных обязательств: в среднем
-3 845,06 ₽ на когорту из 1 000 пользователей за четыре недели, диапазон 3 743,20–4 171,80 ₽,
-5/5 seed при охвате 20,40%. Reward-only при том же охвате дал 3 436,90 ₽; расчётная разница
-игрового слоя +408,16 ₽ зависит от явного синтетического допущения. Разметка ждёт
-подтверждения человеком; значения являются результатом сценарной оценки, а не фактической
-прибылью X5.
+Synthetic artifacts include evaluator contract v2 for the post-onboarding digital cycle,
+with 40/40 acceptable decisions and 8/8 expected refusals; a three-world simulation of 1,000
+users; a separate fraud challenge set; and paired comparison of four policies across five seeds.
+The funded first-gift policy remained positive after fully funding the increase in outstanding
+coupon liabilities: a mean of RUB 3,845.06 per 1,000-user cohort over four weeks, a range of
+RUB 3,743.20–4,171.80, and positive results on 5/5 seeds at 20.40% reach. Reward-only at the
+same reach produced RUB 3,436.90; the estimated RUB +408.16 contribution of the game depends on
+an explicit synthetic assumption. Labels await human confirmation; these are scenario-evaluation
+results, not actual X5 profit.
 
-## Локальная проверка
+## Local validation
 
-Из корня репозитория:
+Run from the repository root:
 
 ```bash
 python3 recsys/validate.py
@@ -182,7 +184,11 @@ PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s recsys/engine/tests -t
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s recsys/eval -p 'test_*.py' -v
 ```
 
-Три команды выше проверяют прежние фикстуры и тексты. Отдельные команды оценки и их результаты
-описаны в [eval/README.md](eval/README.md); это синтетика, а не измерение на покупателях X5.
+The first three commands validate legacy fixtures and copy. Evaluation commands and results are
+in [eval/README.md](eval/README.md); they use synthetic data, not measurements of X5 customers.
 
-Контракт локального PoC использует максимум купона 10 ₽ и резерв 2,50 ₽ на непотраченный или обещанный экземпляр; четыре копии сохраняют 10 ₽ обязательства после крафта, а погашение заменяет резерв фактической экономией. Физический SKU учитывается отдельно. Квалификация демо — одна оплаченная единица указанной категории за семь дней; бесплатные строки и повторный чек не засчитываются, возврат проверяется отдельно. Реальные фонды, остатки и POS не подключены.
+The current local PoC contract caps a coupon at RUB 10 and reserves RUB 2.50 per unspent or
+promised instance. Four instances preserve RUB 10 of liability after crafting; redemption replaces
+the reserve with actual savings. Physical SKUs are accounted for separately. Demo qualification
+requires one paid unit from the displayed category within seven days; free lines and duplicate
+receipts do not qualify, and returns undergo separate review. Real funds, stock, and POS are not connected.

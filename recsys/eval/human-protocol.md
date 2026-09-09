@@ -1,57 +1,61 @@
-# Протокол коротких прохождений на людях
+# Short user walkthrough protocol
 
-5–7 участников, по одному, 12–15 минут каждый. Цель — проверить понятность задания и желанность
-конкретной награды. Протокол не проверяет привычку, прибыльность и не заменяет эксперимент.
+Plan for 5–7 participants, individually, for 12–15 minutes each. The goal is to assess challenge
+comprehension and the desirability of a specific reward. This protocol does not test habit
+formation or profitability and does not replace an experiment.
 
-## До встречи
+## Before the session
 
-- Локальный запуск: `bun run dev`, экран «Профиль», вкладка «Задания».
-- Состояние очищается между участниками так: кнопка «Демо-стенд» внизу экрана → «Полный сброс демо».
-- Участнику заранее сказано: данные синтетические, товар физически не выдаётся.
-- Ведущий не подсказывает и не объясняет механику до последнего блока вопросов.
+- Run locally with `bun run dev`; open “Profile” (`Профиль`), then “Challenges” (`Задания`).
+- Reset between participants: “Demo panel” (`Демо-стенд`) at the bottom → “Full demo reset” (`Полный сброс демо`).
+- Tell participants in advance that the data is synthetic and no physical product will be delivered.
+- The facilitator gives no hints or explanation of the mechanics until the final questions.
 
-## Задачи участника
+Quoted Russian labels identify controls in the current demo UI.
 
-1. Открыть профиль и рассказать вслух, что предлагается сделать и что за это будет.
-2. Нажать «Показать задание». Пересказать условие своими словами: что купить, за какой срок,
-   сколько единиц.
-3. Отправить тестовый чек «Оплаченная покупка нужной категории» и сказать, что произошло.
-4. Найти в интерфейсе, сколько предметов ещё нужно до скидки.
-5. Переключиться на подготовленный профиль, собрать скидку из четырёх предметов и объяснить,
-   от чего зависит процент.
-6. Отправить «Только бесплатная строка» и объяснить, почему задание не закрылось.
+## Participant tasks
 
-## Что фиксирует ведущий
+1. Open the profile and describe aloud what is being offered and what the reward is.
+2. Select “Show challenge” (`Показать задание`). Restate the condition: what to buy, by when,
+   and how many units.
+3. Submit the “Paid purchase in the required category” (`Оплаченная покупка нужной категории`)
+   synthetic receipt and explain what happened.
+4. Find how many more items are needed to craft a discount.
+5. Switch to the seeded profile, craft a discount from four items, and explain what determines
+   the percentage.
+6. Submit “Free line only” (`Только бесплатная строка`) and explain why the challenge did not complete.
 
-| Наблюдение | Как записывать |
+## Facilitator observations
+
+| Observation | Recording method |
 | --- | --- |
-| Пересказ условия | дословно, с отметкой «верно / неверно / частично» |
-| Ошибочные ожидания | что участник ждал и чего не произошло |
-| Место затруднения | шаг, время до действия, потребовалась ли подсказка |
-| Желанность награды | ответ на «взяли бы вы это ради обычной покупки?» без наводящих слов |
-| Понимание срока и условия | назвал ли категорию, количество и дедлайн без подсказки |
-| Реакция на отказ | понял ли, почему бесплатная строка не засчиталась |
+| Restatement of the condition | Verbatim, marked correct / incorrect / partially correct |
+| Incorrect expectations | What the participant expected and what did not happen |
+| Difficulty | Step, time to action, and whether a hint was needed |
+| Reward desirability | Answer to “Would you want this as a reward for an ordinary purchase?” without leading language |
+| Deadline and condition comprehension | Whether the participant named the category, quantity, and deadline without hints |
+| Response to refusal | Whether the participant understood why the free line did not count |
 
-## Вопросы после прохождения
+## Questions after the walkthrough
 
-- Что здесь предлагают сделать и что вы за это получите?
-- Что из этого вам действительно интересно, а что безразлично?
-- Что показалось непонятным или неприятным?
-- Что вы ожидали увидеть и не увидели?
-- Стали бы вы возвращаться за такой наградой? Почему?
+- What are you being asked to do, and what will you receive?
+- Which parts interest you, and which do not?
+- What felt unclear or unpleasant?
+- What did you expect to see but could not find?
+- Would you return for this kind of reward? Why?
 
-## Границы
+## Limitations
 
-Пять–семь прохождений выявляют проблемы понятности, а не измеряют конверсию, удержание или
-эффект на покупки. Ответ «взял бы» — это заявленное намерение, а не поведение.
+Five to seven walkthroughs can reveal comprehension problems; they do not measure conversion,
+retention, or purchase effects. “I would take it” is stated intent, not observed behavior.
 
-## Наблюдения
+## Observations
 
-**Раздел пуст. Он заполняется только после реального участия людей.**
+**This section is empty. Populate it only after real participants complete sessions.**
 
-Ни одно прохождение на момент подготовки протокола не проведено. Записывать сюда предполагаемые
-или сгенерированные ответы запрещено: результат защиты строится на фактических наблюдениях.
+No walkthroughs had been conducted when this protocol was prepared. Do not record hypothetical
+or generated answers here: reported findings must come from actual observations.
 
-| Дата | Участник (псевдоним) | Задача | Наблюдение | Вывод |
+| Date | Participant pseudonym | Task | Observation | Finding |
 | --- | --- | --- | --- | --- |
 | | | | | |

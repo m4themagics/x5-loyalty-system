@@ -1,76 +1,72 @@
-# Контракт локального PoC
+# Local PoC contract
 
-Один общий контракт трёх зон работы: **история покупок → вычисленное задание → карточка →
-тестовый чек → обещанные награды → существующий крафт**.
+One shared contract connects three work areas: **purchase history → computed challenge → card →
+synthetic receipt → promised rewards → existing crafting**.
 
-Источник истины — [`packages/contracts/src/demo-poc.ts`](../../packages/contracts/src/demo-poc.ts)
-(Zod, **contract v2**). Эталонные полезные нагрузки лежат в [`examples/`](examples) и проверяются
+The source of truth is [`packages/contracts/src/demo-poc.ts`](../../packages/contracts/src/demo-poc.ts)
+(Zod, **contract v2**). Reference payloads are in [`examples/`](examples) and validated by
 [`demo-poc.test.ts`](../../packages/contracts/src/demo-poc.test.ts).
 
-## Границы
+## Boundaries
 
-- Контракт описывает демонстрационный обмен данными webapp ↔ `recsys/engine`, а не серверный реестр прав.
-- Поля в `snake_case`: вторая сторона — Python и существующий `schema/action.schema.json`.
-- Деньги — целые копейки. Новый купон 10 000, резерв экземпляра 2 500, пример себестоимости демо-SKU 2 500. Схема также принимает максимум 1 000 для ранее выданных купонов.
-- Счётчик входов хранится только в webapp: три разных дня по Москве, четыре получения за 28 дней. До первого показанного шага резервируются 2 500; при открытии резерв переходит предмету.
-- При чтении старого браузерного снимка обеспечение предметов и невыполненного задания дополняется до 2 500 один раз; фонд не увеличивается. Старые купоны сохраняются и погашаются по своему максимуму.
-- Contract v2 переносит снимок глобального локального Ads-состояния: бюджеты кампаний,
-  зарезервированные/списанные суммы, показы и CPA-биллинги. Это браузерный демонстрационный
-  ledger, а не финансовый или защищённый серверный реестр.
-- Жизненный цикл обмена хранится в общем снимке webapp, но не передаётся Python decision/event.
-  Повторные товарные цели в этот контракт пока не входят.
-- Инвентарь остаётся количественным (`item_id` + `quantity`), как в существующем игровом модуле.
-  Однократность выдачи обеспечивает журнал `issued_rewards` с `reward_id` и `item_instance_id`.
+- The contract describes demonstrational data exchange between the webapp and `recsys/engine`; it is not a server-owned entitlement ledger.
+- Fields use `snake_case` for Python interoperability and consistency with the existing `schema/action.schema.json`.
+- Money uses integer kopecks. The current coupon maximum is 1,000, the instance reserve is 250, and the example demo SKU cost is 2,500.
+- Login progress is webapp-only. Its ordinary rules require three distinct Moscow calendar days and at most four claims per 28 days, reserving 250 before the first displayed step. The current `DEMO_UNLIMITED_CHEST = true` demo switch bypasses the timing gate; each added item still requires its coupon reserve.
+- The webapp owns browser-state migration. When the configured instance reserve increases, it tops up existing items and an unfulfilled challenge once without increasing the fund; existing coupons retain their stored maximum. The engine does not own this migration.
+- Contract v2 carries a snapshot of global local Ads state: campaign budgets, reserved/settled amounts, impressions, and CPA billings. This is a browser demo ledger, not a financial or protected server ledger.
+- The exchange lifecycle lives in the shared webapp snapshot and is not passed to Python decision/event operations. Repeat product goals are not yet part of this contract.
+- Inventory remains quantity-based (`item_id` + `quantity`), matching the existing game module. The `issued_rewards` log, with `reward_id` and `item_instance_id`, supports one-time issuance.
 
-## Три операции
+## Three operations
 
-| Операция | Вход | Выход |
+| Operation | Input | Output |
 | --- | --- | --- |
 | `POST /api/demo/decision` | `demoDecisionRequestSchema` | `demoDecisionResponseSchema` |
 | `POST /api/demo/event` | `demoEventRequestSchema` | `demoEventResponseSchema` |
 | `POST /api/demo/title` | `demoTitleRequestSchema` | `demoTitleResponseSchema` |
 
-Титул коллекции описывает только собранные предметы: валидатор отклоняет цифры, деньги,
-скидки и обещания, а также титулы длиннее 28 символов или трёх слов. Любое нарушение,
-недоступность модели или невалидный JSON дают детерминированный шаблон с `source: "fallback"`.
+A collection title describes collected items only. Validation rejects digits, money, discounts,
+and promises, as well as titles longer than 28 characters or three words. Any violation,
+model unavailability, or invalid JSON produces a deterministic template with `source: "fallback"`.
 
-Ошибка транспорта или движка — `demoErrorResponseSchema` с кодом `bad_request`,
-`engine_failed`, `engine_timeout` или `engine_invalid_output`.
+Transport or engine errors use `demoErrorResponseSchema` with `bad_request`, `engine_failed`,
+`engine_timeout`, or `engine_invalid_output`.
 
-Инварианты, проверяемые схемой: `status: "offer"` требует `challenge` и `card`, `no_action`
-запрещает их; `grant` возможен только при `qualification: "qualified"` и `risk.decision: "allow"`;
-`billing` возможен только вместе со свежей выдачей и запрещён для идемпотентного повтора.
+Schema-enforced invariants: `status: "offer"` requires `challenge` and `card`, while `no_action`
+forbids them; `grant` requires `qualification: "qualified"` and `risk.decision: "allow"`;
+`billing` requires a fresh grant and is forbidden on an idempotent replay.
 
-## Кто чем владеет
+## Ownership
 
-| Зона | Каталоги | Не трогает |
+| Area | Directories | Does not modify |
 | --- | --- | --- |
-| Контракт (координатор) | `packages/contracts/src/demo-poc*.ts`, `recsys/contract/**`, `webapp/src/features/home/demo-game-snapshot.ts`, `webapp/scripts/build-demo-contract-examples.ts` | — |
-| Мария: движок, экономика, LLM | `recsys/engine/**`, `recsys/llm/**` | `webapp/**`, `recsys/eval/**` |
-| Григорий: интеграция с игрой | `webapp/**` | `recsys/**`, существующие игровые правила |
-| Артемий: независимая проверка | `recsys/eval/**` | `recsys/engine/**`, `webapp/**` |
+| Contract coordinator | `packages/contracts/src/demo-poc*.ts`, `recsys/contract/**`, `webapp/src/features/home/demo-game-snapshot.ts`, `webapp/scripts/build-demo-contract-examples.ts` | — |
+| Maria: engine, economics, LLM | `recsys/engine/**`, `recsys/llm/**` | `webapp/**`, `recsys/eval/**` |
+| Grigory: game integration | `webapp/**` | `recsys/**`, existing game rules |
+| Artemy: independent evaluation | `recsys/eval/**` | `recsys/engine/**`, `webapp/**` |
 
-Каталог предметов и формула скидки живут только в `webapp/src/features/home`. Движок получает
-снимок (`game`) и рассчитанные признаки (`game_features`) и не хранит второй каталог.
+The item catalog and discount formula live only in `webapp/src/features/home`. The engine receives
+a snapshot (`game`) and computed features (`game_features`); it does not store a second catalog.
 
-## Эталонные файлы
+## Reference files
 
-| Файл | Что фиксирует |
+| File | Purpose |
 | --- | --- |
-| `examples/game-snapshot.json` | 24 предмета и 7 рецептов, сгенерировано из игровых модулей |
-| `examples/profile-empty.json` | Новый участник: покупки есть, инвентарь пуст |
-| `examples/profile-breakfast-seeded.json` | Явно подготовленный профиль с тремя предметами «Доброго утра» |
-| `examples/budget.json` | 10 000 ₽ купонного и 25 000 ₽ физического фонда |
-| `examples/ads.json` | Начальные глобальные бюджеты кампаний без показов и списаний |
-| `examples/decision-request-empty.json`, `examples/decision-request-seeded.json` | Полные запросы, собранные генератором |
-| `examples/decision-response-offer.json`, `examples/decision-response-no-action.json` | Форма ответа движка; числа синтетические |
-| `examples/event-request-qualified.json` | Тестовый чек с оплаченной и бесплатной строкой |
-| `examples/event-response-granted.json`, `examples/event-response-duplicate.json` | Выдача с одноразовым Ads-биллингом и идемпотентный повтор без второго счёта |
+| `examples/game-snapshot.json` | 24 items and 7 recipes, generated from game modules |
+| `examples/profile-empty.json` | New participant with purchase history and an empty inventory |
+| `examples/profile-breakfast-seeded.json` | Explicitly seeded profile with three items from the “Good Morning” (`breakfast`) recipe |
+| `examples/budget.json` | RUB 10,000 coupon fund and RUB 25,000 physical reward fund |
+| `examples/ads.json` | Initial global campaign budgets without impressions or charges |
+| `examples/decision-request-empty.json`, `examples/decision-request-seeded.json` | Complete generated requests |
+| `examples/decision-response-offer.json`, `examples/decision-response-no-action.json` | Engine response shapes with synthetic values |
+| `examples/event-request-qualified.json` | Synthetic receipt with a paid line and a free line |
+| `examples/event-response-granted.json`, `examples/event-response-duplicate.json` | Grant with one-time Ads billing, and idempotent replay without a second charge |
 
-Ответы — образцы формы, а не ожидаемый вывод движка. Ожидаемые решения задаёт разметка в
-`recsys/eval/`.
+Responses illustrate payload shapes; they are not expected engine outputs. Labels in
+`recsys/eval/` define expected decisions.
 
-## Проверки
+## Validation
 
 ```bash
 bun run test:contracts
@@ -80,5 +76,5 @@ python3 recsys/validate_explanation.py
 python3 recsys/eval_creatives.py
 ```
 
-`--check` падает, если каталог предметов или рецепты изменились без пересборки эталона.
-Пересборка: тот же скрипт без флага.
+`--check` fails if the item catalog or recipes changed without regenerating the reference.
+To regenerate, run the same script without the flag.
